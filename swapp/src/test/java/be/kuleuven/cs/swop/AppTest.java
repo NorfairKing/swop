@@ -1,4 +1,4 @@
-package p.o.w.s;
+package be.kuleuven.cs.swop;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
