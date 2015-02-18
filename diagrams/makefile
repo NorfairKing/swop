@@ -9,7 +9,7 @@ UML_SUFFIX  = uml
 
 DOT_EXT     = dot
 
-PLANT       = diagram_uml.eps 
+PLANT       = diagram_uml.eps
 GRAPHVIZ    = task_dfs.eps
 
 all: plantuml_illustrations graphviz_illustrations
@@ -24,4 +24,4 @@ graphviz_illustrations: $(GRAPHVIZ)
 	$(GRAPHVIZCC) -T$(OUT_FORMAT) $< -o $@
 
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
-	$(PLANTCC) -t$(OUT_FORMAT) $< -o $@
+	$(PLANTCC) -t$(OUT_FORMAT) $< $@

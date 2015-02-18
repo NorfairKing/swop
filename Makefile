@@ -9,7 +9,7 @@ all:
 	mkdir -p pkg/doc
 	cp -r swapp/target/site/apidocs/* pkg/doc
 	mkdir -p pkg/diagrams
-	dot -Teps diagrams/task_dfs.dot -o diagrams/task_dfs.eps
+	make -B diagrams
 	cp diagrams/*.eps pkg/diagrams/
 	ln -s pkg group02
 	zip -r swop.zip group02/
