@@ -1,0 +1,48 @@
+@startuml
+
+
+Time "1" <.. "1" Project : creationTime
+Time "1" <.. "1"  Project : dueTime
+Task "0..*" <--> "1" Project : < consistsOf
+Task --o TaskStatus : status
+Task "0..*" --> "0..*"  Task : dependsOn >
+Task "0..1" --> "0..1" Task : isAlternativeOf >
+Duration "1" <.. "1" Task : estimatedDuration
+Time "1" <.. "1" TimeSpan : startTime
+Time "1" <.. "1" TimeSpan : endTime
+TimeSpan "1" <.. "1" Task : performedDuring
+Project --o ProjectStatus : status
+class Project {
+  String name
+  String description
+}
+
+class Time {
+  
+}
+
+class Duration {
+  int minutes
+}
+
+class Task {
+  String Description
+  float acceptableDeviation
+}
+
+enum TaskStatus {
+  AVAILABLE
+  UNAVAILABLE
+  FINISHED
+  FAILED
+}
+
+class TimeSpan {
+}
+enum ProjectStatus {
+  ONGOING
+  FINISHED
+
+}
+
+@enduml

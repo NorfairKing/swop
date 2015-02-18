@@ -9,7 +9,7 @@ UML_SUFFIX  = uml
 
 DOT_EXT     = dot
 
-PLANT       = 
+PLANT       = diagram_uml.eps 
 GRAPHVIZ    = task_dfs.eps
 
 all: plantuml_illustrations graphviz_illustrations
