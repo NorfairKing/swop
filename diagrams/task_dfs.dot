@@ -7,7 +7,6 @@ digraph finite_state_machine {
     unavailable     [label="unavailable"];
     finished        [label="finished"];
     failed          [label="failed"];
-    archived        [label="archived"];
 
     start -> available;
 
@@ -17,9 +16,6 @@ digraph finite_state_machine {
     available -> finished    [label="finish"];
     available -> failed      [label="fail"];
     
-    finished -> archived     [label="archive"];
-    failed -> archived       [label="archive"];
-
 }
 
 
