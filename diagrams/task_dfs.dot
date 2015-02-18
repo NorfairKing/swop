@@ -1,4 +1,20 @@
 digraph finite_state_machine {
+
+    node [label=""];
+
+    start           [shape=none];
+    available       [label="available"];
+    unavailable     [label="unavailable"];
+    finished        [label="finished"];
+    failed          [label="failed"];
+
+    start -> available;
+
+    available -> unavailable [label="add dependency"];
+    unavailable -> available [label="all dependencies done"];
+    
+    available -> finished    [label="finish"];
+    available -> failed      [label="fail"];
     
 }
 
