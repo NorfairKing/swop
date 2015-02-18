@@ -28,6 +28,7 @@ public class CLITest {
 		assertTrue(CLI.canHaveAsArgs(emptyArgs));
 	}
 
+	@Test
 	public void testCanHaveAsArgumentsInvalid() {
 		assertFalse(CLI.canHaveAsArgs(invalidArgs));
 	}
