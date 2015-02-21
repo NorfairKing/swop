@@ -14,6 +14,42 @@ public class Project {
 	private final Set<Task> tasks = new HashSet<Task>();
 	
 	/**
+	 * Full constructor
+	 * @param title The title for the project.
+	 * @param description The description of the projects.
+	 * @param status The starting status of this project.
+	 * @param creationTime The date on which the project was created.
+	 * @param dueTime The date on which the project should be finished.
+	 * 
+	 * @effect
+	 * 		| setTitle(title);
+	 * 		| setDescription(description);
+	 * 		| setStatus(status);
+	 * 		| setCreationTime(creationTime);
+	 * 		| setDueTime(dueTime);
+	 */
+	public Project (String title, String description, ProjectStatus status, Date creationTime, Date dueTime) {
+		setTitle(title);
+		setDescription(description);
+		setStatus(status);
+		setCreationTime(creationTime);
+		setDueTime(dueTime);
+	}
+	
+	/**
+	 * A constructor with only the really necessary information.
+	 * @param title
+	 * @param description
+	 * @param dueTime
+	 * 
+	 * @effect
+	 * 		| this(title, description, ProjectStatus.ONGOING, new Date(), dueTime);
+	 */
+	public Project(String title, String description, Date dueTime) {
+		this(title, description, ProjectStatus.ONGOING, new Date(), dueTime);
+	}
+	
+	/**
 	 * Is the given string a proper title for a project?
 	 * @param title
 	 * @return Any string is allowed if not empty nor null.
@@ -38,7 +74,7 @@ public class Project {
 	 * 		| true
 	 */
 	public static boolean canHaveAsDescription(String description) {
-		return true;
+		return description != null;
 	}
 	public String getDescription() {
 		return description;
@@ -50,8 +86,14 @@ public class Project {
 		this.description = description;
 	}
 	
+	/**
+	 * 
+	 * @param status
+	 * @return Status can't be null.
+	 * 		| status != null
+	 */
 	public static boolean canHaveAsStatus(ProjectStatus status) {
-		return true;
+		return status != null;
 	}
 	public ProjectStatus getStatus() {
 		return status;
@@ -63,21 +105,33 @@ public class Project {
 		this.status = status;
 	}
 	
+	/**
+	 * 
+	 * @param creationTime
+	 * @return Must be a valid time
+	 * 		| creationTime != null;
+	 */
 	public static boolean canHaveAsCreationTime(Date creationTime) {
-		return true;
+		return creationTime != null;
 	}
 	public Date getCreationTime() {
 		return creationTime;
 	}
-	public void setCreationTime(Date creationTime) {
+	private void setCreationTime(Date creationTime) {
 		if (!canHaveAsCreationTime(creationTime)) {
 			throw new IllegalArgumentException(ERROR_ILLEGAL_CREATIONTIME);
 		}
 		this.creationTime = creationTime;
 	}
 	
-	public static boolean canHaveAsDueTime(Date dueTime) {
-		return true;
+	/**
+	 * 
+	 * @param dueTime
+	 * @return The dueTime must be after the creation of this project
+	 * 		| dueTime != null && dueTime.after(getCreationTime()) 
+	 */
+	public boolean canHaveAsDueTime(Date dueTime) {
+		return dueTime != null && dueTime.after(getCreationTime());
 	}
 	public Date getDueTime() {
 		return dueTime;
@@ -89,6 +143,12 @@ public class Project {
 		this.dueTime = dueTime;
 	}
 	
+	/**
+	 * 
+	 * @param task
+	 * @return Any task that's not yet assigned to an other project can be added.
+	 * 		| task != null && task.getProject() == null
+	 */
 	public static boolean canHaveAsTask(Task task) {
 		return task != null && task.getProject() == null;
 	}
