@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ProjectTest {
@@ -55,22 +54,6 @@ public class ProjectTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testChangeDescriptionNull() {
 		simpleProject.setDescription(null);
-	}
-	
-	// Status tests
-	
-	@Test
-	public void testChangeStatusValid() {
-		simpleProject.setStatus(ProjectStatus.FINISHED);
-		assertEquals(simpleProject.getStatus(), ProjectStatus.FINISHED);
-		
-		simpleProject.setStatus(ProjectStatus.ONGOING);
-		assertEquals(simpleProject.getStatus(), ProjectStatus.ONGOING);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testChangeStatusNull() {
-		simpleProject.setStatus(null);
 	}
 	
 	// Due time tests

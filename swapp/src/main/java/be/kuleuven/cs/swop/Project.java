@@ -8,7 +8,6 @@ public class Project {
 	
 	private String title;
 	private String description;
-	private ProjectStatus status;
 	private Date creationTime;
 	private Date dueTime;
 	private final Set<Task> tasks = new HashSet<Task>();
@@ -24,14 +23,12 @@ public class Project {
 	 * @effect
 	 * 		| setTitle(title);
 	 * 		| setDescription(description);
-	 * 		| setStatus(status);
 	 * 		| setCreationTime(creationTime);
 	 * 		| setDueTime(dueTime);
 	 */
-	public Project (String title, String description, ProjectStatus status, Date creationTime, Date dueTime) {
+	public Project (String title, String description, Date creationTime, Date dueTime) {
 		setTitle(title);
 		setDescription(description);
-		setStatus(status);
 		setCreationTime(creationTime);
 		setDueTime(dueTime);
 	}
@@ -46,7 +43,7 @@ public class Project {
 	 * 		| this(title, description, ProjectStatus.ONGOING, new Date(), dueTime);
 	 */
 	public Project(String title, String description, Date dueTime) {
-		this(title, description, ProjectStatus.ONGOING, new Date(), dueTime);
+		this(title, description, new Date(), dueTime);
 	}
 	
 	/**
@@ -88,21 +85,20 @@ public class Project {
 	
 	/**
 	 * 
-	 * @param status
-	 * @return Status can't be null.
-	 * 		| status != null
+	 * @return The current status of the Project, based on tasks.
 	 */
-	public static boolean canHaveAsStatus(ProjectStatus status) {
-		return status != null;
-	}
 	public ProjectStatus getStatus() {
-		return status;
-	}
-	public void setStatus(ProjectStatus status) {
-		if (!canHaveAsStatus(status)) {
-			throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
+		// text said there had to be tasks for the project to be finished.
+		if (tasks.isEmpty()) return ProjectStatus.ONGOING;
+		
+		for (Task task: tasks) {
+			if (task.getStatus() != TaskStatus.FINISHED &&
+				task.getStatus() != TaskStatus.FAILED) {
+				return ProjectStatus.ONGOING;
+			}
 		}
-		this.status = status;
+		
+		return ProjectStatus.FINISHED;
 	}
 	
 	/**
@@ -161,7 +157,6 @@ public class Project {
 
 	private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
 	private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal description for project.";
-	private static final String ERROR_ILLEGAL_STATUS = "Illegal status for project.";
 	private static final String ERROR_ILLEGAL_CREATIONTIME = "Illegal creation time for project.";
 	private static final String ERROR_ILLEGAL_DUETIME = "Illegal due time for project.";
 	private static final String ERROR_ILLEGAL_TASK = "Illegal taks for project.";
