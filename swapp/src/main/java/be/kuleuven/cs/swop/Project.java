@@ -84,8 +84,8 @@ public class Project {
 	}
 	
 	/**
-	 * 
-	 * @return The current status of the Project, based on tasks.
+	 * Get the current status of the projects.
+	 * @return The current status of the project, based on tasks.
 	 */
 	public ProjectStatus getStatus() {
 		// text said there had to be tasks for the project to be finished.
@@ -140,7 +140,7 @@ public class Project {
 	}
 	
 	/**
-	 * 
+	 * Can this task be added to a project?
 	 * @param task
 	 * @return Any task that's not yet assigned to an other project can be added.
 	 * 		| task != null && task.getProject() == null
@@ -153,6 +153,9 @@ public class Project {
 			throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
 		}
 		tasks.add(task);
+		if(task.getProject() != this) {
+			task.setProject(this);
+		}
 	}
 
 	private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";

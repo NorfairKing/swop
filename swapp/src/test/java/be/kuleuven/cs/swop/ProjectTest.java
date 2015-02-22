@@ -11,6 +11,10 @@ import org.junit.Test;
 public class ProjectTest {
 	
 	Project simpleProject;
+	Project otherProject;
+	
+	Task simpleTask;
+	Task otherTask;
 	Calendar calendar;
 	
 	@Before
@@ -20,6 +24,9 @@ public class ProjectTest {
 		calendar.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 	    
 		simpleProject = new Project("Test", "A test", calendar.getTime());
+		otherProject = new Project("Other", "Another", calendar.getTime());
+		simpleTask = new Task();
+		otherTask = new Task();
 	}
 	
 	// Title tests
@@ -54,6 +61,69 @@ public class ProjectTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testChangeDescriptionNull() {
 		simpleProject.setDescription(null);
+	}
+	
+	// Task tests
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddTaskNull() {
+		simpleProject.addTask(null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddTaskOfOther() {
+		otherProject.addTask(simpleTask);
+		simpleProject.addTask(simpleTask);
+	}
+	
+	@Test
+	public void testAddTaskValid() {
+		simpleProject.addTask(simpleTask);
+	}
+	
+	// Status tests
+	@Test
+	public void testStatus_AllTasksFinished() {
+		simpleProject.addTask(simpleTask);
+		simpleProject.addTask(otherTask);
+		simpleTask.setStatus(TaskStatus.FINISHED);
+		otherTask.setStatus(TaskStatus.FINISHED);
+		
+		assertEquals(simpleProject.getStatus(), ProjectStatus.FINISHED);
+	}
+	
+	@Test
+	public void testStatus_AllTasksFailed() {
+		simpleProject.addTask(simpleTask);
+		simpleProject.addTask(otherTask);
+		simpleTask.setStatus(TaskStatus.FAILED);
+		otherTask.setStatus(TaskStatus.FAILED);
+		
+		assertEquals(simpleProject.getStatus(), ProjectStatus.FINISHED);
+	}
+	
+	@Test
+	public void testStatus_SomeTasksFinishedSomeTasksFailed() {
+		simpleProject.addTask(simpleTask);
+		simpleProject.addTask(otherTask);
+		simpleTask.setStatus(TaskStatus.FINISHED);
+		otherTask.setStatus(TaskStatus.FAILED);
+		
+		assertEquals(simpleProject.getStatus(), ProjectStatus.FINISHED);
+	}
+	
+	@Test
+	public void testStatus_NoTasks() {
+		assertEquals(simpleProject.getStatus(), ProjectStatus.ONGOING);
+	}
+	
+	@Test
+	public void testStatus_SomeTasksFinishedSomeTasksOngoing() {
+		simpleProject.addTask(simpleTask);
+		simpleProject.addTask(otherTask);
+		simpleTask.setStatus(TaskStatus.FINISHED);
+		otherTask.setStatus(TaskStatus.AVAILABLE);
+		
+		assertEquals(simpleProject.getStatus(), ProjectStatus.ONGOING);
 	}
 	
 	// Due time tests
