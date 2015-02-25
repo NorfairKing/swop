@@ -1,20 +1,31 @@
 digraph finite_state_machine {
-
     node [label=""];
 
-    start           [shape=none];
+    start           [label="start", shape=none];
     available       [label="available"];
     unavailable     [label="unavailable"];
-    finished        [label="finished"];
-    failed          [label="failed"];
+    finished        [label="finished", peripheries=2];
+    failed          [label="failed",peripheries=2];
 
-    start -> available;
+    start -> available[label="create normal"];
+    start -> unavailable[label="create with dependencies"];
 
-    available -> unavailable [label="add dependency"];
-    unavailable -> available [label="all dependencies done"];
-    
+    available -> unavailable [label="add unfinished dependency"];
     available -> finished    [label="finish"];
     available -> failed      [label="fail"];
+
+    unavailable -> available [label="all dependencies finished"];
+    unavailable -> failed    [label="fail"];
+    // unavailable -> finished not possible
+    
+    // finished -> available not possible
+    // finished -> unavailable not possible
+    // finished -> failed not possible
+    
+    // failed -> available not possible
+    // failed -> unavailable not possible
+    // failed -> finished not possible
+
     
 }
 
