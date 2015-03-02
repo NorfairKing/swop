@@ -1,0 +1,48 @@
+* Eerste sessie
+- mogen we libraries gebruiken?
+    Ja
+    Zeker:
+        - Guava: pure collections
+        - Yaml:
+
+- wat voor documentatie schrijven we nu?
+    OGP, maar informeel.
+    
+- welke diagrammen moeten we maken?
+    - Hoog niveau: class diagram
+    - Momenteel geen domain model (gegeven)
+    - Inzoomen:
+        - class diagram
+        - sequence diagram
+        ²
+
+    Zorg dat we ons design kunnen 'verkopen'
+
+
+- Hoe zit het met de UML die we nu hebben?
+    
+
+- Moeten we een sequence diagram maken voor elke use-case?
+    Nope, maar wel van de interne werking.
+    Gewoon geen letterlijke vertaling van de opgave.
+- Moeten we nog iets doen met dat domain model?
+    Nee, dat is gegeven voor deze iteratie
+
+* Tweede sessie
+- Vragen
+  - Recursief falen?
+    Nee
+  - Lazy evaluation van alles ivm tijd?
+    NOPE
+  - Performed-during, is dat een clock of is dat één begin en één einde?
+    één begin en één einde
+  - Wie beslist er over de status verandering? Task, status, of nog iets anders?
+    
+- Beslissingen
+  - Depends on is NIET bidirectioneel
+  - Ultimate time travel: events en time traveling object - nope!
+
+- Bij assistent geleerd:
+  - facade controller
+  - session controller
+  - UI interface

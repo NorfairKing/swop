@@ -1,0 +1,12 @@
+@startuml
+User --> Controller: "Finish task X"
+Controller --> Task: "Change status to finish"
+Task --> Status: "Can I change status to (finish)?"
+Status --> Status: "Do I know (finish) ?"
+Status --> FinishStatus: "Can I change to you?"
+FinishStatus --> Status: "Yes"
+Status --> Task: "Yes"
+
+Task --> Task: "Change status to (finish)"
+@enduml
+
