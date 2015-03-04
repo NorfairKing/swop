@@ -20,6 +20,6 @@ public class App {
         String initialisationFilePath = args[0];
         facade.initialiseWith(initialisationFilePath);
 
-		ui.mainLoop();
+		ui.start();
 	}
 }
