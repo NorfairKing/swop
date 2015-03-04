@@ -117,6 +117,14 @@ public class Task {
     public Set<Task> getDependencySet() {
         return this.dependencies;
     }
+    
+    public void finish(){
+        
+    }
+    
+    public void fail(){
+        
+    }
 
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
