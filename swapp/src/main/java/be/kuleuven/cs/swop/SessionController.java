@@ -21,12 +21,13 @@ public class SessionController {
     }
 
     protected boolean canHaveAsUserInterface(UserInterface ui) {
-        return ui != null;
+        return ui != null && ui.getSessionController() == null;
     }
 
     private void setUi(UserInterface ui) {
         if (!canHaveAsUserInterface(ui)) throw new IllegalArgumentException(ERROR_ILLEGAL_UI);
         this.ui = ui;
+        ui.setSessionController(this);
     }
 
     public FacadeController getFacade() {
@@ -52,6 +53,8 @@ public class SessionController {
     	
     	// The user selects a project to view more details
     	Project project = getUi().selectProject(projects);
+    	
+    	if (project == null) return;
         
         // The system presents an overview of the project details
         getUi().showProject(project);
@@ -59,8 +62,16 @@ public class SessionController {
         // The user selects a task for more details
         Task task = getUi().selectTask(project.getTasks());
         
+        if (task == null) return;
+        
         // The system presents an overview of the task details
         getUi().showTask(task);
+    }
+    
+    
+    
+    public void createProjectSession() {
+    	// TODO
     }
     
     
