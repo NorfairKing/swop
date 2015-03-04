@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.domain;
 
 public class Duration {
 	private int minutes;

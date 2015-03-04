@@ -1,5 +1,7 @@
 package be.kuleuven.cs.swop;
 
+import be.kuleuven.cs.swop.domain.Task;
+import be.kuleuven.cs.swop.domain.Project;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;

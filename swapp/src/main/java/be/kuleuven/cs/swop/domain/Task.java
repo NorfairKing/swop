@@ -1,5 +1,8 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.domain;
 
+import be.kuleuven.cs.swop.TaskStatus;
+import be.kuleuven.cs.swop.domain.Project;
+import be.kuleuven.cs.swop.domain.Duration;
 import java.util.Set;
 
 public class Task {

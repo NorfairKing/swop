@@ -1,0 +1,32 @@
+@startuml
+
+Interface UI {
+}
+
+class CLI {
+}
+
+CLI -|> UI
+
+UI *-- ListProjectsSequenceController
+UI *-- CreateTaskSequenceController
+UI *-- CreateProjectSequenceController
+UI *-- AdvanceTimeSequenceController
+UI *-- UpdateTaskSequenceController
+
+ListProjectsSequenceController *-- FacadeController
+CreateTaskSequenceController *-- FacadeController
+CreateProjectSequenceController *-- FacadeController
+AdvanceTimeSequenceController *-- FacadeController
+UpdateTaskSequenceController *-- FacadeController
+
+
+class ListProjectsSequenceController
+class CreateTaskSequenceController
+class CreateProjectSequenceController
+class AdvanceTimeSequenceController
+class UpdateTaskSequenceController
+
+class FacadeController
+
+@enduml

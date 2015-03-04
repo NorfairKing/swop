@@ -1,5 +1,6 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.domain;
 
+import be.kuleuven.cs.swop.TaskStatus;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Date;

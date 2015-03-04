@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.domain;
 
 public class TimeDeviation {
 	private double value;
