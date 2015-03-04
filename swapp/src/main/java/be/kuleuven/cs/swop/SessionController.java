@@ -1,6 +1,6 @@
 package be.kuleuven.cs.swop;
 
-import java.util.List;
+import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
@@ -47,7 +47,7 @@ public class SessionController {
     public void showProjectsSession() {
     	// The user indicates he wants to see an overview of all projects
     	// The system shows a list of projects
-    	List<Project> projects = getFacade().getProjects();
+    	Set<Project> projects = getFacade().getProjects();
         getUi().showProjects(projects);
     	
     	// The user selects a project to view more details
