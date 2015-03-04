@@ -3,7 +3,7 @@
 all:
 	mkdir -p pkg/
 	mvn package -f swapp/
-	cp swapp/target/*.jar pkg/system.jar
+	cp swapp/target/*jar-with-dependencies.jar pkg/system.jar
 	cp -r swapp/src pkg/
 	mvn javadoc:javadoc -f swapp/
 	mkdir -p pkg/doc
