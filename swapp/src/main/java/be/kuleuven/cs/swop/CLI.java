@@ -1,11 +1,16 @@
 package be.kuleuven.cs.swop;
 
+import be.kuleuven.cs.swop.domain.Project;
+import be.kuleuven.cs.swop.domain.Task;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
  * A simple command line interface
  */
-public class CLI {
+public class CLI implements UserInterface {
 
 	private String[] args;
 	private Scanner scanner;
@@ -76,4 +81,39 @@ public class CLI {
 	}
 
 	private static String ERROR_ILLEGAL_ARGUMENT_LIST = "Illegal argument list.";
+
+    @Override
+    public void showProjects(List<Project> projects) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void showProject(Project project) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void showTasks(List<Task> tasks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Project selectProject(List<Project> projects) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Task selectTask(List<Task> tasks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Map<String, String> provideInfo(Map<String, String> requirements) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Date selectTimeStamp() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
