@@ -1,0 +1,7 @@
+@startuml
+
+UI --> SessionController
+SessionController --> FacadeController
+ProjectController -> ProjectManager
+
+@enduml

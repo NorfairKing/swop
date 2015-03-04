@@ -97,7 +97,7 @@ public class Task {
         return true;
     }
 
-    private void setAlternative(Task alternative) {
+    public void setAlternative(Task alternative) {
         if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }

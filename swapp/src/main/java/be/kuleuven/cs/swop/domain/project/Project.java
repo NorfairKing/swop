@@ -66,7 +66,7 @@ public class Project {
      * @return Any string is allowed if not empty nor null.
      */
     public static boolean canHaveAsTitle(String title) {
-        return title != null && !title.matches(TITLE_REGEX);
+        return title != null && title.matches(TITLE_REGEX);
     }
 
     public void setTitle(String title) {
@@ -141,6 +141,7 @@ public class Project {
      *         != null && dueTime.after(getCreationTime())
      */
     public boolean canHaveAsDueTime(Date dueTime) {
+    	Date derp = getCreationTime();
         return dueTime != null && dueTime.after(getCreationTime());
     }
 
