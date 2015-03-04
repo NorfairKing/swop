@@ -71,9 +71,6 @@ public class SessionController {
     
     public void startCreateProjectSession() {
     	// The user indicates he wants to create a project
-    	Map<String, String> requirements = new HashMap<>();
-    	requirements.put("Title", Project.TITLE_REGEX);
-    	
     	
     }
     
