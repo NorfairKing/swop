@@ -124,3 +124,5 @@ local.properties
 target
 
 .gitignore
+
+workbench.xmi
