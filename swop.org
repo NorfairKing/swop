@@ -7,7 +7,7 @@
 
 - wat voor documentatie schrijven we nu?
     OGP, maar informeel.
-    
+
 - welke diagrammen moeten we maken?
     - Hoog niveau: class diagram
     - Momenteel geen domain model (gegeven)
@@ -20,7 +20,7 @@
 
 
 - Hoe zit het met de UML die we nu hebben?
-    
+
 
 - Moeten we een sequence diagram maken voor elke use-case?
     Nope, maar wel van de interne werking.
@@ -37,7 +37,7 @@
   - Performed-during, is dat een clock of is dat één begin en één einde?
     één begin en één einde
   - Wie beslist er over de status verandering? Task, status, of nog iets anders?
-    
+
 - Beslissingen
   - Depends on is NIET bidirectioneel
   - Ultimate time travel: events en time traveling object - nope!
@@ -46,3 +46,14 @@
   - facade controller
   - session controller
   - UI interface
+
+* Vragen via mail sinds dat we fatsoenlijk zijn beginnen programmeren
+
+- Wanneer moeten lijsten 'immutable' worden? Gebeurt dit als we Project.getTasks() doen vanuit het domain zelf? Doet de facade controller dat als hij de lijst door geeft aan de sessioncontroller? Of wordt de bescherming pas gedaan als de sessionController de lijst door geeft aan de userInterface?
+  - nog geen antwoord
+
+- Verder, als we een lijst van Tasks willen van een Project in de sessionController. Vraagt de sessionController dan rechtstreeks aan het Project voor deze lijst? Of is het beter dat de FacadeController een functie 'getTasksForProject(Project)' heeft die dan op zijn beurt vraagt aan het meegegeven project voor de lijst van tasks?
+- nog geen antwoord
+
+- Als laatste was er een zeker discutie over hoe de sessionController te structureren. Momenteel hebben we één functie per use-case in een classe 'SessionController'. Alternatief kunnen we verschillende klassen laten overerven van SessionController, één sub-classe per use-case. De meningen zijn een beetje verdeeld over wat het gemakkelijkste in gebruik is, en wat het beste design is. Wat is u mening hierover?
+- nog geen antwoord
