@@ -95,9 +95,9 @@ public class Project {
     }
     
     public boolean isOngoing(){
-        if (tasks.isEmpty()) return true;
+        if (getTasks().isEmpty()) return true;
         
-        for (Task t : tasks){
+        for (Task t : getTasks()){
             if (true){
                 return false; // FIXME, work this out as soon as task is finished.
             }
@@ -162,10 +162,14 @@ public class Project {
 
     public void addTask(Task task) {
         if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
-        tasks.add(task);
+        getTasks().add(task);
     }
 
-    private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
+    public Set<Task> getTasks() {
+		return tasks;
+	}
+
+	private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal description for project.";
     private static final String ERROR_ILLEGAL_CREATIONTIME = "Illegal creation time for project.";
     private static final String ERROR_ILLEGAL_DUETIME = "Illegal due time for project.";
