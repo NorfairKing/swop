@@ -1,5 +1,7 @@
 package be.kuleuven.cs.swop;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.project.Project;
@@ -68,7 +70,11 @@ public class SessionController {
     }
     
     public void startCreateProjectSession() {
-    	// TODO
+    	// The user indicates he wants to create a project
+    	Map<String, String> requirements = new HashMap<>();
+    	requirements.put("Title", Project.TITLE_REGEX);
+    	
+    	
     }
     
     public void startCreateTaskSession() {

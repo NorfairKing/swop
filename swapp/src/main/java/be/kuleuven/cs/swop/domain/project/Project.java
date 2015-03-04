@@ -66,7 +66,7 @@ public class Project {
      * @return Any string is allowed if not empty nor null.
      */
     public static boolean canHaveAsTitle(String title) {
-        return title != null && !title.isEmpty();
+        return title != null && !title.matches(TITLE_REGEX);
     }
 
     public void setTitle(String title) {
@@ -174,5 +174,7 @@ public class Project {
     private static final String ERROR_ILLEGAL_CREATIONTIME = "Illegal creation time for project.";
     private static final String ERROR_ILLEGAL_DUETIME = "Illegal due time for project.";
     private static final String ERROR_ILLEGAL_TASK = "Illegal taks for project.";
+    
+    public static final String TITLE_REGEX = "[\\w :]+$";
 
 }
