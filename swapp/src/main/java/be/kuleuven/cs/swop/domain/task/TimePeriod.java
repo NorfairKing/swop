@@ -1,15 +1,15 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.task;
 
 
 import java.util.Date;
 
 
-public class TimeSpan {
+public class TimePeriod {
 
     private Date startTime;
     private Date stopTime;
 
-    public TimeSpan(Date start, Date stop) {
+    public TimePeriod(Date start, Date stop) {
         setStartTime(start);
         setStopTime(stop);
     }

@@ -15,6 +15,7 @@ public class Task {
     private double acceptableDeviation;
     private Set<Task> dependencies = new HashSet<Task>();
     private Task alternative;
+    private TimePeriod performedDuring;
 
     public Task(String description, double estimatedDuration,double acceptableDeviation, Project project) {
         setDescription(description);
@@ -100,6 +101,19 @@ public class Task {
         if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }
+
+    private TimePeriod getPerformedDuring() {
+        return performedDuring;
+    }
+    
+    protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan){
+        return timespan != null && performedDuring == null;
+    }
+    
+    public void performedDuring(TimePeriod timespan){
+        this.performedDuring = timespan;
+    }
+
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_PROJECT = "Illegal project for task.";
