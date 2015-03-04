@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserInterface {
-	
+    
     public void showProjects(List<Project> projects);
     public void showProject(Project project);
     public void showTasks(List<Task> tasks);
