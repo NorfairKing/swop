@@ -9,4 +9,14 @@ public class FinishedStatus extends TaskStatus{
         super(task);
     }
 
+    @Override
+    public TaskStatus finish() {
+        return this;
+    }
+
+    @Override
+    public TaskStatus fail() {
+        return this;
+    }
+
 }

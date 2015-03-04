@@ -25,5 +25,9 @@ public abstract class TaskStatus {
         this.task = task;
     }
 
+    public abstract TaskStatus finish();
+    public abstract TaskStatus fail();
+    
+    
     private static final String ERROR_ILLEGAL_TASK = "Invalid task for task status";
 }
