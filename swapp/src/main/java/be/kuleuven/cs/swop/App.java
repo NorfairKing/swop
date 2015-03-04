@@ -18,8 +18,7 @@ public class App {
         SessionController sc = new SessionController(ui,facade);
         
         String initialisationFilePath = args[0];
-        
-        
+        facade.initialiseWith(initialisationFilePath);
 
 		ui.mainLoop();
 	}

@@ -15,4 +15,8 @@ public class FacadeController {
 		throw new UnsupportedOperationException("Can't get the projects yet.");
 	}
     
+    public void initialiseWith(String initFile){
+        // TODO initialise with file.
+    }
+    
 }
