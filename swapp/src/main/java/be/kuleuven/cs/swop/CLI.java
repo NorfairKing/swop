@@ -45,22 +45,27 @@ public class CLI implements UserInterface {
 			case "list":
 			case "l":
 				System.out.println("List all projects.");
+				getSessionController().startShowProjectsSession();
 				break;
 			case "project":
 			case "p":
 				System.out.println("Create a new project.");
+				getSessionController().startCreateProjectSession();
 				break;
 			case "task":
 			case "t":
 				System.out.println("Create a new task.");
+				getSessionController().startCreateTaskSession();
 				break;
 			case "update":
 			case "u":
 				System.out.println("Update a task.");
+				getSessionController().startUpdateTaskStatusSession();
 				break;
 			case "clock":
 			case "c":
 				System.out.println("Update the system clock.");
+				getSessionController().startAdvanceTimeSession();
 				break;
 			default:
 				System.out.println("Command not recognised.");
