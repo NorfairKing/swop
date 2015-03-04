@@ -40,21 +40,6 @@ public class Project {
         setDueTime(dueTime);
     }
 
-    /**
-     * A constructor with only the really necessary information.
-     * 
-     * @param title
-     * @param description
-     * @param dueTime
-     * 
-     * @effect | this(title, description, ProjectStatus.ONGOING, new Date(),
-     *         dueTime);
-     */
-    public Project(String title, String description, Date dueTime) {
-        this(title, description, new Date(), dueTime);
-    }
-
-
     public String getTitle() {
         return title;
     }

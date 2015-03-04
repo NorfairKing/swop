@@ -176,11 +176,14 @@ public class CLI implements UserInterface {
     @Override
     public Date selectTimeStamp() {
         throw new UnsupportedOperationException("Not supported yet.");
+
     }
 
 	@Override
 	public void showTask(Task task) {
-		// TODO Auto-generated method stub
-		
+        System.out.println("TASK\n########");
+        System.out.println("# " + task.getDescription() +
+                         "\n#   Dependencies: " + task.getDependencySet().size() +
+                         "\n#   Estimated Duration: " + task.getEstimatedDuration());
 	}
 }

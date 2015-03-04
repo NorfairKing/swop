@@ -8,25 +8,23 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.yaml.snakeyaml.Yaml;
-
+import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
-// add projectmanager
 
 public class FacadeController {
+	ProjectManager projectManager;
 
 	public FacadeController(){
-
+		projectManager = new ProjectManager();
 	}
 
 	public Set<Project> getProjects() {
-		throw new UnsupportedOperationException("Can't get the projects yet.");
+		return projectManager.getProjects();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,14 +66,14 @@ public class FacadeController {
 						break;
 					}
 				}
-				
-				
+
+
 				// Add to project
 				int projectIndex = (int) task.get("project");
 				projects.get(projectIndex).addTask(temp);
 
-				
-				
+
+
 				// Add prerequisites
 				List<Integer> prerequisites = (List<Integer>) task.get("prerequisiteTasks");
 				if(prerequisites != null){
@@ -83,15 +81,15 @@ public class FacadeController {
 						temp.addDependency(tasks.get(prereq));
 					}
 				}
-				
-				
+
+
 				// Add as alternative
 				Object alter = task.get("alternativeFor");
 				if( alter != null){
 					tasks.get((int) alter).setAlternative(temp);
 				}
-				
-				
+
+
 				// Add to tracking list
 				tasks.add(temp);
 			}
@@ -103,5 +101,4 @@ public class FacadeController {
 			e.printStackTrace();
 		}
 	}
-
 }

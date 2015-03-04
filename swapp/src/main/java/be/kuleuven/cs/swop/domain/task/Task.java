@@ -4,7 +4,7 @@ package be.kuleuven.cs.swop.domain.task;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 
 
 public class Task {
@@ -15,8 +15,9 @@ public class Task {
     private Set<Task> dependencies = new HashSet<Task>();
     private Task alternative;
     private TimePeriod performedDuring;
+    private TaskStatus status;
 
-    public Task(String description, double estimatedDuration,double acceptableDeviation) {
+    public Task(String description, double estimatedDuration, double acceptableDeviation) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
@@ -37,19 +38,15 @@ public class Task {
     }
 
     /*
-    public Project getProject() {
-        return project;
-    }
-
-    protected static boolean canHaveAsProject(Project project) {
-        return project != null;
-    }
-
-    public void setProject(Project project) {
-        if (!canHaveAsProject(project)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT); }
-        this.project = project;
-    }
-    */
+     * public Project getProject() { return project; }
+     * 
+     * protected static boolean canHaveAsProject(Project project) { return
+     * project != null; }
+     * 
+     * public void setProject(Project project) { if (!canHaveAsProject(project))
+     * { throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT); }
+     * this.project = project; }
+     */
 
     public double getEstimatedDuration() {
         return estimatedDuration;
@@ -106,26 +103,40 @@ public class Task {
         return performedDuring;
     }
 
-    protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan){
+    protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan) {
         return timespan != null && performedDuring == null;
     }
 
-    public void performedDuring(TimePeriod timespan){
+    public void performedDuring(TimePeriod timespan) {
         this.performedDuring = timespan;
     }
 
     public Set<Task> getDependencySet() {
         return this.dependencies;
     }
-    
-    public void finish(){
-        
-    }
-    
-    public void fail(){
-        
+
+    public TaskStatus getStatus() {
+        return status;
     }
 
+    protected boolean canHaveAsStatus(TaskStatus status) {
+        return status != null;
+    }
+
+    private void setStatus(TaskStatus status) {
+        if (!canHaveAsStatus(status)) throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
+        this.status = status;
+    }
+
+    public void finish() {
+        TaskStatus status = this.status.finish();
+        setStatus(status);
+    }
+
+    public void fail() {
+        TaskStatus status = this.status.fail();
+        setStatus(status);
+    }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_PROJECT = "Illegal project for task.";
