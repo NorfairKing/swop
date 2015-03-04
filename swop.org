@@ -50,10 +50,10 @@
 * Vragen via mail sinds dat we fatsoenlijk zijn beginnen programmeren
 
 - Wanneer moeten lijsten 'immutable' worden? Gebeurt dit als we Project.getTasks() doen vanuit het domain zelf? Doet de facade controller dat als hij de lijst door geeft aan de sessioncontroller? Of wordt de bescherming pas gedaan als de sessionController de lijst door geeft aan de userInterface?
-  - nog geen antwoord
+  - Interne collecties worden best steeds afgeschermd (dus de interne collectie van taken in een object van de klasse Project mag buiten dat object nergens aangepast kunnen worden, ook niet binnen jullie domein). Je kan dat doen door immutable lists te gebruiken of door steeds te kopieren bij setten en getten.
 
 - Verder, als we een lijst van Tasks willen van een Project in de sessionController. Vraagt de sessionController dan rechtstreeks aan het Project voor deze lijst? Of is het beter dat de FacadeController een functie 'getTasksForProject(Project)' heeft die dan op zijn beurt vraagt aan het meegegeven project voor de lijst van tasks?
-- nog geen antwoord
+- Er is hier geen beste oplossing. Je zal hier een evenwicht moeten zoeken. Let wel op dat jullie klasse FacadeController niet gigantisch wordt. Wees per klasse echter wel consistent in je keuze.
 
 - Als laatste was er een zeker discutie over hoe de sessionController te structureren. Momenteel hebben we één functie per use-case in een classe 'SessionController'. Alternatief kunnen we verschillende klassen laten overerven van SessionController, één sub-classe per use-case. De meningen zijn een beetje verdeeld over wat het gemakkelijkste in gebruik is, en wat het beste design is. Wat is u mening hierover?
-- nog geen antwoord
+- Beide zijn waardige alternativen, ze kunnen beide goed zijn. Belangrijk is wel dat als er in alle use cases gemeenschappelijk gedrag is, dit best toch maar op 1 plaats geimplementeerd wordt. Ik zou zeggen kies en zie later waar de beperkingen van die keuze naar boven komen (beide hebben andere beperkingen).
