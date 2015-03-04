@@ -1,7 +1,8 @@
 package be.kuleuven.cs.swop;
 
-import be.kuleuven.cs.swop.domain.Project;
-import be.kuleuven.cs.swop.domain.Task;
+import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.task.Task;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
