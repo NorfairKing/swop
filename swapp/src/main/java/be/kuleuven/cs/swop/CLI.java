@@ -75,6 +75,8 @@ public class CLI implements UserInterface {
         throw new UnsupportedOperationException("");
     }
 
+    public SessionController getSessionController() { throw new UnsupportedOperationException(""); }
+
     @Override
     public void showProjects(Set<Project> projectSet) {
         List<Project> projects = new ArrayList<Project>(projectSet);
