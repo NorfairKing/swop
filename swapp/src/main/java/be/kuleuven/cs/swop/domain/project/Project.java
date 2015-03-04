@@ -157,7 +157,7 @@ public class Project {
      *         added. | task != null && task.getProject() == null
      */
     public boolean canHaveAsTask(Task task) {
-        return task != null && task.getProject() == this;
+        return task != null;
     }
 
     public void addTask(Task task) {

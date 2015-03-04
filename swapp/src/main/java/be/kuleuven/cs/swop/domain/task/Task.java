@@ -10,18 +10,16 @@ import be.kuleuven.cs.swop.domain.project.Project;
 public class Task {
 
     private String description;
-    private Project project;
     private double estimatedDuration;
     private double acceptableDeviation;
     private Set<Task> dependencies = new HashSet<Task>();
     private Task alternative;
     private TimePeriod performedDuring;
 
-    public Task(String description, double estimatedDuration,double acceptableDeviation, Project project) {
+    public Task(String description, double estimatedDuration,double acceptableDeviation) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
-        setProject(project);
         setAlternative(null);
     }
 
@@ -38,6 +36,7 @@ public class Task {
         this.description = description;
     }
 
+    /*
     public Project getProject() {
         return project;
     }
@@ -50,6 +49,7 @@ public class Task {
         if (!canHaveAsProject(project)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT); }
         this.project = project;
     }
+    */
 
     public double getEstimatedDuration() {
         return estimatedDuration;
