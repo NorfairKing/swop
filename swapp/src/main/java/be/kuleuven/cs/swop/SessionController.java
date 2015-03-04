@@ -52,6 +52,8 @@ public class SessionController {
     	
     	// The user selects a project to view more details
     	Project project = getUi().selectProject(projects);
+    	
+    	if (project == null) return;
         
         // The system presents an overview of the project details
         getUi().showProject(project);
@@ -59,8 +61,16 @@ public class SessionController {
         // The user selects a task for more details
         Task task = getUi().selectTask(project.getTasks());
         
+        if (task == null) return;
+        
         // The system presents an overview of the task details
         getUi().showTask(task);
+    }
+    
+    
+    
+    public void createProjectSession() {
+    	// TODO
     }
     
     
