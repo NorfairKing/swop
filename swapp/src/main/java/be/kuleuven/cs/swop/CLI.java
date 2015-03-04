@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -111,7 +112,6 @@ public class CLI implements UserInterface {
         for (Task t : tasks) {
             System.out.println("# Description: " + t.getDescription() +
                              "\n#   Dependencies: " + t.getDependencySet().size() +
-                             "\n#   " + t.getProject().toString() +
                              "\n#   " + t.getEstimatedDuration() +
                              "\n# ----------------------------------");
         }
@@ -155,7 +155,22 @@ public class CLI implements UserInterface {
 
     @Override
     public Map<String, String> provideInfo(Map<String, String> requirements) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<String, String> info = new HashMap<String, String>();
+        for ( String requirement : requirements.keySet()) {
+            System.out.println(requirement + ": ");
+            for (boolean isIncorrect = true; isIncorrect;)
+            {
+                String input = this.scanner.nextLine();
+                if (input.matches(requirements.get(requirement))) {
+                    isIncorrect = false;
+                    info.put(requirement, input);
+                }
+                else
+                    System.out.println("Invalid input, try again");
+            }
+        }
+        return info;
+
     }
 
     @Override
