@@ -17,4 +17,7 @@ public interface UserInterface {
     public Task selectTask(Set<Task> tasks);
     public Map<String,String> provideInfo(Map<String,String> requirements);
     public Date selectTimeStamp();
+    
+    public SessionController getSessionController();
+    public void setSessionController(SessionController session);
 }

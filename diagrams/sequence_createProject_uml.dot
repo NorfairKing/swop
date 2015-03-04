@@ -1,0 +1,9 @@
+@startuml
+User --> UI: "Create Project"
+UI --> SessionController: "startCreateProjectSession()"
+SessionController --> UI: "getProjectTitle()"
+SessionController --> UI: "getProjectDescription()"
+SessionController --> UI: "getProjectDueDate()"
+SessionController --> ProjectManager: "createProject(title,desc,due)"
+@enduml
+

@@ -1,8 +1,0 @@
-@startuml
-User --> Task: "Finish"
-Task --> Status: "Can I finish"
-Status --> Task: "Yes"
-
-Task --> Task: "Change status to finished"
-@enduml
-

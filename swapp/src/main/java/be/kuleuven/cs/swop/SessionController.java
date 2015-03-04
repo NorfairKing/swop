@@ -29,6 +29,7 @@ public class SessionController {
     private void setUi(UserInterface ui) {
         if (!canHaveAsUserInterface(ui)) throw new IllegalArgumentException(ERROR_ILLEGAL_UI);
         this.ui = ui;
+        this.ui.setSessionController(this);
     }
 
     public FacadeController getFacade() {
