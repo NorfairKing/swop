@@ -157,4 +157,10 @@ public class CLI implements UserInterface {
     public Date selectTimeStamp() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	@Override
+	public void showTask(Task task) {
+		// TODO Auto-generated method stub
+		
+	}
 }
