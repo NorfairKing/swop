@@ -5,8 +5,10 @@ import be.kuleuven.cs.swop.domain.task.Task;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * A simple command line interface
@@ -68,8 +70,14 @@ public class CLI implements UserInterface {
 
 	private static String ERROR_ILLEGAL_ARGUMENT_LIST = "Illegal argument list.";
 
+    public void setSessionController(SessionController session)
+    {
+        throw new UnsupportedOperationException("");
+    }
+
     @Override
-    public void showProjects(List<Project> projects) {
+    public void showProjects(Set<Project> projectSet) {
+        List<Project> projects = new ArrayList<Project>(projectSet);
         System.out.println("PROJECTS\n########");
         for (Project p : projects) {
             System.out.println("# " + p.getTitle() +
@@ -90,7 +98,8 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTasks(List<Task> tasks) {
+    public void showTasks(Set<Task> taskSet) {
+        List<Task> tasks = new ArrayList<Task>(taskSet);
         System.out.println("TASKS\n########");
         for (Task t : tasks) {
             System.out.println("# Description: " + t.getDescription() +
@@ -102,25 +111,39 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Project selectProject(List<Project> projects) {
+    public Project selectProject(Set<Project> projectSet) {
+        List<Project> projects = new ArrayList<Project>(projectSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i+1) + ") " + projects.get(i).getTitle());
         }
         System.out.println("\n# ----------------------------------");
         for(;;) {
-        System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
-        int input = this.scanner.nextInt();
-        if (input > 0 && input < projects.size())
-            return projects.get(input-1);
-        else
-            System.out.println("You entered a wrong project number");
+            System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
+            int input = this.scanner.nextInt();
+            if (input > 0 && input < projects.size())
+                return projects.get(input-1);
+            else
+                System.out.println("You entered a wrong project number");
         }
     }
 
     @Override
-    public Task selectTask(List<Task> tasks) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Task selectTask(Set<Task> taskSet) {
+        List<Task> tasks = new ArrayList<Task>(taskSet);
+        System.out.println("SELECT TASK\n########");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("# " + (i+1) + ") " + tasks.get(i).getDescription());
+        }
+        System.out.println("\n# ----------------------------------");
+        for(;;) {
+            System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] : ");
+            int input = this.scanner.nextInt();
+            if (input > 0 && input < tasks.size())
+                return tasks.get(input-1);
+            else
+                System.out.println("You entered a wrong task number");
+        }
     }
 
     @Override
