@@ -105,13 +105,17 @@ public class Task {
     private TimePeriod getPerformedDuring() {
         return performedDuring;
     }
-    
+
     protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan){
         return timespan != null && performedDuring == null;
     }
-    
+
     public void performedDuring(TimePeriod timespan){
         this.performedDuring = timespan;
+    }
+
+    public Set<Task> getDependencySet() {
+        return this.dependencies;
     }
 
 
