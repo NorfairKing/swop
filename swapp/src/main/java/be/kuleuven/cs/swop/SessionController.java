@@ -21,13 +21,12 @@ public class SessionController {
     }
 
     protected boolean canHaveAsUserInterface(UserInterface ui) {
-        return ui != null && ui.getSessionController() == null;
+        return ui != null;
     }
 
     private void setUi(UserInterface ui) {
         if (!canHaveAsUserInterface(ui)) throw new IllegalArgumentException(ERROR_ILLEGAL_UI);
         this.ui = ui;
-        ui.setSessionController(this);
     }
 
     public FacadeController getFacade() {
@@ -45,7 +44,7 @@ public class SessionController {
     
     
     
-    public void showProjectsSession() {
+    public void startShowProjectsSession() {
     	// The user indicates he wants to see an overview of all projects
     	// The system shows a list of projects
     	Set<Project> projects = getFacade().getProjects();
@@ -68,19 +67,19 @@ public class SessionController {
         getUi().showTask(task);
     }
     
-    public void createProjectSession() {
+    public void startCreateProjectSession() {
     	// TODO
     }
     
-    public void createTask() {
+    public void startCreateTaskSession() {
     	// TODO
     }
     
-    public void updateTaskStatus() {
+    public void startUpdateTaskStatusSession() {
     	// TODO
     }
     
-    public void advanceTime() {
+    public void startAdvanceTimeSession() {
     	// TODO
     }
     
