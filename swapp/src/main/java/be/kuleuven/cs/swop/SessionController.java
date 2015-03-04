@@ -68,9 +68,19 @@ public class SessionController {
         getUi().showTask(task);
     }
     
-    
-    
     public void createProjectSession() {
+    	// TODO
+    }
+    
+    public void createTask() {
+    	// TODO
+    }
+    
+    public void updateTaskStatus() {
+    	// TODO
+    }
+    
+    public void advanceTime() {
     	// TODO
     }
     
