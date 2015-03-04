@@ -21,12 +21,13 @@ public class SessionController {
     }
 
     protected boolean canHaveAsUserInterface(UserInterface ui) {
-        return ui != null;
+        return ui != null && ui.getSessionController() == null;
     }
 
     private void setUi(UserInterface ui) {
         if (!canHaveAsUserInterface(ui)) throw new IllegalArgumentException(ERROR_ILLEGAL_UI);
         this.ui = ui;
+        ui.setSessionController(this);
     }
 
     public FacadeController getFacade() {
