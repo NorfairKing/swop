@@ -12,15 +12,14 @@ import java.util.Scanner;
  */
 public class CLI implements UserInterface {
 
-	private String[] args;
 	private Scanner scanner;
 
-	public CLI(String[] args) {
-		this.setArgs(args);
+	public CLI() {
 		this.scanner = new Scanner(System.in);
 	}
 
-	public void mainLoop() {
+	public int start() {
+        System.out.println("Welcome to TaskMan");
 		String command;
 		while (true) {
 			command = this.selectCommand();
@@ -29,6 +28,7 @@ public class CLI implements UserInterface {
 	}
 
 	private String selectCommand() {
+        System.out.print(">");
 		String line = this.scanner.nextLine();
 		return line;
 	}
@@ -60,46 +60,61 @@ public class CLI implements UserInterface {
 				System.out.println("Update the system clock.");
 				break;
 			default:
-				System.err.println("Command not recognised.");
+				System.out.println("Command not recognised.");
 				break;
 		}
-	}
-
-	protected String[] getArgs() {
-		return args;
-	}
-
-	protected static boolean canHaveAsArgs(String[] args) {
-		return args != null;
-	}
-
-	protected void setArgs(String[] args) {
-		if (!canHaveAsArgs(args)) {
-			throw new IllegalArgumentException(ERROR_ILLEGAL_ARGUMENT_LIST);
-		}
-		this.args = args;
 	}
 
 	private static String ERROR_ILLEGAL_ARGUMENT_LIST = "Illegal argument list.";
 
     @Override
     public void showProjects(List<Project> projects) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("PROJECTS\n########");
+        for (Project p : projects) {
+            System.out.println("# " + p.getTitle() +
+                             "\n#   " + p.getDescription() +
+                             "\n#   " + p.getCreationTime().toString() +
+                             "\n#   " + p.getDueTime().toString() +
+                             "\n# ----------------------------------");
+        }
     }
 
     @Override
     public void showProject(Project project) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("PROJECT\n########");
+        System.out.println("# " + project.getTitle() +
+                         "\n#   " + project.getDescription() +
+                         "\n#   " + project.getCreationTime().toString() +
+                         "\n#   " + project.getDueTime().toString());
     }
 
     @Override
     public void showTasks(List<Task> tasks) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("TASKS\n########");
+        for (Task t : tasks) {
+            System.out.println("# Description: " + t.getDescription() +
+                             "\n#   Dependencies: " + t.getDependencySet().size() +
+                             "\n#   " + t.getProject().toString() +
+                             "\n#   " + t.getEstimatedDuration() +
+                             "\n# ----------------------------------");
+        }
     }
 
     @Override
     public Project selectProject(List<Project> projects) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("SELECT TASK\n########");
+        for (int i = 0; i < projects.size(); i++) {
+            System.out.println("# " + (i+1) + ") " + projects.get(i).getTitle());
+        }
+        System.out.println("\n# ----------------------------------");
+        for(;;) {
+        System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
+        int input = this.scanner.nextInt();
+        if (input > 0 && input < projects.size())
+            return projects.get(input-1);
+        else
+            System.out.println("You entered a wrong project number");
+        }
     }
 
     @Override
