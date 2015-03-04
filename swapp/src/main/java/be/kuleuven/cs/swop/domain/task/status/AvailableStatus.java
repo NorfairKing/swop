@@ -9,4 +9,14 @@ public class AvailableStatus extends TaskStatus{
         super(task);
     }
 
+    @Override
+    public TaskStatus finish() {
+        return new FinishedStatus(getTask());
+    }
+
+    @Override
+    public TaskStatus fail() {
+        return new FailedStatus(getTask());
+    }
+
 }

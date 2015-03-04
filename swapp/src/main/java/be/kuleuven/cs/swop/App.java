@@ -15,7 +15,7 @@ public class App {
 	    
 		CLI ui = new CLI();
         FacadeController facade = new FacadeController();
-        SessionController sc = new SessionController(ui,facade);
+        new SessionController(ui,facade);
         
         String initialisationFilePath = args[0];
         facade.initialiseWith(initialisationFilePath);
