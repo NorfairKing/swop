@@ -1,23 +1,27 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.task;
 
 
 import java.util.HashSet;
 import java.util.Set;
+
+import be.kuleuven.cs.swop.domain.project.Project;
 
 
 public class Task {
 
     private String description;
     private Project project;
-    private Duration estimatedDuration;
+    private double estimatedDuration;
     private double acceptableDeviation;
     private Set<Task> dependencies = new HashSet<Task>();
-    private Task original;
-    
-    public Task(String description, Duration estimatedDuration, Project project){
+    private Task alternative;
+
+    public Task(String description, double estimatedDuration,double acceptableDeviation, Project project) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
+        setAcceptableDeviation(acceptableDeviation);
         setProject(project);
+        setAlternative(null);
     }
 
     public String getDescription() {
@@ -46,30 +50,17 @@ public class Task {
         this.project = project;
     }
 
-    public Duration getEstimatedDuration() {
+    public double getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    protected static boolean canHaveAsEstimatedDuration(Duration estimatedDuration) {
-        return estimatedDuration != null;
+    protected static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
+        return estimatedDuration > 0;
     }
 
-    public void setEstimatedDuration(Duration estimatedDuration) {
+    public void setEstimatedDuration(double estimatedDuration) {
         if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
         this.estimatedDuration = estimatedDuration;
-    }
-
-    public Task getOriginal() {
-        return original;
-    }
-
-    protected static boolean canHaveAsOriginal(Task original) {
-        return true;
-    }
-
-    public void setOriginal(Task original) {
-        if (!canHaveAsOriginal(original)) { throw new IllegalArgumentException(ERROR_ILLEGAL_ORIGINAL); }
-        this.original = original;
     }
 
     public static boolean canHaveAsDependency(Task dependency) {
@@ -84,17 +75,30 @@ public class Task {
     public double getAcceptableDeviation() {
         return acceptableDeviation;
     }
-    
-    public static boolean canHaveAsDeviation(double deviation){
-        if(Double.isNaN(deviation)){return false;}
-        if(Double.isInfinite(deviation)){return false;}
-        if(deviation < 0){return false;}
+
+    public static boolean canHaveAsDeviation(double deviation) {
+        if (Double.isNaN(deviation)) { return false; }
+        if (Double.isInfinite(deviation)) { return false; }
+        if (deviation < 0) { return false; }
         return true;
     }
 
     public void setAcceptableDeviation(double acceptableDeviation) {
-        if (!canHaveAsDeviation(acceptableDeviation))throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
+        if (!canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
         this.acceptableDeviation = acceptableDeviation;
+    }
+
+    public Task getAlternative() {
+        return alternative;
+    }
+
+    protected static boolean canHaveAsAlternative(Task alternative) {
+        return true;
+    }
+
+    private void setAlternative(Task alternative) {
+        if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
+        this.alternative = alternative;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
@@ -102,8 +106,7 @@ public class Task {
     private static final String ERROR_ILLEGAL_DEVIATION = "Illegal acceptable deviation for task.";
     private static final String ERROR_ILLEGAL_DURATION = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_ORIGINAL = "Illegal original for task.";
+    private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY = "Illegal dependency set for task.";
-    private static final String ERROR_ILLEGAL_DEPENDENCY_SET = "Illegal dependency for task.";
 
 }

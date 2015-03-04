@@ -1,9 +1,11 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.project;
 
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import be.kuleuven.cs.swop.domain.task.Task;
 
 
 public class Project {

@@ -1,4 +1,7 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.task.status;
+
+import be.kuleuven.cs.swop.domain.task.Task;
+
 
 
 public abstract class TaskStatus {
