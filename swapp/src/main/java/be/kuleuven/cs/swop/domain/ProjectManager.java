@@ -42,7 +42,7 @@ public class ProjectManager {
     }
     
     public Project createProject(String title, String description, Date dueTime) {
-    	Date creationTime = null; //get current time from Syd
+    	Date creationTime = new Date();
     	return createProject(title, description, creationTime, dueTime);
     }
     

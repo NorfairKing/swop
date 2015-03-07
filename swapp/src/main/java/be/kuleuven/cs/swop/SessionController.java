@@ -1,9 +1,8 @@
 package be.kuleuven.cs.swop;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -72,7 +71,11 @@ public class SessionController {
     
     public void startCreateProjectSession() {
     	// The user indicates he wants to create a project
+    	// The system asks for the required data
+    	ProjectData data = getUi().getProjectData();
     	
+    	// The project is created using the data provided by the user
+    	getFacade().createProject(data.getTitle(), data.getDescription(), data.getDueTime());
     }
     
     public void startCreateTaskSession() {

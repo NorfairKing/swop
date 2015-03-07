@@ -1,6 +1,9 @@
 package be.kuleuven.cs.swop;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -194,4 +198,28 @@ public class CLI implements UserInterface {
         		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
         		+ "#   Estimated Duration: " + task.getEstimatedDuration());
     }
+
+	@Override
+	public ProjectData getProjectData() {
+		System.out.println("CREATING PROJECT\n########");
+		System.out.print("# Title: ");
+		String title = this.scanner.nextLine();
+		System.out.print("# Description: ");
+		String description = this.scanner.nextLine();
+		Date dueTime;
+		while(true){
+			try {
+				System.out.print("# Due Date: ");
+				String dueTimeText = this.scanner.nextLine();
+				dueTime = format.parse(dueTimeText);
+				break;
+			} catch (ParseException e) {
+				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+			}
+		}
+		return new ProjectData(title, description, dueTime);
+
+	}
+
+	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 }

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,10 @@ public class FacadeController {
 	public Set<Project> getProjects() {
 		return projectManager.getProjects();
 	}
+	
+	public void createProject(String title, String description, Date dueTime){
+		projectManager.createProject(title, description, dueTime);
+	}
 
 	@SuppressWarnings("unchecked")
 	public void initialiseWith(String initFile){
@@ -33,7 +38,7 @@ public class FacadeController {
 			System.out.println("Importing: " + initFile);
 			InputStream input = new FileInputStream(new File(initFile));
 			Yaml yaml = new Yaml();
-			DateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:MM");
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Map<String, List<Map<String,Object>>> parsedFile = (Map<String, List<Map<String,Object>>>) yaml.load(input);
 			List<Project> projects = new ArrayList<Project>();
 			List<Task> tasks = new ArrayList<Task>();

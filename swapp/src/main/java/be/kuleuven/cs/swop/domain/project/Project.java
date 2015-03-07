@@ -125,8 +125,7 @@ public class Project {
      * @return The dueTime must be after the creation of this project | dueTime
      *         != null && dueTime.after(getCreationTime())
      */
-    public boolean canHaveAsDueTime(Date dueTime) {
-    	Date derp = getCreationTime();
+    public boolean canHaveAsDueTime(Date dueTime) { 
         return dueTime != null && dueTime.after(getCreationTime());
     }
 
