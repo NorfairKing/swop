@@ -18,5 +18,10 @@ public class FinishedStatus extends TaskStatus{
     public TaskStatus fail() {
         return this;
     }
+    
+    @Override
+    public boolean isFinished(){
+    	return true;
+    }
 
 }

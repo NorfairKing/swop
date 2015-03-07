@@ -30,6 +30,7 @@ public class FacadeController {
 	@SuppressWarnings("unchecked")
 	public void initialiseWith(String initFile){
 		try {
+			System.out.println("Importing: " + initFile);
 			InputStream input = new FileInputStream(new File(initFile));
 			Yaml yaml = new Yaml();
 			DateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:MM");
@@ -93,7 +94,6 @@ public class FacadeController {
 				// Add to tracking list
 				tasks.add(temp);
 			}
-			System.out.println("test");
 		} catch (FileNotFoundException e) {
 			System.out.println("Couldn't import data from file: Not found.");
 		} catch (ParseException e) {

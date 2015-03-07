@@ -6,7 +6,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 
 public abstract class TaskStatus {
 
-    private Task task;
+    protected Task task;
 
     public TaskStatus(Task task) {
         setTask(task);
@@ -27,6 +27,10 @@ public abstract class TaskStatus {
 
     public abstract TaskStatus finish();
     public abstract TaskStatus fail();
+    
+    public boolean isFinished(){
+    	return false;
+    }
     
     
     private static final String ERROR_ILLEGAL_TASK = "Invalid task for task status";

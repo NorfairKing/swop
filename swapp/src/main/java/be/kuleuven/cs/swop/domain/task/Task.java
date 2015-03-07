@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
+import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
+import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
 public class Task {
@@ -22,6 +24,7 @@ public class Task {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
+        updateAvailability();
     }
 
     public String getDescription() {
@@ -68,6 +71,7 @@ public class Task {
     public void addDependency(Task dependency) {
         if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
         this.dependencies.add(dependency);
+        updateAvailability();
     }
 
     public double getAcceptableDeviation() {
@@ -136,6 +140,28 @@ public class Task {
     public void fail() {
         TaskStatus status = this.status.fail();
         setStatus(status);
+    }
+    
+    public void updateAvailability(){
+    	TaskStatus status;
+    	if(hasUnfinishedDependencies()){
+    		status = new UnavailableStatus(this);
+    	}else{
+    		status = new AvailableStatus(this);
+    	}
+    	setStatus(status);
+    }
+    
+    private boolean hasUnfinishedDependencies(){
+    	if(dependencies.isEmpty()){
+    		return false;
+    	}
+    	for(Task current: dependencies){
+    		if(!current.getStatus().isFinished()){
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
