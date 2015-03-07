@@ -71,6 +71,8 @@ public class CLI implements UserInterface {
                 System.out.println("Update the system clock.");
                 getSessionController().startAdvanceTimeSession();
                 break;
+            case "":
+            	break;
             default:
                 System.out.println("Command not recognised.");
                 break;
@@ -97,15 +99,23 @@ public class CLI implements UserInterface {
         List<Project> projects = new ArrayList<Project>(projectSet);
         System.out.println("PROJECTS\n########");
         for (Project p : projects) {
-            System.out.println("# " + p.getTitle() + "\n#   " + p.getDescription() + "\n#   " + p.getCreationTime().toString() + "\n#   " + p.getDueTime().toString()
-                    + "\n# ----------------------------------");
+            System.out.println(""
+            		+ "# " + p.getTitle() + "\n"
+            		+ "#   " + p.getDescription() + "\n"
+    				+ "#   " + p.getCreationTime().toString() + "\n"
+					+ "#   " + p.getDueTime().toString() + "\n"
+					+ "# ----------------------------------");
         }
     }
 
     @Override
     public void showProject(Project project) {
         System.out.println("PROJECT\n########");
-        System.out.println("# " + project.getTitle() + "\n#   " + project.getDescription() + "\n#   " + project.getCreationTime().toString() + "\n#   " + project.getDueTime().toString());
+        System.out.println(""
+        		+ "# " + project.getTitle() + "\n"
+        		+ "#   " + project.getDescription() + "\n"
+				+ "#   " + project.getCreationTime().toString() + "\n"
+				+ "#   " + project.getDueTime().toString());
     }
 
     @Override
@@ -113,8 +123,11 @@ public class CLI implements UserInterface {
         List<Task> tasks = new ArrayList<Task>(taskSet);
         System.out.println("TASKS\n########");
         for (Task t : tasks) {
-            System.out.println("# Description: " + t.getDescription() + "\n#   Dependencies: " + t.getDependencySet().size() + "\n#   " + t.getEstimatedDuration()
-                    + "\n# ----------------------------------");
+            System.out.println(""
+            		+ "# Description: " + t.getDescription() + "\n"
+            		+ "#   Dependencies: " + t.getDependencySet().size() + "\n"
+            		+ "#   " + t.getEstimatedDuration() + "\n"
+            		+ "# ----------------------------------");
         }
     }
 
@@ -129,7 +142,7 @@ public class CLI implements UserInterface {
         for (;;) {
             System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
             int input = this.scanner.nextInt();
-            if (input > 0 && input < projects.size()) return projects.get(input - 1);
+            if (input > 0 && input <= projects.size()) return projects.get(input - 1);
             else System.out.println("You entered a wrong project number");
         }
     }
@@ -145,7 +158,7 @@ public class CLI implements UserInterface {
         for (;;) {
             System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] : ");
             int input = this.scanner.nextInt();
-            if (input > 0 && input < tasks.size()) return tasks.get(input - 1);
+            if (input > 0 && input <= tasks.size()) return tasks.get(input - 1);
             else System.out.println("You entered a wrong task number");
         }
     }
@@ -176,6 +189,9 @@ public class CLI implements UserInterface {
     @Override
     public void showTask(Task task) {
         System.out.println("TASK\n########");
-        System.out.println("# " + task.getDescription() + "\n#   Dependencies: " + task.getDependencySet().size() + "\n#   Estimated Duration: " + task.getEstimatedDuration());
+        System.out.println(""
+        		+ "# " + task.getDescription() + "\n"
+        		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
+        		+ "#   Estimated Duration: " + task.getEstimatedDuration());
     }
 }
