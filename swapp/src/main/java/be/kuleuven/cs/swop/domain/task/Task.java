@@ -142,7 +142,7 @@ public class Task {
         setStatus(status);
     }
     
-    public void updateAvailability(){
+    private void updateAvailability(){
     	TaskStatus status;
     	if(hasUnfinishedDependencies()){
     		status = new UnavailableStatus(this);
