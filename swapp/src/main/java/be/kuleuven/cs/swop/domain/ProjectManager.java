@@ -41,10 +41,17 @@ public class ProjectManager {
         projects.add(project);
     }
     
-    public void createProject(String title, String description, Date dueTime) {
+    public Project createProject(String title, String description, Date dueTime) {
     	Date creationTime = null; //get current time from Syd
+    	return createProject(title, description, creationTime, dueTime);
+    }
+    
+    
+    // Manual setting of creationTime and returning the created project is needed for the importer
+    public Project createProject(String title, String description, Date creationTime, Date dueTime){
     	Project project = new Project(title, description, creationTime, dueTime);
     	addProject(project);
+    	return project;
     }
 
     private static final String ERROR_ILLEGAL_PROJECT = "Invalid project for project manager";

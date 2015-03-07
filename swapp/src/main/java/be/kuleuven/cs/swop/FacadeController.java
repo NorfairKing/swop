@@ -38,12 +38,13 @@ public class FacadeController {
 			List<Project> projects = new ArrayList<Project>();
 			List<Task> tasks = new ArrayList<Task>();
 			for(Map<String,Object> project : parsedFile.get("projects")){
-				projects.add(new Project(
+				Project p = projectManager.createProject(
 						(String) project.get("name"),
 						(String) project.get("description"),
 						format.parse((String) project.get("creationTime")),
 						format.parse((String) project.get("dueTime"))
-						));
+						);
+				projects.add(p);
 			}
 			for(Map<String,Object> task : parsedFile.get("tasks")){
 				Task temp = new Task(
