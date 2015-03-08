@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -148,6 +149,12 @@ public class Project {
     public void addTask(Task task) {
         if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         getTasks().add(task);
+    }
+    
+    public Task createTask(TaskData data) {
+    	Task newTask = new Task(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
+    	addTask(newTask);
+    	return newTask;
     }
 
     public Set<Task> getTasks() {

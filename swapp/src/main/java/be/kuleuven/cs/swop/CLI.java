@@ -13,6 +13,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
+import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -222,4 +223,45 @@ public class CLI implements UserInterface {
 	}
 
 	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+	@Override
+	public TaskData getTaskDate() {
+		TaskData data = new TaskData();
+		
+		System.out.println("CREATING TASK\n########");
+		
+		System.out.print("# Description: ");
+		String description = this.scanner.nextLine();
+		data.setDescription(description);
+		
+		System.out.print("# Estimated Duration (double): ");
+		while (true) {
+			try {
+				data.setEstimatedDuration(Double.parseDouble(this.scanner.nextLine()));
+				break;
+			}
+			catch (NumberFormatException e) {
+				System.out.print("# ERROR: Invalid duration. Please provide a double");
+			}
+		}
+		
+		System.out.print("# Acceptable Deviation (%, double): ");
+		while (true) {
+			try {
+				data.setAcceptableDeviation(Double.parseDouble(this.scanner.nextLine()));
+				break;
+			}
+			catch (NumberFormatException e) {
+				System.out.print("# ERROR: Invalid deviation. Please provide a double");
+			}
+		}
+		
+		return data;
+	}
+
+	@Override
+	public void showError(String error) {
+		System.out.println("ERROR\n########");
+		System.out.println(error);	
+	}
 }

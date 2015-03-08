@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop;
 
 import be.kuleuven.cs.swop.data.ProjectData;
+import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -16,9 +17,12 @@ public interface UserInterface {
     public void showTask(Task task);
     public Project selectProject(Set<Project> projects);
     public Task selectTask(Set<Task> tasks);
+    public TaskData getTaskDate();
     public Map<String,String> provideInfo(Map<String,String> requirements);
     public Date selectTimeStamp();
     public ProjectData getProjectData();
+    
+    public void showError(String error);
     
     public SessionController getSessionController();
     public void setSessionController(SessionController session);

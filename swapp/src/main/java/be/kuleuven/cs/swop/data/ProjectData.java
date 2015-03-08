@@ -13,6 +13,7 @@ public class ProjectData {
     	this.description = description;
     	this.dueTime = dueTime;
     }
+    
     public String getTitle(){
     	return title;
     }

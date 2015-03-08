@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
+import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -74,12 +75,32 @@ public class SessionController {
     	// The system asks for the required data
     	ProjectData data = getUi().getProjectData();
     	
+    	if (data == null) return; //ui should return null if user cancels.
+    	
     	// The project is created using the data provided by the user
     	getFacade().createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+    	
+    	// TODO Re-ask for data when user entered invalid info.
     }
     
     public void startCreateTaskSession() {
-    	// TODO
+    	Set<Project> projects = getFacade().getProjects();
+    	Project project = getUi().selectProject(projects);
+    	
+    	if (project == null) return;
+    	
+    	TaskData data = getUi().getTaskDate();
+    	
+    	if (data == null) return;
+    	
+    	try {
+    		project.createTask(data);
+    	}
+    	catch (Exception exc) {
+    		getUi().showError("Failed to create task: " + exc.getMessage());
+    		// Retry if something went wrong.
+    		startCreateTaskSession();
+    	}
     }
     
     public void startUpdateTaskStatusSession() {
