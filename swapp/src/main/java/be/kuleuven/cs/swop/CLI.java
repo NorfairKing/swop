@@ -146,7 +146,7 @@ public class CLI implements UserInterface {
         System.out.println("\n# ----------------------------------");
         for (;;) {
             System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
-            int input = this.scanner.nextInt();
+            int input = Integer.parseInt(this.scanner.nextLine());
             if (input > 0 && input <= projects.size()) return projects.get(input - 1);
             else System.out.println("You entered a wrong project number");
         }
@@ -162,7 +162,7 @@ public class CLI implements UserInterface {
         System.out.println("\n# ----------------------------------");
         for (;;) {
             System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] : ");
-            int input = this.scanner.nextInt();
+            int input = Integer.parseInt(this.scanner.nextLine());
             if (input > 0 && input <= tasks.size()) return tasks.get(input - 1);
             else System.out.println("You entered a wrong task number");
         }
