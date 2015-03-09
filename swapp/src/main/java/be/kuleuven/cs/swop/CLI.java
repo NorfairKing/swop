@@ -14,8 +14,6 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
-import be.kuleuven.cs.swop.domain.task.TaskWrapper;
 
 
 /**

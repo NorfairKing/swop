@@ -4,8 +4,6 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
-import be.kuleuven.cs.swop.domain.task.TaskWrapper;
 
 
 public class SessionController {
@@ -78,9 +76,14 @@ public class SessionController {
     	if (data == null) return; //ui should return null if user cancels.
     	
     	// The project is created using the data provided by the user
-    	getFacade().createProject(data.getTitle(), data.getDescription(), data.getDueTime());
-    	
-    	// TODO Re-ask for data when user entered invalid info.
+    	try {
+    		getFacade().createProject(data);
+    	}
+    	catch (Exception e) {
+    		getUi().showError("Failed to create task: " + e.getMessage());
+    		// Retry if something went wrong.
+    		startCreateProjectSession();
+    	}
     }
     
     public void startCreateTaskSession() {
@@ -94,10 +97,10 @@ public class SessionController {
     	if (data == null) return;
     	
     	try {
-    		project.createTask(data);
+    		getFacade().createTaskFor(project, data);
     	}
-    	catch (Exception exc) {
-    		getUi().showError("Failed to create task: " + exc.getMessage());
+    	catch (Exception e) {
+    		getUi().showError("Failed to create task: " + e.getMessage());
     		// Retry if something went wrong.
     		startCreateTaskSession();
     	}

@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +15,10 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
+import be.kuleuven.cs.swop.data.ProjectData;
+import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.project.Project;
-import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 public class FacadeController {
@@ -36,8 +36,12 @@ public class FacadeController {
 		return  result;
 	}
 	
-	public void createProject(String title, String description, Date dueTime){
-		projectManager.createProject(title, description, dueTime);
+	public void createProject(ProjectData data){
+		projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+	}
+	
+	public void createTaskFor(ProjectWrapper project, TaskData data) {
+		project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
 	}
 
 	@SuppressWarnings("unchecked")
