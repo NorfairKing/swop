@@ -14,7 +14,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.RealProject;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -100,10 +100,10 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showProjects(Set<Project> projectSet) {
-        List<Project> projects = new ArrayList<Project>(projectSet);
+    public void showProjects(Set<RealProject> projectSet) {
+        List<RealProject> projects = new ArrayList<RealProject>(projectSet);
         System.out.println("PROJECTS\n########");
-        for (Project p : projects) {
+        for (RealProject p : projects) {
             System.out.println(""
             		+ "# " + p.getTitle() + "\n"
             		+ "#   " + p.getDescription() + "\n"
@@ -114,7 +114,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showProject(Project project) {
+    public void showProject(RealProject project) {
         System.out.println("PROJECT\n########");
         System.out.println(""
         		+ "# " + project.getTitle() + "\n"
@@ -137,8 +137,8 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Project selectProject(Set<Project> projectSet) {
-        List<Project> projects = new ArrayList<Project>(projectSet);
+    public RealProject selectProject(Set<RealProject> projectSet) {
+        List<RealProject> projects = new ArrayList<RealProject>(projectSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());

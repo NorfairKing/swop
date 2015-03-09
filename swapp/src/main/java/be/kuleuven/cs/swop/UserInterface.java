@@ -2,7 +2,7 @@ package be.kuleuven.cs.swop;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.RealProject;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 import java.util.Date;
@@ -11,11 +11,11 @@ import java.util.Set;
 
 public interface UserInterface {
     
-    public void showProjects(Set<Project> projects);
-    public void showProject(Project project);
+    public void showProjects(Set<RealProject> projects);
+    public void showProject(RealProject project);
     public void showTasks(Set<Task> tasks);
     public void showTask(Task task);
-    public Project selectProject(Set<Project> projects);
+    public RealProject selectProject(Set<RealProject> projects);
     public Task selectTask(Set<Task> tasks);
     public TaskData getTaskDate();
     public Map<String,String> provideInfo(Map<String,String> requirements);
