@@ -57,3 +57,10 @@
 
 - Als laatste was er een zeker discutie over hoe de sessionController te structureren. Momenteel hebben we één functie per use-case in een classe 'SessionController'. Alternatief kunnen we verschillende klassen laten overerven van SessionController, één sub-classe per use-case. De meningen zijn een beetje verdeeld over wat het gemakkelijkste in gebruik is, en wat het beste design is. Wat is u mening hierover?
 - Beide zijn waardige alternativen, ze kunnen beide goed zijn. Belangrijk is wel dat als er in alle use cases gemeenschappelijk gedrag is, dit best toch maar op 1 plaats geimplementeerd wordt. Ik zou zeggen kies en zie later waar de beperkingen van die keuze naar boven komen (beide hebben andere beperkingen).
+
+- Bij maken van TaskProxy, krijgt die een realTask of Task(interface) mee?
+  - Meerdere lagen proxy's?
+  - Vraag aan proxy: 'getDependency()', geeft een Task(interface) terug.
+
+- UUID?
+  - UI selecteerd een project uit set<Project> en geeft deze terug. Hoe hier mee verder werken?
