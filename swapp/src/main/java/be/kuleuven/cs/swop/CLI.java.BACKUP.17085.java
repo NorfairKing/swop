@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -204,11 +206,69 @@ public class CLI implements UserInterface {
     }
 
     @Override
+    public ProjectData getProjectData() {
+        System.out.println("CREATING PROJECT\n########");
+        System.out.print("# Title: ");
+        String title = this.scanner.nextLine();
+        System.out.print("# Description: ");
+        String description = this.scanner.nextLine();
+        Date dueTime;
+        while (true) {
+            try {
+                System.out.print("# Due Date: ");
+                String dueTimeText = this.scanner.nextLine();
+                dueTime = format.parse(dueTimeText);
+                break;
+            } catch (ParseException e) {
+                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+            }
+        }
+        return new ProjectData(title, description, dueTime);
+
+    }
+
+    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    @Override
+    public TaskData getTaskDate() {
+        TaskData data = new TaskData();
+
+        System.out.println("CREATING TASK\n########");
+
+        System.out.print("# Description: ");
+        String description = this.scanner.nextLine();
+        data.setDescription(description);
+
+        System.out.print("# Estimated Duration (double): ");
+        while (true) {
+            try {
+                data.setEstimatedDuration(Double.parseDouble(this.scanner.nextLine()));
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("# ERROR: Invalid duration. Please provide a double");
+            }
+        }
+
+        System.out.print("# Acceptable Deviation (%, double): ");
+        while (true) {
+            try {
+                data.setAcceptableDeviation(Double.parseDouble(this.scanner.nextLine()));
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("# ERROR: Invalid deviation. Please provide a double");
+            }
+        }
+
+        return data;
+    }
+
+    @Override
     public void showError(String error) {
         System.out.println("ERROR\n########");
         System.out.println(error);
     }
 
+<<<<<<< HEAD
 	@Override
 	public ProjectData getProjectData() {
 		System.out.println("CREATING PROJECT\n########");
@@ -216,12 +276,23 @@ public class CLI implements UserInterface {
 		String title = this.scanner.nextLine();
 		System.out.print("# Description: ");
 		String description = this.scanner.nextLine();
-		System.out.print("# Due Date: ");
-		Date dueTime = getDate();
+		Date dueTime;
+		while(true){
+			try {
+				System.out.print("# Due Date: ");
+				String dueTimeText = this.scanner.nextLine();
+				dueTime = format.parse(dueTimeText);
+				break;
+			} catch (ParseException e) {
+				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+			}
+		}
 		return new ProjectData(title, description, dueTime);
+
 	}
 
-	
+	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 	@Override
 	public TaskData getTaskData() {
 		TaskData data = new TaskData();
@@ -255,6 +326,12 @@ public class CLI implements UserInterface {
 		}
 		
 		return data;
+	}
+
+	@Override
+	public void showError(String error) {
+		System.out.println("ERROR\n########");
+		System.out.println(error);	
 	}
 
 	@Override
@@ -326,6 +403,11 @@ public class CLI implements UserInterface {
 			}
 		}
 	}
-	
-	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+=======
+    @Override
+    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+>>>>>>> b1dbd6ac89df02d0ca7e3d614da8488e3ca89337
 }

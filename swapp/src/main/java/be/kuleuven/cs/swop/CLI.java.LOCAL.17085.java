@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -29,7 +31,6 @@ public class CLI implements UserInterface {
 
     public int start() {
         System.out.println("Welcome to TaskMan");
-        System.out.println("Enter \"h\" for help.");
         String command;
         while (true) {
             command = this.selectCommand();
@@ -38,7 +39,7 @@ public class CLI implements UserInterface {
     }
 
     private String selectCommand() {
-        System.out.print("> ");
+        System.out.print(">");
         String line = this.scanner.nextLine();
         return line;
     }
@@ -49,37 +50,33 @@ public class CLI implements UserInterface {
             case "q":
                 System.exit(0);
                 break;
-            case "help":
-            case "h":
-                System.out.println("list    / l:   list all projects");
-                System.out.println("project / p:   create project");
-                System.out.println("task    / t:   create task");
-                System.out.println("update  / u:   update task");
-                System.out.println("clock   / c:   update clock");
-                System.out.println("quit    / q:   quit taskman");
-                break;
             case "list":
             case "l":
+                System.out.println("List all projects.");
                 getSessionController().startShowProjectsSession();
                 break;
             case "project":
             case "p":
+                System.out.println("Create a new project.");
                 getSessionController().startCreateProjectSession();
                 break;
             case "task":
             case "t":
+                System.out.println("Create a new task.");
                 getSessionController().startCreateTaskSession();
                 break;
             case "update":
             case "u":
+                System.out.println("Update a task.");
                 getSessionController().startUpdateTaskStatusSession();
                 break;
             case "clock":
             case "c":
+                System.out.println("Update the system clock.");
                 getSessionController().startAdvanceTimeSession();
                 break;
             case "":
-                break;
+            	break;
             default:
                 System.out.println("Command not recognised.");
                 break;
@@ -106,16 +103,23 @@ public class CLI implements UserInterface {
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         System.out.println("PROJECTS\n########");
         for (ProjectWrapper p : projects) {
-            System.out.println("" + "# " + p.getTitle() + "\n" + "#   " + p.getDescription() + "\n" + "#   " + p.getCreationTime().toString() + "\n" + "#   " + p.getDueTime().toString() + "\n"
-                    + "# ----------------------------------");
+            System.out.println(""
+            		+ "# " + p.getTitle() + "\n"
+            		+ "#   " + p.getDescription() + "\n"
+    				+ "#   " + p.getCreationTime().toString() + "\n"
+					+ "#   " + p.getDueTime().toString() + "\n"
+					+ "# ----------------------------------");
         }
     }
 
     @Override
     public void showProject(ProjectWrapper project) {
         System.out.println("PROJECT\n########");
-        System.out.println("" + "# " + project.getTitle() + "\n" + "#   " + project.getDescription() + "\n" + "#   " + project.getCreationTime().toString() + "\n" + "#   "
-                + project.getDueTime().toString());
+        System.out.println(""
+        		+ "# " + project.getTitle() + "\n"
+        		+ "#   " + project.getDescription() + "\n"
+				+ "#   " + project.getCreationTime().toString() + "\n"
+				+ "#   " + project.getDueTime().toString());
     }
 
     @Override
@@ -123,90 +127,76 @@ public class CLI implements UserInterface {
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
-            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + "\n"
-                    + "# ----------------------------------");
+            System.out.println(""
+            		+ "# Description: " + t.getDescription() + "\n"
+            		+ "#   Dependencies: " + t.getDependencySet().size() + "\n"
+            		+ "#   " + t.getEstimatedDuration() + "\n"
+            		+ "# ----------------------------------");
         }
     }
 
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
-        if (projectSet.isEmpty()) {
-            System.out.println("No projects to select.");
-            return null;
-        }
-
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
         }
         System.out.println("\n# ----------------------------------");
-
-        boolean validInput;
-        int inputIndex = 0;
-        do {
-            System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] (0 to quit): ");
-            try {
-                inputIndex = Integer.parseInt(this.scanner.nextLine());
-                validInput = (inputIndex >= 0 && inputIndex <= projects.size());
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-        if (inputIndex == 0) {
-            return null;
-        } else {
-            return projects.get(inputIndex - 1);
+        for (;;) {
+            System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] : ");
+            int input = Integer.parseInt(this.scanner.nextLine());
+            if (input > 0 && input <= projects.size()) return projects.get(input - 1);
+            else System.out.println("You entered a wrong project number");
         }
     }
 
     @Override
     public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
-        if (taskSet.isEmpty()) {
-            System.out.println("No tasks to select.");
-            return null;
-        }
-
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
         }
         System.out.println("\n# ----------------------------------");
-        boolean validInput;
-        int inputIndex = 0;
-        do {
-            System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] (0 to quit): ");
-            try {
-                inputIndex = Integer.parseInt(this.scanner.nextLine());
-                validInput = (inputIndex >= 0 && inputIndex <= tasks.size());
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-        if (inputIndex == 0) {
-            return null;
-        } else {
-            return tasks.get(inputIndex - 1);
+        for (;;) {
+            System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] : ");
+            int input = Integer.parseInt(this.scanner.nextLine());
+            if (input > 0 && input <= tasks.size()) return tasks.get(input - 1);
+            else System.out.println("You entered a wrong task number");
         }
+    }
+
+    @Override
+    public Map<String, String> provideInfo(Map<String, String> requirements) {
+        Map<String, String> info = new HashMap<String, String>();
+        for (String requirement : requirements.keySet()) {
+            System.out.println(requirement + ": ");
+            for (boolean isIncorrect = true; isIncorrect;) {
+                String input = this.scanner.nextLine();
+                if (input.matches(requirements.get(requirement))) {
+                    isIncorrect = false;
+                    info.put(requirement, input);
+                } else System.out.println("Invalid input, try again");
+            }
+        }
+        return info;
+
+    }
+
+    @Override
+    public Date selectTimeStamp() {
+        throw new UnsupportedOperationException("Not supported yet.");
+
     }
 
     @Override
     public void showTask(TaskWrapper task) {
         System.out.println("TASK\n########");
-        System.out.println("" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: " + task.getEstimatedDuration());
-    }
-
-    @Override
-    public void showError(String error) {
-        System.out.println("ERROR\n########");
-        System.out.println(error);
+        System.out.println(""
+        		+ "# " + task.getDescription() + "\n"
+        		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
+        		+ "#   Estimated Duration: " + task.getEstimatedDuration());
     }
 
 	@Override
@@ -216,12 +206,23 @@ public class CLI implements UserInterface {
 		String title = this.scanner.nextLine();
 		System.out.print("# Description: ");
 		String description = this.scanner.nextLine();
-		System.out.print("# Due Date: ");
-		Date dueTime = getDate();
+		Date dueTime;
+		while(true){
+			try {
+				System.out.print("# Due Date: ");
+				String dueTimeText = this.scanner.nextLine();
+				dueTime = format.parse(dueTimeText);
+				break;
+			} catch (ParseException e) {
+				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+			}
+		}
 		return new ProjectData(title, description, dueTime);
+
 	}
 
-	
+	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 	@Override
 	public TaskData getTaskData() {
 		TaskData data = new TaskData();
@@ -255,6 +256,12 @@ public class CLI implements UserInterface {
 		}
 		
 		return data;
+	}
+
+	@Override
+	public void showError(String error) {
+		System.out.println("ERROR\n########");
+		System.out.println(error);	
 	}
 
 	@Override
@@ -326,6 +333,4 @@ public class CLI implements UserInterface {
 			}
 		}
 	}
-	
-	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 }

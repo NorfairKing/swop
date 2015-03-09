@@ -24,4 +24,14 @@ public class FinishedStatus extends TaskStatus{
     	return true;
     }
 
+    @Override
+    public boolean isFailed() {
+        return false;
+    }
+
+    @Override
+    public boolean isFinal() {
+        return true;
+    }
+
 }

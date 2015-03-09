@@ -4,8 +4,6 @@ import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
 
-import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 public interface UserInterface {
@@ -19,8 +17,6 @@ public interface UserInterface {
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects);
     public TaskData getTaskData();
     public TaskStatusData getUpdateStatusData();
-    public Map<String,String> provideInfo(Map<String,String> requirements);
-    public Date selectTimeStamp();
     public ProjectData getProjectData();
     
     public void showError(String error);

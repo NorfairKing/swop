@@ -27,10 +27,9 @@ public abstract class TaskStatus {
 
     public abstract TaskStatus finish();
     public abstract TaskStatus fail();
-    
-    public boolean isFinished(){
-    	return false;
-    }
+    public abstract boolean isFinished();
+    public abstract boolean isFailed();
+    public abstract boolean isFinal();
     
     
     private static final String ERROR_ILLEGAL_TASK = "Invalid task for task status";

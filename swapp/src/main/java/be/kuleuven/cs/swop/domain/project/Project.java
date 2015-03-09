@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -44,12 +46,12 @@ public class Project{
         return title;
     }
     
-    public static boolean canHaveAsTitle(String title) {
+    protected boolean canHaveAsTitle(String title) {
         return title != null && title.matches(TITLE_REGEX);
     }
     
     public void setTitle(String title) {
-        if (!Project.canHaveAsTitle(title)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TITLE); }
+        if (!canHaveAsTitle(title)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TITLE); }
         this.title = title;
     }
 
@@ -64,7 +66,7 @@ public class Project{
      * @param description
      * @return Any description will do. | true
      */
-    public static boolean canHaveAsDescription(String description) {
+    protected boolean canHaveAsDescription(String description) {
         return description != null;
     }
 
@@ -97,7 +99,7 @@ public class Project{
      * @param creationTime
      * @return Must be a valid time | creationTime != null;
      */
-    public static boolean canHaveAsCreationTime(Date creationTime) {
+    protected boolean canHaveAsCreationTime(Date creationTime) {
         return creationTime != null;
     }
 
@@ -139,17 +141,16 @@ public class Project{
 
     public void addTask(Task task) {
         if (!Project.canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
-        getTasks().add(task);
+        tasks.add(task);
     }
     
-    public Task createTask(String description, double estimatedDuration, double acceptableDeviation) {
+    public void createTask(String description, double estimatedDuration, double acceptableDeviation) {
     	Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
     	addTask(newTask);
-    	return newTask;
     }
 
     public Set<Task> getTasks(){
-    	return tasks; //TODO: protect me
+        return ImmutableSet.copyOf(tasks);
     }
 
     private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
