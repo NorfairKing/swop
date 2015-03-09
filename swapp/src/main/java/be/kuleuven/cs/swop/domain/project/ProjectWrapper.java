@@ -2,11 +2,12 @@ package be.kuleuven.cs.swop.domain.project;
 
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.TaskWrapper;
 
 
 public class ProjectWrapper{
@@ -73,16 +74,14 @@ public class ProjectWrapper{
     public Task createTask(TaskData data) {
         throw new IllegalAccessError(ERROR_ILLEGAL_ACCESS_PROJECT);
     }
-
-    public Set<Task> getTasks() {
-        // TODO Protect this
-        return getProject().getTasks();
-    }
-
-    public UUID getId() {
-        return getProject().getId();
-    }
-
+    
+	public Set<TaskWrapper> getTasks() {
+		Set<TaskWrapper> result = new HashSet<TaskWrapper>();
+		for( Task realTask : project.getTasks()){
+			result.add(new TaskWrapper(realTask));
+		}
+		return  result;
+	}
     private final String ERROR_ILLEGAL_ACCESS_PROJECT = "Seg gij vuile kakker, blijft hier eens af!";
     private final String ERROR_ILLEGAL_PROJECT = "Illegal project for project proxy";
 }

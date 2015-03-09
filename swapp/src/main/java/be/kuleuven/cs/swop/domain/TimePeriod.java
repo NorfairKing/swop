@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.task;
+package be.kuleuven.cs.swop.domain;
 
 
 import java.util.Date;

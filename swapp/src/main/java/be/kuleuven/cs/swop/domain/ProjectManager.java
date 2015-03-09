@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import be.kuleuven.cs.swop.domain.project.Project;
 
@@ -22,15 +21,6 @@ public class ProjectManager {
 
     public Set<Project> getProjects() {
         return projects;
-    }
-    
-    public Project getProject(UUID id) {
-    	for (Project project: projects) {
-    		if (project.getId().equals(id)) {
-    			return project;
-    		}
-    	}
-    	return null;
     }
 
     protected boolean canHaveAsProject(Project project) {

@@ -3,14 +3,14 @@ package be.kuleuven.cs.swop.domain.task;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
 import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
-public class Task {
+public class Task{
 
     private String description;
     private double estimatedDuration;
@@ -19,7 +19,6 @@ public class Task {
     private Task alternative;
     private TimePeriod performedDuring;
     private TaskStatus status;
-    private UUID id;
 
     public Task(String description, double estimatedDuration, double acceptableDeviation) {
         setDescription(description);
@@ -27,19 +26,19 @@ public class Task {
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
         updateAvailability();
-        setId(UUID.randomUUID());
     }
 
     public String getDescription() {
         return description;
     }
 
-    protected static boolean canHaveAsDescription(String description) {
+    
+    public static boolean canHaveAsDescription(String description) {
         return description != null;
     }
-
-    private void setDescription(String description) {
-        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
+    
+    public void setDescription(String description) {
+        if (!Task.canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
         this.description = description;
     }
 
@@ -54,25 +53,25 @@ public class Task {
      * this.project = project; }
      */
 
+    public static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
+        return estimatedDuration > 0;
+    }
+    
     public double getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    protected static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
-        return estimatedDuration > 0;
-    }
-
     public void setEstimatedDuration(double estimatedDuration) {
-        if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
+        if (!Task.canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
         this.estimatedDuration = estimatedDuration;
     }
 
     public static boolean canHaveAsDependency(Task dependency) {
         return dependency != null;
     }
-
+    
     public void addDependency(Task dependency) {
-        if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
+        if (!Task.canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
         this.dependencies.add(dependency);
         updateAvailability();
     }
@@ -87,26 +86,26 @@ public class Task {
         if (deviation < 0) { return false; }
         return true;
     }
-
+    
     public void setAcceptableDeviation(double acceptableDeviation) {
-        if (!canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
+        if (!Task.canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
         this.acceptableDeviation = acceptableDeviation;
     }
 
+    public static boolean canHaveAsAlternative(Task alternative) {
+        return true;
+    }
+    
     public Task getAlternative() {
         return alternative;
     }
 
-    protected static boolean canHaveAsAlternative(Task alternative) {
-        return true;
-    }
-
     public void setAlternative(Task alternative) {
-        if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
+        if (!Task.canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }
 
-    private TimePeriod getPerformedDuring() {
+    public TimePeriod getPerformedDuring() {
         return performedDuring;
     }
 
@@ -122,7 +121,7 @@ public class Task {
         return this.dependencies;
     }
 
-    public TaskStatus getStatus() {
+    private TaskStatus getStatus() {
         return status;
     }
 
@@ -144,48 +143,29 @@ public class Task {
         TaskStatus status = this.status.fail();
         setStatus(status);
     }
-    
-    private void updateAvailability(){
-    	TaskStatus status;
-    	if(hasUnfinishedDependencies()){
-    		status = new UnavailableStatus(this);
-    	}else{
-    		status = new AvailableStatus(this);
-    	}
-    	setStatus(status);
-    }
-    
-    private boolean hasUnfinishedDependencies(){
-    	if(dependencies.isEmpty()){
-    		return false;
-    	}
-    	for(Task current: dependencies){
-    		if(!current.getStatus().isFinished()){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    public UUID getId() {
-        return id;
-    }
-    
-    protected boolean canHaveAsID(UUID id){
-        return id != null;
+
+    private void updateAvailability() {
+        TaskStatus status;
+        if (hasUnfinishedDependencies()) {
+            status = new UnavailableStatus(this);
+        } else {
+            status = new AvailableStatus(this);
+        }
+        setStatus(status);
     }
 
-    private void setId(UUID id) {
-        if (!canHaveAsID(id)) throw new IllegalArgumentException(ERROR_ILLEGAL_ID);
-        this.id = id;
+    private boolean hasUnfinishedDependencies() {
+        if (dependencies.isEmpty()) { return false; }
+        for (Task current : dependencies) {
+            if (!current.getStatus().isFinished()) { return true; }
+        }
+        return false;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
-    private static final String ERROR_ILLEGAL_PROJECT = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_DEVIATION = "Illegal acceptable deviation for task.";
     private static final String ERROR_ILLEGAL_DURATION = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY = "Illegal dependency set for task.";
-    private static final String ERROR_ILLEGAL_ID = "Illegal UUID for task";
-
 }

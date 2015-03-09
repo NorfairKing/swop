@@ -14,9 +14,8 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.TaskWrapper;
 
 
 /**
@@ -125,10 +124,10 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTasks(Set<Task> taskSet) {
-        List<Task> tasks = new ArrayList<Task>(taskSet);
+    public void showTasks(Set<TaskWrapper> taskSet) {
+        List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("TASKS\n########");
-        for (Task t : tasks) {
+        for (TaskWrapper t : tasks) {
             System.out.println(""
             		+ "# Description: " + t.getDescription() + "\n"
             		+ "#   Dependencies: " + t.getDependencySet().size() + "\n"
@@ -154,8 +153,8 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Task selectTask(Set<Task> taskSet) {
-        List<Task> tasks = new ArrayList<Task>(taskSet);
+    public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
+        List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
@@ -193,7 +192,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTask(Task task) {
+    public void showTask(TaskWrapper task) {
         System.out.println("TASK\n########");
         System.out.println(""
         		+ "# " + task.getDescription() + "\n"
