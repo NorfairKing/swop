@@ -47,9 +47,13 @@
   - session controller
   - UI interface
 
-* Vragen via mail sinds dat we fatsoenlijk zijn beginnen programmeren
+* Derde sessie
 
-- Wanneer moeten lijsten 'immutable' worden? Gebeurt dit als we Project.getTasks() doen vanuit het domain zelf? Doet de facade controller dat als hij de lijst door geeft aan de sessioncontroller? Of wordt de bescherming pas gedaan als de sessionController de lijst door geeft aan de userInterface?
+- Wanneer moeten lijsten 'immutable' worden?
+  - Overal, ook intern
+  Gebeurt dit als we Project.getTasks() doen vanuit het domain zelf?
+  Doet de facade controller dat als hij de lijst door geeft aan de sessioncontroller?
+  Of wordt de bescherming pas gedaan als de sessionController de lijst door geeft aan de userInterface?
   - Interne collecties worden best steeds afgeschermd (dus de interne collectie van taken in een object van de klasse Project mag buiten dat object nergens aangepast kunnen worden, ook niet binnen jullie domein). Je kan dat doen door immutable lists te gebruiken of door steeds te kopieren bij setten en getten.
 
 - Verder, als we een lijst van Tasks willen van een Project in de sessionController. Vraagt de sessionController dan rechtstreeks aan het Project voor deze lijst? Of is het beter dat de FacadeController een functie 'getTasksForProject(Project)' heeft die dan op zijn beurt vraagt aan het meegegeven project voor de lijst van tasks?
@@ -64,3 +68,7 @@
 
 - UUID?
   - UI selecteerd een project uit set<Project> en geeft deze terug. Hoe hier mee verder werken?
+
+
+- DataTransferObject, taskwrapper
+- Alle wrappers etc unwrappen in de facade

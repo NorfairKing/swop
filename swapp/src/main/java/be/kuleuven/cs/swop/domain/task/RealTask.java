@@ -11,7 +11,7 @@ import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
 import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
-public class RealTask implements Task{
+public class RealTask implements Task {
 
     private String description;
     private double estimatedDuration;
@@ -63,6 +63,7 @@ public class RealTask implements Task{
         if (!Task.canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
         this.estimatedDuration = estimatedDuration;
     }
+
     @Override
     public void addDependency(RealTask dependency) {
         if (!Task.canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
@@ -74,7 +75,7 @@ public class RealTask implements Task{
     public double getAcceptableDeviation() {
         return acceptableDeviation;
     }
-    
+
     @Override
     public void setAcceptableDeviation(double acceptableDeviation) {
         if (!Task.canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
@@ -135,34 +136,31 @@ public class RealTask implements Task{
         TaskStatus status = this.status.fail();
         setStatus(status);
     }
-    
-    private void updateAvailability(){
-    	TaskStatus status;
-    	if(hasUnfinishedDependencies()){
-    		status = new UnavailableStatus(this);
-    	}else{
-    		status = new AvailableStatus(this);
-    	}
-    	setStatus(status);
+
+    private void updateAvailability() {
+        TaskStatus status;
+        if (hasUnfinishedDependencies()) {
+            status = new UnavailableStatus(this);
+        } else {
+            status = new AvailableStatus(this);
+        }
+        setStatus(status);
     }
 
-    private boolean hasUnfinishedDependencies(){
-    	if(dependencies.isEmpty()){
-    		return false;
-    	}
-    	for(RealTask current: dependencies){
-    		if(!current.getStatus().isFinished()){
-    			return true;
-    		}
-    	}
-    	return false;
+    private boolean hasUnfinishedDependencies() {
+        if (dependencies.isEmpty()) { return false; }
+        for (RealTask current : dependencies) {
+            if (!current.getStatus().isFinished()) { return true; }
+        }
+        return false;
     }
+
     @Override
     public UUID getId() {
         return id;
     }
-    
-    protected boolean canHaveAsID(UUID id){
+
+    protected boolean canHaveAsID(UUID id) {
         return id != null;
     }
 

@@ -66,8 +66,11 @@ public class TaskProxy implements Task {
     @Override
     public Task getAlternative() {
         Task alt = getTask().getAlternative();
-        if (alt == null) {return null;}
-        else {return new TaskProxy(getTask().getAlternative());}
+        if (alt == null) {
+            return null;
+        } else {
+            return new TaskProxy(getTask().getAlternative());
+        }
     }
 
     @Override
