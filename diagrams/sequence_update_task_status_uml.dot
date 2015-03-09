@@ -1,0 +1,27 @@
+@startuml
+
+title "Update Task Status"
+
+actor User
+User -> UI: "Update Task Status"
+UI -> SessionController: "startUpdateTaskStatusSession()"
+SessionController -> UI: "selectTask(taskWrappers)"
+UI -> User: "task selection form"
+User --> UI: "user selects task"
+UI --> SessionController: "return taskWrapper"
+loop "until valid data"
+    SessionController -> UI: "getTaskUpdateStatusData()"
+    UI -> User: "task update form"
+    User --> UI: "user enters task update data"
+    UI --> SessionController: "return taskUpdateStatusData"
+    SessionController -> FacadeController: "updateTask(taskWrapper, taskUpdateStatusData)"
+    alt "valid data"
+        FacadeController --> SessionController: "return"
+        SessionController --> UI: "return"
+    else "invalid data"
+        FacadeController --> SessionController: "error: illegal data"
+    end
+end
+
+@enduml
+

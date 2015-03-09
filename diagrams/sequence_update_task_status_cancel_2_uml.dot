@@ -1,0 +1,19 @@
+@startuml
+
+title "Update Task Status"
+
+actor User
+User -> UI: "Update Task Status"
+UI -> SessionController: "startUpdateTaskStatusSession()"
+SessionController -> UI: "selectTask(taskWrappers)"
+UI -> User: "task selection form"
+User --> UI: "user selects task"
+UI --> SessionController: "return taskWrapper"
+SessionController -> UI: "getTaskUpdateStatusData()"
+UI -> User: "task update form"
+User --> UI: "user cancels entering task update data"
+UI --> SessionController: "return null"
+SessionController --> UI: "return"
+
+@enduml
+

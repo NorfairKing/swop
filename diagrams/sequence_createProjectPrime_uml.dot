@@ -1,7 +1,0 @@
-@startuml
-User --> UI: "Create Project"
-UI --> SessionController: "startCreateProjectSession()"
-SessionController --> UI: "getProjectData()"
-SessionController --> ProjectManager: "createProject(projectData)"
-@enduml
-
