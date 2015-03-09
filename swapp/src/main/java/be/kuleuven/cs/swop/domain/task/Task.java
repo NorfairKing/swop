@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.task;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
@@ -18,6 +19,7 @@ public class Task {
     private Task alternative;
     private TimePeriod performedDuring;
     private TaskStatus status;
+    private UUID id;
 
     public Task(String description, double estimatedDuration, double acceptableDeviation) {
         setDescription(description);
@@ -25,6 +27,7 @@ public class Task {
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
         updateAvailability();
+        setId(UUID.randomUUID());
     }
 
     public String getDescription() {
@@ -163,6 +166,18 @@ public class Task {
     	}
     	return false;
     }
+    public UUID getId() {
+        return id;
+    }
+    
+    protected boolean canHaveAsID(UUID id){
+        return id != null;
+    }
+
+    private void setId(UUID id) {
+        if (!canHaveAsID(id)) throw new IllegalArgumentException(ERROR_ILLEGAL_ID);
+        this.id = id;
+    }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_PROJECT = "Illegal project for task.";
@@ -171,5 +186,6 @@ public class Task {
     private static final String ERROR_ILLEGAL_STATUS = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY = "Illegal dependency set for task.";
+    private static final String ERROR_ILLEGAL_ID = "Illegal UUID for task";
 
 }

@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop.domain.project;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.task.Task;
@@ -16,6 +17,7 @@ public class Project {
     private Date creationTime;
     private Date dueTime;
     private final Set<Task> tasks = new HashSet<Task>();
+    private UUID id;
 
     /**
      * Full constructor
@@ -39,6 +41,7 @@ public class Project {
         setDescription(description);
         setCreationTime(creationTime);
         setDueTime(dueTime);
+        setId(UUID.randomUUID());
     }
 
     public String getTitle() {
@@ -161,11 +164,25 @@ public class Project {
 		return tasks;
 	}
 
-	private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
+	public UUID getId() {
+        return id;
+    }
+	
+	protected boolean canHaveAsID(UUID id){
+	    return id != null;
+	}
+
+    private void setId(UUID id) {
+        if (!canHaveAsID(id)) throw new IllegalArgumentException(ERROR_ILLEGAL_ID);
+        this.id = id;
+    }
+
+    private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
     private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal description for project.";
     private static final String ERROR_ILLEGAL_CREATIONTIME = "Illegal creation time for project.";
     private static final String ERROR_ILLEGAL_DUETIME = "Illegal due time for project.";
-    private static final String ERROR_ILLEGAL_TASK = "Illegal taks for project.";
+    private static final String ERROR_ILLEGAL_TASK = "Illegal task for project.";
+    private static final String ERROR_ILLEGAL_ID = "Illegal UUID for project";
     
     public static final String TITLE_REGEX = "[\\w :]+$";
 
