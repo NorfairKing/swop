@@ -1,6 +1,6 @@
 @startuml
 
-title "Update Task Status"
+title "Update Task Status Cancel"
 
 actor User
 User -> UI: "Update Task Status"
