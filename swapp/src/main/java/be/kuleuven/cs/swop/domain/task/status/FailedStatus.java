@@ -1,11 +1,11 @@
 package be.kuleuven.cs.swop.domain.task.status;
 
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public class FailedStatus extends TaskStatus {
 
-    public FailedStatus(Task task) {
+    public FailedStatus(RealTask task) {
         super(task);
     }
 

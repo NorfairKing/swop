@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public class RealProject implements Project {
@@ -16,7 +16,7 @@ public class RealProject implements Project {
     private String description;
     private Date creationTime;
     private Date dueTime;
-    private final Set<Task> tasks = new HashSet<Task>();
+    private final Set<RealTask> tasks = new HashSet<RealTask>();
     private UUID id;
 
     /**
@@ -76,7 +76,7 @@ public class RealProject implements Project {
     public boolean isOngoing(){
         if (getTasks().isEmpty()) return true;
         
-        for (Task t : getTasks()){
+        for (RealTask t : getTasks()){
             if (true){
                 return false; // FIXME, work this out as soon as task is finished.
             }
@@ -126,18 +126,18 @@ public class RealProject implements Project {
         this.dueTime = dueTime;
     }
 
-    public void addTask(Task task) {
+    public void addTask(RealTask task) {
         if (!Project.canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         getTasks().add(task);
     }
     
-    public Task createTask(TaskData data) {
-    	Task newTask = new Task(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
+    public RealTask createTask(TaskData data) {
+    	RealTask newTask = new RealTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
     	addTask(newTask);
     	return newTask;
     }
 
-    public Set<Task> getTasks() {
+    public Set<RealTask> getTasks() {
 		return tasks;
 	}
 

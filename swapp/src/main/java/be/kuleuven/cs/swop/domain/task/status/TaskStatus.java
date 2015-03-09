@@ -1,26 +1,26 @@
 package be.kuleuven.cs.swop.domain.task.status;
 
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 
 public abstract class TaskStatus {
 
-    protected Task task;
+    protected RealTask task;
 
-    public TaskStatus(Task task) {
+    public TaskStatus(RealTask task) {
         setTask(task);
     }
 
-    public Task getTask() {
+    public RealTask getTask() {
         return task;
     }
 
-    protected static boolean canHaveAsTask(Task task) {
+    protected static boolean canHaveAsTask(RealTask task) {
         return task != null;
     }
 
-    private void setTask(Task task) {
+    private void setTask(RealTask task) {
         if (!canHaveAsTask(task)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
         this.task = task;
     }

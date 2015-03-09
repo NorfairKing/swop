@@ -15,7 +15,7 @@ import java.util.Set;
 import org.yaml.snakeyaml.Yaml;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.project.RealProject;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 public class FacadeController {
 	ProjectManager projectManager;
@@ -41,7 +41,7 @@ public class FacadeController {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Map<String, List<Map<String,Object>>> parsedFile = (Map<String, List<Map<String,Object>>>) yaml.load(input);
 			List<RealProject> projects = new ArrayList<RealProject>();
-			List<Task> tasks = new ArrayList<Task>();
+			List<RealTask> tasks = new ArrayList<RealTask>();
 			for(Map<String,Object> project : parsedFile.get("projects")){
 				RealProject p = projectManager.createProject(
 						(String) project.get("name"),
@@ -52,7 +52,7 @@ public class FacadeController {
 				projects.add(p);
 			}
 			for(Map<String,Object> task : parsedFile.get("tasks")){
-				Task temp = new Task(
+				RealTask temp = new RealTask(
 						(String) task.get("description"),
 						(double) (int) task.get("estimatedDuration"),
 						(double) (int) task.get("acceptableDeviation")

@@ -1,85 +1,38 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
-import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
-import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
-public class Task {
+public interface Task {
 
-    private String description;
-    private double estimatedDuration;
-    private double acceptableDeviation;
-    private Set<Task> dependencies = new HashSet<Task>();
-    private Task alternative;
-    private TimePeriod performedDuring;
-    private TaskStatus status;
-    private UUID id;
+    public String getDescription();
 
-    public Task(String description, double estimatedDuration, double acceptableDeviation) {
-        setDescription(description);
-        setEstimatedDuration(estimatedDuration);
-        setAcceptableDeviation(acceptableDeviation);
-        setAlternative(null);
-        updateAvailability();
-        setId(UUID.randomUUID());
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    protected static boolean canHaveAsDescription(String description) {
+    public static boolean canHaveAsDescription(String description) {
         return description != null;
     }
 
-    private void setDescription(String description) {
-        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
-        this.description = description;
-    }
+    public void setDescription(String description);
 
-    /*
-     * public Project getProject() { return project; }
-     * 
-     * protected static boolean canHaveAsProject(Project project) { return
-     * project != null; }
-     * 
-     * public void setProject(Project project) { if (!canHaveAsProject(project))
-     * { throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT); }
-     * this.project = project; }
-     */
+    public double getEstimatedDuration();
 
-    public double getEstimatedDuration() {
-        return estimatedDuration;
-    }
-
-    protected static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
+    public static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
         return estimatedDuration > 0;
     }
 
-    public void setEstimatedDuration(double estimatedDuration) {
-        if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
-        this.estimatedDuration = estimatedDuration;
-    }
+    public void setEstimatedDuration(double estimatedDuration);
 
-    public static boolean canHaveAsDependency(Task dependency) {
+    public static boolean canHaveAsDependency(RealTask dependency) {
         return dependency != null;
     }
 
-    public void addDependency(Task dependency) {
-        if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
-        this.dependencies.add(dependency);
-        updateAvailability();
-    }
+    public void addDependency(RealTask dependency);
 
-    public double getAcceptableDeviation() {
-        return acceptableDeviation;
-    }
+    public double getAcceptableDeviation();
 
     public static boolean canHaveAsDeviation(double deviation) {
         if (Double.isNaN(deviation)) { return false; }
@@ -88,104 +41,30 @@ public class Task {
         return true;
     }
 
-    public void setAcceptableDeviation(double acceptableDeviation) {
-        if (!canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
-        this.acceptableDeviation = acceptableDeviation;
-    }
+    public void setAcceptableDeviation(double acceptableDeviation);
 
-    public Task getAlternative() {
-        return alternative;
-    }
+    public Task getAlternative();
 
-    protected static boolean canHaveAsAlternative(Task alternative) {
+    public static boolean canHaveAsAlternative(RealTask alternative) {
         return true;
     }
 
-    public void setAlternative(Task alternative) {
-        if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
-        this.alternative = alternative;
-    }
+    public void setAlternative(RealTask alternative);
 
-    private TimePeriod getPerformedDuring() {
-        return performedDuring;
-    }
+    public TimePeriod getPerformedDuring();
 
-    protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan) {
-        return timespan != null && performedDuring == null;
-    }
+    public void performedDuring(TimePeriod timespan);
 
-    public void performedDuring(TimePeriod timespan) {
-        this.performedDuring = timespan;
-    }
+    public Set<RealTask> getDependencySet();
 
-    public Set<Task> getDependencySet() {
-        return this.dependencies;
-    }
+    public void finish();
 
-    public TaskStatus getStatus() {
-        return status;
-    }
+    public void fail();
 
-    protected boolean canHaveAsStatus(TaskStatus status) {
-        return status != null;
-    }
+    public UUID getId();
 
-    private void setStatus(TaskStatus status) {
-        if (!canHaveAsStatus(status)) throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
-        this.status = status;
-    }
-
-    public void finish() {
-        TaskStatus status = this.status.finish();
-        setStatus(status);
-    }
-
-    public void fail() {
-        TaskStatus status = this.status.fail();
-        setStatus(status);
-    }
-    
-    private void updateAvailability(){
-    	TaskStatus status;
-    	if(hasUnfinishedDependencies()){
-    		status = new UnavailableStatus(this);
-    	}else{
-    		status = new AvailableStatus(this);
-    	}
-    	setStatus(status);
-    }
-    
-    private boolean hasUnfinishedDependencies(){
-    	if(dependencies.isEmpty()){
-    		return false;
-    	}
-    	for(Task current: dependencies){
-    		if(!current.getStatus().isFinished()){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    public UUID getId() {
-        return id;
-    }
-    
-    protected boolean canHaveAsID(UUID id){
+    public static boolean canHaveAsID(UUID id) {
         return id != null;
     }
-
-    private void setId(UUID id) {
-        if (!canHaveAsID(id)) throw new IllegalArgumentException(ERROR_ILLEGAL_ID);
-        this.id = id;
-    }
-
-    private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal project for task.";
-    private static final String ERROR_ILLEGAL_PROJECT = "Illegal project for task.";
-    private static final String ERROR_ILLEGAL_DEVIATION = "Illegal acceptable deviation for task.";
-    private static final String ERROR_ILLEGAL_DURATION = "Illegal estimated duration for task.";
-    private static final String ERROR_ILLEGAL_STATUS = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal original for task.";
-    private static final String ERROR_ILLEGAL_DEPENDENCY = "Illegal dependency set for task.";
-    private static final String ERROR_ILLEGAL_ID = "Illegal UUID for task";
 
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public interface Project {
@@ -48,16 +48,16 @@ public interface Project {
      * @return Any task that's not yet assigned to an other project can be
      *         added. | task != null && task.getProject() == null
      */
-    public static boolean canHaveAsTask(Task task) {
+    public static boolean canHaveAsTask(RealTask task) {
         return task != null;
     }
 
 
-    public void addTask(Task task);
+    public void addTask(RealTask task);
 
-    public Task createTask(TaskData data);
+    public RealTask createTask(TaskData data);
 
-    public Set<Task> getTasks();
+    public Set<RealTask> getTasks();
 
     public UUID getId();
 

@@ -1,11 +1,11 @@
 package be.kuleuven.cs.swop.domain.task.status;
 
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public class FinishedStatus extends TaskStatus{
 
-    public FinishedStatus(Task task) {
+    public FinishedStatus(RealTask task) {
         super(task);
     }
 

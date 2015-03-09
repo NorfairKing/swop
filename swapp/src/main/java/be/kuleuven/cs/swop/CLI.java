@@ -15,7 +15,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.project.RealProject;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 /**
@@ -124,10 +124,10 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTasks(Set<Task> taskSet) {
-        List<Task> tasks = new ArrayList<Task>(taskSet);
+    public void showTasks(Set<RealTask> taskSet) {
+        List<RealTask> tasks = new ArrayList<RealTask>(taskSet);
         System.out.println("TASKS\n########");
-        for (Task t : tasks) {
+        for (RealTask t : tasks) {
             System.out.println(""
             		+ "# Description: " + t.getDescription() + "\n"
             		+ "#   Dependencies: " + t.getDependencySet().size() + "\n"
@@ -153,8 +153,8 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Task selectTask(Set<Task> taskSet) {
-        List<Task> tasks = new ArrayList<Task>(taskSet);
+    public RealTask selectTask(Set<RealTask> taskSet) {
+        List<RealTask> tasks = new ArrayList<RealTask>(taskSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
@@ -192,7 +192,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTask(Task task) {
+    public void showTask(RealTask task) {
         System.out.println("TASK\n########");
         System.out.println(""
         		+ "# " + task.getDescription() + "\n"

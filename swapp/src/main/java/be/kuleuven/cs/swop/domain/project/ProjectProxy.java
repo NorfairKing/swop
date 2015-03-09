@@ -6,18 +6,18 @@ import java.util.Set;
 import java.util.UUID;
 
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public class ProjectProxy implements Project {
 
-    private RealProject project;
+    private Project project;
 
-    public ProjectProxy(RealProject project) {
+    public ProjectProxy(Project project) {
         setProject(project);
     }
 
-    private RealProject getProject() {
+    private Project getProject() {
         return project;
     }
 
@@ -25,7 +25,7 @@ public class ProjectProxy implements Project {
         return project != null;
     }
 
-    private void setProject(RealProject project) {
+    private void setProject(Project project) {
         if (!canHaveAsProject(project)) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
         this.project = project;
     }
@@ -76,17 +76,17 @@ public class ProjectProxy implements Project {
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(RealTask task) {
         throw new IllegalAccessError(ERROR_ILLEGAL_ACCESS_PROJECT);
     }
 
     @Override
-    public Task createTask(TaskData data) {
+    public RealTask createTask(TaskData data) {
         throw new IllegalAccessError(ERROR_ILLEGAL_ACCESS_PROJECT);
     }
 
     @Override
-    public Set<Task> getTasks() {
+    public Set<RealTask> getTasks() {
         // TODO Protect this
         return getProject().getTasks();
     }

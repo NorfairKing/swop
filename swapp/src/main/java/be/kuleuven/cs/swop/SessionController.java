@@ -5,7 +5,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.project.RealProject;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.task.RealTask;
 
 
 public class SessionController {
@@ -62,7 +62,7 @@ public class SessionController {
         getUi().showProject(project);
         
         // The user selects a task for more details
-        Task task = getUi().selectTask(project.getTasks());
+        RealTask task = getUi().selectTask(project.getTasks());
         
         if (task == null) return;
         
