@@ -1,0 +1,15 @@
+@startuml
+
+title "Advance Time Cancel"
+
+actor User
+User -> UI: "Advance Time"
+UI -> SessionController: "startAdvanceTimeSession()"
+SessionController -> UI: "getTimeStamp()"
+UI -> User: "show timestamp form"
+User --> UI: "user cancels entering timestamp"
+UI --> SessionController: "return null"
+SessionController --> UI: "return"
+
+@enduml
+

@@ -1,0 +1,23 @@
+@startuml
+
+title "Advance Time"
+
+actor User
+User -> UI: "Advance Time"
+UI -> SessionController: "startAdvanceTimeSession()"
+loop "until valid timestamp"
+    SessionController -> UI: "getTimeStamp()"
+    UI -> User: "show timestamp form"
+    User --> UI: "user enters timestamp"
+    UI --> SessionController: "return timeStamp"
+    SessionController -> FacadeController: "updateTime(timeStamp)"
+    alt "valid timestamp"
+        FacadeController --> SessionController: "return"
+        SessionController --> UI: "return"
+    else "invalid timestamp"
+        FacadeController --> SessionController: "error: illegal timestamp"
+    end
+end
+
+@enduml
+
