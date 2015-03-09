@@ -4,6 +4,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
+import be.kuleuven.cs.swop.data.TaskStatusData;
 
 
 public class SessionController {
@@ -95,7 +96,7 @@ public class SessionController {
 	    	
 	    	if (project == null) return;
 	    	
-	    	TaskData data = getUi().getTaskDate();
+	    	TaskData data = getUi().getTaskData();
 	    	
 	    	if (data == null) return;
 	    	
@@ -117,9 +118,21 @@ public class SessionController {
     	
     	if (task == null) return;
     	
-    	//getUi().getUpdateStatusData();
-    	// TODO: Finish this
-    	
+    	do {
+    		try {
+    	    	TaskStatusData statusData = getUi().getUpdateStatusData();
+    	    	
+    	    	if (statusData == null) return;
+    	    	
+    			getFacade().updateTaskStatusFor(task, statusData);
+    			
+    			// Finish wel successful
+    			break;
+    		}
+    		catch (IllegalArgumentException e) {
+	    		getUi().showError("Failed to create task: " + e.getMessage());
+    		}
+    	} while (true);
     }
     
     public void startAdvanceTimeSession() {

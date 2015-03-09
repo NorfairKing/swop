@@ -68,7 +68,20 @@
 
 - UUID?
   - UI selecteerd een project uit set<Project> en geeft deze terug. Hoe hier mee verder werken?
+    - DataTransferObject, taskwrapper
+    - Alle wrappers etc unwrappen in de facade
 
 
-- DataTransferObject, taskwrapper
-- Alle wrappers etc unwrappen in de facade
+- Use-Case: Update Task Status
+  - Er staat dat we alle tasks moeten tonen, met hun bijhorende project en dat de user er daar eentje uit kiest. Onze tasks hebben echter geen notie van bij welk project ze horen, de project heeft een lijst van tasks, maar de task geef pointer naar het project.
+  - Is het OK deze use-case lichtjes aan te passen, dat er eerst eens lijst van projecten getoont wordt, dat de user er ééntje kiest, en dan de tasks van dit project tonen?
+
+- Task / Task status
+  - Huidige situatie:
+    - Tasks beslist (gebaseerd op dependencies) of hij available of unavailable is bij het opvragen van zijn status (enkel intern gebruikt).
+    - Als er op tasks 'finish' aangeroepen wordt, wordt er gevraagd aan het status naar welke andere status er veranderd moet worden. (TaskStatus.finish returned een TaskStatus.) Als er niet gefinished kan worden vanuit een status (bv unavailable) dan returned die gewoon zichzelf.
+  - Probleem:
+    - Er wordt nu op twee plekken beslist over welkes tatus het project gaat krijgen. Bij dependencies toevoegen beslis de task zelf hierover (welliswaar onrechtstreeks, pas als de status effectief opgevraagd wordt.) En als tweede bij finishen, dan returned de status een nieuwe.
+  - Oplossing: (misschien?)
+    - Laat gewoon de task altijd beslissen over de status.
+    - Als op task 'finish' aangeroepen wordt vraagt die aan de status 'bool canFinish()' en dan kiest de task naar welke nieuwe status er veranderd moet worden.

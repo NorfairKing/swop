@@ -5,7 +5,9 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
+import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.ProjectManager;
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.project.Project;
 
 public class FacadeController {
@@ -33,5 +35,16 @@ public class FacadeController {
 	
 	public void createTaskFor(ProjectWrapper project, TaskData data) {
 		project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
+	}
+	
+	public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) {
+		TimePeriod timePeriod = new TimePeriod(statusData.getStartTime(), statusData.getEndTime());
+		task.getTask().performedDuring(timePeriod);
+		if (statusData.getSuccessful()) {
+			task.getTask().finish();
+		}
+		else {
+			task.getTask().fail();
+		}
 	}
 }

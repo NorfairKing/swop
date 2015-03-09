@@ -14,6 +14,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
+import be.kuleuven.cs.swop.data.TaskStatusData;
 
 
 /**
@@ -223,7 +224,7 @@ public class CLI implements UserInterface {
 	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 	@Override
-	public TaskData getTaskDate() {
+	public TaskData getTaskData() {
 		TaskData data = new TaskData();
 		
 		System.out.println("CREATING TASK\n########");
@@ -264,8 +265,72 @@ public class CLI implements UserInterface {
 	}
 
 	@Override
-	public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) {
-		// TODO Auto-generated method stub
-		return null;
+	public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
+		List<ProjectWrapper> projects = new ArrayList<>(projectSet);
+		
+		List<TaskWrapper> allTasks = new ArrayList<TaskWrapper>();
+		for (ProjectWrapper project: projects) {
+			allTasks.addAll(project.getTasks());
+		}
+        System.out.println("SELECT TASK\n########");
+        
+        int taskId = 0;
+        for (int p = 0; p < projects.size(); ++p) {
+        	System.out.println("# " + projects.get(p).getTitle());
+        	List<TaskWrapper> tasks = new ArrayList<>(projects.get(p).getTasks());
+        	for (int t = 0; t < tasks.size(); ++t) {
+        		System.out.println("    # " + (taskId + 1) + ") " + tasks.get(t).getDescription());
+        		++taskId;
+        	}
+        }
+        
+        System.out.println("\n# ----------------------------------");
+        while (true) {
+            System.out.print("Choose a task (number) " + "[1-" + allTasks.size() + "] : ");
+            int input = Integer.parseInt(this.scanner.nextLine());
+            if (input > 0 && input <= allTasks.size()) return allTasks.get(input - 1);
+            else System.out.println("You entered a wrong task number");
+        }
+    }
+
+	@Override
+	public TaskStatusData getUpdateStatusData() {
+		System.out.println("UPDATE TASK STATUS\n########");
+
+		System.out.print("# Start Date: ");
+		Date startTime = getDate();
+		
+		System.out.print("# End Date: ");
+		Date endTime = getDate();
+		
+		System.out.print("# Was is successful (or did it fail? :o) (finish/fail): ");
+		boolean successful;
+		do {
+			String success = this.scanner.nextLine();
+			if (success.equalsIgnoreCase("finish")) {
+				successful = true;
+				break;
+			}
+			else if (success.equalsIgnoreCase("fail")) {
+				successful = false;
+				break;
+			}
+			else {
+				System.out.print("# Please type \"finish\" or \"fail\": ");
+			}
+		} while (true);
+		
+		return new TaskStatusData(startTime, endTime, successful);
+	}
+	
+	private Date getDate() {
+		while(true){
+			try {
+				String dueTimeText = this.scanner.nextLine();
+				return format.parse(dueTimeText);
+			} catch (ParseException e) {
+				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+			}
+		}
 	}
 }
