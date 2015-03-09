@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
+import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
-public class Task{
+public class Task {
 
     private String description;
     private double estimatedDuration;
@@ -25,6 +25,7 @@ public class Task{
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
+        setStatus(new AvailableStatus(this));
         updateAvailability();
     }
 
@@ -32,31 +33,19 @@ public class Task{
         return description;
     }
 
-    
     public static boolean canHaveAsDescription(String description) {
         return description != null;
     }
-    
+
     public void setDescription(String description) {
         if (!Task.canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
         this.description = description;
     }
 
-    /*
-     * public Project getProject() { return project; }
-     * 
-     * protected static boolean canHaveAsProject(Project project) { return
-     * project != null; }
-     * 
-     * public void setProject(Project project) { if (!canHaveAsProject(project))
-     * { throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT); }
-     * this.project = project; }
-     */
-
     public static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
         return estimatedDuration > 0;
     }
-    
+
     public double getEstimatedDuration() {
         return estimatedDuration;
     }
@@ -69,11 +58,10 @@ public class Task{
     public static boolean canHaveAsDependency(Task dependency) {
         return dependency != null;
     }
-    
+
     public void addDependency(Task dependency) {
         if (!Task.canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
         this.dependencies.add(dependency);
-        updateAvailability();
     }
 
     public double getAcceptableDeviation() {
@@ -86,18 +74,19 @@ public class Task{
         if (deviation < 0) { return false; }
         return true;
     }
-    
+
     public void setAcceptableDeviation(double acceptableDeviation) {
         if (!Task.canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
         this.acceptableDeviation = acceptableDeviation;
     }
 
-    public static boolean canHaveAsAlternative(Task alternative) {
-        return true;
-    }
-    
+
     public Task getAlternative() {
         return alternative;
+    }
+    
+    public static boolean canHaveAsAlternative(Task alternative) {
+        return true;
     }
 
     public void setAlternative(Task alternative) {
@@ -120,9 +109,16 @@ public class Task{
     public Set<Task> getDependencySet() {
         return this.dependencies;
     }
-
-    private TaskStatus getStatus() {
-        return status;
+    
+    private TaskStatus getStatus(){
+        if(this.status.isFinal()){return this.status;}
+        else{
+            if(this.hasUnfinishedDependencies()){
+                return new UnavailableStatus(this);
+            }else{
+                return new AvailableStatus(this);
+            }
+        }
     }
 
     protected boolean canHaveAsStatus(TaskStatus status) {
@@ -134,14 +130,22 @@ public class Task{
         this.status = status;
     }
 
+    public boolean isFinished() {
+        return getStatus().isFinished();
+    }
+    
+    public boolean isFailed(){
+        return getStatus().isFailed();
+    }
+
     public void finish() {
-        TaskStatus status = this.status.finish();
-        setStatus(status);
+        TaskStatus nextStatus = this.status.finish();
+        setStatus(nextStatus);
     }
 
     public void fail() {
-        TaskStatus status = this.status.fail();
-        setStatus(status);
+        TaskStatus nextStatus = this.status.fail();
+        setStatus(nextStatus);
     }
 
     private void updateAvailability() {
@@ -156,8 +160,8 @@ public class Task{
 
     private boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
-        for (Task current : dependencies) {
-            if (!current.getStatus().isFinished()) { return true; }
+        for (Task t : dependencies) {
+            if (!t.isFinished()) { return true; }
         }
         return false;
     }

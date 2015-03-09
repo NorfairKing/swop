@@ -19,4 +19,19 @@ public class AvailableStatus extends TaskStatus{
         return new FailedStatus(getTask());
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isFailed() {
+        return false;
+    }
+
+    @Override
+    public boolean isFinal() {
+        return false;
+    }
+
 }

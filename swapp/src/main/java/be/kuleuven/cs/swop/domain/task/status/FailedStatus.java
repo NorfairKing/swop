@@ -19,4 +19,19 @@ public class FailedStatus extends TaskStatus {
         return this;
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isFailed() {
+        return true;
+    }
+
+    @Override
+    public boolean isFinal() {
+        return true;
+    }
+
 }
