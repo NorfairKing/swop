@@ -316,6 +316,16 @@ public class CLI implements UserInterface {
 		return new TaskStatusData(startTime, endTime, successful);
 	}
 	
+	@Override
+	public Date getTimeStamp() {
+		System.out.println("TIME STAMP\n########");
+		
+		System.out.print("# Time: ");
+		Date time = getDate();
+		
+		return time;
+	}
+	
 	private Date getDate() {
 		while(true){
 			try {

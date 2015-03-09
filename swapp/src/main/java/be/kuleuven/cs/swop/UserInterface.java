@@ -4,6 +4,7 @@ import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
 
+import java.util.Date;
 import java.util.Set;
 
 public interface UserInterface {
@@ -18,6 +19,7 @@ public interface UserInterface {
     public TaskData getTaskData();
     public TaskStatusData getUpdateStatusData();
     public ProjectData getProjectData();
+    public Date getTimeStamp();
     
     public void showError(String error);
     
