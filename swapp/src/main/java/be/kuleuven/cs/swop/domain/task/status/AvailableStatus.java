@@ -34,4 +34,14 @@ public class AvailableStatus extends TaskStatus{
         return false;
     }
 
+    @Override
+    public boolean canFinish() {
+        return true;
+    }
+
+    @Override
+    public boolean canFail() {
+        return true;
+    }
+
 }

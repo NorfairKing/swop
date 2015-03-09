@@ -33,4 +33,14 @@ public class UnavailableStatus extends TaskStatus {
     public boolean isFinal() {
         return false;
     }
+
+    @Override
+    public boolean canFinish() {
+        return false;
+    }
+
+    @Override
+    public boolean canFail() {
+        return true;
+    }
 }

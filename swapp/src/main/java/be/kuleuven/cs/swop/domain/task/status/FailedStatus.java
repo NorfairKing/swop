@@ -34,4 +34,14 @@ public class FailedStatus extends TaskStatus {
         return true;
     }
 
+    @Override
+    public boolean canFinish() {
+        return false;
+    }
+
+    @Override
+    public boolean canFail() {
+        return false;
+    }
+
 }

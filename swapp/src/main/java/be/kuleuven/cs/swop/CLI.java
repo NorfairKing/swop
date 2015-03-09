@@ -123,9 +123,22 @@ public class CLI implements UserInterface {
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
-            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + "\n"
+            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + " hours\n"
                     + "# ----------------------------------");
         }
+    }
+
+    @Override
+    public void showTask(TaskWrapper task) {
+        System.out.println("TASK\n########");
+        System.out.println("" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: " + task.getEstimatedDuration()
+                + " hours\n");
+    }
+
+    @Override
+    public void showError(String error) {
+        System.out.println("ERROR\n########");
+        System.out.println(error);
     }
 
     @Override
@@ -136,6 +149,7 @@ public class CLI implements UserInterface {
         }
 
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
+        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
@@ -171,11 +185,13 @@ public class CLI implements UserInterface {
         }
 
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
+        tasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
         }
         System.out.println("\n# ----------------------------------");
+
         boolean validInput;
         int inputIndex = 0;
         do {
@@ -198,134 +214,149 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showTask(TaskWrapper task) {
-        System.out.println("TASK\n########");
-        System.out.println("" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: " + task.getEstimatedDuration());
+    public ProjectData getProjectData() {
+        System.out.println("CREATING PROJECT\n########");
+        System.out.print("# Title: ");
+        String title = this.scanner.nextLine();
+        System.out.print("# Description: ");
+        String description = this.scanner.nextLine();
+        System.out.print("# Due Date: ");
+        Date dueTime = getDate();
+        return new ProjectData(title, description, dueTime);
     }
 
     @Override
-    public void showError(String error) {
-        System.out.println("ERROR\n########");
-        System.out.println(error);
+    public TaskData getTaskData() {
+        TaskData data = new TaskData();
+
+        System.out.println("CREATING TASK\n########");
+
+        System.out.print("# Description: ");
+        String description = this.scanner.nextLine();
+        data.setDescription(description);
+
+        boolean validInput;
+
+        validInput = false;
+        double duration = 0;
+        do {
+            System.out.print("# Estimated Duration (hours): ");
+            try {
+                duration = Double.parseDouble(scanner.nextLine());
+                validInput = duration > 0;
+            } catch (NumberFormatException e) {
+                validInput = false;
+            }
+            if (!validInput) {
+                System.out.println("Invalid input, try again!");
+            }
+        } while (!validInput);
+        data.setEstimatedDuration(duration);
+        ;
+
+        validInput = false;
+        double deviation = 0;
+        do {
+            System.out.print("# Acceptable Deviation (%): ");
+            try {
+                duration = Double.parseDouble(scanner.nextLine());
+                validInput = deviation >= 0;
+            } catch (NumberFormatException e) {
+                validInput = false;
+            }
+            if (!validInput) {
+                System.out.println("Invalid input, try again!");
+            }
+        } while (!validInput);
+        data.setAcceptableDeviation(deviation / 100.0);
+
+        return data;
     }
 
-	@Override
-	public ProjectData getProjectData() {
-		System.out.println("CREATING PROJECT\n########");
-		System.out.print("# Title: ");
-		String title = this.scanner.nextLine();
-		System.out.print("# Description: ");
-		String description = this.scanner.nextLine();
-		System.out.print("# Due Date: ");
-		Date dueTime = getDate();
-		return new ProjectData(title, description, dueTime);
-	}
+    @Override
+    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
+        List<ProjectWrapper> projects = new ArrayList<>(projectSet);
+        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
 
-	
-	@Override
-	public TaskData getTaskData() {
-		TaskData data = new TaskData();
-		
-		System.out.println("CREATING TASK\n########");
-		
-		System.out.print("# Description: ");
-		String description = this.scanner.nextLine();
-		data.setDescription(description);
-		
-		System.out.print("# Estimated Duration (double): ");
-		while (true) {
-			try {
-				data.setEstimatedDuration(Double.parseDouble(this.scanner.nextLine()));
-				break;
-			}
-			catch (NumberFormatException e) {
-				System.out.print("# ERROR: Invalid duration. Please provide a double");
-			}
-		}
-		
-		System.out.print("# Acceptable Deviation (%, double): ");
-		while (true) {
-			try {
-				data.setAcceptableDeviation(Double.parseDouble(this.scanner.nextLine()));
-				break;
-			}
-			catch (NumberFormatException e) {
-				System.out.print("# ERROR: Invalid deviation. Please provide a double");
-			}
-		}
-		
-		return data;
-	}
+        List<TaskWrapper> allTasks = new ArrayList<TaskWrapper>();
+        for (ProjectWrapper project : projects) {
+            List<TaskWrapper> projectTasks = new ArrayList<TaskWrapper>();
+            projectTasks.addAll(project.getTasks());
+            projectTasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
 
-	@Override
-	public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
-		List<ProjectWrapper> projects = new ArrayList<>(projectSet);
-		
-		List<TaskWrapper> allTasks = new ArrayList<TaskWrapper>();
-		for (ProjectWrapper project: projects) {
-			allTasks.addAll(project.getTasks());
-		}
+            allTasks.addAll(projectTasks);
+        }
         System.out.println("SELECT TASK\n########");
         
+
         int taskId = 0;
         for (int p = 0; p < projects.size(); ++p) {
-        	System.out.println("# " + projects.get(p).getTitle());
-        	List<TaskWrapper> tasks = new ArrayList<>(projects.get(p).getTasks());
-        	for (int t = 0; t < tasks.size(); ++t) {
-        		System.out.println("    # " + (taskId + 1) + ") " + tasks.get(t).getDescription());
-        		++taskId;
-        	}
+            System.out.println("# " + projects.get(p).getTitle());
+            for (int t = 0; t < projects.get(p).getTasks().size(); ++t) {
+                System.out.println("    # " + (taskId + 1) + ") " + allTasks.get(taskId++).getDescription());
+            }
         }
-        
+
         System.out.println("\n# ----------------------------------");
-        while (true) {
-            System.out.print("Choose a task (number) " + "[1-" + allTasks.size() + "] : ");
-            int input = Integer.parseInt(this.scanner.nextLine());
-            if (input > 0 && input <= allTasks.size()) return allTasks.get(input - 1);
-            else System.out.println("You entered a wrong task number");
+        boolean validInput;
+        int inputIndex = 0;
+        do {
+            System.out.print("Choose a task (number) " + "[1-" + allTasks.size() + "] (0 to quit): ");
+            try {
+                inputIndex = Integer.parseInt(this.scanner.nextLine());
+                validInput = (inputIndex >= 0 && inputIndex <= allTasks.size());
+            } catch (NumberFormatException e) {
+                validInput = false;
+            }
+            if (!validInput) {
+                System.out.println("Invalid input, try again!");
+            }
+        } while (!validInput);
+        if (inputIndex == 0) {
+            return null;
+        } else {
+            return allTasks.get(inputIndex - 1);
         }
     }
 
-	@Override
-	public TaskStatusData getUpdateStatusData() {
-		System.out.println("UPDATE TASK STATUS\n########");
+    @Override
+    public TaskStatusData getUpdateStatusData() {
+        System.out.println("UPDATE TASK STATUS\n########");
 
-		System.out.print("# Start Date: ");
-		Date startTime = getDate();
-		
-		System.out.print("# End Date: ");
-		Date endTime = getDate();
-		
-		System.out.print("# Was is successful (or did it fail? :o) (finish/fail): ");
-		boolean successful;
-		do {
-			String success = this.scanner.nextLine();
-			if (success.equalsIgnoreCase("finish")) {
-				successful = true;
-				break;
-			}
-			else if (success.equalsIgnoreCase("fail")) {
-				successful = false;
-				break;
-			}
-			else {
-				System.out.print("# Please type \"finish\" or \"fail\": ");
-			}
-		} while (true);
-		
-		return new TaskStatusData(startTime, endTime, successful);
-	}
-	
-	private Date getDate() {
-		while(true){
-			try {
-				String dueTimeText = this.scanner.nextLine();
-				return format.parse(dueTimeText);
-			} catch (ParseException e) {
-				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
-			}
-		}
-	}
-	
-	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        System.out.print("# Start Date: ");
+        Date startTime = getDate();
+
+        System.out.print("# End Date: ");
+        Date endTime = getDate();
+
+        System.out.print("# Was is successful (finish/fail): ");
+        boolean successful;
+        do {
+            String success = this.scanner.nextLine();
+            if (success.equalsIgnoreCase("finish")) {
+                successful = true;
+                break;
+            } else if (success.equalsIgnoreCase("fail")) {
+                successful = false;
+                break;
+            } else {
+                System.out.print("# Please type \"finish\" or \"fail\": ");
+            }
+        } while (true);
+
+        return new TaskStatusData(startTime, endTime, successful);
+    }
+
+    private Date getDate() {
+        while (true) {
+            try {
+                String dueTimeText = this.scanner.nextLine();
+                return format.parse(dueTimeText);
+            } catch (ParseException e) {
+                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+            }
+        }
+    }
+
+    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 }

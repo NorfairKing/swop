@@ -6,6 +6,8 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
+import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
+import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
@@ -139,13 +141,19 @@ public class Task {
     }
 
     public void finish() {
-        TaskStatus nextStatus = this.status.finish();
-        setStatus(nextStatus);
+        if (getStatus().canFinish()){
+            setStatus(new FinishedStatus(this));
+        }else{
+            throw new IllegalStateException();
+        }
     }
 
     public void fail() {
-        TaskStatus nextStatus = this.status.fail();
-        setStatus(nextStatus);
+        if(getStatus().canFail()){
+            setStatus(new FailedStatus(this));
+        }else{
+            throw new IllegalStateException();
+        }
     }
 
     private void updateAvailability() {
