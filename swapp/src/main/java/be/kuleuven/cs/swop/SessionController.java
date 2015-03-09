@@ -4,7 +4,9 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.RealProject;
+import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -50,11 +52,11 @@ public class SessionController {
     public void startShowProjectsSession() {
     	// The user indicates he wants to see an overview of all projects
     	// The system shows a list of projects
-    	Set<RealProject> projects = getFacade().getProjects();
+    	Set<ProjectWrapper> projects = getFacade().getProjects();
         getUi().showProjects(projects);
     	
     	// The user selects a project to view more details
-    	RealProject project = getUi().selectProject(projects);
+        ProjectWrapper project = getUi().selectProject(projects);
     	
     	if (project == null) return;
         
@@ -84,8 +86,8 @@ public class SessionController {
     }
     
     public void startCreateTaskSession() {
-    	Set<RealProject> projects = getFacade().getProjects();
-    	RealProject project = getUi().selectProject(projects);
+    	Set<ProjectWrapper> projects = getFacade().getProjects();
+    	ProjectWrapper project = getUi().selectProject(projects);
     	
     	if (project == null) return;
     	

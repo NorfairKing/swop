@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import be.kuleuven.cs.swop.domain.project.RealProject;
+import be.kuleuven.cs.swop.domain.project.Project;
 
 
 public class ProjectManager {
 
-    private final Set<RealProject> projects = new HashSet<RealProject>();
+    private final Set<Project> projects = new HashSet<Project>();
     private Calendar currentTime;
     
     public ProjectManager() {
@@ -20,12 +20,12 @@ public class ProjectManager {
     	currentTime.setTimeInMillis(0);
     }
 
-    public Set<RealProject> getProjects() {
+    public Set<Project> getProjects() {
         return projects;
     }
     
-    public RealProject getProject(UUID id) {
-    	for (RealProject project: projects) {
+    public Project getProject(UUID id) {
+    	for (Project project: projects) {
     		if (project.getId().equals(id)) {
     			return project;
     		}
@@ -33,24 +33,24 @@ public class ProjectManager {
     	return null;
     }
 
-    protected boolean canHaveAsProject(RealProject project) {
+    protected boolean canHaveAsProject(Project project) {
         return project != null;
     }
     
-    private void addProject(RealProject project){
+    private void addProject(Project project){
         if (!canHaveAsProject(project) ) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
         projects.add(project);
     }
     
-    public RealProject createProject(String title, String description, Date dueTime) {
+    public Project createProject(String title, String description, Date dueTime) {
     	Date creationTime = new Date();
     	return createProject(title, description, creationTime, dueTime);
     }
     
     
     // Manual setting of creationTime and returning the created project is needed for the importer
-    public RealProject createProject(String title, String description, Date creationTime, Date dueTime){
-    	RealProject project = new RealProject(title, description, creationTime, dueTime);
+    public Project createProject(String title, String description, Date creationTime, Date dueTime){
+    	Project project = new Project(title, description, creationTime, dueTime);
     	addProject(project);
     	return project;
     }

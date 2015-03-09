@@ -14,7 +14,8 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.domain.project.RealProject;
+import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -100,10 +101,10 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showProjects(Set<RealProject> projectSet) {
-        List<RealProject> projects = new ArrayList<RealProject>(projectSet);
+    public void showProjects(Set<ProjectWrapper> projectSet) {
+        List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         System.out.println("PROJECTS\n########");
-        for (RealProject p : projects) {
+        for (ProjectWrapper p : projects) {
             System.out.println(""
             		+ "# " + p.getTitle() + "\n"
             		+ "#   " + p.getDescription() + "\n"
@@ -114,7 +115,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showProject(RealProject project) {
+    public void showProject(ProjectWrapper project) {
         System.out.println("PROJECT\n########");
         System.out.println(""
         		+ "# " + project.getTitle() + "\n"
@@ -137,8 +138,8 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public RealProject selectProject(Set<RealProject> projectSet) {
-        List<RealProject> projects = new ArrayList<RealProject>(projectSet);
+    public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
+        List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         System.out.println("SELECT TASK\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());

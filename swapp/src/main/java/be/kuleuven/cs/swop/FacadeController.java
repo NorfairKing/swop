@@ -9,12 +9,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.yaml.snakeyaml.Yaml;
+
 import be.kuleuven.cs.swop.domain.ProjectManager;
-import be.kuleuven.cs.swop.domain.project.RealProject;
+import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.project.ProjectWrapper;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 public class FacadeController {
@@ -24,8 +28,12 @@ public class FacadeController {
 		projectManager = new ProjectManager();
 	}
 
-	public Set<RealProject> getProjects() {
-		return projectManager.getProjects();
+	public Set<ProjectWrapper> getProjects() {
+		Set<ProjectWrapper> result = new HashSet<ProjectWrapper>();
+		for( Project realProject : projectManager.getProjects()){
+			result.add(new ProjectWrapper(realProject));
+		}
+		return  result;
 	}
 	
 	public void createProject(String title, String description, Date dueTime){
@@ -40,10 +48,10 @@ public class FacadeController {
 			Yaml yaml = new Yaml();
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Map<String, List<Map<String,Object>>> parsedFile = (Map<String, List<Map<String,Object>>>) yaml.load(input);
-			List<RealProject> projects = new ArrayList<RealProject>();
+			List<Project> projects = new ArrayList<Project>();
 			List<Task> tasks = new ArrayList<Task>();
 			for(Map<String,Object> project : parsedFile.get("projects")){
-				RealProject p = projectManager.createProject(
+				Project p = projectManager.createProject(
 						(String) project.get("name"),
 						(String) project.get("description"),
 						format.parse((String) project.get("creationTime")),
