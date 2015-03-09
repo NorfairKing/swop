@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +39,9 @@ public class FacadeController {
 	}
 	
 	public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) {
-		TimePeriod timePeriod = new TimePeriod(statusData.getStartTime(), statusData.getEndTime());
+		TimePeriod timePeriod = new TimePeriod(
+				(Date) statusData.getStartTime().clone(),
+				(Date) statusData.getEndTime().clone());
 		task.getTask().performedDuring(timePeriod);
 		if (statusData.getSuccessful()) {
 			task.getTask().finish();
@@ -46,5 +49,9 @@ public class FacadeController {
 		else {
 			task.getTask().fail();
 		}
+	}
+	
+	public void updateSystemTime(Date time) {
+		projectManager.setTime((Date) time.clone()); 
 	}
 }

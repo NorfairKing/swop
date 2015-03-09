@@ -357,6 +357,56 @@ public class CLI implements UserInterface {
             }
         }
     }
+	@Override
+	public TaskStatusData getUpdateStatusData() {
+		System.out.println("UPDATE TASK STATUS\n########");
 
-    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		System.out.print("# Start Date: ");
+		Date startTime = getDate();
+		
+		System.out.print("# End Date: ");
+		Date endTime = getDate();
+		
+		System.out.print("# Was is successful (or did it fail? :o) (finish/fail): ");
+		boolean successful;
+		do {
+			String success = this.scanner.nextLine();
+			if (success.equalsIgnoreCase("finish")) {
+				successful = true;
+				break;
+			}
+			else if (success.equalsIgnoreCase("fail")) {
+				successful = false;
+				break;
+			}
+			else {
+				System.out.print("# Please type \"finish\" or \"fail\": ");
+			}
+		} while (true);
+		
+		return new TaskStatusData(startTime, endTime, successful);
+	}
+	
+	@Override
+	public Date getTimeStamp() {
+		System.out.println("TIME STAMP\n########");
+		
+		System.out.print("# Time: ");
+		Date time = getDate();
+		
+		return time;
+	}
+	
+	private Date getDate() {
+		while(true){
+			try {
+				String dueTimeText = this.scanner.nextLine();
+				return format.parse(dueTimeText);
+			} catch (ParseException e) {
+				System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30");
+			}
+		}
+	}
+	
+	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 }

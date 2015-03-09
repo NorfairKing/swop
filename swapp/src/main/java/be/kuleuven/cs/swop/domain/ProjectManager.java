@@ -55,6 +55,17 @@ public class ProjectManager {
     	return createProject(title, description, creationTime, dueTime);
     }
     
+    protected boolean canHaveAsTime(Date time) {
+    	return time != null;
+    }
+    
+    public void setTime(Date time) {
+    	if (!canHaveAsTime(time)) {
+    		throw new IllegalArgumentException("Invalid time for the system.");
+    	}
+    	currentTime.setTime(time);
+    }
+    
     
     // Manual setting of creationTime and returning the created project is needed for the importer
     public Project createProject(String title, String description, Date creationTime, Date dueTime){
