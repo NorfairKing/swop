@@ -12,12 +12,12 @@ public class App {
 	    if (args.length != 1) throw new IllegalArgumentException("Not enough or too many arguments.");
 	    
 		CLI ui = new CLI();
-        FacadeController facade = new FacadeController();
+        
+		String initialisationFilePath = args[0];
+        FacadeController facade = new FacadeController(initialisationFilePath);
+        
         new SessionController(ui,facade);
         
-        String initialisationFilePath = args[0];
-        facade.initialiseWith(initialisationFilePath);
-
 		ui.start();
 	}
 }

@@ -69,45 +69,57 @@ public class SessionController {
     }
     
     public void startCreateProjectSession() {
-    	// The user indicates he wants to create a project
-    	// The system asks for the required data
-    	ProjectData data = getUi().getProjectData();
-    	
-    	if (data == null) return; //ui should return null if user cancels.
-    	
-    	// The project is created using the data provided by the user
-    	try {
-    		getFacade().createProject(data);
-    	}
-    	catch (Exception e) {
-    		getUi().showError("Failed to create task: " + e.getMessage());
-    		// Retry if something went wrong.
-    		startCreateProjectSession();
-    	}
+    	do {
+	    	// The user indicates he wants to create a project
+	    	// The system asks for the required data
+	    	ProjectData data = getUi().getProjectData();
+	    	
+	    	if (data == null) return; //ui should return null if user cancels.
+	    	
+	    	// The project is created using the data provided by the user
+	    	try {
+	    		getFacade().createProject(data);
+	    		// finish only when successful
+	    		break;
+	    	}
+	    	catch (IllegalArgumentException e) {
+	    		getUi().showError("Failed to create task: " + e.getMessage());
+	    	}
+    	} while (true);
     }
     
     public void startCreateTaskSession() {
-    	Set<ProjectWrapper> projects = getFacade().getProjects();
-    	ProjectWrapper project = getUi().selectProject(projects);
-    	
-    	if (project == null) return;
-    	
-    	TaskData data = getUi().getTaskDate();
-    	
-    	if (data == null) return;
-    	
-    	try {
-    		getFacade().createTaskFor(project, data);
-    	}
-    	catch (Exception e) {
-    		getUi().showError("Failed to create task: " + e.getMessage());
-    		// Retry if something went wrong.
-    		startCreateTaskSession();
-    	}
+    	do {
+	    	Set<ProjectWrapper> projects = getFacade().getProjects();
+	    	ProjectWrapper project = getUi().selectProject(projects);
+	    	
+	    	if (project == null) return;
+	    	
+	    	TaskData data = getUi().getTaskDate();
+	    	
+	    	if (data == null) return;
+	    	
+	    	try {
+	    		getFacade().createTaskFor(project, data);
+	    		// Finish only when successful
+	    		break;
+	    	}
+	    	catch (IllegalArgumentException e) {
+	    		getUi().showError("Failed to create task: " + e.getMessage());
+	    	}
+    	} while (true);
     }
     
     public void startUpdateTaskStatusSession() {
-    	// TODO
+    	// User indicates he wants to update the status of a task
+    	Set<ProjectWrapper> projects = getFacade().getProjects();
+    	TaskWrapper task = getUi().selectTaskFromProjects(projects);
+    	
+    	if (task == null) return;
+    	
+    	//getUi().getUpdateStatusData();
+    	// TODO: Finish this
+    	
     }
     
     public void startAdvanceTimeSession() {

@@ -262,4 +262,10 @@ public class CLI implements UserInterface {
 		System.out.println("ERROR\n########");
 		System.out.println(error);	
 	}
+
+	@Override
+	public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
