@@ -130,9 +130,14 @@ public class CLI implements UserInterface {
 
     @Override
     public void showTask(TaskWrapper task) {
-        System.out.println("TASK\n########");
-        System.out.println("" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: " + task.getEstimatedDuration()
-                + " hours\n");
+        System.out.println("TASK\n########\n"
+        		+ "# " + task.getDescription() + "\n"
+        		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
+        		+ "#   Estimated Duration: " + task.getEstimatedDuration() + " hours\n"
+        		+ "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%\n"
+        		+ "#   Is Finished: " + task.isFinished() + "\n"
+        		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
+        	);
     }
 
     @Override
@@ -250,12 +255,12 @@ public class CLI implements UserInterface {
         } while (!validInput);
         
         validInput = false;
-        double deviation = 0;
+        double acceptableDeviation = 0;
         do {
             System.out.print("# Acceptable Deviation (%): ");
             try {
-            	deviation = Double.parseDouble(scanner.nextLine());
-                validInput = deviation >= 0;
+            	acceptableDeviation = Double.parseDouble(scanner.nextLine());
+                validInput = acceptableDeviation >= 0;
             } catch (NumberFormatException e) {
                 validInput = false;
             }
@@ -263,7 +268,6 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again!");
             }
         } while (!validInput);
-        double acceptableDeviation = deviation / 100.0;
 
         return new TaskData(description, estimatedDuration, acceptableDeviation);
 

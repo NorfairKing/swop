@@ -58,6 +58,10 @@ public class TaskWrapper{
     public Set<Task> getDependencySet() {
         return getTask().getDependencySet();
     }
+    
+    public boolean isFinished() {
+    	return getTask().isFinished();
+    }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";
 

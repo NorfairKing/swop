@@ -43,6 +43,7 @@ public class FacadeController {
 				(Date) statusData.getStartTime().clone(),
 				(Date) statusData.getEndTime().clone());
 		task.getTask().performedDuring(timePeriod);
+		
 		if (statusData.getSuccessful()) {
 			task.getTask().finish();
 		}

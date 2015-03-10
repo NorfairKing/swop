@@ -144,7 +144,7 @@ public class Task {
         if (getStatus().canFinish()){
             setStatus(new FinishedStatus(this));
         }else{
-            throw new IllegalStateException();
+            throw new IllegalStateException("Can't finish when status is " + getStatus().toString());
         }
     }
 

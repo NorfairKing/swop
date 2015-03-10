@@ -131,7 +131,10 @@ public class SessionController {
     			break;
     		}
     		catch (IllegalArgumentException e) {
-	    		getUi().showError("Failed to create task: " + e.getMessage());
+	    		getUi().showError("Failed to update task: " + e.getMessage());
+    		}
+    		catch (IllegalStateException e) {
+    			getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
     		}
     	} while (true);
     }
