@@ -123,7 +123,7 @@ public class CLI implements UserInterface {
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
-            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + " hours\n"
+            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + " minutes\n"
                     + "# ----------------------------------");
         }
     }
@@ -133,7 +133,7 @@ public class CLI implements UserInterface {
         System.out.println("TASK\n########\n"
         		+ "# " + task.getDescription() + "\n"
         		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
-        		+ "#   Estimated Duration: " + task.getEstimatedDuration() + " hours\n"
+        		+ "#   Estimated Duration: " + task.getEstimatedDuration() + " minutes\n"
         		+ "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%\n"
         		+ "#   Is Finished: " + task.isFinished() + "\n"
         		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
@@ -242,7 +242,7 @@ public class CLI implements UserInterface {
         validInput = false;
         double estimatedDuration = 0;
         do {
-            System.out.print("# Estimated Duration (hours): ");
+            System.out.print("# Estimated Duration (minutes): ");
             try {
             	estimatedDuration = Double.parseDouble(scanner.nextLine());
                 validInput = estimatedDuration > 0;
