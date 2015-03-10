@@ -139,6 +139,14 @@ public class Task {
     public boolean isFailed(){
         return getStatus().isFailed();
     }
+    
+    public boolean isFinishedOrHasFinishedAlternative() {
+    	if (isFinished()) return true;
+    	
+    	if (getAlternative() == null) return false;
+    	
+    	return getAlternative().isFinishedOrHasFinishedAlternative();
+    }
 
     public void finish() {
         if (getStatus().canFinish()){

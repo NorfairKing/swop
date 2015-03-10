@@ -78,13 +78,14 @@ public class Project{
     public boolean isOngoing(){
         if (getTasks().isEmpty()) return true;
         
-        for (Task t : getTasks()){
-            if (true){
-                return false; // FIXME, work this out as soon as task is finished.
+        boolean stillUnfinishedWork = false;
+        for (Task task : getTasks()){
+            if (!task.isFinishedOrHasFinishedAlternative()){
+            	stillUnfinishedWork = true;
             }
         }
         
-        return false;
+        return stillUnfinishedWork;
     }
     
     public boolean isFinished(){

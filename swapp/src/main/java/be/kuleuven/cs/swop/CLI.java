@@ -113,9 +113,15 @@ public class CLI implements UserInterface {
 
     @Override
     public void showProject(ProjectWrapper project) {
-        System.out.println("PROJECT\n########");
-        System.out.println("" + "# " + project.getTitle() + "\n" + "#   " + project.getDescription() + "\n" + "#   " + project.getCreationTime().toString() + "\n" + "#   "
-                + project.getDueTime().toString());
+        System.out.println("PROJECT\n########\n"
+        		+ "# " + project.getTitle() + "\n"
+        		+ "#   " + project.getDescription() + "\n"
+        		+ "#   " + project.getCreationTime().toString() + "\n"
+        		+ "#   " + project.getDueTime().toString());
+        
+        if (project.isFinished()) {
+        	System.out.println("#   Is finished");
+        }
     }
 
     @Override
@@ -130,9 +136,6 @@ public class CLI implements UserInterface {
 
     @Override
     public void showTask(TaskWrapper task) {
-    	
-    	
-    	
         System.out.println("TASK\n########\n"
         		+ "# " + task.getDescription() + "\n"
         		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
