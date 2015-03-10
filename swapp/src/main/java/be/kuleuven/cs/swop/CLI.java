@@ -227,23 +227,20 @@ public class CLI implements UserInterface {
 
     @Override
     public TaskData getTaskData() {
-        TaskData data = new TaskData();
-
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
         String description = this.scanner.nextLine();
-        data.setDescription(description);
 
         boolean validInput;
 
         validInput = false;
-        double duration = 0;
+        double estimatedDuration = 0;
         do {
             System.out.print("# Estimated Duration (hours): ");
             try {
-                duration = Double.parseDouble(scanner.nextLine());
-                validInput = duration > 0;
+            	estimatedDuration = Double.parseDouble(scanner.nextLine());
+                validInput = estimatedDuration > 0;
             } catch (NumberFormatException e) {
                 validInput = false;
             }
@@ -251,15 +248,13 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again!");
             }
         } while (!validInput);
-        data.setEstimatedDuration(duration);
-        ;
-
+        
         validInput = false;
         double deviation = 0;
         do {
             System.out.print("# Acceptable Deviation (%): ");
             try {
-                duration = Double.parseDouble(scanner.nextLine());
+            	deviation = Double.parseDouble(scanner.nextLine());
                 validInput = deviation >= 0;
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -268,9 +263,10 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again!");
             }
         } while (!validInput);
-        data.setAcceptableDeviation(deviation / 100.0);
+        double acceptableDeviation = deviation / 100.0;
 
-        return data;
+        return new TaskData(description, estimatedDuration, acceptableDeviation);
+
     }
 
     @Override

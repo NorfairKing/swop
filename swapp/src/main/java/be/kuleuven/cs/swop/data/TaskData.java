@@ -7,15 +7,17 @@ public class TaskData {
     private double estimatedDuration;
     private double acceptableDeviation;
 
-    public TaskData() {
-
+    public TaskData(String description, double estimatedDuration, double acceptableDeviation) {
+    	setDescription(description);
+    	setEstimatedDuration(estimatedDuration);
+    	setAcceptableDeviation(acceptableDeviation);
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -23,7 +25,7 @@ public class TaskData {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(double estimatedDuration) {
+    private void setEstimatedDuration(double estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 
@@ -31,7 +33,7 @@ public class TaskData {
         return acceptableDeviation;
     }
 
-    public void setAcceptableDeviation(double acceptableDeviation) {
+    private void setAcceptableDeviation(double acceptableDeviation) {
         this.acceptableDeviation = acceptableDeviation;
     }
 
