@@ -104,11 +104,17 @@ public class ProjectManager {
 				// Set Status
 				String status = (String) task.get("status");
 				if(status != null){
+					Date startTime = format.parse((String)task.get("startTime"));
+					Date endTime = format.parse((String)task.get("endTime"));
+					TimePeriod timePeriod = new TimePeriod(startTime, endTime);
+					
 					switch(status){
 					case "finished":
+						temp.performedDuring(timePeriod);
 						temp.finish();
 						break;
 					case "failed":
+						temp.performedDuring(timePeriod);
 						temp.fail();
 						break;
 					default:

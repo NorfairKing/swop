@@ -155,6 +155,38 @@ public class Task {
             throw new IllegalStateException();
         }
     }
+    
+    private double getRealDuration() {
+    	long diffMillies = getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
+    	return (double)diffMillies / 1000 / 60;
+    }
+    
+    private double getBestDuration() {
+    	return getEstimatedDuration() - getEstimatedDuration() * getAcceptableDeviation();
+    }
+    
+    private double getWorstDuration() {
+    	return getEstimatedDuration() + getEstimatedDuration() * getAcceptableDeviation();
+    }
+    
+    public boolean wasFinishedEarly() {
+    	if (!isFinished()) return false;
+    	
+    	return getRealDuration() < getBestDuration();
+    }
+    
+    public boolean wasFinishedOnTime() {
+    	if (!isFinished()) return false;
+    	
+    	double realDuration = getRealDuration();
+    	return realDuration >= getBestDuration() && realDuration <= getWorstDuration();
+    }
+    
+    public boolean wasFinishedLate() {
+    	if (!isFinished()) return false;
+    	
+    	return getRealDuration() > getWorstDuration();
+    }
 
     private void updateAvailability() {
         TaskStatus status;

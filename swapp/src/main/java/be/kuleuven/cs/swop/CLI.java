@@ -130,14 +130,36 @@ public class CLI implements UserInterface {
 
     @Override
     public void showTask(TaskWrapper task) {
+    	
+    	
+    	
         System.out.println("TASK\n########\n"
         		+ "# " + task.getDescription() + "\n"
         		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
         		+ "#   Estimated Duration: " + task.getEstimatedDuration() + " minutes\n"
-        		+ "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%\n"
-        		+ "#   Is Finished: " + task.isFinished() + "\n"
-        		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
+        		+ "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%"
+        		);
+        
+        if (task.isFinished()) {
+        	
+        	String timeString;
+        	if (task.wasFinishedEarly()) timeString = "early";
+        	else if (task.wasFinishedOnTime()) timeString = "on time";
+        	else timeString = "late";
+        	
+        	System.out.println( "#   Is Finished\n"
+            		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
+            		+ "#   Was finished " + timeString + "\n"
         	);
+        }
+        else if (task.isFailed()) {
+        	System.out.println( "#   Has Failed\n"
+            		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
+            	);
+        }
+        else {
+        	System.out.println( "#   Still needs work");
+        }
     }
 
     @Override

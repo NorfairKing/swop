@@ -43,6 +43,11 @@ public class TimePeriod {
         if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
         this.stopTime = stopTime;
     }
+    
+    @Override
+    public String toString() {
+    	return "Time period from " + startTime.toString() + " to " + stopTime.toString();
+    }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME = "Illegal stop time for time span.";

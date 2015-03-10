@@ -62,6 +62,22 @@ public class TaskWrapper{
     public boolean isFinished() {
     	return getTask().isFinished();
     }
+    
+    public boolean isFailed() {
+    	return getTask().isFailed();
+    }
+    
+    public boolean wasFinishedEarly() {
+    	return task.wasFinishedEarly();
+    }
+    
+    public boolean wasFinishedOnTime() {
+    	return getTask().wasFinishedOnTime();
+    }
+    
+    public boolean wasFinishedLate() {
+    	return getTask().wasFinishedLate();
+    }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";
 
