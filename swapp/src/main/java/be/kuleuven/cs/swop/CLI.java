@@ -20,7 +20,7 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
  */
 public class CLI implements UserInterface {
 
-    private Scanner scanner;
+    private Scanner           scanner;
     private SessionController sessionController;
 
     public CLI() {
@@ -89,6 +89,7 @@ public class CLI implements UserInterface {
 
     private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
+    @Override
     public SessionController getSessionController() {
         return this.sessionController;
     }
@@ -97,6 +98,7 @@ public class CLI implements UserInterface {
         return session != null;
     }
 
+    @Override
     public void setSessionController(SessionController session) {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
@@ -114,14 +116,11 @@ public class CLI implements UserInterface {
 
     @Override
     public void showProject(ProjectWrapper project) {
-        System.out.println("PROJECT\n########\n"
-        		+ "# " + project.getTitle() + "\n"
-        		+ "#   " + project.getDescription() + "\n"
-        		+ "#   " + project.getCreationTime().toString() + "\n"
-        		+ "#   " + project.getDueTime().toString());
-        
+        System.out.println("PROJECT\n########\n" + "# " + project.getTitle() + "\n" + "#   " + project.getDescription() + "\n" + "#   " + project.getCreationTime().toString() + "\n" + "#   "
+                + project.getDueTime().toString());
+
         if (project.isFinished()) {
-        	System.out.println("#   Is finished");
+            System.out.println("#   Is finished");
         }
     }
 
@@ -137,32 +136,21 @@ public class CLI implements UserInterface {
 
     @Override
     public void showTask(TaskWrapper task) {
-        System.out.println("TASK\n########\n"
-        		+ "# " + task.getDescription() + "\n"
-        		+ "#   Dependencies: " + task.getDependencySet().size() + "\n"
-        		+ "#   Estimated Duration: " + task.getEstimatedDuration() + " minutes\n"
-        		+ "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%"
-        		);
-        
+        System.out.println("TASK\n########\n" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: "
+                + task.getEstimatedDuration() + " minutes\n" + "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%");
+
         if (task.isFinished()) {
-        	
-        	String timeString;
-        	if (task.wasFinishedEarly()) timeString = "early";
-        	else if (task.wasFinishedOnTime()) timeString = "on time";
-        	else timeString = "late";
-        	
-        	System.out.println( "#   Is Finished\n"
-            		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
-            		+ "#   Was finished " + timeString + "\n"
-        	);
-        }
-        else if (task.isFailed()) {
-        	System.out.println( "#   Has Failed\n"
-            		+ "#   Performed During: " + task.getPerformedDuring() + "\n"
-            	);
-        }
-        else {
-        	System.out.println( "#   Still needs work");
+
+            String timeString;
+            if (task.wasFinishedEarly()) timeString = "early";
+            else if (task.wasFinishedOnTime()) timeString = "on time";
+            else timeString = "late";
+
+            System.out.println("#   Is Finished\n" + "#   Performed During: " + task.getPerformedDuring() + "\n" + "#   Was finished " + timeString + "\n");
+        } else if (task.isFailed()) {
+            System.out.println("#   Has Failed\n" + "#   Performed During: " + task.getPerformedDuring() + "\n");
+        } else {
+            System.out.println("#   Still needs work");
         }
     }
 
@@ -187,24 +175,28 @@ public class CLI implements UserInterface {
         }
         System.out.println("\n# ----------------------------------");
 
-        
         int index = promptNumber(0, projects.size());
-        if (index == 0){return null;}
-        else { return projects.get(index-1);}
+        if (index == 0) {
+            return null;
+        } else {
+            return projects.get(index - 1);
+        }
     }
-    
+
     /**
      * Prompt for a number between lo and hi inclusive.
      * 
-     * @param lo The lower bound
-     * @param hi THe upper bound
+     * @param lo
+     *            The lower bound
+     * @param hi
+     *            THe upper bound
      * @return an interger between lo and hi inclusive
      */
-    private int promptNumber(int lo, int hi){
+    private int promptNumber(int lo, int hi) {
         boolean validInput;
         int inputIndex = 0;
         do {
-            System.out.print("Please pick a number " + "[" + lo +"-" + hi + "] (0 to quit): ");
+            System.out.print("Please pick a number " + "[" + lo + "-" + hi + "] (0 to quit): ");
             try {
                 inputIndex = Integer.parseInt(this.scanner.nextLine());
                 validInput = (inputIndex >= lo && inputIndex <= hi);
@@ -233,10 +225,12 @@ public class CLI implements UserInterface {
         }
         System.out.println("\n# ----------------------------------");
 
-        
         int index = promptNumber(0, tasks.size());
-        if (index == 0){return null;}
-        else { return tasks.get(index-1);}
+        if (index == 0) {
+            return null;
+        } else {
+            return tasks.get(index - 1);
+        }
     }
 
     @Override
@@ -265,7 +259,7 @@ public class CLI implements UserInterface {
         do {
             System.out.print("# Estimated Duration (minutes): ");
             try {
-            	estimatedDuration = Double.parseDouble(scanner.nextLine());
+                estimatedDuration = Double.parseDouble(scanner.nextLine());
                 validInput = estimatedDuration > 0;
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -274,13 +268,13 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again!");
             }
         } while (!validInput);
-        
+
         validInput = false;
         double acceptableDeviation = 0;
         do {
             System.out.print("# Acceptable Deviation (%): ");
             try {
-            	acceptableDeviation = Double.parseDouble(scanner.nextLine());
+                acceptableDeviation = Double.parseDouble(scanner.nextLine());
                 validInput = acceptableDeviation >= 0;
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -308,7 +302,6 @@ public class CLI implements UserInterface {
             allTasks.addAll(projectTasks);
         }
         System.out.println("SELECT TASK\n########");
-        
 
         int taskId = 0;
         for (int p = 0; p < projects.size(); ++p) {
@@ -320,8 +313,11 @@ public class CLI implements UserInterface {
 
         System.out.println("\n# ----------------------------------");
         int index = promptNumber(0, allTasks.size());
-        if (index == 0){return null;}
-        else { return allTasks.get(index-1);}
+        if (index == 0) {
+            return null;
+        } else {
+            return allTasks.get(index - 1);
+        }
     }
 
     @Override
@@ -362,16 +358,16 @@ public class CLI implements UserInterface {
             }
         }
     }
-	
-	@Override
-	public Date getTimeStamp() {
-		System.out.println("TIME STAMP\n########");
-		
-		System.out.print("# Time: ");
-		Date time = getDate();
-		
-		return time;
-	}
-	
-	public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    @Override
+    public Date getTimeStamp() {
+        System.out.println("TIME STAMP\n########");
+
+        System.out.print("# Time: ");
+        Date time = getDate();
+
+        return time;
+    }
+
+    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 }

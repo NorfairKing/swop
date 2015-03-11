@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.domain;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Date;
 
@@ -26,16 +26,13 @@ public class TimePeriodTest {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    public static void tearDownAfterClass() throws Exception {}
 
     @Before
-    public void setUp() throws Exception {
-    }
+    public void setUp() throws Exception {}
 
     @After
-    public void tearDown() throws Exception {
-    }
+    public void tearDown() throws Exception {}
 
     @Test
     public void constructorValidTest() {

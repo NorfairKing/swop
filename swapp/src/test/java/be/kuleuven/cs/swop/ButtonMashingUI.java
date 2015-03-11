@@ -13,16 +13,17 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
 
 public class ButtonMashingUI implements UserInterface {
 
-    private static String VALID_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
+    private static String     VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
     private SessionController sessionController;
-    private Random random;
+    private Random            random;
 
-    private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
+    private static String     ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
     public ButtonMashingUI() {
         random = new Random(8008135);
     }
 
+    @Override
     public SessionController getSessionController() {
         return this.sessionController;
     }
@@ -31,6 +32,7 @@ public class ButtonMashingUI implements UserInterface {
         return session != null;
     }
 
+    @Override
     public void setSessionController(SessionController session) {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
@@ -147,7 +149,7 @@ public class ButtonMashingUI implements UserInterface {
 
     public void performAction() {
         int useCases = 5;
-        switch (random.nextInt(useCases)){
+        switch (random.nextInt(useCases)) {
             case 0:
                 getSessionController().startAdvanceTimeSession();
                 break;

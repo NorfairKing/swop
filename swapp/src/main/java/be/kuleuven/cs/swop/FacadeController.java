@@ -67,8 +67,8 @@ public class FacadeController {
         }
     }
 
-    public void updateSystemTime(Date time)  throws IllegalArgumentException{
-        if (time == null) {throw new IllegalArgumentException("Null date for system time update");}
+    public void updateSystemTime(Date time) throws IllegalArgumentException {
+        if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         projectManager.setTime((Date) time.clone());
     }
 }

@@ -1,14 +1,13 @@
 package be.kuleuven.cs.swop.domain.task.status;
 
 
-public class FinishedStatus extends TaskStatus{
+public class FinishedStatus extends TaskStatus {
 
-    public FinishedStatus() {
-    }
-    
+    public FinishedStatus() {}
+
     @Override
-    public boolean isFinished(){
-    	return true;
+    public boolean isFinished() {
+        return true;
     }
 
     @Override

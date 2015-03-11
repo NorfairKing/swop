@@ -7,7 +7,7 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
-public class TaskWrapper{
+public class TaskWrapper {
 
     private Task task;
 
@@ -27,9 +27,7 @@ public class TaskWrapper{
         if (!canHaveAsTask(task)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
         this.task = task;
     }
-    
-    
-    
+
     public String getDescription() {
         return getTask().getDescription();
     }
@@ -58,25 +56,25 @@ public class TaskWrapper{
     public Set<Task> getDependencySet() {
         return getTask().getDependencySet();
     }
-    
+
     public boolean isFinished() {
-    	return getTask().isFinished();
+        return getTask().isFinished();
     }
-    
+
     public boolean isFailed() {
-    	return getTask().isFailed();
+        return getTask().isFailed();
     }
-    
+
     public boolean wasFinishedEarly() {
-    	return task.wasFinishedEarly();
+        return task.wasFinishedEarly();
     }
-    
+
     public boolean wasFinishedOnTime() {
-    	return getTask().wasFinishedOnTime();
+        return getTask().wasFinishedOnTime();
     }
-    
+
     public boolean wasFinishedLate() {
-    	return getTask().wasFinishedLate();
+        return getTask().wasFinishedLate();
     }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";

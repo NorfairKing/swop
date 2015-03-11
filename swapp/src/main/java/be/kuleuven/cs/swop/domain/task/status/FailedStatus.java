@@ -3,9 +3,8 @@ package be.kuleuven.cs.swop.domain.task.status;
 
 public class FailedStatus extends TaskStatus {
 
-    public FailedStatus() {
-    }
-    
+    public FailedStatus() {}
+
     @Override
     public boolean isFinished() {
         return false;

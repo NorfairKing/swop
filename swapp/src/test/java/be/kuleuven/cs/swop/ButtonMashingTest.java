@@ -1,6 +1,5 @@
 package be.kuleuven.cs.swop;
 
-import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,8 +9,8 @@ import org.junit.Test;
 
 
 public class ButtonMashingTest {
-    
-    private static ButtonMashingUI ui;
+
+    private static ButtonMashingUI  ui;
     private static FacadeController facade;
 
     @BeforeClass
@@ -24,14 +23,13 @@ public class ButtonMashingTest {
     public void setUp() throws Exception {
         ui = new ButtonMashingUI();
         facade = new FacadeController();
-        new SessionController(ui,facade);
-		ui.start();
+        new SessionController(ui, facade);
+        ui.start();
     }
 
     @After
     public void tearDown() throws Exception {}
 
-    
     @Test
     public void test() {
         int amount = 100000; // arbitrary number

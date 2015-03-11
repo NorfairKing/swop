@@ -5,17 +5,17 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import be.kuleuven.cs.swop.domain.task.Task;
 
+import com.google.common.collect.ImmutableSet;
 
-public class Project{
 
-    private String title;
-    private String description;
-    private Date creationTime;
-    private Date dueTime;
+public class Project {
+
+    private String          title;
+    private String          description;
+    private Date            creationTime;
+    private Date            dueTime;
     private final Set<Task> tasks = new HashSet<Task>();
 
     /**
@@ -50,7 +50,8 @@ public class Project{
     /**
      * Checks if this a title is valid as title for this project.
      *
-     * @param title The title to be checked for validity.
+     * @param title
+     *            The title to be checked for validity.
      *
      * @return Returns true if the given title is valid.
      *
@@ -62,9 +63,11 @@ public class Project{
     /**
      * Changes this project's title to the give title.
      *
-     * @param title The new title.
+     * @param title
+     *            The new title.
      *
-     * @throws IllegalArgumentException If the new title isn't valid.
+     * @throws IllegalArgumentException
+     *             If the new title isn't valid.
      *
      */
     public void setTitle(String title) {
@@ -85,7 +88,8 @@ public class Project{
     /**
      * Is the given string a proper description for a project?
      *
-     * @param description The description for the project.
+     * @param description
+     *            The description for the project.
      *
      * @return Any description will do. | true
      */
@@ -94,11 +98,13 @@ public class Project{
     }
 
     /**
-     *  Changes this project's description to the given description.
+     * Changes this project's description to the given description.
      *
-     *  @param description The new description.
+     * @param description
+     *            The new description.
      *
-     *  @throws IllegalArgumentException If the given description isn't valid.
+     * @throws IllegalArgumentException
+     *             If the given description isn't valid.
      *
      */
     public void setDescription(String description) {
@@ -112,13 +118,13 @@ public class Project{
      * @return Returns true if there is unfinished work.
      *
      */
-    public boolean isOngoing(){
+    public boolean isOngoing() {
         if (getTasks().isEmpty()) return true;
 
         boolean stillUnfinishedWork = false;
-        for (Task task : getTasks()){
-            if (!task.isFinishedOrHasFinishedAlternative()){
-            	stillUnfinishedWork = true;
+        for (Task task : getTasks()) {
+            if (!task.isFinishedOrHasFinishedAlternative()) {
+                stillUnfinishedWork = true;
             }
         }
 
@@ -131,7 +137,7 @@ public class Project{
      * @return Returns true if the project is finished.
      *
      */
-    public boolean isFinished(){
+    public boolean isFinished() {
         return !isOngoing();
     }
 
@@ -147,7 +153,8 @@ public class Project{
 
     /**
      *
-     * @param creationTime The creation time to be checked for validity.
+     * @param creationTime
+     *            The creation time to be checked for validity.
      * @return Must be a valid time | creationTime != null;
      */
     protected boolean canHaveAsCreationTime(Date creationTime) {
@@ -182,9 +189,11 @@ public class Project{
     /**
      * Changes the project's Date to the given Date.
      *
-     * @param dueTime The new Date.
+     * @param dueTime
+     *            The new Date.
      *
-     * @throws IllegalArgumentException If the new Date isn't valid.
+     * @throws IllegalArgumentException
+     *             If the new Date isn't valid.
      *
      */
     public void setDueTime(Date dueTime) {
@@ -195,7 +204,8 @@ public class Project{
     /**
      * Can this task be added to a project?
      *
-     * @param task The Task to be checked for validity.
+     * @param task
+     *            The Task to be checked for validity.
      * @return Any task that's not yet assigned to an other project can be added.
      */
     public static boolean canHaveAsTask(Task task) {
@@ -205,7 +215,8 @@ public class Project{
     /**
      * Adds the given Task to this Project.
      *
-     * @param task The Task to be added to this Project
+     * @param task
+     *            The Task to be added to this Project
      *
      */
     public void addTask(Task task) {
@@ -216,16 +227,19 @@ public class Project{
     /**
      * Creates a new Task and adds it do the Project.
      *
-     * @param description The description for the new Task.
+     * @param description
+     *            The description for the new Task.
      *
-     * @param estimatedDuration The estimated duration it will take to complete the Task.
+     * @param estimatedDuration
+     *            The estimated duration it will take to complete the Task.
      *
-     * @param acceptableDeviation The acceptable deviation of time for completing the Task.
+     * @param acceptableDeviation
+     *            The acceptable deviation of time for completing the Task.
      *
      */
     public void createTask(String description, double estimatedDuration, double acceptableDeviation) {
-    	Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
-    	addTask(newTask);
+        Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
+        addTask(newTask);
     }
 
     /**
@@ -234,16 +248,16 @@ public class Project{
      * @return Returns the Set of Tasks.
      *
      */
-    public Set<Task> getTasks(){
+    public Set<Task> getTasks() {
         return ImmutableSet.copyOf(tasks);
     }
 
-    private static final String ERROR_ILLEGAL_TITLE = "Illegal title for project.";
-    private static final String ERROR_ILLEGAL_DESCRIPTION = "Illegal description for project.";
+    private static final String ERROR_ILLEGAL_TITLE        = "Illegal title for project.";
+    private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal description for project.";
     private static final String ERROR_ILLEGAL_CREATIONTIME = "Illegal creation time for project.";
-    private static final String ERROR_ILLEGAL_DUETIME = "Illegal due time for project.";
-    private static final String ERROR_ILLEGAL_TASK = "Illegal task for project.";
+    private static final String ERROR_ILLEGAL_DUETIME      = "Illegal due time for project.";
+    private static final String ERROR_ILLEGAL_TASK         = "Illegal task for project.";
 
-    public static final String TITLE_REGEX = "[\\w :]+$";
+    public static final String  TITLE_REGEX                = "[\\w :]+$";
 
 }

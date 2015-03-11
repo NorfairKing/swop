@@ -1,9 +1,9 @@
 package be.kuleuven.cs.swop.domain.task.status;
 
+
 public class UnavailableStatus extends TaskStatus {
 
-    public UnavailableStatus() {
-    }
+    public UnavailableStatus() {}
 
     @Override
     public boolean isFinished() {

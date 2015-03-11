@@ -8,9 +8,9 @@ public class TaskData {
     private double acceptableDeviation;
 
     public TaskData(String description, double estimatedDuration, double acceptableDeviation) {
-    	setDescription(description);
-    	setEstimatedDuration(estimatedDuration);
-    	setAcceptableDeviation(acceptableDeviation);
+        setDescription(description);
+        setEstimatedDuration(estimatedDuration);
+        setAcceptableDeviation(acceptableDeviation);
     }
 
     public String getDescription() {

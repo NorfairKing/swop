@@ -9,7 +9,7 @@ import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
-public class ProjectWrapper{
+public class ProjectWrapper {
 
     private Project project;
 
@@ -29,9 +29,7 @@ public class ProjectWrapper{
         if (!canHaveAsProject(project)) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
         this.project = project;
     }
-    
-    
-    
+
     public String getTitle() {
         return getProject().getTitle();
     }
@@ -55,14 +53,14 @@ public class ProjectWrapper{
     public Date getDueTime() {
         return getProject().getDueTime();
     }
-    
-	public Set<TaskWrapper> getTasks() {
-		Set<TaskWrapper> result = new HashSet<TaskWrapper>();
-		for( Task realTask : project.getTasks()){
-			result.add(new TaskWrapper(realTask));
-		}
-		return  result;
-	}
-	
+
+    public Set<TaskWrapper> getTasks() {
+        Set<TaskWrapper> result = new HashSet<TaskWrapper>();
+        for (Task realTask : project.getTasks()) {
+            result.add(new TaskWrapper(realTask));
+        }
+        return result;
+    }
+
     private final String ERROR_ILLEGAL_PROJECT = "Illegal project for project wrapper";
 }

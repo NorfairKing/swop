@@ -15,7 +15,7 @@ public class TimePeriod {
     }
 
     public Date getStartTime() {
-        return (Date)startTime.clone();
+        return (Date) startTime.clone();
     }
 
     protected boolean canHaveAsStartTime(Date startTime) {
@@ -28,7 +28,7 @@ public class TimePeriod {
     }
 
     public Date getStopTime() {
-        return (Date)stopTime.clone();
+        return (Date) stopTime.clone();
     }
 
     protected boolean canHaveAsStopTime(Date stopTime) {
@@ -37,6 +37,7 @@ public class TimePeriod {
 
     /**
      * Has to be used AFTER setStartTime().
+     * 
      * @param stopTime
      */
     private void setStopTime(Date stopTime) {
@@ -45,5 +46,5 @@ public class TimePeriod {
     }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
-    private static final String ERROR_ILLEGAL_STOP_TIME = "Illegal stop time for time span.";
+    private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
 }
