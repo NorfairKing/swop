@@ -1,6 +1,12 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -101,10 +107,6 @@ public class Task {
         return estimatedDuration;
     }
     
-    private long getEstimatedDurationMs() {
-        return (long)(getEstimatedDuration()) * 60 * 1000;
-    }
-    
     /**
      * Retrieves the best estimation of real finish date.
      * This will be the end time if the task is finished, or 
@@ -124,10 +126,49 @@ public class Task {
         
         Date lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
         Date now = Timekeeper.getTime();
-        if (lastOfDependencies.before(now)){
+        if (lastOfDependencies.before(now)) {
             lastOfDependencies = now;
         }
-        return new Date(lastOfDependencies.getTime() + getEstimatedDurationMs());
+        
+        
+        return addMsToDateConcerningWorkingWeek(lastOfDependencies, (long)getEstimatedDuration());
+    }
+    
+    private Date addMsToDateConcerningWorkingWeek(Date date, long minutes) {
+        
+        LocalDateTime temp = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        
+        LocalDateTime ldt = addWorkingMinutes(temp, minutes);
+        
+        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+    }
+    
+    private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
+        if (date.getHour() < 8) {
+          // Working day hasn't started. Reset date to start of this working day
+          date = date.withHour(8).withMinute(0).withSecond(0);
+        }
+
+        // Take care of weekends
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
+          date = date.plusDays(2);
+        } else if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+          date = date.plusDays(1);
+        }
+
+        LocalDateTime endOfCurrentWorkingDay = date.withHour(16).withMinute(0).withSecond(0);
+
+        // Get minutes from date to endOfCurrentWorkingDay
+        long minutesCovered = ChronoUnit.MINUTES.between(date, endOfCurrentWorkingDay);
+        if (minutesCovered > minutes) {
+          // If minutesCovered covers the minutes value passed, that means result is the same working
+          // day. Just add minutes and return
+          return date.plusMinutes(minutes);
+        } else {
+          // Calculate remainingMinutes, and then recursively call this method with next working day
+          long remainingMinutes = minutes - minutesCovered;
+          return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8), remainingMinutes);
+        }
     }
     
     private Date getLatestEstimatedOrRealFinishDateOfDependencies() {
