@@ -11,6 +11,7 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.task.Task;
 
 
 public class FacadeController {
@@ -31,6 +32,16 @@ public class FacadeController {
             result.add(new ProjectWrapper(realProject));
         }
         return result;
+    }
+
+    public Set<TaskWrapper> getTasksOf(ProjectWrapper project) {
+        Set<TaskWrapper> tasks = new HashSet<TaskWrapper>();
+        for (Project p : projectManager.getProjects()) {
+            for (Task t : p.getTasks()) {
+                tasks.add(new TaskWrapper(t));
+            }
+        }
+        return tasks;
     }
 
     public void createProject(ProjectData data) {

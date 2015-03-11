@@ -18,6 +18,8 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.google.common.collect.ImmutableSet;
+
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -52,7 +54,7 @@ public class ProjectManager {
      * @return Returns a Set containing the project's this manager manages.
      */
     public Set<Project> getProjects() {
-        return projects;
+        return ImmutableSet.copyOf(projects);
     }
 
     /**
