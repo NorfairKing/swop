@@ -26,54 +26,114 @@ public class ProjectManager {
 
     private final Set<Project> projects = new HashSet<Project>();
     private Calendar currentTime;
-    
+
+    /**
+     * Full constructor
+     */
     public ProjectManager() {
     	currentTime = Calendar.getInstance();
     	currentTime.setTimeInMillis(0);
     }
-    
+
+    /**
+     * Full constructor
+     *
+     * @param initialisationFilePath This is the String containing the file path for the yaml file which contains the initial situation for the Project Manager.
+     */
     public ProjectManager(String initialisationFilePath) {
     	this();
     	initialiseWith(initialisationFilePath);
     }
 
+    /**
+     * Retrieves the all the projects this program has to manage.
+     *
+     * @return Returns a Set containing the project's this manager manages.
+     */
     public Set<Project> getProjects() {
         return projects;
     }
 
+    /**
+     * Checks whethor or not the given project can be managed by this manager,
+     * this means the Project can't be null.
+     *
+     * @param project The project to be checked for validity.
+     *
+     */
     protected boolean canHaveAsProject(Project project) {
         return project != null;
     }
-    
+
     private void addProject(Project project){
         if (!canHaveAsProject(project) ) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
         projects.add(project);
     }
-    
+
+    /**
+     * Creates and returns a new Project with the given arguments.
+     *
+     * @param title A String containing the title for the new Project.
+     *
+     * @param description A String containing the description for the new Project.
+     *
+     * @param dueTime A Date containing the time for when the Project is due to be completed.
+     *
+     * @return Returns the newly created Project.
+     */
     public Project createProject(String title, String description, Date dueTime) {
     	Date creationTime = currentTime.getTime();
     	return createProject(title, description, creationTime, dueTime);
     }
-    
+
+    /**
+     * Checks whether or not this ProjectManager can use the given time as system time.
+     *
+     * @param time The Date containing the new system time.
+     *
+     * @return Returns true if the given Date isn't null.
+     *
+     */
     protected boolean canHaveAsTime(Date time) {
     	return time != null;
     }
-    
+
+    /**
+     * Changed the system time to the given time.
+     *
+     * @param time The Date containing the new system time.
+     *
+     * @throws IllegalArgumentException If the given Date is invalid, which means that it's null.
+     *
+     */
     public void setTime(Date time) {
     	if (!canHaveAsTime(time)) {
     		throw new IllegalArgumentException("Invalid time for the system.");
     	}
     	currentTime.setTime(time);
     }
-    
-    
-    // Manual setting of creationTime and returning the created project is needed for the importer
+
+    /**
+     * Creates and returns a new Project with the given arguments,
+     * this method is used by the importer of the yaml file
+     * because the creationTime is specified.
+     *
+     * @param title A String containing the title for the new Project.
+     *
+     * @param description A String containing the description for the new Project.
+     *
+     * @param creationTime A Date containing the time when the new Project was created.
+     *
+     * @param dueTime A Date containing the time for when the Project is due to be completed.
+     *
+     * @return Returns the newly created Project.
+     */
     public Project createProject(String title, String description, Date creationTime, Date dueTime){
     	Project project = new Project(title, description, creationTime, dueTime);
     	addProject(project);
     	return project;
     }
-    
+
 	@SuppressWarnings("unchecked")
 	private void initialiseWith(String initFile){
 		try {
@@ -107,7 +167,7 @@ public class ProjectManager {
 					Date startTime = format.parse((String)task.get("startTime"));
 					Date endTime = format.parse((String)task.get("endTime"));
 					TimePeriod timePeriod = new TimePeriod(startTime, endTime);
-					
+
 					switch(status){
 					case "finished":
 						temp.finish(timePeriod);
