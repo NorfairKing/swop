@@ -28,7 +28,6 @@ public class Task {
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
         setStatus(new AvailableStatus(this));
-        updateAvailability();
     }
 
     public String getDescription() {
@@ -196,15 +195,6 @@ public class Task {
     	return getRealDuration() > getWorstDuration();
     }
 
-    private void updateAvailability() {
-        TaskStatus status;
-        if (hasUnfinishedDependencies()) {
-            status = new UnavailableStatus(this);
-        } else {
-            status = new AvailableStatus(this);
-        }
-        setStatus(status);
-    }
 
     private boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
