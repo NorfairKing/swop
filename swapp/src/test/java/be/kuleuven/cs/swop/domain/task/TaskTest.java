@@ -1,9 +1,7 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.sql.Date;
 
@@ -77,14 +75,20 @@ public class TaskTest {
         task.setEstimatedDuration(dur);
         assertTrue(dur == task.getEstimatedDuration());
 
-        exception.expect(IllegalArgumentException.class);
-        task.setEstimatedDuration(-1);
+        try{
+            task.setEstimatedDuration(-1);
+            fail();
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        task.setEstimatedDuration(Double.NaN);
+        try{
+            task.setEstimatedDuration(Double.NaN);
+            fail();
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        task.setEstimatedDuration(Double.POSITIVE_INFINITY);
+        try{
+            task.setEstimatedDuration(Double.POSITIVE_INFINITY);
+            fail();
+        }catch(IllegalArgumentException e){}
     }
 
     @Test
@@ -138,14 +142,13 @@ public class TaskTest {
 
     @Test
     public void addDependencyTest() {
+        Task task2 = new Task("Hi", 1, 0);
+        task.addDependency(task2);
+        assertTrue(task.getDependencySet().contains(task2));
 
         // Limited testing here because canHaveAsDependencyTest goes in depth
         exception.expect(IllegalArgumentException.class);
         task.addDependency(null);
-
-        Task task2 = new Task("Hi", 1, 0);
-        task.addDependency(task2);
-        assertTrue(task2.getDependencySet().contains(task2));
     }
 
     @Test
@@ -166,14 +169,20 @@ public class TaskTest {
         task.setAcceptableDeviation(0);
         assertTrue(0 == task.getAcceptableDeviation());
 
-        exception.expect(IllegalArgumentException.class);
-        task.setAcceptableDeviation(-0.5);
+        try{
+            task.setAcceptableDeviation(-0.5);
+            fail();
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        task.setAcceptableDeviation(Double.NaN);
+        try{
+            task.setAcceptableDeviation(Double.NaN);
+            fail();
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        task.setAcceptableDeviation(Double.POSITIVE_INFINITY);
+        try{
+            task.setAcceptableDeviation(Double.POSITIVE_INFINITY);
+            fail();
+        }catch(IllegalArgumentException e){}
 
     }
 
@@ -200,16 +209,23 @@ public class TaskTest {
         Task task2 = new Task("Hi", 1, 0);
         TimePeriod period = new TimePeriod(new Date(1), new Date(2));
 
-        exception.expect(IllegalArgumentException.class);
-        task.canHaveAsAlternative(task2);
+        try{
+            task.setAlternative(task2);
+            fail();
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        task.setAlternative(null);
+        try{
+            task.setAlternative(null);
+            fail();
+        }catch(IllegalArgumentException e){}
 
         task.fail(period);
 
-        exception.expect(IllegalArgumentException.class);
-        task.setAlternative(task);
+
+        try{
+            task.setAlternative(task);
+            fail();
+        }catch(IllegalArgumentException e){}
 
         task.setAlternative(task2);
         assertTrue(task.getAlternative() == task2);
@@ -316,25 +332,25 @@ public class TaskTest {
     @Test
     public void wasFinishedOnTimeTest(){
         assertFalse(task.wasFinishedOnTime());
-        
+
         Task task2 = new Task("Hi",10,0);
         TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
         task2.finish(period);
         assertTrue(task2.wasFinishedOnTime());
-        
+
         Task task3 = new Task("Hi",5,1);
         task3.finish(period);
         assertTrue(task3.wasFinishedOnTime());
-        
+
         Task task4 = new Task("Hi",5,0.5);
         task4.finish(period);
         assertFalse(task4.wasFinishedOnTime());
-        
+
         Task task5 = new Task("Hi",20,0.1);
         task5.finish(period);
         assertFalse(task5.wasFinishedOnTime());
     }
-    
+
     @Test
     public void wasFinishedEarlyTest(){
         assertFalse(task.wasFinishedEarly());
@@ -343,37 +359,37 @@ public class TaskTest {
         TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
         task2.finish(period);
         assertFalse(task2.wasFinishedEarly());
-        
+
         Task task3 = new Task("Hi",5,1);
         task3.finish(period);
         assertFalse(task3.wasFinishedEarly());
-        
+
         Task task4 = new Task("Hi",5,0.5);
         task4.finish(period);
         assertFalse(task4.wasFinishedEarly());
-        
+
         Task task5 = new Task("Hi",20,0.1);
         task5.finish(period);
         assertTrue(task5.wasFinishedEarly());
     }
-    
+
     @Test
     public void wasFinishedLateTest(){
         assertFalse(task.wasFinishedLate());
-        
+
         Task task2 = new Task("Hi",10,0);
         TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
         task2.finish(period);
         assertFalse(task2.wasFinishedLate());
-        
+
         Task task3 = new Task("Hi",5,1);
         task3.finish(period);
         assertFalse(task3.wasFinishedLate());
-        
+
         Task task4 = new Task("Hi",5,0.5);
         task4.finish(period);
         assertTrue(task4.wasFinishedLate());
-        
+
         Task task5 = new Task("Hi",20,0.1);
         task5.finish(period);
         assertFalse(task5.wasFinishedLate());
