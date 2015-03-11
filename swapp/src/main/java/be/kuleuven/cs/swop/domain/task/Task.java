@@ -90,7 +90,8 @@ public class Task {
         return true;
     }
 
-    protected void setAlternative(Task alternative) {
+    public void setAlternative(Task alternative) {
+    	if(this.alternative != null) throw new IllegalArgumentException(ERROR_ALTERNATIVE_ALREADY_SET);
         if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }
@@ -209,5 +210,6 @@ public class Task {
     private static final String ERROR_ILLEGAL_DURATION = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal original for task.";
+    private static final String ERROR_ALTERNATIVE_ALREADY_SET = "This task already has an alternative.";
     private static final String ERROR_ILLEGAL_DEPENDENCY = "Illegal dependency set for task.";
 }
