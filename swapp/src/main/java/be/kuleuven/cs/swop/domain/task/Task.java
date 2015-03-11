@@ -4,6 +4,8 @@ package be.kuleuven.cs.swop.domain.task;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
 import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
@@ -56,12 +58,30 @@ public class Task {
         this.estimatedDuration = estimatedDuration;
     }
 
+    /**
+     * Check whether this task contains a given task as a dependency.
+     * 
+     * @param dependency
+     *            The given possible dependency
+     * @return whether the given task is a dependency of this task
+     */
+    private boolean containsDependency(Task dependency) {
+        if (dependency == null) { return true; }
+        for (Task subDep : this.getDependencySet()) {
+            if (subDep == dependency) { return true; }
+            if (subDep.containsDependency(dependency)) { return true; }
+        }
+        return false;
+    }
+
     public boolean canHaveAsDependency(Task dependency) {
-        return dependency != null;
+        if (dependency == null) { return false; }
+        return (dependency != this) && !dependency.containsDependency(this);
     }
 
     public void addDependency(Task dependency) {
         if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
+        if (this.dependencies.contains(dependency)) { return; }
         this.dependencies.add(dependency);
     }
 
@@ -81,11 +101,10 @@ public class Task {
         this.acceptableDeviation = acceptableDeviation;
     }
 
-
     public Task getAlternative() {
         return alternative;
     }
-    
+
     public boolean canHaveAsAlternative(Task alternative) {
         return true;
     }
@@ -109,15 +128,16 @@ public class Task {
     }
 
     public Set<Task> getDependencySet() {
-        return this.dependencies;
+        return ImmutableSet.copyOf(this.dependencies);
     }
-    
-    private TaskStatus getStatus(){
-        if(this.status.isFinal()){return this.status;}
-        else{
-            if(this.hasUnfinishedDependencies()){
+
+    private TaskStatus getStatus() {
+        if (this.status.isFinal()) {
+            return this.status;
+        } else {
+            if (this.hasUnfinishedDependencies()) {
                 return new UnavailableStatus(this);
-            }else{
+            } else {
                 return new AvailableStatus(this);
             }
         }
@@ -135,67 +155,66 @@ public class Task {
     public boolean isFinished() {
         return getStatus().isFinished();
     }
-    
-    public boolean isFailed(){
+
+    public boolean isFailed() {
         return getStatus().isFailed();
     }
-    
+
     public boolean isFinishedOrHasFinishedAlternative() {
-    	if (isFinished()) return true;
-    	
-    	if (getAlternative() == null) return false;
-    	
-    	return getAlternative().isFinishedOrHasFinishedAlternative();
+        if (isFinished()) return true;
+
+        if (getAlternative() == null) return false;
+
+        return getAlternative().isFinishedOrHasFinishedAlternative();
     }
 
     public void finish() {
-        if (getStatus().canFinish()){
+        if (getStatus().canFinish()) {
             setStatus(new FinishedStatus(this));
-        }else{
+        } else {
             throw new IllegalStateException("Can't finish when status is " + getStatus().toString());
         }
     }
 
     public void fail() {
-        if(getStatus().canFail()){
+        if (getStatus().canFail()) {
             setStatus(new FailedStatus(this));
-        }else{
+        } else {
             throw new IllegalStateException();
         }
     }
-    
+
     private double getRealDuration() {
-    	long diffMillies = getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
-    	return (double)diffMillies / 1000 / 60;
-    }
-    
-    private double getBestDuration() {
-    	return getEstimatedDuration() - getEstimatedDuration() * getAcceptableDeviation();
-    }
-    
-    private double getWorstDuration() {
-    	return getEstimatedDuration() + getEstimatedDuration() * getAcceptableDeviation();
-    }
-    
-    public boolean wasFinishedEarly() {
-    	if (!isFinished()) return false;
-    	
-    	return getRealDuration() < getBestDuration();
-    }
-    
-    public boolean wasFinishedOnTime() {
-    	if (!isFinished()) return false;
-    	
-    	double realDuration = getRealDuration();
-    	return realDuration >= getBestDuration() && realDuration <= getWorstDuration();
-    }
-    
-    public boolean wasFinishedLate() {
-    	if (!isFinished()) return false;
-    	
-    	return getRealDuration() > getWorstDuration();
+        long diffMillies = getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
+        return (double) diffMillies / 1000 / 60;
     }
 
+    private double getBestDuration() {
+        return getEstimatedDuration() - getEstimatedDuration() * getAcceptableDeviation();
+    }
+
+    private double getWorstDuration() {
+        return getEstimatedDuration() + getEstimatedDuration() * getAcceptableDeviation();
+    }
+
+    public boolean wasFinishedEarly() {
+        if (!isFinished()) return false;
+
+        return getRealDuration() < getBestDuration();
+    }
+
+    public boolean wasFinishedOnTime() {
+        if (!isFinished()) return false;
+
+        double realDuration = getRealDuration();
+        return realDuration >= getBestDuration() && realDuration <= getWorstDuration();
+    }
+
+    public boolean wasFinishedLate() {
+        if (!isFinished()) return false;
+
+        return getRealDuration() > getWorstDuration();
+    }
 
     private boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
