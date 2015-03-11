@@ -2,6 +2,8 @@ package be.kuleuven.cs.swop.domain.task;
 
 import static org.junit.Assert.*;
 
+import java.sql.Date;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -9,6 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
 public class TaskTest {
@@ -185,8 +189,9 @@ public class TaskTest {
 	@Test
 	public void canHaveAsAlternativeTest(){
 		Task task2 = new Task("Hi",1,0);
+		TimePeriod period = new TimePeriod(new Date(1426081393), new Date(1426084393));
 		assertFalse(task.canHaveAsAlternative(task2));
-		task.fail();
+		task.fail(period);
 		assertTrue(task.canHaveAsAlternative(task2));
 		assertFalse(task.canHaveAsAlternative(null));
 	}
@@ -194,14 +199,15 @@ public class TaskTest {
 	@Test
 	public void setAlternativeTest(){
 		Task task2 = new Task("Hi",1,0);
-		
+		TimePeriod period = new TimePeriod(new Date(1426081393), new Date(1426084393));
+
 		exception.expect(IllegalArgumentException.class);
 		task.canHaveAsAlternative(task2);
 		
 		exception.expect(IllegalArgumentException.class);
 		task.setAlternative(null);
 		
-		task.fail();
+		task.fail(period);
 		
 		exception.expect(IllegalArgumentException.class);
 		task.setAlternative(task);

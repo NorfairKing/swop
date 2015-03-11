@@ -29,7 +29,7 @@ public class Task {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setAlternative(null);
-        setStatus(new AvailableStatus(this));
+        setStatus(new AvailableStatus());
     }
 
     public String getDescription() {
@@ -123,7 +123,7 @@ public class Task {
         return timespan != null && performedDuring == null;
     }
 
-    public void performedDuring(TimePeriod timespan) {
+    private void performedDuring(TimePeriod timespan) {
         this.performedDuring = timespan;
     }
 
@@ -136,9 +136,9 @@ public class Task {
             return this.status;
         } else {
             if (this.hasUnfinishedDependencies()) {
-                return new UnavailableStatus(this);
+                return new UnavailableStatus();
             } else {
-                return new AvailableStatus(this);
+                return new AvailableStatus();
             }
         }
     }
@@ -168,17 +168,20 @@ public class Task {
         return getAlternative().isFinishedOrHasFinishedAlternative();
     }
 
-    public void finish() {
+    public void finish(TimePeriod period) {
         if (getStatus().canFinish()) {
-            setStatus(new FinishedStatus(this));
+        	this.performedDuring(period);
+            setStatus(new FinishedStatus());
         } else {
             throw new IllegalStateException("Can't finish when status is " + getStatus().toString());
         }
     }
 
-    public void fail() {
+    public void fail(TimePeriod period) {
         if (getStatus().canFail()) {
-            setStatus(new FailedStatus(this));
+        	this.performedDuring(period);
+
+            setStatus(new FailedStatus());
         } else {
             throw new IllegalStateException();
         }

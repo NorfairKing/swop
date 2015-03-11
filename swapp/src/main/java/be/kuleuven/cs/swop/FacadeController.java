@@ -42,13 +42,12 @@ public class FacadeController {
 		TimePeriod timePeriod = new TimePeriod(
 				(Date) statusData.getStartTime().clone(),
 				(Date) statusData.getEndTime().clone());
-		task.getTask().performedDuring(timePeriod);
 		
 		if (statusData.getSuccessful()) {
-			task.getTask().finish();
+			task.getTask().finish(timePeriod);
 		}
 		else {
-			task.getTask().fail();
+			task.getTask().fail(timePeriod);
 		}
 	}
 	

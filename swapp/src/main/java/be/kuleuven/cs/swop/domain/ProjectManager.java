@@ -110,12 +110,10 @@ public class ProjectManager {
 					
 					switch(status){
 					case "finished":
-						temp.performedDuring(timePeriod);
-						temp.finish();
+						temp.finish(timePeriod);
 						break;
 					case "failed":
-						temp.performedDuring(timePeriod);
-						temp.fail();
+						temp.fail(timePeriod);
 						break;
 					default:
 						break;
