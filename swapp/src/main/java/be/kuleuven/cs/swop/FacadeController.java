@@ -10,6 +10,7 @@ import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -19,10 +20,12 @@ public class FacadeController {
     ProjectManager projectManager;
 
     public FacadeController() {
+        Timekeeper.setTime(new Date(0));
         projectManager = new ProjectManager();
     }
 
     public FacadeController(String initialisationFilePath) {
+        Timekeeper.setTime(new Date(0));
         projectManager = new ProjectManager(initialisationFilePath);
     }
 
@@ -99,6 +102,6 @@ public class FacadeController {
 
     public void updateSystemTime(Date time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        projectManager.setTime((Date) time.clone());
+        Timekeeper.setTime(time);
     }
 }

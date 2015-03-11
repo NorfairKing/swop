@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
 import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
 import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
@@ -101,9 +102,14 @@ public class Task {
     }
     
     private long getEstimatedDurationMs() {
-        return (long)(getEstimatedDuration() * 60 * 1000);
+        return (long)(getEstimatedDuration()) * 60 * 1000;
     }
     
+    /**
+     * Retrieves the best estimation of real finish date.
+     * This will be the end time if the task is finished, or 
+     * @return
+     */
     public Date getEstimatedOrRealFinishDate() {
         if (isFinished()) return getPerformedDuring().getStopTime();
         if (isFailed()) {
@@ -117,6 +123,10 @@ public class Task {
         }
         
         Date lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
+        Date now = Timekeeper.getTime();
+        if (lastOfDependencies.before(now)){
+            lastOfDependencies = now;
+        }
         return new Date(lastOfDependencies.getTime() + getEstimatedDurationMs());
     }
     

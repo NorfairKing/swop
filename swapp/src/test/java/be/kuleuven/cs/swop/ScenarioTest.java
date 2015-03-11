@@ -106,7 +106,7 @@ public class ScenarioTest {
         double ed4 = 8 * 60;
         double ad4 = 0;
         TaskData t4r = new TaskData(d4, ed4, ad4);
-        t4r.addDependency(t3);
+        t4r.addDependency(t2);
         TaskWrapper t4 = facade.createTaskFor(p1, t4r);
         assertEquals(1,t4.getDependencySet().size());
         assertFalse(t4.isFinished());
@@ -177,15 +177,15 @@ public class ScenarioTest {
         assertNull(t2.getAlternative());
         
         String d5 = "implement system with phonegap";
-        double ed5 = 8;
+        double ed5 = 8*60;
         double ad5 = 1;
         TaskData t5d = new TaskData(d5, ed5, ad5);
         t5d.addDependency(t1);
-        TaskWrapper t5 = null; // TODO create this as alternative for t2
+        TaskWrapper t5 = facade.createAlternativeFor(t2, t5d); // TODO create this as alternative for t2
         assertEquals(1,t5.getDependencySet().size());
-        assertTrue(t5.canFinish());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
+        assertTrue(t5.canFinish());
         assertNull(t5.getAlternative());
         
         assertTrue(p1.isOngoing());
@@ -193,6 +193,7 @@ public class ScenarioTest {
         assertEquals(1,facade.getProjects().size());
         assertEquals(5, facade.getTasksOf(p1).size());
         assertFalse(p1.isOnTime());
+        assertTrue(p1.isOverTime());
         
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
@@ -220,13 +221,6 @@ public class ScenarioTest {
          */
         currentDate = dateTimeFormat.parse("2015-02-13 16:00");
         facade.updateSystemTime(currentDate);
-        
-        assertFalse(p1.isOngoing());
-        assertTrue(p1.isFinished());
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(5, facade.getTasksOf(p1).size());
-        assertTrue(p1.isOnTime());;
-        assertFalse(p1.isOverTime());;
         
         
         Date t5Start = dateTimeFormat.parse("2015-02-11 08:00");
@@ -258,6 +252,13 @@ public class ScenarioTest {
         assertTrue(t3.isFinished());
         assertTrue(t4.isFinished());
         assertTrue(t5.isFinished());
+        
+        assertFalse(p1.isOngoing());
+        assertTrue(p1.isFinished());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(5, facade.getTasksOf(p1).size());
+        assertTrue(p1.isOnTime());;
+        assertFalse(p1.isOverTime());;
         
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());

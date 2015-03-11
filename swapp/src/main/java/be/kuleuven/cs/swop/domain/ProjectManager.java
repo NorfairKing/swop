@@ -27,15 +27,11 @@ import be.kuleuven.cs.swop.domain.task.Task;
 public class ProjectManager {
 
     private final Set<Project> projects = new HashSet<Project>();
-    private Calendar           currentTime;
 
     /**
      * Full constructor
      */
-    public ProjectManager() {
-        currentTime = Calendar.getInstance();
-        currentTime.setTimeInMillis(0);
-    }
+    public ProjectManager() {}
 
     /**
      * Full constructor
@@ -90,45 +86,8 @@ public class ProjectManager {
      * @return Returns the newly created Project.
      */
     public Project createProject(String title, String description, Date dueTime) {
-        Date creationTime = currentTime.getTime();
+        Date creationTime = Timekeeper.getTime();
         return createProject(title, description, creationTime, dueTime);
-    }
-
-    /**
-     * Checks whether or not this ProjectManager can use the given time as system time.
-     *
-     * @param time
-     *            The Date containing the new system time.
-     *
-     * @return Returns true if the given Date isn't null.
-     *
-     */
-    protected boolean canHaveAsTime(Date time) {
-        return time != null;
-    }
-
-    /**
-     * Changed the system time to the given time.
-     *
-     * @param time
-     *            The Date containing the new system time.
-     *
-     * @throws IllegalArgumentException
-     *             If the given Date is invalid, which means that it's null.
-     *
-     */
-    public void setTime(Date time) {
-        if (!canHaveAsTime(time)) { throw new IllegalArgumentException("Invalid time for the system."); }
-        currentTime.setTime(time);
-    }
-    
-    /**
-     * Return the current system time.
-     * 
-     * @return Returns the current system time.
-     */
-    public Date getTime(){
-        return currentTime.getTime();
     }
 
     /**
@@ -153,14 +112,12 @@ public class ProjectManager {
         addProject(project);
         return project;
     }
-    
+
     public Project getProjectFor(Task task) {
-        for (Project project: getProjects()) {
-            if (project.containsTask(task)) {
-                return project;
-            }
+        for (Project project : getProjects()) {
+            if (project.containsTask(task)) { return project; }
         }
-        
+
         return null;
     }
 
