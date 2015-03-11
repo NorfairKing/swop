@@ -32,7 +32,7 @@ public class TimePeriod {
     }
 
     protected boolean canHaveAsStopTime(Date stopTime) {
-        return stopTime != null && startTime.before(stopTime);
+        return stopTime != null && startTime != null && startTime.before(stopTime);
     }
 
     /**
