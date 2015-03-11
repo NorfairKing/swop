@@ -18,14 +18,6 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
 /**
  * A simple command line interface
  */
-/**
- * @author syd
- *
- */
-/**
- * @author syd
- *
- */
 public class CLI implements UserInterface {
 
     private Scanner scanner;
