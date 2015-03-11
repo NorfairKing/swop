@@ -121,6 +121,15 @@ public class ProjectManager {
         if (!canHaveAsTime(time)) { throw new IllegalArgumentException("Invalid time for the system."); }
         currentTime.setTime(time);
     }
+    
+    /**
+     * Return the current system time.
+     * 
+     * @return Returns the current system time.
+     */
+    public Date getTime(){
+        return currentTime.getTime();
+    }
 
     /**
      * Creates and returns a new Project with the given arguments, this method is used by the importer of the yaml file because the creationTime is specified.
