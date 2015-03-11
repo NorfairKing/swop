@@ -9,7 +9,7 @@ UML_SUFFIX  = uml
 
 DOT_EXT     = dot
 
-PLANT       = 	diagram_uml.eps \
+PLANT       = 	domain_uml.eps \
 				high_level_uml.eps \
 				sequence_createProject_uml.eps \
 				sequence_createProject_cancel_uml.eps \
