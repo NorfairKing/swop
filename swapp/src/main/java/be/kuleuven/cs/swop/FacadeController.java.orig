@@ -14,6 +14,50 @@ import be.kuleuven.cs.swop.domain.project.Project;
 
 
 public class FacadeController {
+<<<<<<< HEAD
+	ProjectManager projectManager;
+
+	public FacadeController() {
+		projectManager = new ProjectManager();
+	}
+	
+	public FacadeController(String initialisationFilePath){
+		projectManager = new ProjectManager(initialisationFilePath);
+	}
+
+	public Set<ProjectWrapper> getProjects() {
+		Set<ProjectWrapper> result = new HashSet<ProjectWrapper>();
+		for( Project realProject : projectManager.getProjects()){
+			result.add(new ProjectWrapper(realProject));
+		}
+		return  result;
+	}
+	
+	public void createProject(ProjectData data){
+		projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+	}
+	
+	public void createTaskFor(ProjectWrapper project, TaskData data) {
+		project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
+	}
+	
+	public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) {
+		TimePeriod timePeriod = new TimePeriod(
+				(Date) statusData.getStartTime().clone(),
+				(Date) statusData.getEndTime().clone());
+		
+		if (statusData.getSuccessful()) {
+			task.getTask().finish(timePeriod);
+		}
+		else {
+			task.getTask().fail(timePeriod);
+		}
+	}
+	
+	public void updateSystemTime(Date time) {
+		projectManager.setTime((Date) time.clone()); 
+	}
+=======
 
     ProjectManager projectManager;
 
@@ -59,11 +103,12 @@ public class FacadeController {
         if (statusData.getEndTime() == null) { throw new IllegalArgumentException("Null end time for status update"); }
 
         TimePeriod timePeriod = new TimePeriod((Date) statusData.getStartTime().clone(), (Date) statusData.getEndTime().clone());
+        task.getTask().performedDuring(timePeriod);
 
         if (statusData.getSuccessful()) {
-            task.getTask().finish(timePeriod);
+            task.getTask().finish();
         } else {
-            task.getTask().fail(timePeriod);
+            task.getTask().fail();
         }
     }
 
@@ -71,4 +116,5 @@ public class FacadeController {
         if (time == null) {throw new IllegalArgumentException("Null date for system time update");}
         projectManager.setTime((Date) time.clone());
     }
+>>>>>>> buttonMashingUI first draft
 }

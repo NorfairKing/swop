@@ -18,14 +18,6 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
 /**
  * A simple command line interface
  */
-/**
- * @author syd
- *
- */
-/**
- * @author syd
- *
- */
 public class CLI implements UserInterface {
 
     private Scanner scanner;
@@ -35,7 +27,8 @@ public class CLI implements UserInterface {
         this.scanner = new Scanner(System.in);
     }
 
-    public int start() {
+    @Override
+    public void start() {
         System.out.println("Welcome to TaskMan");
         System.out.println("Enter \"h\" for help.");
         String command;
