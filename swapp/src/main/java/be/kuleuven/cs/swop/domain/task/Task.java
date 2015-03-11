@@ -341,9 +341,6 @@ public class Task {
     	return getRealDuration() > getWorstDuration();
     }
 
-        return getRealDuration() > getWorstDuration();
-    }
-
     private boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
         for (Task t : dependencies) {
