@@ -15,7 +15,7 @@ public class TimePeriod {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return (Date)startTime.clone();
     }
 
     protected boolean canHaveAsStartTime(Date startTime) {
@@ -28,11 +28,11 @@ public class TimePeriod {
     }
 
     public Date getStopTime() {
-        return stopTime;
+        return (Date)stopTime.clone();
     }
 
     protected boolean canHaveAsStopTime(Date stopTime) {
-        return stopTime != null && startTime.before(stopTime);
+        return stopTime != null && startTime != null && startTime.before(stopTime);
     }
 
     /**
