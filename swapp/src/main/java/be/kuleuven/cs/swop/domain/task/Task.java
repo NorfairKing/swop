@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -97,6 +98,38 @@ public class Task {
      */
     public double getEstimatedDuration() {
         return estimatedDuration;
+    }
+    
+    private long getEstimatedDurationMs() {
+        return (long)(getEstimatedDuration() * 60 * 1000);
+    }
+    
+    public Date getEstimatedOrRealFinishDate() {
+        if (isFinished()) return getPerformedDuring().getStopTime();
+        if (isFailed()) {
+            if (getAlternative() == null) {
+                // Makes no sense but the assignment said so...
+                return getPerformedDuring().getStopTime();
+            }
+            else {
+                return getAlternative().getEstimatedOrRealFinishDate();
+            }
+        }
+        
+        Date lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
+        return new Date(lastOfDependencies.getTime() + getEstimatedDurationMs());
+    }
+    
+    private Date getLatestEstimatedOrRealFinishDateOfDependencies() {
+        Date lastTime = new Date(0);
+        for (Task dependency: getDependencySet()) {
+            Date lastTimeOfThis = dependency.getEstimatedOrRealFinishDate();
+            if (lastTimeOfThis.after(lastTime)) {
+                lastTime = lastTimeOfThis;
+            }
+        }
+        
+        return lastTime;
     }
 
     /**
@@ -353,9 +386,12 @@ public class Task {
         }
     }
 
+    private long getRealDurationMs() {
+        return getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
+    }
+    
     private double getRealDuration() {
-        long diffMillies = getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
-        return (double) diffMillies / 1000 / 60;
+        return (double) getRealDurationMs() / 1000 / 60;
     }
 
     private double getBestDuration() {
