@@ -53,6 +53,13 @@ public class ProjectWrapper {
     public Date getDueTime() {
         return getProject().getDueTime();
     }
+    
+    public boolean isOnTime(){
+        return getProject().isOnTime();
+    }
+    public boolean isOverTime(){
+        return getProject().isOverTime();
+    }
 
     public Set<TaskWrapper> getTasks() {
         Set<TaskWrapper> result = new HashSet<TaskWrapper>();

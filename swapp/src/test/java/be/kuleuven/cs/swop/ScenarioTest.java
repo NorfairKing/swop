@@ -59,6 +59,8 @@ public class ScenarioTest {
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
+        assertTrue(p1.isOnTime());
+        assertFalse(p1.isOverTime());;
         assertEquals(1, facade.getProjects().size());
 
 
@@ -112,7 +114,6 @@ public class ScenarioTest {
         assertFalse(t4.canFinish());
         assertTrue(t4.getAlternative() == null);
         
-        
 
         /*
          * Day 2
@@ -123,6 +124,7 @@ public class ScenarioTest {
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertTrue(p1.isOnTime());
+        assertFalse(p1.isOverTime());;
         assertEquals(1,facade.getProjects().size());
         assertEquals(4, facade.getTasksOf(p1).size());
         
@@ -137,19 +139,19 @@ public class ScenarioTest {
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
-        assertTrue(t1.getAlternative() == null);
+        assertNull(t1.getAlternative());
         assertFalse(t2.isFinished());
         assertFalse(t2.isFailed());
         assertTrue(t2.canFinish());
-        assertTrue(t2.getAlternative() == null);
+        assertNull(t2.getAlternative());
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
-        assertTrue(t3.getAlternative() == null);
+        assertNull(t3.getAlternative());
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
-        assertTrue(t4.getAlternative() == null);
+        assertNull(t4.getAlternative());
         
         /*
          * Day 3
@@ -162,6 +164,7 @@ public class ScenarioTest {
         assertEquals(1,facade.getProjects().size());
         assertEquals(4, facade.getTasksOf(p1).size());
         assertTrue(p1.isOnTime());
+        assertFalse(p1.isOverTime());;
         
         Date t2Start = dateTimeFormat.parse("2015-02-10 08:00");
         Date t2Stop = dateTimeFormat.parse("2015-02-10 16:00");
@@ -171,14 +174,7 @@ public class ScenarioTest {
         assertTrue(t2.isFailed());
         assertFalse(t3.canFinish());
         assertFalse(t4.canFinish());
-        assertTrue(t2.getAlternative() == null);
-        
-        
-        assertTrue(p1.isOngoing());
-        assertFalse(p1.isFinished());
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(4, facade.getTasksOf(p1).size());
-        assertFalse(p1.isOnTime());
+        assertNull(t2.getAlternative());
         
         String d5 = "implement system with phonegap";
         double ed5 = 8;
@@ -190,28 +186,34 @@ public class ScenarioTest {
         assertTrue(t5.canFinish());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
-        assertTrue(t5.getAlternative() == null);
+        assertNull(t5.getAlternative());
+        
+        assertTrue(p1.isOngoing());
+        assertFalse(p1.isFinished());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(5, facade.getTasksOf(p1).size());
+        assertFalse(p1.isOnTime());
         
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
-        assertTrue(t1.getAlternative() == null);
+        assertNull(t1.getAlternative());
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
-        assertFalse(t2.getAlternative() == null);
+        assertNotNull(t2.getAlternative());
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
-        assertTrue(t3.getAlternative() == null);
+        assertNull(t3.getAlternative());
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
-        assertTrue(t4.getAlternative() == null); 
+        assertNull(t4.getAlternative());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
-        assertTrue(t5.getAlternative() == null);
+        assertNull(t5.getAlternative());
         
         /*
          * Day 4
@@ -224,21 +226,58 @@ public class ScenarioTest {
         assertEquals(1,facade.getProjects().size());
         assertEquals(5, facade.getTasksOf(p1).size());
         assertTrue(p1.isOnTime());;
+        assertFalse(p1.isOverTime());;
         
         
         Date t5Start = dateTimeFormat.parse("2015-02-11 08:00");
         Date t5Stop = dateTimeFormat.parse("2015-02-11 16:00");
         TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
         facade.updateTaskStatusFor(t5, t5u); 
+        assertTrue(t1.isFinished());
+        assertTrue(t2.isFailed());
+        assertTrue(t3.canFinish());
+        assertTrue(t4.canFinish());
+        assertTrue(t5.isFinished());
         
         Date t3Start = dateTimeFormat.parse("2015-02-12 08:00");
         Date t3Stop = dateTimeFormat.parse("2015-02-12 16:00");
         TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
         facade.updateTaskStatusFor(t3, t3u);
+        assertTrue(t1.isFinished());
+        assertTrue(t2.isFailed());
+        assertTrue(t3.isFinished());
+        assertTrue(t4.canFinish());
+        assertTrue(t5.isFinished());
         
         Date t4Start = dateTimeFormat.parse("2015-02-13 08:00");
         Date t4Stop = dateTimeFormat.parse("2015-02-13 16:00");
         TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
         facade.updateTaskStatusFor(t4, t4u); 
+        assertTrue(t1.isFinished());
+        assertTrue(t2.isFailed());
+        assertTrue(t3.isFinished());
+        assertTrue(t4.isFinished());
+        assertTrue(t5.isFinished());
+        
+        assertTrue(t1.isFinished());
+        assertFalse(t1.isFailed());
+        assertFalse(t1.canFinish());
+        assertNull(t1.getAlternative());
+        assertFalse(t2.isFinished());
+        assertTrue(t2.isFailed());
+        assertFalse(t2.canFinish());
+        assertNotNull(t1.getAlternative());
+        assertTrue(t3.isFinished());
+        assertFalse(t3.isFailed());
+        assertFalse(t3.canFinish());
+        assertNull(t3.getAlternative());
+        assertTrue(t4.isFinished());
+        assertFalse(t4.isFailed());
+        assertFalse(t4.canFinish());
+        assertNull(t4.getAlternative());
+        assertTrue(t5.isFinished());
+        assertFalse(t5.isFailed());
+        assertTrue(t5.canFinish());
+        assertNull(t5.getAlternative());
     }
 }

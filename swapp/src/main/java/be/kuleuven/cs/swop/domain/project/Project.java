@@ -268,7 +268,7 @@ public class Project {
             }
         }
         
-        return getDueTime().before(lastTime);
+        return getDueTime().after(lastTime);
     }
     
     public boolean isOverTime() {
