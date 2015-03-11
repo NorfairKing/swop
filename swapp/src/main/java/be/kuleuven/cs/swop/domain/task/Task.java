@@ -242,7 +242,7 @@ public class Task {
      * Sets the timespan for this Task for when it was performed.
      *
      * @param timespan
-     *            The TimePeroid for when during the Task was performed.
+     *            The TimePeriod for when during the Task was performed.
      */
     private void performedDuring(TimePeriod timespan) {
         this.performedDuring = timespan;
@@ -319,7 +319,7 @@ public class Task {
     /**
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
      *
-     * @param peroid
+     * @param period
      *             The TimePeriod for when there has been worked on this project.
      *
      * @throws IllegalStateException
@@ -337,7 +337,7 @@ public class Task {
     /**
      * Changes this Task's status to failed if possible, otherwise it throws an exception.
      *
-     * @param peroid
+     * @param period
      *             The TimePeriod for when there has been worked on this project.
      *
      * @throws IllegalStateException
