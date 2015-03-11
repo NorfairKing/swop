@@ -46,7 +46,7 @@ public class Task {
     }
 
     public boolean canHaveAsEstimatedDuration(double estimatedDuration) {
-        return estimatedDuration > 0;
+        return Double.isFinite(estimatedDuration) && estimatedDuration > 0;
     }
 
     public double getEstimatedDuration() {
