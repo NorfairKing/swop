@@ -46,14 +46,17 @@ public class TimePeriodTest {
 
     @Test
     public void constructorInvalidTest() {
-        exception.expect(IllegalArgumentException.class);
-        new TimePeriod(new Date(1), new Date(0));
+        try{
+            new TimePeriod(new Date(1), new Date(0)); 
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        new TimePeriod(null, new Date(0));
+        try{
+            new TimePeriod(null, new Date(0));
+        }catch(IllegalArgumentException e){}
 
-        exception.expect(IllegalArgumentException.class);
-        new TimePeriod(new Date(1), null);
+        try{
+            new TimePeriod(new Date(1), null);
+        }catch(IllegalArgumentException e){}
     }
 
     @Test
