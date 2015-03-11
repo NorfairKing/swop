@@ -189,17 +189,25 @@ public class TaskTest {
 	@Test
 	public void canHaveAsAlternativeTest(){
 		Task task2 = new Task("Hi",1,0);
-		TimePeriod period = new TimePeriod(new Date(1426081393), new Date(1426084393));
+		TimePeriod period = new TimePeriod(new Date(1), new Date(2));
 		assertFalse(task.canHaveAsAlternative(task2));
+		
 		task.fail(period);
+		
 		assertTrue(task.canHaveAsAlternative(task2));
+		
+		task2.fail(period);
+		assertTrue(task.canHaveAsAlternative(task2));
+		
 		assertFalse(task.canHaveAsAlternative(null));
+		
+		//TODO check for loop
 	}
 
 	@Test
 	public void setAlternativeTest(){
 		Task task2 = new Task("Hi",1,0);
-		TimePeriod period = new TimePeriod(new Date(1426081393), new Date(1426084393));
+		TimePeriod period = new TimePeriod(new Date(1), new Date(2));
 
 		exception.expect(IllegalArgumentException.class);
 		task.canHaveAsAlternative(task2);
@@ -215,6 +223,12 @@ public class TaskTest {
 		
 		task.setAlternative(task2);
 		assertTrue(task.getAlternative() == task2);
+	}
+	
+	
+	@Test
+	public void canHaveBeenPerfomedDuringTest(){
+		
 	}
 
 

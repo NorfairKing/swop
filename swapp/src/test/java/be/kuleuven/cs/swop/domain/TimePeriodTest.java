@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.domain;
 
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 import java.util.Date;
 
@@ -84,16 +84,18 @@ public class TimePeriodTest {
         validTimePeriod1.canHaveAsStopTime(new Date(2));
     }
 
+    @Test
     public void getStartTimeTest() {
         Date startTime = new Date(1);
         TimePeriod t = new TimePeriod(startTime, new Date(2));
-        assertNotEquals(t.getStartTime(), startTime);
+        assertFalse(t.getStartTime() == startTime);
     }
 
+    @Test
     public void getStopTimeTest() {
         Date stopTime = new Date(2);
         TimePeriod t = new TimePeriod(new Date(1), stopTime);
-        assertNotEquals(t.getStartTime(), stopTime);
+        assertFalse(t.getStopTime() == stopTime);
     }
 
 }
