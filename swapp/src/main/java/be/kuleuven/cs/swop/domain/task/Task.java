@@ -48,7 +48,7 @@ public class Task {
 
     /**
      * Retrieves this task's description.
-     * 
+     *
      * @return Returns a String containing the task's description.
      */
     public String getDescription() {
@@ -57,7 +57,7 @@ public class Task {
 
     /**
      * Checks whether or not the given description is valid.
-     * 
+     *
      * @param description
      *            A String containing a possible description for this Task.
      * @return Returns true if the given description is valid.
@@ -68,7 +68,7 @@ public class Task {
 
     /**
      * Changes the Task's description to the given String
-     * 
+     *
      * @param description
      *            The String containing the Task's new description.
      * @throws IllegalArgumentException
@@ -81,7 +81,7 @@ public class Task {
 
     /**
      * Checks whether or not the given duration is a valid new estimated duration.
-     * 
+     *
      * @param estimatedDuration
      *            The double containing the possible new estimated duration for the Task in minutes.
      * @return Returns true if the given duration is a valid duration for this task. Which means that it's greater than zero.
@@ -92,7 +92,7 @@ public class Task {
 
     /**
      * Retrieves the Task's estimated duration.
-     * 
+     *
      * @return Returns a double containing the estimated duration in minutes.
      */
     public double getEstimatedDuration() {
@@ -101,7 +101,7 @@ public class Task {
 
     /**
      * Changes the Task's estimated duration to the given duration.
-     * 
+     *
      * @param estimatedDuration
      *            The double containing the new estimated duration in minutes.
      * @throws IllegalArgumentException
@@ -135,7 +135,7 @@ public class Task {
 
     /**
      * Adds the given Task as dependency of this Task, this throws an exception when the new Task creates a dependency loop.
-     * 
+     *
      * @param dependency
      *            The Task to be added as dependency of this Task.
      * @throws IllegalArgumentException
@@ -149,7 +149,7 @@ public class Task {
 
     /**
      * Retrieves the acceptable deviation for competing this Task.
-     * 
+     *
      * @return Returns a double containing the acceptable deviation for completing this task.
      */
     public double getAcceptableDeviation() {
@@ -158,7 +158,7 @@ public class Task {
 
     /**
      * Checks whether or not the Task can have the given deviation as acceptable deviation.
-     * 
+     *
      * @param deviation
      *            The double containing the deviation to be checked.
      * @return Returns true if the given double is a valid deviation.
@@ -172,7 +172,7 @@ public class Task {
 
     /**
      * Changes the Task's acceptable deviation for the time completing the Task to the given deviation.
-     * 
+     *
      * @param acceptableDeviation
      *            The double containing the new deviation.
      * @throws IllegalArgumentException
@@ -185,7 +185,7 @@ public class Task {
 
     /**
      * Retrieves the alternative Task for this Task for when this Task has failed.
-     * 
+     *
      * @return The alternative Task.
      */
     public Task getAlternative() {
@@ -206,7 +206,7 @@ public class Task {
 
     /**
      * Sets an alternative Task for this Task for when this Task failed, the alternative can't be null, can't create a dependency loop and this Task has to be failed.
-     * 
+     *
      * @param alternative
      *            The Task to be set as alternative for this Task.
      * @throws IllegalArgumentException
@@ -220,7 +220,7 @@ public class Task {
 
     /**
      * Retrieves the TimePeriod for when this Task was performed.
-     * 
+     *
      * @return Returns a TimePeriod for when the Task was performed or null if the Task isn't failed of finished yet.
      */
     public TimePeriod getPerformedDuring() {
@@ -229,7 +229,7 @@ public class Task {
 
     /**
      * Checks whether or not this Task can be performed during the given timespan.
-     * 
+     *
      * @param timespan
      *            The TimePeriod that has to be checked.
      * @return Returns true if this Task could be performed during the given TimePeriod.
@@ -240,7 +240,7 @@ public class Task {
 
     /**
      * Sets the timespan for this Task for when it was performed.
-     * 
+     *
      * @param timespan
      *            The TimePeroid for when during the Task was performed.
      */
@@ -250,7 +250,7 @@ public class Task {
 
     /**
      * Retrieves the dependencies of this Task.
-     * 
+     *
      * @return Returns a Set containing the Tasks which are dependencies of this Task.
      */
     public Set<Task> getDependencySet() {
@@ -271,7 +271,7 @@ public class Task {
 
     /**
      * Checks if the given status is a valid status for this Task.
-     * 
+     *
      * @param status
      *            The TaskStatus to be checked for validity.
      * @return Returns true if this status is valid and therefore isn't null.
@@ -287,7 +287,7 @@ public class Task {
 
     /**
      * Checks whether or not this Task has finished.
-     * 
+     *
      * @return Returns true if this Task's status is finished.
      */
     public boolean isFinished() {
@@ -296,7 +296,7 @@ public class Task {
 
     /**
      * Checks whether of not this Task has failed.
-     * 
+     *
      * @return Returns true if this Task's status is failed.
      */
     public boolean isFailed() {
@@ -305,7 +305,7 @@ public class Task {
 
     /**
      * Checks if this Task is finished or if the Task has failed, if it's alternative has finished.
-     * 
+     *
      * @return Returns true if this task or it's alternative is finished.
      */
     public boolean isFinishedOrHasFinishedAlternative() {
@@ -318,7 +318,10 @@ public class Task {
 
     /**
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
-     * 
+     *
+     * @param peroid
+     *             The TimePeriod for when there has been worked on this project.
+     *
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
      */
@@ -333,7 +336,10 @@ public class Task {
 
     /**
      * Changes this Task's status to failed if possible, otherwise it throws an exception.
-     * 
+     *
+     * @param peroid
+     *             The TimePeriod for when there has been worked on this project.
+     *
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
      */
@@ -362,7 +368,7 @@ public class Task {
 
     /**
      * Checks whether or not this Task was finished before the estimated duration minus the acceptable deviation.
-     * 
+     *
      * @return Returns true if the Task has finished before the estimated duration minus the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
      */
     public boolean wasFinishedEarly() {
@@ -373,7 +379,7 @@ public class Task {
 
     /**
      * Checks whether or not this Task was finished within the acceptable deviation.
-     * 
+     *
      * @return Returns true if this Task has finished within the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
      */
     public boolean wasFinishedOnTime() {
@@ -385,7 +391,7 @@ public class Task {
 
     /**
      * Checks whether or not this Task was finished after the estimated duration plus the acceptable deviation.
-     * 
+     *
      * @return Returns true if the Task has finished before after the estimated duration plus the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
      */
     public boolean wasFinishedLate() {
