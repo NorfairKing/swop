@@ -61,6 +61,8 @@ public class ProjectManager {
      * @param project
      *            The project to be checked for validity.
      *
+     * @return Returns true if the given project is valid and therefore isn't null.
+     *
      */
     protected boolean canHaveAsProject(Project project) {
         return project != null;
