@@ -76,7 +76,7 @@ public class Task {
      * @return Returns true if the given duration is a valid duration for this task. Which means that it's greater than zero.
      */
     public boolean canHaveAsEstimatedDuration(double estimatedDuration) {
-        return estimatedDuration > 0;
+        return Double.isFinite(estimatedDuration) && estimatedDuration > 0;
     }
 
     /**
