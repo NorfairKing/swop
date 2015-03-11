@@ -45,6 +45,9 @@ public class ScenarioTest {
         
         Date currentDate = null;
         
+        /*
+         * Day 1
+         */
         currentDate = dateTimeFormat.parse("2015-02-09 08:00");
         facade.updateSystemTime(currentDate);
 
@@ -54,55 +57,188 @@ public class ScenarioTest {
         ProjectData projectData = new ProjectData(title, description, due);
         ProjectWrapper p1 = facade.createProject(projectData);
 
+        assertTrue(p1.isOngoing());
+        assertFalse(p1.isFinished());
         assertEquals(1, facade.getProjects().size());
 
 
         String d1 = "design system";
         double ed1 = 8 * 60;
         double ad1 = 0;
-        TaskData task1 = new TaskData(d1, ed1, ad1);
-        // TODO dependencies
-        TaskWrapper t1 = facade.createTaskFor(p1, task1);
+        TaskData t1r = new TaskData(d1, ed1, ad1);
+        TaskWrapper t1 = facade.createTaskFor(p1, t1r);
         assertEquals(1, facade.getTasksOf(p1).size());
+        assertEquals(0,t1.getDependencySet().size());
+        assertFalse(t1.isFinished());
+        assertFalse(t1.isFailed());
+        assertTrue(t1.canFinish());
+        assertTrue(t1.getAlternative() == null);
 
         String d2 = "implement system in native code";
         double ed2 = 16 * 60;
         double ad2 = 0.5;
-        TaskData task2 = new TaskData(d2, ed2, ad2);
-        // TODO dependencies
-        TaskWrapper t2 = facade.createTaskFor(p1, task2);
+        TaskData t2r = new TaskData(d2, ed2, ad2);
+        t2r.addDependency(t1);
+        TaskWrapper t2 = facade.createTaskFor(p1, t2r);
         assertEquals(2, facade.getTasksOf(p1).size());
+        assertEquals(1,t2.getDependencySet().size());
+        assertFalse(t2.isFinished());
+        assertFalse(t2.isFailed());
+        assertFalse(t2.canFinish());
+        assertTrue(t2.getAlternative() == null);
 
         String d3 = "test system";
         double ed3 = 8 * 60;
         double ad3 = 0;
-        TaskData task3 = new TaskData(d3, ed3, ad3);
-        // TODO dependencies
-        TaskWrapper t3 = facade.createTaskFor(p1, task3);
+        TaskData t3r = new TaskData(d3, ed3, ad3);
+        t3r.addDependency(t2);
+        TaskWrapper t3 = facade.createTaskFor(p1, t3r);
         assertEquals(3, facade.getTasksOf(p1).size());
+        assertEquals(1,t3.getDependencySet().size());
+        assertFalse(t3.isFinished());
+        assertFalse(t3.isFailed());
+        assertFalse(t3.canFinish());
+        assertTrue(t3.getAlternative() == null);
 
         String d4 = "write documentation";
         double ed4 = 8 * 60;
         double ad4 = 0;
-        TaskData task4 = new TaskData(d4, ed4, ad4);
-        // TODO dependencies
-        TaskWrapper t4 = facade.createTaskFor(p1, task4);
-        assertEquals(4, facade.getTasksOf(p1).size());
-        assertTrue(p1.isOngoing());
+        TaskData t4r = new TaskData(d4, ed4, ad4);
+        t4r.addDependency(t3);
+        TaskWrapper t4 = facade.createTaskFor(p1, t4r);
+        assertEquals(1,t4.getDependencySet().size());
+        assertFalse(t4.isFinished());
+        assertFalse(t4.isFailed());
+        assertFalse(t4.canFinish());
+        assertTrue(t4.getAlternative() == null);
+        
+        
 
+        /*
+         * Day 2
+         */
         currentDate = dateTimeFormat.parse("2015-02-10 08:00");
         facade.updateSystemTime(currentDate);
+        
         assertTrue(p1.isOngoing());
-        // TODO assertTrue(project1.isOnTime());
+        assertFalse(p1.isFinished());
+        assertTrue(p1.isOnTime());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(4, facade.getTasksOf(p1).size());
         
         
         Date t1Start = dateTimeFormat.parse("2015-02-09 08:00");
         Date t1Stop = dateTimeFormat.parse("2015-02-09 16:00");
-        TaskStatusData t1UpdateData = new TaskStatusData(t1Start, t1Stop, true);
-        facade.updateTaskStatusFor(t1, t1UpdateData);
- 
+        TaskStatusData t1u = new TaskStatusData(t1Start, t1Stop, true);
+        facade.updateTaskStatusFor(t1, t1u);
+        assertTrue(t1.isFinished());
         
         
+        assertTrue(t1.isFinished());
+        assertFalse(t1.isFailed());
+        assertFalse(t1.canFinish());
+        assertTrue(t1.getAlternative() == null);
+        assertFalse(t2.isFinished());
+        assertFalse(t2.isFailed());
+        assertTrue(t2.canFinish());
+        assertTrue(t2.getAlternative() == null);
+        assertFalse(t3.isFinished());
+        assertFalse(t3.isFailed());
+        assertFalse(t3.canFinish());
+        assertTrue(t3.getAlternative() == null);
+        assertFalse(t4.isFinished());
+        assertFalse(t4.isFailed());
+        assertFalse(t4.canFinish());
+        assertTrue(t4.getAlternative() == null);
         
+        /*
+         * Day 3
+         */
+        currentDate = dateTimeFormat.parse("2015-02-11 08:00");
+        facade.updateSystemTime(currentDate);
+        
+        assertTrue(p1.isOngoing());
+        assertFalse(p1.isFinished());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(4, facade.getTasksOf(p1).size());
+        assertTrue(p1.isOnTime());
+        
+        Date t2Start = dateTimeFormat.parse("2015-02-10 08:00");
+        Date t2Stop = dateTimeFormat.parse("2015-02-10 16:00");
+        TaskStatusData t2u = new TaskStatusData(t2Start, t2Stop, false);
+        facade.updateTaskStatusFor(t2, t2u);
+        assertTrue(t1.isFinished());
+        assertTrue(t2.isFailed());
+        assertFalse(t3.canFinish());
+        assertFalse(t4.canFinish());
+        assertTrue(t2.getAlternative() == null);
+        
+        
+        assertTrue(p1.isOngoing());
+        assertFalse(p1.isFinished());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(4, facade.getTasksOf(p1).size());
+        assertFalse(p1.isOnTime());
+        
+        String d5 = "implement system with phonegap";
+        double ed5 = 8;
+        double ad5 = 1;
+        TaskData t5d = new TaskData(d5, ed5, ad5);
+        t5d.addDependency(t1);
+        TaskWrapper t5 = null; // TODO create this as alternative for t2
+        assertEquals(1,t5.getDependencySet().size());
+        assertTrue(t5.canFinish());
+        assertFalse(t5.isFinished());
+        assertFalse(t5.isFailed());
+        assertTrue(t5.getAlternative() == null);
+        
+        assertTrue(t1.isFinished());
+        assertFalse(t1.isFailed());
+        assertFalse(t1.canFinish());
+        assertTrue(t1.getAlternative() == null);
+        assertFalse(t2.isFinished());
+        assertTrue(t2.isFailed());
+        assertFalse(t2.canFinish());
+        assertFalse(t2.getAlternative() == null);
+        assertFalse(t3.isFinished());
+        assertFalse(t3.isFailed());
+        assertFalse(t3.canFinish());
+        assertTrue(t3.getAlternative() == null);
+        assertFalse(t4.isFinished());
+        assertFalse(t4.isFailed());
+        assertFalse(t4.canFinish());
+        assertTrue(t4.getAlternative() == null); 
+        assertFalse(t5.isFinished());
+        assertFalse(t5.isFailed());
+        assertTrue(t5.canFinish());
+        assertTrue(t5.getAlternative() == null);
+        
+        /*
+         * Day 4
+         */
+        currentDate = dateTimeFormat.parse("2015-02-13 16:00");
+        facade.updateSystemTime(currentDate);
+        
+        assertFalse(p1.isOngoing());
+        assertTrue(p1.isFinished());
+        assertEquals(1,facade.getProjects().size());
+        assertEquals(5, facade.getTasksOf(p1).size());
+        assertTrue(p1.isOnTime());;
+        
+        
+        Date t5Start = dateTimeFormat.parse("2015-02-11 08:00");
+        Date t5Stop = dateTimeFormat.parse("2015-02-11 16:00");
+        TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
+        facade.updateTaskStatusFor(t5, t5u); 
+        
+        Date t3Start = dateTimeFormat.parse("2015-02-12 08:00");
+        Date t3Stop = dateTimeFormat.parse("2015-02-12 16:00");
+        TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
+        facade.updateTaskStatusFor(t3, t3u);
+        
+        Date t4Start = dateTimeFormat.parse("2015-02-13 08:00");
+        Date t4Stop = dateTimeFormat.parse("2015-02-13 16:00");
+        TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
+        facade.updateTaskStatusFor(t4, t4u); 
     }
 }

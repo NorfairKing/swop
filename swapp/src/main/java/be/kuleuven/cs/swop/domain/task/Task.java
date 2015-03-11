@@ -328,12 +328,21 @@ public class Task {
     }
 
     /**
-     * Checks whether of not this Task has failed.
+     * Checks whether or not this Task has failed.
      *
      * @return Returns true if this Task's status is failed.
      */
     public boolean isFailed() {
         return getStatus().isFailed();
+    }
+    
+    /**
+     * Checks whether or not this Task can finish.
+     * 
+     * @return Returns true if this Task's can be finished.
+     */
+    public boolean canFinish(){
+        return getStatus().canFinish();
     }
 
     /**

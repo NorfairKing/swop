@@ -64,6 +64,10 @@ public class TaskWrapper {
     public boolean isFailed() {
         return getTask().isFailed();
     }
+    
+    public boolean canFinish(){
+        return getTask().canFinish();
+    }
 
     public boolean wasFinishedEarly() {
         return task.wasFinishedEarly();
