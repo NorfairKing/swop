@@ -25,8 +25,7 @@ public class Project {
      *            The title for the project.
      * @param description
      *            The description for the project.
-     * @param creationTime
-     *            The date on which the project was created.
+     * @param creationTime The date on which the project was created.
      * @param dueTime
      *            The date on which the project should be finished.
      *
@@ -238,6 +237,8 @@ public class Project {
      *
      * @param acceptableDeviation
      *            The acceptable deviation of time for completing the Task.
+     *
+     * @return The newly created Task.
      *
      */
     public Task createTask(String description, double estimatedDuration, double acceptableDeviation) {
