@@ -222,7 +222,7 @@ public class Project {
      *            The Task to be added to this Project
      *
      */
-    public void addTask(Task task) {
+    private void addTask(Task task) {
         if (!Project.canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         tasks.add(task);
     }
