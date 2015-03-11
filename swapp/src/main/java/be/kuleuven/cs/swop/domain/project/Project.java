@@ -240,9 +240,10 @@ public class Project {
      *            The acceptable deviation of time for completing the Task.
      *
      */
-    public void createTask(String description, double estimatedDuration, double acceptableDeviation) {
+    public Task createTask(String description, double estimatedDuration, double acceptableDeviation) {
         Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
         addTask(newTask);
+        return newTask;
     }
 
     /**
