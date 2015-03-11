@@ -18,6 +18,14 @@ import be.kuleuven.cs.swop.data.TaskStatusData;
 /**
  * A simple command line interface
  */
+/**
+ * @author syd
+ *
+ */
+/**
+ * @author syd
+ *
+ */
 public class CLI implements UserInterface {
 
     private Scanner scanner;
@@ -186,13 +194,27 @@ public class CLI implements UserInterface {
         }
         System.out.println("\n# ----------------------------------");
 
+        
+        int index = promptNumber(0, projects.size());
+        if (index == 0){return null;}
+        else { return projects.get(index-1);}
+    }
+    
+    /**
+     * Prompt for a number between lo and hi inclusive.
+     * 
+     * @param lo The lower bound
+     * @param hi THe upper bound
+     * @return an interger between lo and hi inclusive
+     */
+    private int promptNumber(int lo, int hi){
         boolean validInput;
         int inputIndex = 0;
         do {
-            System.out.print("Choose a project (number) " + "[1-" + projects.size() + "] (0 to quit): ");
+            System.out.print("Please pick a number " + "[" + lo +"-" + hi + "] (0 to quit): ");
             try {
                 inputIndex = Integer.parseInt(this.scanner.nextLine());
-                validInput = (inputIndex >= 0 && inputIndex <= projects.size());
+                validInput = (inputIndex >= lo && inputIndex <= hi);
             } catch (NumberFormatException e) {
                 validInput = false;
             }
@@ -200,11 +222,7 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again!");
             }
         } while (!validInput);
-        if (inputIndex == 0) {
-            return null;
-        } else {
-            return projects.get(inputIndex - 1);
-        }
+        return inputIndex;
     }
 
     @Override
@@ -222,25 +240,10 @@ public class CLI implements UserInterface {
         }
         System.out.println("\n# ----------------------------------");
 
-        boolean validInput;
-        int inputIndex = 0;
-        do {
-            System.out.print("Choose a task (number) " + "[1-" + tasks.size() + "] (0 to quit): ");
-            try {
-                inputIndex = Integer.parseInt(this.scanner.nextLine());
-                validInput = (inputIndex >= 0 && inputIndex <= tasks.size());
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-        if (inputIndex == 0) {
-            return null;
-        } else {
-            return tasks.get(inputIndex - 1);
-        }
+        
+        int index = promptNumber(0, tasks.size());
+        if (index == 0){return null;}
+        else { return tasks.get(index-1);}
     }
 
     @Override
@@ -323,25 +326,9 @@ public class CLI implements UserInterface {
         }
 
         System.out.println("\n# ----------------------------------");
-        boolean validInput;
-        int inputIndex = 0;
-        do {
-            System.out.print("Choose a task (number) " + "[1-" + allTasks.size() + "] (0 to quit): ");
-            try {
-                inputIndex = Integer.parseInt(this.scanner.nextLine());
-                validInput = (inputIndex >= 0 && inputIndex <= allTasks.size());
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-        if (inputIndex == 0) {
-            return null;
-        } else {
-            return allTasks.get(inputIndex - 1);
-        }
+        int index = promptNumber(0, allTasks.size());
+        if (index == 0){return null;}
+        else { return allTasks.get(index-1);}
     }
 
     @Override
