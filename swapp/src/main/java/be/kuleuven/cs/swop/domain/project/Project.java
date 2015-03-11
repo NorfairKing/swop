@@ -120,14 +120,12 @@ public class Project {
     public boolean isOngoing() {
         if (getTasks().isEmpty()) return true;
 
-        boolean stillUnfinishedWork = false;
         for (Task task : getTasks()) {
             if (!task.isFinishedOrHasFinishedAlternative()) {
-                stillUnfinishedWork = true;
+                return true;
             }
         }
-
-        return stillUnfinishedWork;
+        return false;
     }
 
     /**
