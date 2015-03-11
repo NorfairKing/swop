@@ -6,30 +6,49 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 public class TaskTest {
+	private Task task;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+		task = new Task("Desc",100,0.1);
+	}
 
-    @Test
-    public void test() {
-        // TODO test something
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void canHaveAsDescriptionTest() {
+		assertTrue(task.canHaveAsDescription("Testdescription"));
+		assertFalse(task.canHaveAsDescription(null));
+	}
+
+	@Test
+	public void setDescriptionTest() {
+		task.setDescription("Testdescription");
+	}
+
+	@Test
+	public void setDescriptionNullTest() {
+		exception.expect(IllegalArgumentException.class);
+		task.setDescription(null);        
+	}
 
 }
