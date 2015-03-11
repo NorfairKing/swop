@@ -256,6 +256,22 @@ public class Project {
     public Set<Task> getTasks() {
         return ImmutableSet.copyOf(tasks);
     }
+    
+    public boolean isOnTime() {
+        Date lastTime = new Date(0);
+        for (Task task: getTasks()) {
+            Date lastTimeOfThis = task.getEstimatedOrRealFinishDate();
+            if (lastTimeOfThis.after(lastTime)) {
+                lastTime = lastTimeOfThis;
+            }
+        }
+        
+        return getDueTime().before(lastTime);
+    }
+    
+    public boolean isOverTime() {
+        return !isOnTime();
+    }
 
     private static final String ERROR_ILLEGAL_TITLE        = "Illegal title for project.";
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal description for project.";
