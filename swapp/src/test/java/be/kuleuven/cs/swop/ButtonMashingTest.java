@@ -33,7 +33,7 @@ public class ButtonMashingTest {
     @Test
     public void test() {
         int amount = 100000; // arbitrary number
-        //ui.performActions(amount);
+        ui.performActions(amount);
     }
 
 }
