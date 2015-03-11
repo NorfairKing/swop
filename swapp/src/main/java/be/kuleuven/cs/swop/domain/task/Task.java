@@ -34,16 +34,16 @@ public class Task {
         return description;
     }
 
-    public static boolean canHaveAsDescription(String description) {
+    public boolean canHaveAsDescription(String description) {
         return description != null;
     }
 
     public void setDescription(String description) {
-        if (!Task.canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
+        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
         this.description = description;
     }
 
-    public static boolean canHaveAsEstimatedDuration(double estimatedDuration) {
+    public boolean canHaveAsEstimatedDuration(double estimatedDuration) {
         return estimatedDuration > 0;
     }
 
@@ -52,16 +52,16 @@ public class Task {
     }
 
     public void setEstimatedDuration(double estimatedDuration) {
-        if (!Task.canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
+        if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
         this.estimatedDuration = estimatedDuration;
     }
 
-    public static boolean canHaveAsDependency(Task dependency) {
+    public boolean canHaveAsDependency(Task dependency) {
         return dependency != null;
     }
 
     public void addDependency(Task dependency) {
-        if (!Task.canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
+        if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
         this.dependencies.add(dependency);
     }
 
@@ -69,7 +69,7 @@ public class Task {
         return acceptableDeviation;
     }
 
-    public static boolean canHaveAsDeviation(double deviation) {
+    public boolean canHaveAsDeviation(double deviation) {
         if (Double.isNaN(deviation)) { return false; }
         if (Double.isInfinite(deviation)) { return false; }
         if (deviation < 0) { return false; }
@@ -77,7 +77,7 @@ public class Task {
     }
 
     public void setAcceptableDeviation(double acceptableDeviation) {
-        if (!Task.canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
+        if (!canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
         this.acceptableDeviation = acceptableDeviation;
     }
 
@@ -86,12 +86,12 @@ public class Task {
         return alternative;
     }
     
-    public static boolean canHaveAsAlternative(Task alternative) {
+    public boolean canHaveAsAlternative(Task alternative) {
         return true;
     }
 
-    public void setAlternative(Task alternative) {
-        if (!Task.canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
+    protected void setAlternative(Task alternative) {
+        if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }
 
