@@ -16,6 +16,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
+import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
+import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
+import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
 public class TaskTest {
@@ -218,6 +222,161 @@ public class TaskTest {
         assertFalse(task.canHaveBeenPerfomedDuring(null));
         task.finish(period);
         assertFalse(task.canHaveBeenPerfomedDuring(period));
+        assertTrue(period == task.getPerformedDuring());
+    }
+
+    @Test
+    public void getDependencySetTest(){
+        Task task2 = new Task("Hi",1,0);
+        task.addDependency(task2);
+        assertTrue(task.getDependencySet().contains(task2));
+    }
+
+    @Test
+    public void canHaveAsStatusTest(){
+        assertFalse(task.canHaveAsStatus(null));
+        assertTrue(task.canHaveAsStatus(new AvailableStatus()));
+        assertTrue(task.canHaveAsStatus(new FinishedStatus()));
+        assertTrue(task.canHaveAsStatus(new FailedStatus()));
+        assertTrue(task.canHaveAsStatus(new UnavailableStatus()));
+
+    }
+
+    @Test
+    public void finishTest(){
+        assertFalse(task.isFinished());
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        task.finish(period);
+        assertTrue(task.isFinished());
+    }
+
+    @Test
+    public void finishInvalidTest(){
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        Task dep = new Task("Hi",1,0);
+        task.addDependency(dep);
+        exception.expect(IllegalStateException.class);
+        task.finish(period);
+
+        Task task2 = new Task("Hi",1,0);
+        task2.fail(period);
+        exception.expect(IllegalStateException.class);
+        task2.finish(period);
+
+        Task task3 = new Task("Hi",1,0);
+        task3.finish(period);
+        exception.expect(IllegalStateException.class);
+        task3.finish(period);
+    }
+
+    @Test
+    public void failTest(){
+        assertFalse(task.isFailed());
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        task.fail(period);
+        assertTrue(task.isFailed());
+
+        Task task2 = new Task("Hi",1,0);
+        Task dep = new Task("Hi",1,0);
+        task2.addDependency(dep);
+        task2.fail(period);
+        assertTrue(task.isFailed());
+    }
+
+    @Test
+    public void failInvalidTest(){
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        task.fail(period);
+        exception.expect(IllegalStateException.class);
+        task.fail(period);
+
+        Task task2 = new Task("Hi",1,0);
+        task2.finish(period);
+        exception.expect(IllegalStateException.class);
+        task2.fail(period);
+    }
+
+    @Test
+    public void isFinishedOrHasFinishedAlternativeTest(){
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+
+        assertFalse(task.isFinishedOrHasFinishedAlternative());
+        task.finish(period);
+        assertTrue(task.isFinishedOrHasFinishedAlternative());
+
+        Task task2 = new Task("Hi",1,0);
+        Task task3 = new Task("Hi2",1,0);
+        task2.fail(period);
+        task2.setAlternative(task3);
+        assertFalse(task2.isFinishedOrHasFinishedAlternative());
+        task3.finish(period);
+        assertTrue(task2.isFinishedOrHasFinishedAlternative());
+    }
+
+    @Test
+    public void wasFinishedOnTimeTest(){
+        assertFalse(task.wasFinishedOnTime());
+        
+        Task task2 = new Task("Hi",10,0);
+        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
+        task2.finish(period);
+        assertTrue(task2.wasFinishedOnTime());
+        
+        Task task3 = new Task("Hi",5,1);
+        task3.finish(period);
+        assertTrue(task3.wasFinishedOnTime());
+        
+        Task task4 = new Task("Hi",5,0.5);
+        task4.finish(period);
+        assertFalse(task4.wasFinishedOnTime());
+        
+        Task task5 = new Task("Hi",20,0.1);
+        task5.finish(period);
+        assertFalse(task5.wasFinishedOnTime());
+    }
+    
+    @Test
+    public void wasFinishedEarlyTest(){
+        assertFalse(task.wasFinishedEarly());
+
+        Task task2 = new Task("Hi",10,0);
+        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
+        task2.finish(period);
+        assertFalse(task2.wasFinishedEarly());
+        
+        Task task3 = new Task("Hi",5,1);
+        task3.finish(period);
+        assertFalse(task3.wasFinishedEarly());
+        
+        Task task4 = new Task("Hi",5,0.5);
+        task4.finish(period);
+        assertFalse(task4.wasFinishedEarly());
+        
+        Task task5 = new Task("Hi",20,0.1);
+        task5.finish(period);
+        assertTrue(task5.wasFinishedEarly());
+    }
+    
+    @Test
+    public void wasFinishedLateTest(){
+        assertFalse(task.wasFinishedLate());
+        
+        Task task2 = new Task("Hi",10,0);
+        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
+        task2.finish(period);
+        assertFalse(task2.wasFinishedLate());
+        
+        Task task3 = new Task("Hi",5,1);
+        task3.finish(period);
+        assertFalse(task3.wasFinishedLate());
+        
+        Task task4 = new Task("Hi",5,0.5);
+        task4.finish(period);
+        assertTrue(task4.wasFinishedLate());
+        
+        Task task5 = new Task("Hi",20,0.1);
+        task5.finish(period);
+        assertFalse(task5.wasFinishedLate());
     }
 
 }

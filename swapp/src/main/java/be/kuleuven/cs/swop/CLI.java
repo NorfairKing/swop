@@ -274,7 +274,7 @@ public class CLI implements UserInterface {
         do {
             System.out.print("# Acceptable Deviation (%): ");
             try {
-                acceptableDeviation = Double.parseDouble(scanner.nextLine());
+                acceptableDeviation = Double.parseDouble(scanner.nextLine())/100;
                 validInput = acceptableDeviation >= 0;
             } catch (NumberFormatException e) {
                 validInput = false;
