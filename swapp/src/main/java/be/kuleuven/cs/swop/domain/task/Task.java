@@ -97,13 +97,6 @@ public class Task {
         this.estimatedDuration = estimatedDuration;
     }
 
-    /**
-     * Check whether this task contains a given task as a dependency.
-     * 
-     * @param dependency
-     *            The given possible dependency
-     * @return whether the given task is a dependency of this task
-     */
     private boolean containsDependency(Task dependency) {
         if (dependency == null) { return true; }
         for (Task subDep : this.getDependencySet()) {
@@ -113,14 +106,23 @@ public class Task {
         return false;
     }
 
+    /**
+     * Check whether this Task can have the given task as a dependency,
+     * the given Task can't be null and cannnot create a dependency loop when it's added as dependency to tis Task.
+     *
+     * @param dependency The given possible dependency.
+     * @return Returns true is the given Task isn't null or when it doesn't create a dependency loop when added as dependency.
+     */
     public boolean canHaveAsDependency(Task dependency) {
         if (dependency == null) { return false; }
         return (dependency != this) && !dependency.containsDependency(this);
     }
 
     /**
-     * Adds the given Task as dependency of this Task.
+     * Adds the given Task as dependency of this Task,
+     * this throws an exception when the new Task creates a dependency loop.
      * @param dependency The Task to be added as dependency of this Task.
+     * @throws IllegalArgumentException If the new dependency is invalid, this means that it can't be null or create a dependency loop.
      */
     public void addDependency(Task dependency) {
         if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
@@ -167,7 +169,12 @@ public class Task {
     }
 
     /**
-     * Checks wether of not the given Task is a valid alternative for this Task.
+     * Checks wether of not the given Task is a valid alternative for this Task,
+     * this Task can't have an alternative Task when the new alternative is null,
+     * when this Task already has a alternative and when the new alternative Task doesn't create
+     * a dependency loop when the new alternative is replaced by this Task,
+     * this Task has to be failed before you can set an alternative.
+     *
      * @param alternative The Task to be checked as possible alternative for this Task.
      * @return Returns true if the given Task can be an alternative for this Task.
      */
@@ -176,7 +183,8 @@ public class Task {
     }
 
     /**
-     * Sets an alternative Task for this Task for when this Task failed.
+     * Sets an alternative Task for this Task for when this Task failed,
+     * the alternative can't be null, can't create a dependency loop and this Task has to be failed.
      * @param alternative The Task to be set as alternative for this Task.
      * @throws IllegalArgumentException If the Task can't have the given Task as alternative.
      */
