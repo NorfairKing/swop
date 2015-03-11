@@ -36,9 +36,9 @@ public class TaskTest {
     public void canHaveAsDependencyTest() {
         Task t1 = new Task("task1",50,0);
         Task t2 = new Task("task2",60,0);
-        Task t3 = new Task("task3",60,0);
-        Task t4 = new Task("task4",60,0);
-        Task t5 = new Task("task5",60,0);
+        Task t3 = new Task("task3",70,0);
+        Task t4 = new Task("task4",80,0);
+        Task t5 = new Task("task5",90,0);
         
         // null can never be a depencency
         assertFalse(t1.canHaveAsDependency(null));
@@ -60,8 +60,24 @@ public class TaskTest {
         t2.addDependency(t4);
         
         assertTrue(t3.canHaveAsDependency(t5));
+        assertTrue(t4.canHaveAsDependency(t5));
         t3.addDependency(t5);
         t4.addDependency(t5);
+        
+        /*
+         * Tree at this point:
+         *      t1
+         *     /  \
+         *    v    v
+         *   t4 <-- t2
+         *   |       \
+         *    \       v
+         *     \      t3
+         *      \    /
+         *       v  v
+         *        t5
+         * 
+         */
         
         // Tests for dependency loops
         assertFalse(t2.canHaveAsDependency(t1));
