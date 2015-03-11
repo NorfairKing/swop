@@ -161,7 +161,9 @@ public class ProjectManager {
                 projects.add(p);
             }
             for (Map<String, Object> task : parsedFile.get("tasks")) {
-                Task temp = new Task((String) task.get("description"), (double) (int) task.get("estimatedDuration"), (double) (int) task.get("acceptableDeviation"));
+                // Get Project and add the task
+                int projectIndex = (int) task.get("project");
+                Task temp = projects.get(projectIndex).createTask((String) task.get("description"), (double) (int) task.get("estimatedDuration"), (double) (int) task.get("acceptableDeviation"));
 
                 // Set Status
                 String status = (String) task.get("status");
@@ -181,10 +183,6 @@ public class ProjectManager {
                             break;
                     }
                 }
-
-                // Add to project
-                int projectIndex = (int) task.get("project");
-                projects.get(projectIndex).addTask(temp);
 
                 // Add prerequisites
                 List<Integer> prerequisites = (List<Integer>) task.get("prerequisiteTasks");
