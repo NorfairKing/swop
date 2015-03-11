@@ -21,7 +21,8 @@ PLANT       = 	domain_uml.eps \
 				sequence_update_task_status_cancel_2_uml.eps \
 				sequence_advance_time_uml.eps \
 				sequence_advance_time_cancel_uml.eps
-GRAPHVIZ    = task_dfs.eps
+GRAPHVIZ    = task_dfs.eps \
+              project_dfs.eps
 
 all: plantuml_illustrations graphviz_illustrations
 
