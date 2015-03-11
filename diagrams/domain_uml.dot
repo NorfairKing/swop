@@ -3,16 +3,16 @@
 ProjectManager "1" --> "0..*" Project : manages >
 
 Project "1" --> "0..*" Task : consistsOf >
-Project --> "1" Date : creationTime
-Project --> "1" Date : dueTime
+Project --* "1" Date : creationTime
+Project --* "1" Date : dueTime
 
-Task --> "1" TaskStatus : status
+Task --* "1" TaskStatus : status
 Task --> "0..1" Task : alternative >
 Task --> "0..*"  Task : dependsOn >
-Task --> "1" TimePeriod : performedDuring
+Task --> "1" TimePeriod : performedDuring >
 
-TimePeriod --> "1" Date : startTime
-TimePeriod --> "1" Date : endTime
+TimePeriod --* "1" Date : startTime
+TimePeriod --* "1" Date : endTime
 
 TaskStatus <|-- AvailableStatus
 TaskStatus <|-- UnavailableStatus
