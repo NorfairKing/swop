@@ -8,7 +8,6 @@ digraph finite_state_machine {
     failed          [label="failed",peripheries=2];
 
     start -> available[label="create normal"];
-    start -> unavailable[label="create with dependencies"];
 
     available -> unavailable [label="add unfinished dependency"];
     available -> finished    [label="finish"];
@@ -17,16 +16,14 @@ digraph finite_state_machine {
     unavailable -> available [label="all dependencies finished"];
     unavailable -> failed    [label="fail"];
     // unavailable -> finished not possible
-    
+
     // finished -> available not possible
     // finished -> unavailable not possible
     // finished -> failed not possible
-    
+
     // failed -> available not possible
     // failed -> unavailable not possible
     // failed -> finished not possible
 
-    
+
 }
-
-

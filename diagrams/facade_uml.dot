@@ -12,6 +12,32 @@ FacadeController --* "1" ProjectManager
 SessionController --* "1" UserInterface
 SessionController --* "1" FacadeController
 
+/'UserInterface ..> ProjectWrapper
+UserInterface ..> TaskWrapper
+UserInterface ..> ProjectData
+UserInterface ..> TaskData
+UserInterface ..> TaskStatusData
+
+FacadeController ..> ProjectWrapper
+FacadeController ..> TaskWrapper
+FacadeController ..> ProjectData
+FacadeController ..> TaskData
+FacadeController ..> TaskStatusData
+
+SessionController ..> ProjectWrapper
+SessionController ..> TaskWrapper
+SessionController ..> ProjectData
+SessionController ..> TaskData
+SessionController ..> TaskStatusData'/
+
+UserInterface ..> XXXWrapper
+UserInterface ..> XXXData
+
+FacadeController ..> XXXWrapper
+FacadeController ..> XXXData
+
+SessionController ..> XXXWrapper
+SessionController ..> XXXData
 
 class App {
   void main(String.. args)
@@ -57,11 +83,31 @@ class ProjectManager {
   // See domain diagram
 }
 
-class ProjectWrapper {
+/'class ProjectWrapper {
 
 }
 
 class TaskWrapper {
+
+}
+
+class ProjectData {
+
+}
+
+class TaskData {
+
+}
+
+class TaskStatusData {
+
+}'/
+
+class XXXWrapper {
+
+}
+
+class XXXData {
 
 }
 
