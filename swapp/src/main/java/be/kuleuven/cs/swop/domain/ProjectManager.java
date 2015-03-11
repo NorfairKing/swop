@@ -153,6 +153,16 @@ public class ProjectManager {
         addProject(project);
         return project;
     }
+    
+    public Project getProjectFor(Task task) {
+        for (Project project: getProjects()) {
+            if (project.containsTask(task)) {
+                return project;
+            }
+        }
+        
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     private void initialiseWith(String initFile) {

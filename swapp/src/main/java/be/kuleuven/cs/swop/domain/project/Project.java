@@ -255,6 +255,10 @@ public class Project {
         return ImmutableSet.copyOf(tasks);
     }
     
+    public boolean containsTask(Task task) {
+        return getTasks().contains(task);
+    }
+    
     public boolean isOnTime() {
         Date lastTime = new Date(0);
         for (Task task: getTasks()) {

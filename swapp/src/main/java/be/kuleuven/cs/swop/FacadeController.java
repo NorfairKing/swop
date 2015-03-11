@@ -68,6 +68,18 @@ public class FacadeController {
         
         return new TaskWrapper(createdTask);
     }
+    
+    public TaskWrapper createAlternativeFor(TaskWrapper task, TaskData data) {
+        if (task == null) { throw new IllegalArgumentException("Trying to create alternative for null task"); }
+        
+        Project project = projectManager.getProjectFor(task.getTask());
+        
+        TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
+        
+        task.getTask().setAlternative(alternative.getTask());
+        
+        return alternative;
+    }
 
     public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) throws IllegalArgumentException {
         if (task == null) { throw new IllegalArgumentException("Null task for status update"); }
