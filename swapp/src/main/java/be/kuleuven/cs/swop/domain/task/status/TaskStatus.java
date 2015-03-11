@@ -16,7 +16,7 @@ public abstract class TaskStatus {
         return task;
     }
 
-    protected static boolean canHaveAsTask(Task task) {
+    protected boolean canHaveAsTask(Task task) {
         return task != null;
     }
 
