@@ -11,7 +11,7 @@ public class App {
 	public static void main(String[] args) {
 	    if (args.length != 1) throw new IllegalArgumentException("Not enough or too many arguments.");
 	    
-		CLI ui = new CLI();
+		UserInterface ui = new CLI();
         
 		String initialisationFilePath = args[0];
         FacadeController facade = new FacadeController(initialisationFilePath);

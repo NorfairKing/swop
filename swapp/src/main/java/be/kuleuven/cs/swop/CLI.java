@@ -35,7 +35,8 @@ public class CLI implements UserInterface {
         this.scanner = new Scanner(System.in);
     }
 
-    public int start() {
+    @Override
+    public void start() {
         System.out.println("Welcome to TaskMan");
         System.out.println("Enter \"h\" for help.");
         String command;

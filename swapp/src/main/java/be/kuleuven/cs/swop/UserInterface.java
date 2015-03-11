@@ -25,4 +25,6 @@ public interface UserInterface {
     
     public SessionController getSessionController();
     public void setSessionController(SessionController session);
+    
+    public void start();
 }
