@@ -213,7 +213,11 @@ public class TaskTest {
 
     @Test
     public void canHaveBeenPerfomedDuringTest() {
-
+        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        assertTrue(task.canHaveBeenPerfomedDuring(period));
+        assertFalse(task.canHaveBeenPerfomedDuring(null));
+        task.finish(period);
+        assertFalse(task.canHaveBeenPerfomedDuring(period));
     }
 
 }
