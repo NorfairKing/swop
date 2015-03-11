@@ -177,8 +177,11 @@ public class Project {
     }
 
     /**
+     * Checks whether or not the given dueTime is valid,
+     * this means it can't be null and it has to be after the project's creation time.
      *
      * @param dueTime
+     *            The Date to be checked for validity.
      * @return The dueTime must be after the creation of this project.
      *
      */
