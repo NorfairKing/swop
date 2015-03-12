@@ -97,6 +97,7 @@ public class SessionController {
         // The user selects a project to view more details
         ProjectWrapper project = getUi().selectProject(projects);
 
+        // if the user indicates he wants to leave the overview.
         if (project == null) return;
 
         // The system presents an overview of the project details
@@ -105,6 +106,7 @@ public class SessionController {
         // The user selects a task for more details
         TaskWrapper task = getUi().selectTask(project.getTasks());
 
+        // if the user indicates he wants to leave the overview.
         if (task == null) return;
 
         // The system presents an overview of the task details
@@ -121,6 +123,7 @@ public class SessionController {
             // The system asks for the required data
             ProjectData data = getUi().getProjectData();
 
+            // if the user indicates he wants to leave the overview.
             if (data == null) return; // ui should return null if user cancels.
 
             // The project is created using the data provided by the user
@@ -131,7 +134,7 @@ public class SessionController {
             } catch (IllegalArgumentException e) {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
-        } while (true);
+        } while (true); //loop until user gives proper data, or cancels.
     }
 
     /**
@@ -139,16 +142,23 @@ public class SessionController {
      * the information necessary for creating a new task from the user.
      */
     public void startCreateTaskSession() {
+        // The user indicates he wants to create a new task
         do {
+            // the system asks for which project to create a task
+            // slight deviation from use-case, as they don't specify when the user should select this
             Set<ProjectWrapper> projects = getFacade().getProjects();
             ProjectWrapper project = getUi().selectProject(projects);
 
+            // If the user indicates he wants to leave the overview.
             if (project == null) return;
 
+            // The system shows the task creation form
             TaskData data = getUi().getTaskData();
 
+            // if the user indiactes he wants to leave the overview.
             if (data == null) return;
 
+            // The system creates the task
             try {
                 getFacade().createTaskFor(project, data);
                 // Finish only when successful
@@ -156,7 +166,7 @@ public class SessionController {
             } catch (IllegalArgumentException e) {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
-        } while (true);
+        } while (true); // loop until proper data is given, or the user cancels.
     }
 
     /**
@@ -165,17 +175,24 @@ public class SessionController {
      */
     public void startUpdateTaskStatusSession() {
         // User indicates he wants to update the status of a task
+        
+        // The system show a list of all available tasks and the projects they belong to
+        // The user selects a task he wants to change
         Set<ProjectWrapper> projects = getFacade().getProjects();
         TaskWrapper task = getUi().selectTaskFromProjects(projects);
 
+        // if the user indicates he wants to leave the overview.
         if (task == null) return;
 
         do {
             try {
+                // The user enters all required details
                 TaskStatusData statusData = getUi().getUpdateStatusData();
 
+                // if the user cancels.
                 if (statusData == null) return;
 
+                // the system updates the task status
                 getFacade().updateTaskStatusFor(task, statusData);
 
                 // Finish wel successful
@@ -185,7 +202,7 @@ public class SessionController {
             } catch (IllegalStateException e) {
                 getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
             }
-        } while (true);
+        } while (true); //loop until proper data was given or user canceled.
     }
 
     /**
@@ -197,8 +214,10 @@ public class SessionController {
         // The system allows the user to choose a new time
         Date time = getUi().getTimeStamp();
 
+        // if the user cancels.
         if (time == null) return;
 
+        // the system updates the system time.
         getFacade().updateSystemTime(time);
     }
 
