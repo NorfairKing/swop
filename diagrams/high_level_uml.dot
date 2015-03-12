@@ -8,24 +8,11 @@ class CLI {
 
 CLI -|> UI
 
-UI *-- ListProjectsSessionController
-UI *-- CreateTaskSessionController
-UI *-- CreateProjectSessionController
-UI *-- AdvanceTimeSessionController
-UI *-- UpdateTaskSessionController
+UI *-- SessionController
 
-ListProjectsSessionController *-- FacadeController
-CreateTaskSessionController *-- FacadeController
-CreateProjectSessionController *-- FacadeController
-AdvanceTimeSessionController *-- FacadeController
-UpdateTaskSessionController *-- FacadeController
+SessionController *-- FacadeController
 
-
-class ListProjectsSessionController
-class CreateTaskSessionController
-class CreateProjectSessionController
-class AdvanceTimeSessionController
-class UpdateTaskSessionController
+class SessionController
 
 class FacadeController
 
