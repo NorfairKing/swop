@@ -45,9 +45,9 @@ public class ScenarioTest {
     public void scenario1Test() throws ParseException {
         DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         dateTimeFormat.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
-        
+
         Date currentDate = null;
-        
+
         /*
          * Day 1
          */
@@ -116,14 +116,14 @@ public class ScenarioTest {
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertTrue(t4.getAlternative() == null);
-        
+
 
         /*
          * Day 2
          */
         currentDate = dateTimeFormat.parse("2015-02-10 08:00");
         facade.updateSystemTime(currentDate);
-        
+
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
@@ -131,15 +131,15 @@ public class ScenarioTest {
         assertFalse(p1.isOverTime());;
         assertEquals(1,facade.getProjects().size());
         assertEquals(4, facade.getTasksOf(p1).size());
-        
-        
+
+
         Date t1Start = dateTimeFormat.parse("2015-02-09 08:00");
         Date t1Stop = dateTimeFormat.parse("2015-02-09 16:00");
         TaskStatusData t1u = new TaskStatusData(t1Start, t1Stop, true);
         facade.updateTaskStatusFor(t1, t1u);
         assertTrue(t1.isFinished());
-        
-        
+
+
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
@@ -156,20 +156,20 @@ public class ScenarioTest {
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
-        
+
         /*
          * Day 3
          */
         currentDate = dateTimeFormat.parse("2015-02-11 08:00");
         facade.updateSystemTime(currentDate);
-        
+
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertEquals(1,facade.getProjects().size());
         assertEquals(4, facade.getTasksOf(p1).size());
         assertTrue(p1.isOnTime());
         assertFalse(p1.isOverTime());;
-        
+
         Date t2Start = dateTimeFormat.parse("2015-02-10 08:00");
         Date t2Stop = dateTimeFormat.parse("2015-02-10 16:00");
         TaskStatusData t2u = new TaskStatusData(t2Start, t2Stop, false);
@@ -179,10 +179,10 @@ public class ScenarioTest {
         assertFalse(t3.canFinish());
         assertFalse(t4.canFinish());
         assertNull(t2.getAlternative());
-        
+
         // Next part
-        
-        
+
+
         String d5 = "implement system with phonegap";
         double ed5 = 8*60;
         double ad5 = 1;
@@ -194,50 +194,56 @@ public class ScenarioTest {
         assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
         assertNull(t5.getAlternative());
-        
+
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertEquals(1,facade.getProjects().size());
         assertEquals(5, facade.getTasksOf(p1).size());
+
+
+        //assertFalse(p1.isOnTime()); 
+        //assertTrue(p1.isOverTime());
         assertTrue(p1.isOnTime()); //FIXME: MISTAKE IN ASSIGNMENT?
         assertFalse(p1.isOverTime());
-        
+
+
+
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
-        
-        
+
+
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
         assertNotNull(t2.getAlternative());
-        
-        
+
+
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
-        
-        
+
+
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
-        
-        
+
+
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
         assertNull(t5.getAlternative());
-        
+
         /*
          * Day 4
          */
         currentDate = dateTimeFormat.parse("2015-02-13 16:00");
         facade.updateSystemTime(currentDate);
-        
-        
+
+
         Date t5Start = dateTimeFormat.parse("2015-02-11 08:00");
         Date t5Stop = dateTimeFormat.parse("2015-02-11 16:00");
         TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
@@ -247,7 +253,7 @@ public class ScenarioTest {
         assertTrue(t3.canFinish());
         assertTrue(t4.canFinish());
         assertTrue(t5.isFinished());
-        
+
         Date t3Start = dateTimeFormat.parse("2015-02-12 08:00");
         Date t3Stop = dateTimeFormat.parse("2015-02-12 16:00");
         TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
@@ -257,7 +263,7 @@ public class ScenarioTest {
         assertTrue(t3.isFinished());
         assertTrue(t4.canFinish());
         assertTrue(t5.isFinished());
-        
+
         Date t4Start = dateTimeFormat.parse("2015-02-13 08:00");
         Date t4Stop = dateTimeFormat.parse("2015-02-13 16:00");
         TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
@@ -267,14 +273,14 @@ public class ScenarioTest {
         assertTrue(t3.isFinished());
         assertTrue(t4.isFinished());
         assertTrue(t5.isFinished());
-        
+
         assertFalse(p1.isOngoing());
         assertTrue(p1.isFinished());
         assertEquals(1,facade.getProjects().size());
         assertEquals(5, facade.getTasksOf(p1).size());
         assertTrue(p1.isOnTime());;
         assertFalse(p1.isOverTime());;
-        
+
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());

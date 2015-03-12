@@ -47,7 +47,6 @@ public class TimeKeeperTest {
     @Test
     public void workingMinutesBetweenAdvancedTest(){
         assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis)),8*60);
-        System.out.println("test");
         assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis + 30 * minuteMillis)),8*60);
         assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis + 8 * hourMillis +30 * minuteMillis)),8*60 + 30);
         assertEquals(Timekeeper.workingMinutesBetween(new Date(7 * hourMillis), new Date(dayMillis + 9 * hourMillis)),9*60);
