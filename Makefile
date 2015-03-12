@@ -2,10 +2,10 @@
 
 all:
 	mkdir -p pkg/
-	mvn package -f swapp/
+	mvn package -f swapp/pom.xml
 	cp swapp/target/*jar-with-dependencies.jar pkg/system.jar
 	cp -r swapp/src pkg/
-	mvn javadoc:javadoc -f swapp/
+	mvn javadoc:javadoc -f swapp/pom.xml
 	mkdir -p pkg/doc
 	cp -r swapp/target/site/apidocs/* pkg/doc
 	mkdir -p pkg/diagrams
