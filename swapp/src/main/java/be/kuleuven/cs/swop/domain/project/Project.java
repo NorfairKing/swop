@@ -254,11 +254,27 @@ public class Project {
     public Set<Task> getTasks() {
         return ImmutableSet.copyOf(tasks);
     }
-    
+
+    /**
+     * Checks whether or not this Project contains the given Task.
+     *
+     * @param task The task that will be checked of this Project contains it.
+     *
+     * @return Returns true of this Project contains the given Task.
+     *
+     */
     public boolean containsTask(Task task) {
         return getTasks().contains(task);
     }
-    
+
+    /**
+     * Check whether or not this Project has finished on time,
+     * or when all Tasks haven't finished yet, whether or not it probably will
+     * finish on time.
+     *
+     * @return Returns true if this project is on time.
+     *
+     */
     public boolean isOnTime() {
         Date lastTime = new Date(0);
         for (Task task: getTasks()) {
@@ -267,10 +283,16 @@ public class Project {
                 lastTime = lastTimeOfThis;
             }
         }
-        
+
         return getDueTime().after(lastTime);
     }
-    
+
+    /**
+     * Check whether or not this Project isn't on time.
+     *
+     * @return Returns false when this Project is on time.
+     *
+     */
     public boolean isOverTime() {
         return !isOnTime();
     }
