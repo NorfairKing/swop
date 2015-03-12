@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 
 import java.util.Date;
 
+import javax.jws.Oneway;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -26,6 +28,7 @@ public class ProjectTest {
 
     private static long      milisPerMinute = 60 * 1000;
     private static long      milisPerHour   = 60 * milisPerMinute;
+    private static long      minutesPerHour = 60;
 
     private Project          project;
     private Project          timeProject;
@@ -148,28 +151,28 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeOneTaskTest1() {
-        timeProject.createTask("task1", 7 * milisPerHour, 0); // less then 8 hours of work
+        timeProject.createTask("task1", 7 * minutesPerHour, 0); // less then 8 hours of work
         assertTrue(timeProject.isOnTime());
         assertFalse(timeProject.isOverTime());
     }
 
     public void isOnTimeOneTaskTest2() {
-        timeProject.createTask("task1", 8 * milisPerHour, 0); // exactly one workday
+        timeProject.createTask("task1", 8 * minutesPerHour, 0); // exactly one workday
         assertTrue(timeProject.isOnTime());
         assertFalse(timeProject.isOverTime());
     }
 
     @Test
     public void isOnTimeOneTaskTest3() {
-        timeProject.createTask("task1", 9 * milisPerHour, 0); // more than 8 hours of work
+        timeProject.createTask("task1", 9 * minutesPerHour, 0); // more than 8 hours of work
         assertFalse(timeProject.isOnTime());
         assertTrue(timeProject.isOverTime());
     }
 
     @Test
     public void isOnTimeTwoParallelTasksTest1() {
-        timeProject.createTask("task1", 6 * milisPerHour, 0); // 6 hours and
-        timeProject.createTask("task2", 7 * milisPerHour, 0.5); // 7 hours BUT these are parralellizable
+        timeProject.createTask("task1", 6 * minutesPerHour, 0); // 6 hours and
+        timeProject.createTask("task2", 7 * minutesPerHour, 0.5); // 7 hours BUT these are parralellizable
 
         assertTrue(timeProject.isOnTime());
         assertFalse(timeProject.isOverTime());
@@ -177,8 +180,8 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeTwoParallelTasksTest2() {
-        timeProject.createTask("task1", 6 * milisPerHour, 0); // 6 hours and
-        timeProject.createTask("task2", 9 * milisPerHour, 0.5); // 7 hours BUT these are parralellisable
+        timeProject.createTask("task1", 6 * minutesPerHour, 0); // 6 hours and
+        timeProject.createTask("task2", 9 * minutesPerHour, 0.5); // 7 hours BUT these are parralellisable
 
         assertFalse(timeProject.isOnTime());
         assertTrue(timeProject.isOverTime());
@@ -186,8 +189,8 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeTwoSerialTasksTest1() {
-        Task task1 = timeProject.createTask("task1", 2 * milisPerHour, 0); // 2 hours and
-        Task task2 = timeProject.createTask("task2", 5 * milisPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
+        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
         task1.addDependency(task2);
 
         assertTrue(timeProject.isOnTime());
@@ -196,12 +199,252 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeTwoSerialTasksTest2() {
-        Task task1 = timeProject.createTask("task1", 4 * milisPerHour, 0); // 4 hours and
-        Task task2 = timeProject.createTask("task2", 5 * milisPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0); // 4 hours and
+        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
         task1.addDependency(task2);
 
         assertFalse(timeProject.isOnTime());
         assertTrue(timeProject.isOverTime());
     }
 
+    @Test
+    public void isOnTimeOneTaskWithAlternativeTest1() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0);
+        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
+
+        Timekeeper.setTime(new Date(10 * milisPerHour));
+        task1.fail(new TimePeriod(new Date(8*milisPerHour), new Date(10 * milisPerHour)));
+        task1.setAlternative(task2);
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeOneTaskWithAlternativeTest2() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0);
+        Task task2 = timeProject.createTask("task2", 7 * minutesPerHour, 0.5);
+
+        Timekeeper.setTime(new Date(10 * milisPerHour));
+        task1.fail(new TimePeriod(new Date(8*milisPerHour), new Date(10 * milisPerHour)));
+        task1.setAlternative(task2);
+
+        assertFalse(timeProject.isOnTime());
+        assertTrue(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeOneTaskWithAlternativeTest3() {
+        Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0);
+        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
+
+        Timekeeper.setTime(new Date(10 * milisPerHour));
+        task1.fail(new TimePeriod(new Date(8*milisPerHour), new Date(10 * milisPerHour)));
+        task1.setAlternative(task2);
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeOneTaskWithAlternativeTest4() {
+        Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0);
+        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
+
+        Timekeeper.setTime(new Date(12 * milisPerHour));
+        task1.fail(new TimePeriod(new Date(8*milisPerHour), new Date(12 * milisPerHour)));
+        task1.setAlternative(task2);
+
+        assertFalse(timeProject.isOnTime());
+        assertTrue(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeTwoLayersTest1() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
+        Task task2 = timeProject.createTask("task2", 3 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task3 = timeProject.createTask("task3", 4 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task4 = timeProject.createTask("task4", 5 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+
+        task1.addDependency(task2);
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+
+        task2.addDependency(task3);
+
+        assertFalse(timeProject.isOnTime());
+        assertTrue(timeProject.isOverTime());
+
+        task2.addDependency(task4);
+
+        assertFalse(timeProject.isOnTime());
+        assertTrue(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeTwoLayersTest2() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
+        Task task2 = timeProject.createTask("task2", 3 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task3 = timeProject.createTask("task3", 4 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task4 = timeProject.createTask("task4", 5 * minutesPerHour, 0.5); // 5 hours BUT we need to add these up because 2 has to happen before 1
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+
+        task1.addDependency(task2);
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+
+        task1.addDependency(task3);
+
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+
+        task3.addDependency(task4);
+
+        assertFalse(timeProject.isOnTime());
+        assertTrue(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeLotOfTasksTest() {
+        Project p = new Project("title", "description", new Date(0), new Date(5 * 24 * milisPerHour)); // 24 hours of possible work
+
+        Task task1 = p.createTask("task1", 1 * minutesPerHour, 0);
+        Task task2 = p.createTask("task2", 2 * minutesPerHour, 0);
+        Task task3 = p.createTask("task3", 3 * minutesPerHour, 0);
+        Task task4 = p.createTask("task4", 4 * minutesPerHour, 0);
+        Task task5 = p.createTask("task5", 5 * minutesPerHour, 0);
+        Task task6 = p.createTask("task6", 6 * minutesPerHour, 0);
+        Task task7 = p.createTask("task7", 7 * minutesPerHour, 0);
+        Task task8 = p.createTask("task8", 8 * minutesPerHour, 0);
+        Task task9 = p.createTask("task9", 9 * minutesPerHour, 0);
+
+        task1.addDependency(task2);
+        task1.addDependency(task3);
+        task1.addDependency(task4);
+
+        task2.addDependency(task5);
+        task2.addDependency(task6);
+        task2.addDependency(task7);
+
+        task3.addDependency(task8);
+        task8.addDependency(task9);
+        
+        assertTrue(timeProject.isOnTime()); // 9+8+3+4 <= 24
+        assertFalse(timeProject.isOverTime());
+        
+        Timekeeper.setTime(new Date(12 * milisPerHour));
+        task4.finish(new TimePeriod(new Date(8*milisPerHour),new Date(12*milisPerHour)));
+        
+        assertFalse(timeProject.isOnTime()); // 9+8+3+4 > 20
+        assertTrue(timeProject.isOverTime());
+    }
+
+    @Test
+    public void isOnTimeOneFinishedTaskTest1() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
+        
+        Timekeeper.setTime(new Date(2 * milisPerHour));
+        task1.finish(new TimePeriod(new Date(0),new Date(2*milisPerHour)));
+        
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+        
+        Timekeeper.setTime(new Date(24 * milisPerHour));
+        
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+    }
+    
+    @Test
+    public void isOnTimeOneFinishedTaskTest2() {
+        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
+        
+        Timekeeper.setTime(new Date(15* milisPerHour));
+        task1.finish(new TimePeriod(new Date(12*milisPerHour),new Date(14*milisPerHour)));
+        
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+        
+        Timekeeper.setTime(new Date(24 * milisPerHour));
+        
+        assertTrue(timeProject.isOnTime());
+        assertFalse(timeProject.isOverTime());
+    }
+    
+    @Test
+    public void isOnTimeSuperComplexTest(){
+        Timekeeper.setTime(new Date(8 * milisPerHour));
+        Project p = new Project("title", "description", new Date(0), new Date(7 * 24 * milisPerHour)); // 40 hours of possible work
+
+        Task task1 = p.createTask("task1", 1 * minutesPerHour, 0);
+        Task task2 = p.createTask("task2", 2 * minutesPerHour, 0);
+        Task task3 = p.createTask("task3", 3 * minutesPerHour, 0);
+        Task task4 = p.createTask("task4", 4 * minutesPerHour, 0);
+        Task task5 = p.createTask("task5", 5 * minutesPerHour, 0);
+        
+        task1.addDependency(task2);
+        task1.addDependency(task3);
+        task1.addDependency(task4);
+        
+        Timekeeper.setTime(new Date(12* milisPerHour));
+        task4.fail(new TimePeriod(new Date(8*milisPerHour), new Date(10*milisPerHour)));
+        task4.setAlternative(task5);
+        
+        
+        assertTrue(timeProject.isOnTime()); // 5+1 hours to go in 36 hours
+        assertFalse(timeProject.isOverTime());
+        
+        
+        Task task6 = p.createTask("task6", 6 * minutesPerHour, 0);
+        Task task7 = p.createTask("task7", 7 * minutesPerHour, 0);
+        
+        
+        task5.addDependency(task6);
+        task5.addDependency(task7);
+        
+        Timekeeper.setTime(new Date(16* milisPerHour));
+        task7.finish(new TimePeriod(new Date(12*milisPerHour),new Date(16*milisPerHour)));
+        task2.finish(new TimePeriod(new Date(12*milisPerHour),new Date(16*milisPerHour)));
+        
+        assertTrue(timeProject.isOnTime()); // 12 hours to go in 32 hours
+        assertFalse(timeProject.isOverTime());
+        
+        
+        Task task8 = p.createTask("task8", 8 * minutesPerHour, 0);
+        Task task9 = p.createTask("task9", 9 * minutesPerHour, 0);
+        Task task10 = p.createTask("task10", 10 * minutesPerHour, 0);
+        Task task11 = p.createTask("task11", 11 * minutesPerHour, 0);
+        Task task12 = p.createTask("task12", 12 * minutesPerHour, 0);
+        
+        task3.addDependency(task8);
+        task8.addDependency(task9);
+        task9.addDependency(task10);
+        task9.addDependency(task11);
+        task9.addDependency(task12);
+        
+        assertFalse(timeProject.isOnTime()); // 12+9+8+3+1 hours to go in 32 hours
+        assertTrue(timeProject.isOverTime());
+        
+        task9.fail(new TimePeriod(new Date(12*milisPerHour), new Date(16*milisPerHour)));
+        Task task13 = p.createTask("task13", 13 * minutesPerHour, 0);
+        task9.setAlternative(task13);
+        
+        assertTrue(timeProject.isOnTime()); //13+8+3+1 hours to go in 32 hours
+        assertFalse(timeProject.isOverTime());
+        
+        
+        task13.fail(new TimePeriod(new Date(12*milisPerHour), new Date(16*milisPerHour)));
+        Task task23 = p.createTask("task23", 23 * minutesPerHour, 0);
+        task13.setAlternative(task23);
+        
+        assertFalse(timeProject.isOnTime()); // 23+8+3+1 hours to go in 32 hours
+        assertTrue(timeProject.isOverTime());
+    }
 }
