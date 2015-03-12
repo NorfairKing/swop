@@ -276,7 +276,7 @@ public class Project {
      *
      */
     public boolean isOnTime() {
-        return getDueTime().after(estimatedFinishTime());
+        return !getDueTime().before(estimatedFinishTime());
     }
     
     public Date estimatedFinishTime(){

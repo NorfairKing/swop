@@ -6,8 +6,10 @@ import static org.junit.Assert.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,6 +20,7 @@ import org.junit.Test;
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
+import be.kuleuven.cs.swop.domain.Timekeeper;
 
 
 public class ScenarioTest {
@@ -40,8 +43,8 @@ public class ScenarioTest {
 
     @Test
     public void scenario1Test() throws ParseException {
-        DateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateTimeFormat.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
         
         Date currentDate = null;
         
@@ -53,7 +56,7 @@ public class ScenarioTest {
 
         String title = "MobileSteps";
         String description = "develop mobile app for counting steps using a specialised bracelet";
-        Date due = dayFormat.parse("2015-02-13");
+        Date due = dateTimeFormat.parse("2015-02-13 16:00");
         ProjectData projectData = new ProjectData(title, description, due);
         ProjectWrapper p1 = facade.createProject(projectData);
 
@@ -121,6 +124,7 @@ public class ScenarioTest {
         currentDate = dateTimeFormat.parse("2015-02-10 08:00");
         facade.updateSystemTime(currentDate);
         
+
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertTrue(p1.isOnTime());
@@ -176,12 +180,15 @@ public class ScenarioTest {
         assertFalse(t4.canFinish());
         assertNull(t2.getAlternative());
         
+        // Next part
+        
+        
         String d5 = "implement system with phonegap";
         double ed5 = 8*60;
         double ad5 = 1;
         TaskData t5d = new TaskData(d5, ed5, ad5);
         t5d.addDependency(t1);
-        TaskWrapper t5 = facade.createAlternativeFor(t2, t5d); // TODO create this as alternative for t2
+        TaskWrapper t5 = facade.createAlternativeFor(t2, t5d);
         assertEquals(1,t5.getDependencySet().size());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
@@ -192,25 +199,33 @@ public class ScenarioTest {
         assertFalse(p1.isFinished());
         assertEquals(1,facade.getProjects().size());
         assertEquals(5, facade.getTasksOf(p1).size());
-        assertFalse(p1.isOnTime());
-        assertTrue(p1.isOverTime());
+        assertTrue(p1.isOnTime()); //FIXME: MISTAKE IN ASSIGNMENT?
+        assertFalse(p1.isOverTime());
         
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
+        
+        
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
         assertNotNull(t2.getAlternative());
+        
+        
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
+        
+        
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
+        
+        
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
@@ -267,7 +282,7 @@ public class ScenarioTest {
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
-        assertNotNull(t1.getAlternative());
+        assertNotNull(t2.getAlternative());
         assertTrue(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
@@ -278,7 +293,7 @@ public class ScenarioTest {
         assertNull(t4.getAlternative());
         assertTrue(t5.isFinished());
         assertFalse(t5.isFailed());
-        assertTrue(t5.canFinish());
+        assertFalse(t5.canFinish());
         assertNull(t5.getAlternative());
     }
 }

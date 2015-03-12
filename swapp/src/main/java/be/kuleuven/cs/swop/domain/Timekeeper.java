@@ -5,13 +5,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.Date;
 
 
 public final class Timekeeper {
 
-    private static Calendar currentTime = Calendar.getInstance();
+    private static Date currentTime = new Date();
     private static int workDayStart = 8;
     private static int workDayEnd = 16;
     private static DayOfWeek[] workDays = new DayOfWeek[]{DayOfWeek.MONDAY,DayOfWeek.TUESDAY,DayOfWeek.WEDNESDAY,DayOfWeek.THURSDAY,DayOfWeek.FRIDAY};
@@ -22,7 +21,7 @@ public final class Timekeeper {
      * @return Returns the current system time.
      */
     public static Date getTime() {
-        return currentTime.getTime();
+        return (Date) currentTime.clone();
     }
 
     /**
@@ -50,7 +49,7 @@ public final class Timekeeper {
      */
     public static void setTime(Date time) {
         if (!canHaveAsTime(time)) { throw new IllegalArgumentException("Invalid time for the system."); }
-        currentTime.setTime(time);
+        currentTime = (Date) time.clone();
     }
 
     private static LocalDateTime startOfDay(LocalDateTime input){

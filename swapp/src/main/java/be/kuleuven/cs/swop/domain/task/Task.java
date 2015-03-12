@@ -514,7 +514,7 @@ public class Task {
     private boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
         for (Task t : dependencies) {
-            if (!t.isFinished()) { return true; }
+            if (!t.isFinishedOrHasFinishedAlternative()) { return true; }
         }
         return false;
     }
