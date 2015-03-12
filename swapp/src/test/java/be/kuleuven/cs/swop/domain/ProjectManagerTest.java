@@ -69,5 +69,24 @@ public class ProjectManagerTest {
         }catch(IllegalArgumentException e){}
     }
 
+    @Test
+    public void readProjectsFromFileTest() {
+        ProjectManager pm = new ProjectManager("src/test/java/be/kuleuven/cs/swop/defaulttest.tman");
+        
+        assertEquals(pm.getProjects().size(), 3);
+        
+        Project projectX = pm.getProjects().stream()
+                .filter(p -> p.getTitle().equals("project x"))
+                .findFirst().get();
+        Project projectY = pm.getProjects().stream()
+                .filter(p -> p.getTitle().equals("project y"))
+                .findFirst().get();
+        Project projectZ = pm.getProjects().stream()
+                .filter(p -> p.getTitle().equals("project z"))
+                .findFirst().get();
 
+        assertEquals(projectX.getTasks().size(), 1);
+        assertEquals(projectY.getTasks().size(), 4);
+        assertEquals(projectZ.getTasks().size(), 2);
+    }
 }

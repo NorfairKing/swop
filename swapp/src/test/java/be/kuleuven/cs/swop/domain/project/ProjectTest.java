@@ -134,6 +134,13 @@ public class ProjectTest {
         project.setDueTime(date);
         assertEquals(date, project.getDueTime());
     }
+    
+    @Test
+    public void canHaveAsTaskTest() {
+        Task test = project.createTask("desc", 10, 0);
+        assertTrue(Project.canHaveAsTask(test));
+        assertFalse(Project.canHaveAsTask(null));
+    }
 
     @Test
     public void createTaskTest() {
