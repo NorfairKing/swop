@@ -17,12 +17,10 @@ import org.junit.rules.ExpectedException;
 public class TimePeriodTest {
 
     private static TimePeriod validTimePeriod1;
-    private static TimePeriod validTimePeriod2;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         validTimePeriod1 = new TimePeriod(new Date(1), new Date(2));
-        validTimePeriod2 = new TimePeriod(new Date(3), new Date(4));
     }
 
     @AfterClass

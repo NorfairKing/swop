@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.Set;
 import java.util.TimeZone;
 
 import org.junit.After;
@@ -20,7 +19,6 @@ import org.junit.Test;
 import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
-import be.kuleuven.cs.swop.domain.Timekeeper;
 
 
 public class ScenarioTest {
