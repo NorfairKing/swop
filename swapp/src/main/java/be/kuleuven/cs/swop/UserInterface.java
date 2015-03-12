@@ -59,12 +59,12 @@ public interface UserInterface {
     public TaskWrapper selectTask(Set<TaskWrapper> tasks);
 
     /**
-     * Shows a list of Tasks and makes the user select one.
+     * Shows a list of Projects and makes the user select one.
      *
-     * @param tasks The Set of TaskWrappers specifying the Tasks from which the
+     * @param projects The Set of ProjectWrappers specifying the Projects from which the
      * user needs to select from.
      *
-     * @return Returns a TaskWrapper containing the Task selected by the user.
+     * @return Returns a ProjectWrapper containing the Project selected by the user.
      */
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects);
 
