@@ -139,7 +139,7 @@ public class ProjectManager {
             for (Map<String, Object> task : parsedFile.get("tasks")) {
                 // Get Project and add the task
                 int projectIndex = (int) task.get("project");
-                Task temp = projects.get(projectIndex).createTask((String) task.get("description"), (double) (int) task.get("estimatedDuration"), (double) (int) task.get("acceptableDeviation"));
+                Task temp = projects.get(projectIndex).createTask((String) task.get("description"), (double) (int) task.get("estimatedDuration"), (double) (int) task.get("acceptableDeviation")/100);
 
                 // Set Status
                 String status = (String) task.get("status");
