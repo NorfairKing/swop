@@ -100,6 +100,12 @@ public final class Timekeeper {
         return false;
     }
 
+    /**
+     * This method calculates the working hours between two given Dates in minutes.
+     * @param time1 The starting Date for this calculation.
+     * @param time2 The end Ddate for this calculation.
+     * @return Returns an integer containing the working hours between the two Dates in minutes.
+     */
     public static int workingMinutesBetween(Date time1, Date time2){
         LocalDateTime start = LocalDateTime.ofEpochSecond(time1.getTime() / 1000, 0, ZoneOffset.UTC);
         LocalDateTime stop = LocalDateTime.ofEpochSecond(time2.getTime() / 1000, 0, ZoneOffset.UTC);
