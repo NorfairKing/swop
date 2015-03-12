@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop;
 
 
 import java.util.Set;
+import java.util.HashSet;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
@@ -35,7 +36,7 @@ public class TaskWrapper {
      * Checks whether or not this wrapper can wrap around the given Task,
      * the TaskWrapper can't have the given Task if it's null.
      *
-     * @param Task The Task to be checked for validity.
+     * @param task The Task to be checked for validity.
      *
      * @return Returns true if the given Task is valid.
      *
@@ -107,11 +108,15 @@ public class TaskWrapper {
     /**
      * Retrieves the containing Task's dependencies.
      *
-     * @return Returns a Set containing the Tasks which are dependencies to this Task.
+     * @return Returns a Set containing the TaskWrappers which contain the  dependencies of this Task.
      *
      */
-    public Set<Task> getDependencySet() {
-        return getTask().getDependencySet();
+    public Set<TaskWrapper> getDependencySet() {
+        Set<TaskWrapper> result = new HashSet<TaskWrapper>();
+        for (Task realTask : getTask().getDependencySet()) {
+            result.add(new TaskWrapper(realTask));
+        }
+        return result;
     }
 
     /**
