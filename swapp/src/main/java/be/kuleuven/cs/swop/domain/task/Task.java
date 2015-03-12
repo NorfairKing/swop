@@ -105,11 +105,13 @@ public class Task {
     public double getEstimatedDuration() {
         return estimatedDuration;
     }
-    
+
     /**
-     * Retrieves the best estimation of real finish date.
-     * This will be the end time if the task is finished, or 
-     * @return
+     * Retrieves the best estimated finish time or, if this Task has finished,
+     * the real time when the Task finished.
+     *
+     * @return Returns a Date containing the estimated or real time when the Task should
+     * be finished.
      */
     public Date getEstimatedOrRealFinishDate() {
         if (isFinished()) return getPerformedDuring().getStopTime();
@@ -122,26 +124,26 @@ public class Task {
                 return getAlternative().getEstimatedOrRealFinishDate();
             }
         }
-        
+
         Date lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
         Date now = Timekeeper.getTime();
         if (lastOfDependencies.before(now)) {
             lastOfDependencies = now;
         }
-        
-        
+
+
         return addMsToDateConcerningWorkingWeek(lastOfDependencies, (long)getEstimatedDuration());
     }
-    
+
     private Date addMsToDateConcerningWorkingWeek(Date date, long minutes) {
-        
+
         LocalDateTime temp = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-        
+
         LocalDateTime ldt = addWorkingMinutes(temp, minutes);
-        
+
         return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
     }
-    
+
     private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
         if (date.getHour() < 8) {
           // Working day hasn't started. Reset date to start of this working day
@@ -169,7 +171,7 @@ public class Task {
           return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8), remainingMinutes);
         }
     }
-    
+
     private Date getLatestEstimatedOrRealFinishDateOfDependencies() {
         Date lastTime = new Date(0);
         for (Task dependency: getDependencySet()) {
@@ -178,7 +180,7 @@ public class Task {
                 lastTime = lastTimeOfThis;
             }
         }
-        
+
         return lastTime;
     }
 
@@ -399,10 +401,10 @@ public class Task {
     public boolean isFailed() {
         return getStatus().isFailed();
     }
-    
+
     /**
      * Checks whether or not this Task can finish.
-     * 
+     *
      * @return Returns true if this Task's can be finished.
      */
     public boolean canFinish(){
@@ -462,7 +464,7 @@ public class Task {
     private long getRealDurationMs() {
         return getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
     }
-    
+
     private double getRealDuration() {
         return (double) getRealDurationMs() / 1000 / 60;
     }
