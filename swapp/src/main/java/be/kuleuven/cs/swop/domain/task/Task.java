@@ -50,7 +50,6 @@ public class Task {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
-        setAlternative(null);
         setStatus(new AvailableStatus());
     }
 
@@ -285,6 +284,21 @@ public class Task {
      * @return Returns true if the given Task can be an alternative for this Task.
      */
     public boolean canHaveAsAlternative(Task alternative) {
+        if(alternative == null){
+            return false;
+        }
+        if(this.alternative != null){
+            return false;
+        }
+        if(!isFailed()){
+            return false;
+        }
+        if(alternative.containsDependency(this)){
+            return false;
+        }
+        if(this == alternative){
+            return false;
+        }
         return true;
     }
 
@@ -297,7 +311,6 @@ public class Task {
      *             If the Task can't have the given Task as alternative.
      */
     public void setAlternative(Task alternative) {
-        if (this.alternative != null) throw new IllegalArgumentException(ERROR_ALTERNATIVE_ALREADY_SET);
         if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
         this.alternative = alternative;
     }
