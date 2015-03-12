@@ -60,9 +60,42 @@ public class CreateTaskSessionTest {
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void flowTestFail() {
+    public void flowTestNull() {
         ProjectWrapper project = facade.getProjects().stream().findFirst().get();
         
         facade.createTaskFor(project, null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestNullDescr() {
+        ProjectWrapper project = facade.getProjects().stream().findFirst().get();
+        String descr = null;
+        double dur = 50;
+        double dev = .5;
+        TaskData data = new TaskData(descr, dur, dev);
+        
+        facade.createTaskFor(project, data);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidDur() {
+        ProjectWrapper project = facade.getProjects().stream().findFirst().get();
+        String descr = "Good descr";
+        double dur = -50; //can't be negative
+        double dev = .5;
+        TaskData data = new TaskData(descr, dur, dev);
+        
+        facade.createTaskFor(project, data);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidDev() {
+        ProjectWrapper project = facade.getProjects().stream().findFirst().get();
+        String descr = "Good descr";
+        double dur = 50;
+        double dev = -.5; //can't be negative
+        TaskData data = new TaskData(descr, dur, dev);
+        
+        facade.createTaskFor(project, data);
     }
 }

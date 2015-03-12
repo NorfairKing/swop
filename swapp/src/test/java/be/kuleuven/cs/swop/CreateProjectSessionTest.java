@@ -57,7 +57,41 @@ public class CreateProjectSessionTest {
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void flowTestFail() {
+    public void flowTestNull() {
+        // The ui returns null as project data
         facade.createProject(null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidTitle() {
+        String title = "Invalid Title with newline: \n gnegne";
+        String descr = "Good description";
+        Date time = new Date(Timekeeper.getTime().getTime() + 1000);
+        ProjectData data = new ProjectData(title, descr, time);
+        
+        // The user returns invalid project data
+        facade.createProject(data);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidDescr() {
+        String title = "Good title";
+        String descr = null;
+        Date time = new Date(Timekeeper.getTime().getTime() + 1000);
+        ProjectData data = new ProjectData(title, descr, time);
+        
+        // The user returns invalid project data
+        facade.createProject(data);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidDue() {
+        String title = "Good title";
+        String descr = "Good descr";
+        Date time = new Date(Timekeeper.getTime().getTime() - 1000); //due before creation.
+        ProjectData data = new ProjectData(title, descr, time);
+        
+        // The user returns invalid project data
+        facade.createProject(data);
     }
 }

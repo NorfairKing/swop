@@ -20,19 +20,22 @@ public class UpdateTaskStatusSessionTest {
     private static FacadeController facade;
     private static SessionController controller;
     
+    private ProjectWrapper project;
+    private TaskWrapper task;
+    
     @Before
     public void setUp() throws Exception {
         ui = new TestingUI();
         facade = new FacadeController();
         controller = new SessionController(ui, facade);
         ui.start();
+        
+        project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
+        task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
     }
     
     @Test
     public void test() {
-        ProjectWrapper project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
-        TaskWrapper task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
-        
         Date curTime = Timekeeper.getTime();
         Date finishDate = new Date(curTime.getTime() + 1000);
         TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
@@ -49,9 +52,6 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void flowTest() {
-        ProjectWrapper project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
-        TaskWrapper task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
-        
         Date curTime = Timekeeper.getTime();
         Date finishDate = new Date(curTime.getTime() + 1000);
         TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
@@ -61,10 +61,16 @@ public class UpdateTaskStatusSessionTest {
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void flowTestFail() {
-        ProjectWrapper project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
-        TaskWrapper task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
-        
+    public void flowTestNull() {
         facade.updateTaskStatusFor(task, null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalidDates() {
+        Date curTime = Timekeeper.getTime();
+        Date finishDate = new Date(curTime.getTime() - 1000); //should be after the start-time.
+        TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
+        
+        facade.updateTaskStatusFor(task, data);
     }
 }

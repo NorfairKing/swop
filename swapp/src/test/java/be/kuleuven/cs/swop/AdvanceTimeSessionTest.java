@@ -38,19 +38,35 @@ public class AdvanceTimeSessionTest {
     
     @Test
     public void flowTest() {
+        // The user indicates he wants to modify the system time
+        // The system allows the user to choose a new time
         ui.setRequestTime(new Date());
         
         Date time = ui.getTimeStamp();
 
+        // if the user cancels.
         if (time == null) return;
 
+        // the system updates the system time.
         facade.updateSystemTime(time);
         
         assertEquals(Timekeeper.getTime(), time);
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void flowTestInvalid() {
-        facade.updateSystemTime(null);
+    public void flowTestNull() {
+        // The user indicates he wants to modify the system time
+        // The system allows the user to choose a new time
+        ui.setRequestTime(null);
+        
+        Date time = ui.getTimeStamp();
+
+        // if the user cancels.
+        //if (time == null) return; let's assume this check isn't done in the session
+
+        // the system updates the system time.
+        facade.updateSystemTime(time);
+        
+        assertEquals(Timekeeper.getTime(), time);
     }
 }
