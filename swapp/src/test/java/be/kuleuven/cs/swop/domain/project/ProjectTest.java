@@ -8,8 +8,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Date;
 
-import javax.jws.Oneway;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +16,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import be.kuleuven.cs.swop.TaskWrapper;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.task.Task;

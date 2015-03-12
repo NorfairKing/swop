@@ -2,12 +2,9 @@ package be.kuleuven.cs.swop.domain.task;
 
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -524,6 +521,5 @@ public class Task {
     private static final String ERROR_ILLEGAL_DURATION        = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS          = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE     = "Illegal original for task.";
-    private static final String ERROR_ALTERNATIVE_ALREADY_SET = "This task already has an alternative.";
     private static final String ERROR_ILLEGAL_DEPENDENCY      = "Illegal dependency set for task.";
 }
