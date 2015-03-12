@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -136,11 +137,11 @@ public class Task {
 
     private Date addMsToDateConcerningWorkingWeek(Date date, long minutes) {
 
-        LocalDateTime temp = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        LocalDateTime temp = LocalDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
 
         LocalDateTime ldt = addWorkingMinutes(temp, minutes);
 
-        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());
     }
 
     private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
@@ -160,14 +161,14 @@ public class Task {
 
         // Get minutes from date to endOfCurrentWorkingDay
         long minutesCovered = ChronoUnit.MINUTES.between(date, endOfCurrentWorkingDay);
-        if (minutesCovered > minutes) {
+        if (minutesCovered >= minutes) {
           // If minutesCovered covers the minutes value passed, that means result is the same working
           // day. Just add minutes and return
           return date.plusMinutes(minutes);
         } else {
           // Calculate remainingMinutes, and then recursively call this method with next working day
           long remainingMinutes = minutes - minutesCovered;
-          return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8), remainingMinutes);
+          return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8).withMinute(0).withSecond(0), remainingMinutes);
         }
     }
 
