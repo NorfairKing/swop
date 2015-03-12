@@ -46,4 +46,25 @@ public class UpdateTaskStatusSessionTest {
         assertFalse(task.getTask().isFailed());
         assertEquals(task.getEstimatedOrRealFinishDate(), finishDate);
     }
+    
+    @Test
+    public void flowTest() {
+        ProjectWrapper project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
+        TaskWrapper task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
+        
+        Date curTime = Timekeeper.getTime();
+        Date finishDate = new Date(curTime.getTime() + 1000);
+        TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
+            
+    
+        facade.updateTaskStatusFor(task, data);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestFail() {
+        ProjectWrapper project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
+        TaskWrapper task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
+        
+        facade.updateTaskStatusFor(task, null);
+    }
 }

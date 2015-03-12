@@ -35,4 +35,22 @@ public class AdvanceTimeSessionTest {
         
         assertEquals(Timekeeper.getTime(), time);
     }
+    
+    @Test
+    public void flowTest() {
+        ui.setRequestTime(new Date());
+        
+        Date time = ui.getTimeStamp();
+
+        if (time == null) return;
+
+        facade.updateSystemTime(time);
+        
+        assertEquals(Timekeeper.getTime(), time);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestInvalid() {
+        facade.updateSystemTime(null);
+    }
 }

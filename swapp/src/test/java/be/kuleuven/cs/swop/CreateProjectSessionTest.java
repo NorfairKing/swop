@@ -41,4 +41,23 @@ public class CreateProjectSessionTest {
         
         assertEquals(afterProjectCount, beforeProjectCount + 1);
     }
+    
+    @Test
+    public void flowTest() {
+        Date time = new Date(Timekeeper.getTime().getTime() + 1000);
+        ProjectData data = new ProjectData("Tit", "D", time);
+        
+        int beforeProjectCount = facade.getProjects().size();
+        
+        facade.createProject(data);
+        
+        int afterProjectCount = facade.getProjects().size();
+        
+        assertEquals(afterProjectCount, beforeProjectCount + 1);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestFail() {
+        facade.createProject(null);
+    }
 }

@@ -44,4 +44,25 @@ public class CreateTaskSessionTest {
         
         assertEquals(taskCountAfter, taskCountBefore + 1);
     }
+    
+    @Test
+    public void flowTest() {
+        ProjectWrapper project = facade.getProjects().stream().findFirst().get();
+        TaskData data = new TaskData("Descr", 50, .5);
+        
+        int taskCountBefore = project.getTasks().size();
+        
+        facade.createTaskFor(project, data);
+
+        int taskCountAfter = project.getTasks().size();
+        
+        assertEquals(taskCountAfter, taskCountBefore + 1);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void flowTestFail() {
+        ProjectWrapper project = facade.getProjects().stream().findFirst().get();
+        
+        facade.createTaskFor(project, null);
+    }
 }
