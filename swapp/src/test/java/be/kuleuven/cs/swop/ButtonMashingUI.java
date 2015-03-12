@@ -39,16 +39,44 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public void showProjects(Set<ProjectWrapper> projects) {}
+    public void showProjects(Set<ProjectWrapper> projects) {
+        for (ProjectWrapper p : projects) {
+            showProject(p);
+        }
+
+    }
 
     @Override
-    public void showProject(ProjectWrapper project) {}
+    public void showProject(ProjectWrapper project) {
+        project.getTitle().toString();
+        project.getDescription().toString();
+        project.getCreationTime().toString();
+        project.getDueTime().toString();
+        project.getTasks().toString();
+        project.isFinished();
+    }
 
     @Override
-    public void showTasks(Set<TaskWrapper> tasks) {}
+    public void showTasks(Set<TaskWrapper> tasks) {
+        for (TaskWrapper t : tasks){
+            showTask(t);}
+    }
 
     @Override
-    public void showTask(TaskWrapper task) {}
+    public void showTask(TaskWrapper task) {
+        task.getDescription().toString();
+        task.getDependencySet().size();
+        task.getEstimatedDuration();
+        task.getAcceptableDeviation();
+        
+        if (task.isFinished()){
+            task.wasFinishedEarly();
+            task.wasFinishedLate();
+            task.wasFinishedOnTime();
+            task.getPerformedDuring();
+            task.getDependencySet().size();
+        }
+    }
 
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projects) {
@@ -107,7 +135,9 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public void showError(String error) {}
+    public void showError(String error) {
+        error.toString();
+    }
 
     private String randomString() {
         return randomString(120);
