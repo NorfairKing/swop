@@ -107,6 +107,8 @@ public class CLI implements UserInterface {
     @Override
     public void showProjects(Set<ProjectWrapper> projectSet) {
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
+        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
+        
         System.out.println("PROJECTS\n########");
         for (ProjectWrapper p : projects) {
             System.out.println(""
@@ -139,12 +141,15 @@ public class CLI implements UserInterface {
     @Override
     public void showTasks(Set<TaskWrapper> taskSet) {
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
+        tasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
+        
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
             System.out.println(""
                     + "# Description: " + t.getDescription() + "\n"
                     + "#   Dependencies: " + t.getDependencySet().size() + "\n" 
                     + "#   " + t.getEstimatedDuration() + " minutes\n"
+                    + "#   Estimated finsih date: " + t.getEstimatedOrRealFinishDate() + "\n"
                     + "# ----------------------------------");
         }
     }
@@ -156,6 +161,7 @@ public class CLI implements UserInterface {
                 + "# " + task.getDescription() + "\n" 
                 + "#   Dependencies: " + task.getDependencySet().size() + "\n" 
                 + "#   Estimated Duration: " + task.getEstimatedDuration() + " minutes\n" 
+                + "#   Estimated finsih date: " + task.getEstimatedOrRealFinishDate() + "\n"
                 + "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%");
 
         if (task.isFinished()) {

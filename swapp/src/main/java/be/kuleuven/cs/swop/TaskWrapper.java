@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.util.Date;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -177,6 +178,11 @@ public class TaskWrapper {
      */
     public boolean wasFinishedLate() {
         return getTask().wasFinishedLate();
+    }
+    
+    
+    public Date getEstimatedOrRealFinishDate() {
+        return getTask().getEstimatedOrRealFinishDate();
     }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";

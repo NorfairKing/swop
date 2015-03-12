@@ -95,6 +95,9 @@ public class FacadeController {
     /**
      * Creates a Task, adds it to the program and returns a wrapper containing it.
      *
+     * @param project The ProjectWrapper containing the Project for which the new task
+     * will be created.
+     *
      * @param data A TaskData object containing all the information for creating a
      * Task.
      *
