@@ -145,6 +145,10 @@ public class ProjectWrapper {
         }
         return result;
     }
+    
+    public Date estimatedFinishTime(){
+        return project.estimatedFinishTime();
+    }
 
     private final String ERROR_ILLEGAL_PROJECT = "Illegal project for project wrapper";
 }

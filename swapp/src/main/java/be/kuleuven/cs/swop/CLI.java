@@ -109,15 +109,27 @@ public class CLI implements UserInterface {
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         System.out.println("PROJECTS\n########");
         for (ProjectWrapper p : projects) {
-            System.out.println("" + "# " + p.getTitle() + "\n" + "#   " + p.getDescription() + "\n" + "#   " + p.getCreationTime().toString() + "\n" + "#   " + p.getDueTime().toString() + "\n"
+            System.out.println(""
+                    + "# " + p.getTitle() + "\n" 
+                    + "# Desc:    " + p.getDescription() + "\n" 
+                    + "# Created: " + p.getCreationTime().toString() + "\n" 
+                    + "# Due:     " + p.getDueTime().toString() + "\n" 
+                    + "# ETA:     " + p.estimatedFinishTime() + "\n"
                     + "# ----------------------------------");
         }
     }
 
     @Override
     public void showProject(ProjectWrapper project) {
-        System.out.println("PROJECT\n########\n" + "# " + project.getTitle() + "\n" + "#   " + project.getDescription() + "\n" + "#   " + project.getCreationTime().toString() + "\n" + "#   "
-                + project.getDueTime().toString());
+        System.out.println(""
+                + "PROJECT\n########\n" 
+                + "# " + project.getTitle() + "\n" 
+                + "# Desc:    " + project.getDescription() + "\n" 
+                + "# Created: " + project.getCreationTime().toString() + "\n" 
+                + "# Due:     " + project.getDueTime().toString() + "\n"
+                + "# ETA:     " + project.estimatedFinishTime()
+                + "# ----------------------------------");
+
 
         if (project.isFinished()) {
             System.out.println("#   Is finished");
@@ -129,15 +141,22 @@ public class CLI implements UserInterface {
         List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
-            System.out.println("" + "# Description: " + t.getDescription() + "\n" + "#   Dependencies: " + t.getDependencySet().size() + "\n" + "#   " + t.getEstimatedDuration() + " minutes\n"
+            System.out.println(""
+                    + "# Description: " + t.getDescription() + "\n"
+                    + "#   Dependencies: " + t.getDependencySet().size() + "\n" 
+                    + "#   " + t.getEstimatedDuration() + " minutes\n"
                     + "# ----------------------------------");
         }
     }
 
     @Override
     public void showTask(TaskWrapper task) {
-        System.out.println("TASK\n########\n" + "# " + task.getDescription() + "\n" + "#   Dependencies: " + task.getDependencySet().size() + "\n" + "#   Estimated Duration: "
-                + task.getEstimatedDuration() + " minutes\n" + "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%");
+        System.out.println(""
+                + "TASK\n########\n" 
+                + "# " + task.getDescription() + "\n" 
+                + "#   Dependencies: " + task.getDependencySet().size() + "\n" 
+                + "#   Estimated Duration: " + task.getEstimatedDuration() + " minutes\n" 
+                + "#   Acceptable Deviation: " + task.getAcceptableDeviation() + "%");
 
         if (task.isFinished()) {
 
@@ -146,9 +165,15 @@ public class CLI implements UserInterface {
             else if (task.wasFinishedOnTime()) timeString = "on time";
             else timeString = "late";
 
-            System.out.println("#   Is Finished\n" + "#   Performed During: " + task.getPerformedDuring() + "\n" + "#   Was finished " + timeString + "\n");
+            System.out.println(""
+                    + "#   Is Finished\n" 
+                    + "#   Performed During: " + task.getPerformedDuring() + "\n" 
+                    + "#   Was finished " + timeString + "\n");
         } else if (task.isFailed()) {
-            System.out.println("#   Has Failed\n" + "#   Performed During: " + task.getPerformedDuring() + "\n");
+            System.out.println(""
+                    + "#   Has Failed\n" 
+                    + "#   Performed During: " 
+                    + task.getPerformedDuring() + "\n");
         } else {
             System.out.println("#   Still needs work");
         }

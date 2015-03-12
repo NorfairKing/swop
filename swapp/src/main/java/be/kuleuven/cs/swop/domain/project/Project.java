@@ -276,6 +276,10 @@ public class Project {
      *
      */
     public boolean isOnTime() {
+        return getDueTime().after(estimatedFinishTime());
+    }
+    
+    public Date estimatedFinishTime(){
         Date lastTime = new Date(0);
         for (Task task: getTasks()) {
             Date lastTimeOfThis = task.getEstimatedOrRealFinishDate();
@@ -283,8 +287,7 @@ public class Project {
                 lastTime = lastTimeOfThis;
             }
         }
-
-        return getDueTime().after(lastTime);
+        return lastTime;
     }
 
     /**
