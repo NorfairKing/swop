@@ -61,7 +61,7 @@ public final class Timekeeper {
     }
 
     
-    // time1 and time2 need to be on the same day!!!
+    // time1 and time2 need to be on the same day!!!w
     private static int timeInSingleDayBetween(LocalDateTime time1, LocalDateTime time2){
         LocalDateTime startOfWorkDay = time1.withHour(workDayStart).withMinute(0).withSecond(0);
         LocalDateTime endOfWorkDay = time1.withHour(workDayEnd).withMinute(0).withSecond(0);
@@ -81,9 +81,6 @@ public final class Timekeeper {
         }else{
             countStop = time2;
         }
-
-        System.out.println(countStart.toString());
-        System.out.println(countStop.toString());
 
         int difference = (int) ChronoUnit.MINUTES.between(countStart,countStop);
         if(difference > 0){
