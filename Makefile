@@ -15,7 +15,7 @@ all:
 	zip -r swop.zip group02/
 	rm group02
 clean:
-	mvn clean -f swapp/
+	mvn clean -f swapp/pom.xml
 	rm pkg -rf
 	rm -f diagrams/*.eps
 	rm -f swop.zip
