@@ -258,7 +258,7 @@ public class Project {
     /**
      * Checks whether or not this Project contains the given Task.
      *
-     * @param task The task that will be checked of this Project contains it.
+     * @param task The Task that will be checked of this Project contains it.
      *
      * @return Returns true of this Project contains the given Task.
      *
