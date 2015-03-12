@@ -201,7 +201,17 @@ public class TaskTest {
 
         assertFalse(task.canHaveAsAlternative(null));
 
-        // TODO check for loop
+        task = new Task("Hi", 1, 0);
+        task2 = new Task("Hi", 1, 0);
+        Task task3 = new Task("Hi", 1, 0);
+        Task task4 = new Task("Hi", 1, 0);
+        task3.addDependency(task);
+        task2.addDependency(task3);
+        task4.addDependency(task);
+        task.fail(period);
+        assertFalse(task.canHaveAsAlternative(task2));
+        assertFalse(task.canHaveAsAlternative(task4));
+        
     }
 
     @Test
