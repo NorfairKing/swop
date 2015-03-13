@@ -32,6 +32,7 @@ public class CLI implements UserInterface {
     public void start() {
         System.out.println("Welcome to TaskMan");
         System.out.println("Enter \"h\" for help.");
+        System.out.println("Don't forget to set the initial date (\"c\").");
         String command;
         while (true) {
             command = this.selectCommand();
@@ -200,7 +201,7 @@ public class CLI implements UserInterface {
 
         List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
         projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
-        System.out.println("SELECT TASK\n########");
+        System.out.println("SELECT PROJECT\n########");
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
         }
