@@ -3,6 +3,9 @@
 \usepackage{graphicx}
 \shorthandoff{=}
 
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{background canvas}[vertical shading][bottom=white,top=structure.fg!25]
+
 \mode<presentation>
 
 \newcommand {\framedgraphic}[2] {
@@ -13,9 +16,17 @@
     \end{frame}
 }
 
-\begin{document}
 
-  \begin{frame}
+\title{SWOP iteratie 1}
+\author{Pablo en Co (groep 2)}
+\institute{KU Leuven}
+\date{2015}
+
+\begin{document}
+ 
+  \frame{\titlepage}
+
+  \begin{frame}{Interessant: High Level}
       \begin{center}
       \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../diagrams/high_level_uml.eps}
         \begin{itemize}
@@ -38,7 +49,7 @@
       \end{center}
   \end{frame} 
   \framedgraphic{Create Task (1)}{../diagrams/sequence_createTask_uml.eps}
-  \begin{frame}{Interessant!}
+  \begin{frame}{Interessant: Tussen facade en UI}
       \begin{center}
         \begin{itemize}
         \item ProjectWrapper
