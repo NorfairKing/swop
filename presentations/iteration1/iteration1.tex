@@ -25,18 +25,26 @@
 \begin{document}
  
   \frame{\titlepage}
-
-  \begin{frame}{Interessant: High Level}
+  \framedgraphic{High Level}{../../diagrams/high_level_uml.eps}
+  \begin{frame}{Interessant: Facadecontroller}
       \begin{center}
-      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../../diagrams/high_level_uml.eps}
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../../diagrams/facade_uml.eps}
         \begin{itemize}
         \item Duidelijke verantwoordelijkheid
         \item Wrapping en unwrapping
+        \item Bescherming van domain
         \end{itemize}
       \end{center}
   \end{frame} 
-  \framedgraphic{Class Diagram}{../../diagrams/domain_uml.eps}
-  \framedgraphic{Facade \& UI}{../../diagrams/facade_uml.eps}
+  \begin{frame}{Interessant: Class Diagram}
+      \begin{center}
+      \includegraphics[width=\textwidth,height=0.7\textheight,keepaspectratio]{../../diagrams/domain_uml.eps}
+        \begin{itemize}
+        \item Status beslist over functionaliteit van Taak.
+        \item Task beslist welke zijn status is.
+        \end{itemize}
+      \end{center}
+  \end{frame} 
   \framedgraphic{Task DFS}{../../diagrams/task_dfs.eps}
   \begin{frame}{Interessant: Project}
       \begin{center}
@@ -48,9 +56,9 @@
         \end{itemize}
       \end{center}
   \end{frame} 
-  \framedgraphic{Create Task (1)}{../../diagrams/sequence_createTask_uml.eps}
-  \begin{frame}{Interessant: Tussen facade en UI}
+  \begin{frame}{Interessant: Create Task}
       \begin{center}
+        \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../diagrams/sequence_createTask_uml.eps}
         \begin{itemize}
         \item ProjectWrapper
         \item ProjectData   
@@ -58,7 +66,6 @@
         \end{itemize}
       \end{center}
   \end{frame}
-  \framedgraphic{Create Task (2)}{../../diagrams/sequence_createTask_cancel_uml.eps}
   \begin{frame}{Testing}
       \begin{center}
         \begin{itemize}
