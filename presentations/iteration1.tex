@@ -1,0 +1,71 @@
+\documentclass[mathserif,serif]{beamer}
+
+\usepackage{graphicx}
+\shorthandoff{=}
+
+\mode<presentation>
+
+\newcommand {\framedgraphic}[2] {
+    \begin{frame}{#1}
+        \begin{center}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{#2}
+        \end{center}
+    \end{frame}
+}
+
+\begin{document}
+
+  \begin{frame}
+      \begin{center}
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../diagrams/high_level_uml.eps}
+        \begin{itemize}
+        \item Duidelijke verantwoordelijkheid
+        \item Wrapping en unwrapping
+        \end{itemize}
+      \end{center}
+  \end{frame} 
+  \framedgraphic{Class Diagram}{../diagrams/domain_uml.eps}
+  \framedgraphic{Facade \& UI}{../diagrams/facade_uml.eps}
+  \framedgraphic{Task DFS}{../diagrams/task_dfs.eps}
+  \begin{frame}{Interessant: Project}
+      \begin{center}
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../diagrams/project_dfs.eps}
+        \begin{itemize}
+        \item Status hangt enkel af van taken ...
+        \item ... en geen specifieke functionaliteit per status.
+        \item $\Rightarrow$ Geen extra klasse nodig
+        \end{itemize}
+      \end{center}
+  \end{frame} 
+  \framedgraphic{Create Task (1)}{../diagrams/sequence_createTask_uml.eps}
+  \begin{frame}{Interessant!}
+      \begin{center}
+        \begin{itemize}
+        \item ProjectWrapper
+        \item ProjectData   
+        \item createTaskFor(projectWrapper, projectData)
+        \end{itemize}
+      \end{center}
+  \end{frame}
+  \framedgraphic{Create Task (2)}{../diagrams/sequence_createTask_cancel_uml.eps}
+  \begin{frame}{Testing}
+      \begin{center}
+        \begin{itemize}
+        \item Unit tests per klasse
+        \item Use case tests
+        \item Scenario test
+        \item Button masher UI
+        \end{itemize}
+      \end{center}
+  \end{frame} 
+
+% etc
+\end{document}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: " RET"
+%%% End:

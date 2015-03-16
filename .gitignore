@@ -1,4 +1,5 @@
 /pkg
+*.pdf
 
 ## Java
 *.class
