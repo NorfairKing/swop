@@ -23,59 +23,89 @@
 \date{2015}
 
 \begin{document}
- 
+
   \frame{\titlepage}
-  \framedgraphic{High Level}{../../diagrams/high_level_uml.eps}
-  \begin{frame}{Interessant: Facadecontroller}
+
+  \begin{frame}{High Level}
+      \begin{center}
+      \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../diagrams/high_level_uml.eps}
+        \begin{itemize}
+        \item Session controller = functionaliteit per use-case
+        \item Facade controller = aanspreekpunt voor domain
+        \item UI werkt niet rechtstreeks met domain
+        \end{itemize}
+      \end{center}
+  \end{frame}
+
+  \begin{frame}{Facadecontroller}
       \begin{center}
       \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../../diagrams/facade_uml.eps}
         \begin{itemize}
-        \item Duidelijke verantwoordelijkheid
+        \item Duidelijke verantwoordelijkheid:
         \item Wrapping en unwrapping
         \item Bescherming van domain
+        \item Zit tussen domain en UI
         \end{itemize}
       \end{center}
-  \end{frame} 
-  \begin{frame}{Interessant: Class Diagram}
+  \end{frame}
+
+  \begin{frame}{Classes}
       \begin{center}
-      \includegraphics[width=\textwidth,height=0.7\textheight,keepaspectratio]{../../diagrams/domain_uml.eps}
+      \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../diagrams/domain_uml.eps}
         \begin{itemize}
-        \item Status beslist over functionaliteit van Taak.
-        \item Task beslist welke zijn status is.
+        \item Status beslist over functionaliteit van Taak
+        \item Task beslist welke zijn status is ...
+        \item ... op moment dat deze opgavraagd wordt ...
+        \item ... geen bi-directional relatie nodig voor 'dependsOn'
+        \item Task geen kennis nodig van project
         \end{itemize}
       \end{center}
-  \end{frame} 
-  \framedgraphic{Task DFS}{../../diagrams/task_dfs.eps}
-  \begin{frame}{Interessant: Project}
+  \end{frame}
+
+  \begin{frame}{Task}
+      \begin{center}
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../../diagrams/task_dfs.eps}
+        \begin{itemize}
+        \item Status wordt berekend bij opvraging ...
+        \item ... indien niet-final
+        \end{itemize}
+      \end{center}
+  \end{frame}
+
+  \begin{frame}{Project}
       \begin{center}
       \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{../../diagrams/project_dfs.eps}
         \begin{itemize}
         \item Status hangt enkel af van taken ...
-        \item ... en geen specifieke functionaliteit per status.
-        \item $\Rightarrow$ Geen extra klasse nodig
+        \item ... en geen specifieke functionaliteit per status
+        \item $\Rightarrow$ Geen extra klassen nodig
+        \item $\Rightarrow$ Enkel 'isX' checks
         \end{itemize}
       \end{center}
-  \end{frame} 
-  \begin{frame}{Interessant: Create Task}
+  \end{frame}
+
+  \begin{frame}{Create Task}
       \begin{center}
-        \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../diagrams/sequence_createTask_uml.eps}
+      \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../diagrams/sequence_createTask_uml.eps}
         \begin{itemize}
         \item ProjectWrapper
-        \item ProjectData   
+        \item ProjectData
         \item createTaskFor(projectWrapper, projectData)
         \end{itemize}
       \end{center}
   \end{frame}
+
   \begin{frame}{Testing}
       \begin{center}
+      \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{code_coverage.png}
         \begin{itemize}
         \item Unit tests per klasse
-        \item Use case tests
+        \item Use case tests $\rightarrow$ Testing UI
         \item Scenario test
-        \item Button masher UI
+        \item Stress testing $\rightarrow$ Button masher UI
         \end{itemize}
       \end{center}
-  \end{frame} 
+  \end{frame}
 
 % etc
 \end{document}
