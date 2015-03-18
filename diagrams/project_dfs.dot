@@ -5,7 +5,7 @@ digraph finite_state_machine {
     ongoing         [label="ongoing"];
     finished        [label="finished"];
 
-    start -> ongoing[label="create normal"];
+    start -> ongoing[label="create"];
 
     ongoing -> ongoing[label="add task"];
     ongoing -> finished[label="all tasks are finished or have alternative that is"];

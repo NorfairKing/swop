@@ -25,7 +25,6 @@ TaskStatus <|-- FinishedStatus
 TaskStatus <|-- FailedStatus
 
 class ProjectManager {
-    Calendar currentTime
 
     Project createProject(String title, String description, Date dueTime)
     void initialiseWith(String initFile)

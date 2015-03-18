@@ -7,7 +7,7 @@ digraph finite_state_machine {
     finished        [label="finished", peripheries=2];
     failed          [label="failed",peripheries=2];
 
-    start -> available[label="create normal"];
+    start -> available[label="create"];
 
     available -> unavailable [label="add unfinished dependency"];
     available -> finished    [label="finish"];
