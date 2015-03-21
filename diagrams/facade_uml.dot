@@ -1,0 +1,114 @@
+@startuml
+
+App --* "1" UserInterface
+App --* "1" FacadeController
+App --* "1" SessionController
+
+CLI --|> UserInterface
+CLI --* "1" SessionController
+
+FacadeController --* "1" ProjectManager
+
+SessionController --* "1" UserInterface
+SessionController --* "1" FacadeController
+
+/'UserInterface ..> ProjectWrapper
+UserInterface ..> TaskWrapper
+UserInterface ..> ProjectData
+UserInterface ..> TaskData
+UserInterface ..> TaskStatusData
+
+FacadeController ..> ProjectWrapper
+FacadeController ..> TaskWrapper
+FacadeController ..> ProjectData
+FacadeController ..> TaskData
+FacadeController ..> TaskStatusData
+
+SessionController ..> ProjectWrapper
+SessionController ..> TaskWrapper
+SessionController ..> ProjectData
+SessionController ..> TaskData
+SessionController ..> TaskStatusData'/
+
+UserInterface ..> XXXWrapper
+UserInterface ..> XXXData
+
+FacadeController ..> XXXWrapper
+FacadeController ..> XXXData
+
+SessionController ..> XXXWrapper
+SessionController ..> XXXData
+
+class App {
+  void main(String.. args)
+}
+
+class UserInterface {
+  void showProjects(Set<ProjectWrapper> projects);
+  void showProject(ProjectWrapper project);
+  void showTasks(Set<TaskWrapper> tasks);
+  void showTask(TaskWrapper task);
+
+  ProjectWrapper selectProject(Set<ProjectWrapper> projects);
+  TaskWrapper selectTask(Set<TaskWrapper> tasks);
+  TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects);
+  TaskData getTaskData();
+  TaskStatusData getUpdateStatusData();
+  ProjectData getProjectData();
+  Date getTimeStamp();
+
+  void showError(String error);
+}
+
+class CLI {
+
+}
+
+class FacadeController {
+  void createProject(ProjectData data)
+  void createTaskFor(ProjectWrapper project, TaskData data)
+  void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData)
+  void updateSystemTime(Date time)
+}
+
+class SessionController {
+  void startShowProjectsSession()
+  void startCreateProjectSession()
+  void startCreateTaskSession()
+  void startUpdateTaskStatusSession()
+  void startAdvanceTimeSession()
+}
+
+class ProjectManager {
+  // See domain diagram
+}
+
+/'class ProjectWrapper {
+
+}
+
+class TaskWrapper {
+
+}
+
+class ProjectData {
+
+}
+
+class TaskData {
+
+}
+
+class TaskStatusData {
+
+}'/
+
+class XXXWrapper {
+
+}
+
+class XXXData {
+
+}
+
+@enduml

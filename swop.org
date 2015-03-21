@@ -1,0 +1,87 @@
+* Eerste sessie
+- mogen we libraries gebruiken?
+    Ja
+    Zeker:
+        - Guava: pure collections
+        - Yaml:
+
+- wat voor documentatie schrijven we nu?
+    OGP, maar informeel.
+
+- welke diagrammen moeten we maken?
+    - Hoog niveau: class diagram
+    - Momenteel geen domain model (gegeven)
+    - Inzoomen:
+        - class diagram
+        - sequence diagram
+        ²
+
+    Zorg dat we ons design kunnen 'verkopen'
+
+
+- Hoe zit het met de UML die we nu hebben?
+
+
+- Moeten we een sequence diagram maken voor elke use-case?
+    Nope, maar wel van de interne werking.
+    Gewoon geen letterlijke vertaling van de opgave.
+- Moeten we nog iets doen met dat domain model?
+    Nee, dat is gegeven voor deze iteratie
+
+* Tweede sessie
+- Vragen
+  - Recursief falen?
+    Nee
+  - Lazy evaluation van alles ivm tijd?
+    NOPE
+  - Performed-during, is dat een clock of is dat één begin en één einde?
+    één begin en één einde
+  - Wie beslist er over de status verandering? Task, status, of nog iets anders?
+
+- Beslissingen
+  - Depends on is NIET bidirectioneel
+  - Ultimate time travel: events en time traveling object - nope!
+
+- Bij assistent geleerd:
+  - facade controller
+  - session controller
+  - UI interface
+
+* Derde sessie
+
+- Wanneer moeten lijsten 'immutable' worden?
+  - Overal, ook intern
+  Gebeurt dit als we Project.getTasks() doen vanuit het domain zelf?
+  Doet de facade controller dat als hij de lijst door geeft aan de sessioncontroller?
+  Of wordt de bescherming pas gedaan als de sessionController de lijst door geeft aan de userInterface?
+  - Interne collecties worden best steeds afgeschermd (dus de interne collectie van taken in een object van de klasse Project mag buiten dat object nergens aangepast kunnen worden, ook niet binnen jullie domein). Je kan dat doen door immutable lists te gebruiken of door steeds te kopieren bij setten en getten.
+
+- Verder, als we een lijst van Tasks willen van een Project in de sessionController. Vraagt de sessionController dan rechtstreeks aan het Project voor deze lijst? Of is het beter dat de FacadeController een functie 'getTasksForProject(Project)' heeft die dan op zijn beurt vraagt aan het meegegeven project voor de lijst van tasks?
+- Er is hier geen beste oplossing. Je zal hier een evenwicht moeten zoeken. Let wel op dat jullie klasse FacadeController niet gigantisch wordt. Wees per klasse echter wel consistent in je keuze.
+
+- Als laatste was er een zeker discutie over hoe de sessionController te structureren. Momenteel hebben we één functie per use-case in een classe 'SessionController'. Alternatief kunnen we verschillende klassen laten overerven van SessionController, één sub-classe per use-case. De meningen zijn een beetje verdeeld over wat het gemakkelijkste in gebruik is, en wat het beste design is. Wat is u mening hierover?
+- Beide zijn waardige alternativen, ze kunnen beide goed zijn. Belangrijk is wel dat als er in alle use cases gemeenschappelijk gedrag is, dit best toch maar op 1 plaats geimplementeerd wordt. Ik zou zeggen kies en zie later waar de beperkingen van die keuze naar boven komen (beide hebben andere beperkingen).
+
+- Bij maken van TaskProxy, krijgt die een realTask of Task(interface) mee?
+  - Meerdere lagen proxy's?
+  - Vraag aan proxy: 'getDependency()', geeft een Task(interface) terug.
+
+- UUID?
+  - UI selecteerd een project uit set<Project> en geeft deze terug. Hoe hier mee verder werken?
+    - DataTransferObject, taskwrapper
+    - Alle wrappers etc unwrappen in de facade
+
+
+- Use-Case: Update Task Status
+  - Er staat dat we alle tasks moeten tonen, met hun bijhorende project en dat de user er daar eentje uit kiest. Onze tasks hebben echter geen notie van bij welk project ze horen, de project heeft een lijst van tasks, maar de task geef pointer naar het project.
+  - Is het OK deze use-case lichtjes aan te passen, dat er eerst eens lijst van projecten getoont wordt, dat de user er ééntje kiest, en dan de tasks van dit project tonen?
+
+- Task / Task status
+  - Huidige situatie:
+    - Tasks beslist (gebaseerd op dependencies) of hij available of unavailable is bij het opvragen van zijn status (enkel intern gebruikt).
+    - Als er op tasks 'finish' aangeroepen wordt, wordt er gevraagd aan het status naar welke andere status er veranderd moet worden. (TaskStatus.finish returned een TaskStatus.) Als er niet gefinished kan worden vanuit een status (bv unavailable) dan returned die gewoon zichzelf.
+  - Probleem:
+    - Er wordt nu op twee plekken beslist over welkes tatus het project gaat krijgen. Bij dependencies toevoegen beslis de task zelf hierover (welliswaar onrechtstreeks, pas als de status effectief opgevraagd wordt.) En als tweede bij finishen, dan returned de status een nieuwe.
+  - Oplossing: (misschien?)
+    - Laat gewoon de task altijd beslissen over de status.
+    - Als op task 'finish' aangeroepen wordt vraagt die aan de status 'bool canFinish()' en dan kiest de task naar welke nieuwe status er veranderd moet worden.

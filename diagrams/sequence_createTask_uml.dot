@@ -1,0 +1,26 @@
+@startuml
+
+title "Create Task"
+
+actor User
+User -> UI: "Create Task"
+UI -> SessionController: "startCreateTaskSession()"
+SessionController -> UI: "selectProject(projectWrapper)"
+UI -> User: "project selection form"
+User -> UI: "user selects project"
+UI --> SessionController: "return projectWrapper"
+loop "until valid data"
+    SessionController -> UI: "getTaskData()"
+    UI -> User: "task creation form"
+    User -> UI: "user enters data"
+    UI --> SessionController: "return taskData"
+    SessionController -> FacadeController: "createTaskFor(projectWrapper, taskData)"
+    alt "valid data"
+        FacadeController --> SessionController: "return"
+        SessionController --> UI: "return"
+    else "invalid data"
+        FacadeController --> SessionController: "error: illegal data"
+    end
+end
+@enduml
+

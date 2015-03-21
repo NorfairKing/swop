@@ -1,0 +1,22 @@
+@startuml
+
+title "Create Project"
+
+actor User
+User -> UI: "Create Project"
+UI -> SessionController: "startCreateProjectSession()"
+loop "until valid data"
+    SessionController -> UI: "getProjectData()"
+    UI -> User: "project creation form"
+    User -> UI: "user enters data"
+    UI --> SessionController: "return projectData"
+    SessionController -> FacadeController: "createProject(projectData)"
+    alt "valid data"
+        FacadeController --> SessionController: "return"
+        SessionController --> UI: "return"
+    else "invalid data"
+        FacadeController --> SessionController: "error: illegal data"
+    end
+end
+@enduml
+

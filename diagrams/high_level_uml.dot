@@ -1,0 +1,19 @@
+@startuml
+
+Interface UI {
+}
+
+class CLI {
+}
+
+CLI -|> UI
+
+UI *-- SessionController
+
+SessionController *-- FacadeController
+
+class SessionController
+
+class FacadeController
+
+@enduml

@@ -1,3 +1,6 @@
+/pkg
+*.pdf
+
 ## Java
 *.class
 
@@ -118,3 +121,9 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+target
+
+.gitignore
+
+workbench.xmi
