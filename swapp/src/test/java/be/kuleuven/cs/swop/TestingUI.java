@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.ProjectWrapper;
@@ -11,11 +12,10 @@ import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.data.TaskStatusData;
 
 
-
 public class TestingUI implements UserInterface {
 
     private SessionController sessionController;
-    private Date requestTime;
+    private LocalDateTime requestTime;
     private ProjectData requestProjectData;
     private ProjectWrapper requestProject;
     private TaskData requestTaskData;
@@ -98,12 +98,12 @@ public class TestingUI implements UserInterface {
         return requestProjectData;
     }
 
-    public void setRequestTime(Date time) {
+    public void setRequestTime(LocalDateTime time) {
         requestTime = time;
     }
     
     @Override
-    public Date getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return requestTime;
     }
 

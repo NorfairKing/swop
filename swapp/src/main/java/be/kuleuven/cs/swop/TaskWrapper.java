@@ -1,10 +1,10 @@
 package be.kuleuven.cs.swop;
 
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
 
-import java.util.Date;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
 
@@ -181,7 +181,7 @@ public class TaskWrapper {
     }
     
     
-    public Date getEstimatedOrRealFinishDate() {
+    public LocalDateTime getEstimatedOrRealFinishDate() {
         return getTask().getEstimatedOrRealFinishDate();
     }
 

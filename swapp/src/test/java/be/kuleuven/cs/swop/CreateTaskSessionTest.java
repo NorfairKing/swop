@@ -2,8 +2,6 @@ package be.kuleuven.cs.swop;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +21,7 @@ public class CreateTaskSessionTest {
         facade = new FacadeController();
         controller = new SessionController(ui, facade);
         
-        facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
+        facade.createProject(new ProjectData("Title", "Descr", Timekeeper.getTime().plusHours(1)));
         
         ui.start();
     }

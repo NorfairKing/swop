@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -97,7 +97,7 @@ public class ProjectWrapper {
      * @return Returns the Date containing the Project's creation time.
      *
      */
-    public Date getCreationTime() {
+    public LocalDateTime getCreationTime() {
         return getProject().getCreationTime();
     }
 
@@ -107,7 +107,7 @@ public class ProjectWrapper {
      * @return Returns the Date containing the Project's due time.
      *
      */
-    public Date getDueTime() {
+    public LocalDateTime getDueTime() {
         return getProject().getDueTime();
     }
 
@@ -146,7 +146,11 @@ public class ProjectWrapper {
         return result;
     }
     
-    public Date estimatedFinishTime(){
+    /**
+     * Get the estimated finish time for this project
+     * @return The estimated finish time.
+     */
+    public LocalDateTime estimatedFinishTime(){
         return project.estimatedFinishTime();
     }
 

@@ -1,9 +1,6 @@
 package be.kuleuven.cs.swop.domain;
 
-
-import static org.junit.Assert.assertFalse;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +17,7 @@ public class TimePeriodTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        validTimePeriod1 = new TimePeriod(new Date(1), new Date(2));
+        validTimePeriod1 = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
     }
 
     @AfterClass
@@ -34,9 +31,11 @@ public class TimePeriodTest {
 
     @Test
     public void constructorValidTest() {
-        new TimePeriod(new Date(1), new Date(2));
-        new TimePeriod(new Date(3), new Date(4));
-        new TimePeriod(new Date(5), new Date(6));
+        new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        
+        new TimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+        
+        new TimePeriod(LocalDateTime.now(), LocalDateTime.now().plusHours(1));
     }
 
     @Rule
@@ -45,55 +44,39 @@ public class TimePeriodTest {
     @Test
     public void constructorInvalidTest() {
         try{
-            new TimePeriod(new Date(1), new Date(0)); 
+            new TimePeriod(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1)); 
         }catch(IllegalArgumentException e){}
 
         try{
-            new TimePeriod(null, new Date(0));
+            new TimePeriod(null, LocalDateTime.now());
         }catch(IllegalArgumentException e){}
 
         try{
-            new TimePeriod(new Date(1), null);
+            new TimePeriod(LocalDateTime.now(), null);
         }catch(IllegalArgumentException e){}
     }
 
     @Test
     public void canHaveAsStartTimeValidTest() {
-        validTimePeriod1.canHaveAsStartTime(new Date(0));
-        validTimePeriod1.canHaveAsStartTime(new Date(5));
+        validTimePeriod1.canHaveAsStartTime(LocalDateTime.now());
+        validTimePeriod1.canHaveAsStartTime(LocalDateTime.now().plusHours(5));
     }
 
     @Test
-    public void canHaveAsStartTimeInalidTest() {
+    public void canHaveAsStartTimeInvalidTest() {
         validTimePeriod1.canHaveAsStartTime(null);
     }
 
     @Test
     public void canHaveAsStopTimeValidTest() {
-        validTimePeriod1.canHaveAsStopTime(new Date(3));
-        validTimePeriod1.canHaveAsStopTime(new Date(4));
+        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(1));
+        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(3));
     }
 
     @Test
     public void canHaveAsStopTimeInvalidTest() {
         validTimePeriod1.canHaveAsStopTime(null);
-        validTimePeriod1.canHaveAsStopTime(new Date(0));
-        validTimePeriod1.canHaveAsStopTime(new Date(3));
-        validTimePeriod1.canHaveAsStopTime(new Date(2));
-    }
-
-    @Test
-    public void getStartTimeTest() {
-        Date startTime = new Date(1);
-        TimePeriod t = new TimePeriod(startTime, new Date(2));
-        assertFalse(t.getStartTime() == startTime);
-    }
-
-    @Test
-    public void getStopTimeTest() {
-        Date stopTime = new Date(2);
-        TimePeriod t = new TimePeriod(new Date(1), stopTime);
-        assertFalse(t.getStopTime() == stopTime);
+        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now());
     }
 
 }

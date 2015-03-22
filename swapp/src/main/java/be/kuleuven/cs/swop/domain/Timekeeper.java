@@ -3,14 +3,12 @@ package be.kuleuven.cs.swop.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 
 public final class Timekeeper {
 
-    private static Date currentTime = new Date();
+    private static LocalDateTime currentTime = LocalDateTime.MIN;
     private static int workDayStart = 8;
     private static int workDayEnd = 16;
     private static DayOfWeek[] workDays = new DayOfWeek[]{DayOfWeek.MONDAY,DayOfWeek.TUESDAY,DayOfWeek.WEDNESDAY,DayOfWeek.THURSDAY,DayOfWeek.FRIDAY};
@@ -20,8 +18,8 @@ public final class Timekeeper {
      * 
      * @return Returns the current system time.
      */
-    public static Date getTime() {
-        return (Date) currentTime.clone();
+    public static LocalDateTime getTime() {
+        return (LocalDateTime) currentTime;
     }
 
     /**
@@ -33,7 +31,7 @@ public final class Timekeeper {
      * @return Returns true if the given Date isn't null.
      *
      */
-    protected static boolean canHaveAsTime(Date time) {
+    protected static boolean canHaveAsTime(LocalDateTime time) {
         return time != null;
     }
 
@@ -47,9 +45,9 @@ public final class Timekeeper {
      *             If the given Date is invalid, which means that it's null.
      *
      */
-    public static void setTime(Date time) {
+    public static void setTime(LocalDateTime time) {
         if (!canHaveAsTime(time)) { throw new IllegalArgumentException("Invalid time for the system."); }
-        currentTime = (Date) time.clone();
+        currentTime = (LocalDateTime) time;
     }
 
     private static LocalDateTime startOfDay(LocalDateTime input){
@@ -105,9 +103,7 @@ public final class Timekeeper {
      * @param time2 The end Ddate for this calculation.
      * @return Returns an integer containing the working hours between the two Dates in minutes.
      */
-    public static int workingMinutesBetween(Date time1, Date time2){
-        LocalDateTime start = LocalDateTime.ofEpochSecond(time1.getTime() / 1000, 0, ZoneOffset.UTC);
-        LocalDateTime stop = LocalDateTime.ofEpochSecond(time2.getTime() / 1000, 0, ZoneOffset.UTC);
+    public static int workingMinutesBetween(LocalDateTime start, LocalDateTime stop){
         LocalDateTime endOfDay = endOfDay(start);
         int workMinutes = 0;
 

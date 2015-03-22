@@ -1,7 +1,8 @@
 package be.kuleuven.cs.swop;
+
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +10,6 @@ import org.junit.Test;
 import be.kuleuven.cs.swop.FacadeController;
 import be.kuleuven.cs.swop.SessionController;
 import be.kuleuven.cs.swop.domain.Timekeeper;
-
-
 
 public class AdvanceTimeSessionTest {
     
@@ -28,7 +27,7 @@ public class AdvanceTimeSessionTest {
     
     @Test
     public void test() {
-        Date time = new Date();
+        LocalDateTime time = LocalDateTime.now();
         ui.setRequestTime(time);
         
         controller.startAdvanceTimeSession();
@@ -40,9 +39,9 @@ public class AdvanceTimeSessionTest {
     public void flowTest() {
         // The user indicates he wants to modify the system time
         // The system allows the user to choose a new time
-        ui.setRequestTime(new Date());
+        ui.setRequestTime(LocalDateTime.now());
         
-        Date time = ui.getTimeStamp();
+        LocalDateTime time = ui.getTimeStamp();
 
         // if the user cancels.
         if (time == null) return;
@@ -59,7 +58,7 @@ public class AdvanceTimeSessionTest {
         // The system allows the user to choose a new time
         ui.setRequestTime(null);
         
-        Date time = ui.getTimeStamp();
+        LocalDateTime time = ui.getTimeStamp();
 
         // if the user cancels.
         //if (time == null) return; let's assume this check isn't done in the session

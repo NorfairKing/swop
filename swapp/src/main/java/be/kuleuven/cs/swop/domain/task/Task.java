@@ -3,9 +3,7 @@ package be.kuleuven.cs.swop.domain.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -111,7 +109,7 @@ public class Task {
      * @return Returns a Date containing the estimated or real time when the Task should
      * be finished.
      */
-    public Date getEstimatedOrRealFinishDate() {
+    public LocalDateTime getEstimatedOrRealFinishDate() {
         if (isFinished()) return getPerformedDuring().getStopTime();
         if (isFailed()) {
             if (getAlternative() == null) {
@@ -123,22 +121,13 @@ public class Task {
             }
         }
 
-        Date lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
-        Date now = Timekeeper.getTime();
-        if (lastOfDependencies.before(now)) {
+        LocalDateTime lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
+        LocalDateTime now = Timekeeper.getTime();
+        if (lastOfDependencies.isBefore(now)) {
             lastOfDependencies = now;
         }
 
-        return addMsToDateConcerningWorkingWeek(lastOfDependencies, (long)getEstimatedDuration());
-    }
-
-    private Date addMsToDateConcerningWorkingWeek(Date date, long minutes) {
-
-        LocalDateTime temp = LocalDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
-
-        LocalDateTime ldt = addWorkingMinutes(temp, minutes);
-
-        return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());
+        return addWorkingMinutes(lastOfDependencies, (long)getEstimatedDuration());
     }
 
     private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
@@ -169,11 +158,11 @@ public class Task {
         }
     }
 
-    private Date getLatestEstimatedOrRealFinishDateOfDependencies() {
-        Date lastTime = new Date(0);
+    private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies() {
+        LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task dependency: getDependencySet()) {
-            Date lastTimeOfThis = dependency.getEstimatedOrRealFinishDate();
-            if (lastTimeOfThis.after(lastTime)) {
+            LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate();
+            if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
             }
         }
@@ -459,18 +448,21 @@ public class Task {
     }
 
     private long getRealDurationMs() {
-        return getPerformedDuring().getStopTime().getTime() - getPerformedDuring().getStartTime().getTime();
+        return ChronoUnit.MILLIS.between(
+                getPerformedDuring().getStartTime(),
+                getPerformedDuring().getStopTime()
+            );
     }
 
-    private double getRealDuration() {
+    protected double getRealDuration() {
         return (double) getRealDurationMs() / 1000 / 60;
     }
 
-    private double getBestDuration() {
+    protected double getBestDuration() {
         return getEstimatedDuration() - getEstimatedDuration() * getAcceptableDeviation();
     }
 
-    private double getWorstDuration() {
+    protected double getWorstDuration() {
         return getEstimatedDuration() + getEstimatedDuration() * getAcceptableDeviation();
     }
 

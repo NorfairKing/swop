@@ -1,13 +1,13 @@
 package be.kuleuven.cs.swop.domain;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 public class TimePeriod {
 
-    private Date startTime;
-    private Date stopTime;
+    private LocalDateTime startTime;
+    private LocalDateTime stopTime;
 
     /**
      * Full Constructor
@@ -17,7 +17,7 @@ public class TimePeriod {
      * @param stop The Date containing the end of this peroid.
      *
      */
-    public TimePeriod(Date start, Date stop) {
+    public TimePeriod(LocalDateTime start, LocalDateTime stop) {
         setStartTime(start);
         setStopTime(stop);
     }
@@ -28,8 +28,8 @@ public class TimePeriod {
      * @return The Date containing the start of this period.
      *
      */
-    public Date getStartTime() {
-        return (Date) startTime.clone();
+    public LocalDateTime getStartTime() {
+        return (LocalDateTime) startTime;
     }
 
     /**
@@ -42,11 +42,11 @@ public class TimePeriod {
      * @return Returns true if the given time is a valid beginning for the period.
      *
      */
-    protected boolean canHaveAsStartTime(Date startTime) {
+    protected boolean canHaveAsStartTime(LocalDateTime startTime) {
         return startTime != null;
     }
 
-    private void setStartTime(Date startTime) {
+    private void setStartTime(LocalDateTime startTime) {
         if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
         this.startTime = startTime;
     }
@@ -57,8 +57,8 @@ public class TimePeriod {
      * @return The Date containing the end of this period.
      *
      */
-    public Date getStopTime() {
-        return (Date) stopTime.clone();
+    public LocalDateTime getStopTime() {
+        return (LocalDateTime) stopTime;
     }
 
     /**
@@ -71,14 +71,14 @@ public class TimePeriod {
      * @return Returns true if the given time is a valid beginning for the period.
      *
      */
-    protected boolean canHaveAsStopTime(Date stopTime) {
-        return stopTime != null && startTime != null && startTime.before(stopTime);
+    protected boolean canHaveAsStopTime(LocalDateTime stopTime) {
+        return stopTime != null && startTime != null && startTime.isBefore(stopTime);
     }
 
     /**
      * Has to be used AFTER setStartTime().
      */
-    private void setStopTime(Date stopTime) {
+    private void setStopTime(LocalDateTime stopTime) {
         if (!canHaveAsStopTime(stopTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
         this.stopTime = stopTime;
     }

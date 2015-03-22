@@ -3,7 +3,7 @@ package be.kuleuven.cs.swop.domain.task;
 
 import static org.junit.Assert.*;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -189,7 +189,7 @@ public class TaskTest {
     @Test
     public void canHaveAsAlternativeTest() {
         Task task2 = new Task("Hi", 1, 0);
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         assertFalse(task.canHaveAsAlternative(task2));
 
         task.fail(period);
@@ -217,7 +217,7 @@ public class TaskTest {
     @Test
     public void setAlternativeTest() {
         Task task2 = new Task("Hi", 1, 0);
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         try{
             task.setAlternative(task2);
@@ -243,7 +243,7 @@ public class TaskTest {
 
     @Test
     public void canHaveBeenPerfomedDuringTest() {
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         assertTrue(task.canHaveBeenPerfomedDuring(period));
         assertFalse(task.canHaveBeenPerfomedDuring(null));
         task.finish(period);
@@ -271,14 +271,14 @@ public class TaskTest {
     @Test
     public void finishTest(){
         assertFalse(task.isFinished());
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.finish(period);
         assertTrue(task.isFinished());
     }
 
     @Test
     public void finishInvalidTest(){
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         Task dep = new Task("Hi",1,0);
         task.addDependency(dep);
         exception.expect(IllegalStateException.class);
@@ -298,7 +298,7 @@ public class TaskTest {
     @Test
     public void failTest(){
         assertFalse(task.isFailed());
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.fail(period);
         assertTrue(task.isFailed());
 
@@ -311,7 +311,7 @@ public class TaskTest {
 
     @Test
     public void failInvalidTest(){
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.fail(period);
         exception.expect(IllegalStateException.class);
         task.fail(period);
@@ -324,7 +324,7 @@ public class TaskTest {
 
     @Test
     public void isFinishedOrHasFinishedAlternativeTest(){
-        TimePeriod period = new TimePeriod(new Date(1), new Date(2));
+        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         assertFalse(task.isFinishedOrHasFinishedAlternative());
         task.finish(period);
@@ -344,7 +344,7 @@ public class TaskTest {
         assertFalse(task.wasFinishedOnTime());
 
         Task task2 = new Task("Hi",10,0);
-        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
+        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
         task2.finish(period);
         assertTrue(task2.wasFinishedOnTime());
 
@@ -366,7 +366,7 @@ public class TaskTest {
         assertFalse(task.wasFinishedEarly());
 
         Task task2 = new Task("Hi",10,0);
-        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
+        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
         task2.finish(period);
         assertFalse(task2.wasFinishedEarly());
 
@@ -387,8 +387,9 @@ public class TaskTest {
     public void wasFinishedLateTest(){
         assertFalse(task.wasFinishedLate());
 
+        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        
         Task task2 = new Task("Hi",10,0);
-        TimePeriod period = new TimePeriod(new Date(1), new Date(600001));
         task2.finish(period);
         assertFalse(task2.wasFinishedLate());
 

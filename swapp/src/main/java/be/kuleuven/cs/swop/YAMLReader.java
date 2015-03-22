@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class YAMLReader {
             // Setup
             InputStream input = new FileInputStream(new File(initFile));
             Yaml yaml = new Yaml();
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Map<String, List<Map<String, Object>>> parsedFile = (Map<String, List<Map<String, Object>>>) yaml.load(input);
             
             // Remember variables in order
@@ -47,8 +46,8 @@ public class YAMLReader {
                 ProjectData pData = new ProjectData(
                         (String) project.get("name"),
                         (String) project.get("description"),
-                        format.parse((String) project.get("creationTime")),
-                        format.parse((String) project.get("dueTime"))
+                        LocalDateTime.parse((String) project.get("creationTime"), format),
+                        LocalDateTime.parse((String) project.get("dueTime"), format)
                     );
                 ProjectWrapper p = facade.createProject(pData);
                 projects.add(p);
@@ -86,8 +85,8 @@ public class YAMLReader {
                 // Finish/fail task if set
                 String status = (String) task.get("status");
                 if (status != null) {
-                    Date startTime = format.parse((String) task.get("startTime"));
-                    Date endTime = format.parse((String) task.get("endTime"));
+                    LocalDateTime startTime = LocalDateTime.parse((String) task.get("startTime"), format);
+                    LocalDateTime endTime = LocalDateTime.parse((String) task.get("endTime"), format);
                     boolean successful;
                     
                     switch (status) {
@@ -110,7 +109,7 @@ public class YAMLReader {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Couldn't import data from file: Not found.");
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             System.out.println("Couldn't import data from file: Invalid date format");
             e.printStackTrace();
         }

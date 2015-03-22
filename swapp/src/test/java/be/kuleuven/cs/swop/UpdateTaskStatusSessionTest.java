@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +30,14 @@ public class UpdateTaskStatusSessionTest {
         controller = new SessionController(ui, facade);
         ui.start();
         
-        project = facade.createProject(new ProjectData("Title", "Descr", new Date(Timekeeper.getTime().getTime() + 1)));
+        project = facade.createProject(new ProjectData("Title", "Descr", Timekeeper.getTime().plusHours(1)));
         task = facade.createTaskFor(project, new TaskData("TD", 500, .1));
     }
     
     @Test
     public void test() {
-        Date curTime = Timekeeper.getTime();
-        Date finishDate = new Date(curTime.getTime() + 1000);
+        LocalDateTime curTime = Timekeeper.getTime();
+        LocalDateTime finishDate = curTime.plusHours(1);
         TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
         
         ui.setRequestTask(task);
@@ -52,8 +52,8 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void flowTest() {
-        Date curTime = Timekeeper.getTime();
-        Date finishDate = new Date(curTime.getTime() + 1000);
+        LocalDateTime curTime = Timekeeper.getTime();
+        LocalDateTime finishDate = curTime.plusHours(1);
         TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
             
     
@@ -67,8 +67,8 @@ public class UpdateTaskStatusSessionTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void flowTestInvalidDates() {
-        Date curTime = Timekeeper.getTime();
-        Date finishDate = new Date(curTime.getTime() - 1000); //should be after the start-time.
+        LocalDateTime curTime = Timekeeper.getTime();
+        LocalDateTime finishDate = curTime.minusHours(1); //should be after the start-time.
         TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
         
         facade.updateTaskStatusFor(task, data);

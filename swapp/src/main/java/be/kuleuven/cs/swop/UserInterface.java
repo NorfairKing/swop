@@ -1,7 +1,6 @@
 package be.kuleuven.cs.swop;
 
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
@@ -95,7 +94,7 @@ public interface UserInterface {
      *
      * @return Returns a Date containing the requested timestamp.
      */
-    public Date getTimeStamp();
+    public LocalDateTime getTimeStamp();
 
     /**
      * Show an error to the user.

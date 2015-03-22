@@ -2,7 +2,7 @@ package be.kuleuven.cs.swop.domain;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,31 +40,31 @@ public class ProjectManagerTest {
     @Test
     public void canHaveAsProject(){
         assertFalse(projectManager.canHaveAsProject(null));
-        assertTrue(projectManager.canHaveAsProject(new Project("test", "test desc", new Date(1), new Date(10))));
+        assertTrue(projectManager.canHaveAsProject(new Project("test", "test desc", LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10))));
     }
 
     @Test
     public void createProjectTest(){
-        Project project = projectManager.createProject("test", "test desc", new Date(1), new Date(10));
+        Project project = projectManager.createProject("test", "test desc", LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10));
         assertTrue(projectManager.getProjects().contains(project));
 
         try{   
-            projectManager.createProject(null, "test desc", new Date(1), new Date(10));
+            projectManager.createProject(null, "test desc", LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10));
             fail();
         }catch(IllegalArgumentException e){}
 
         try{   
-            projectManager.createProject("test", null, new Date(1), new Date(10));
+            projectManager.createProject("test", null, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10));
             fail();
         }catch(IllegalArgumentException e){}   
 
         try{   
-            projectManager.createProject("test", "test desc", null, new Date(10));
+            projectManager.createProject("test", "test desc", null, LocalDateTime.now().plusHours(10));
             fail();
         }catch(IllegalArgumentException e){}
 
         try{   
-            projectManager.createProject("test", "test desc", new Date(1), null);
+            projectManager.createProject("test", "test desc", LocalDateTime.now().plusHours(1), null);
             fail();
         }catch(IllegalArgumentException e){}
     }

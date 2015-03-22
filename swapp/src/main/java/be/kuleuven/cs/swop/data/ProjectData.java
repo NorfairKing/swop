@@ -1,23 +1,21 @@
 package be.kuleuven.cs.swop.data;
 
-
-import java.util.Date;
-
+import java.time.LocalDateTime;
 
 public class ProjectData {
 
     private String title;
     private String description;
-    private Date   creationTime;
-    private Date   dueTime;
+    private LocalDateTime creationTime;
+    private LocalDateTime dueTime;
 
-    public ProjectData(String title, String description, Date dueTime) {
+    public ProjectData(String title, String description, LocalDateTime dueTime) {
         this.title = title;
         this.description = description;
         this.dueTime = dueTime;
     }
     
-    public ProjectData(String title, String description, Date creationTime, Date dueTime) {
+    public ProjectData(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
         this.title = title;
         this.description = description;
         this.creationTime = creationTime;
@@ -32,11 +30,11 @@ public class ProjectData {
         return description;
     }
     
-    public Date getCreationTime() {
+    public LocalDateTime getCreationTime() {
         return creationTime;
     }
     
-    public Date getDueTime() {
+    public LocalDateTime getDueTime() {
         return dueTime;
     }
 

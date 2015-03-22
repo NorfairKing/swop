@@ -1,7 +1,6 @@
 package be.kuleuven.cs.swop;
 
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +22,6 @@ public class FacadeController {
      * Full constructor
      */
     public FacadeController() {
-        Timekeeper.setTime(new Date(0));
         projectManager = new ProjectManager();
     }
 
@@ -177,7 +175,7 @@ public class FacadeController {
         if (statusData.getStartTime() == null) { throw new IllegalArgumentException("Null start time for status update"); }
         if (statusData.getEndTime() == null) { throw new IllegalArgumentException("Null end time for status update"); }
 
-        TimePeriod timePeriod = new TimePeriod((Date) statusData.getStartTime().clone(), (Date) statusData.getEndTime().clone());
+        TimePeriod timePeriod = new TimePeriod(statusData.getStartTime(), statusData.getEndTime());
 
         if (statusData.getSuccessful()) {
             task.getTask().finish(timePeriod);
@@ -194,7 +192,7 @@ public class FacadeController {
      * @throws IllegalArgumentException If the given Date is invalid.
      *
      */
-    public void updateSystemTime(Date time) throws IllegalArgumentException {
+    public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         Timekeeper.setTime(time);
     }

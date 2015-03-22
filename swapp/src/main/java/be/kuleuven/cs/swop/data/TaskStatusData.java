@@ -1,34 +1,32 @@
 package be.kuleuven.cs.swop.data;
 
-
-import java.util.Date;
-
+import java.time.LocalDateTime;
 
 public class TaskStatusData {
 
-    private Date    startTime;
-    private Date    endTime;
-    private boolean successful;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private boolean       successful;
 
-    public TaskStatusData(Date startTime, Date endTime, boolean successful) {
+    public TaskStatusData(LocalDateTime startTime, LocalDateTime endTime, boolean successful) {
         this.setStartTime(startTime);
         this.setEndTime(endTime);
         this.setSuccessful(successful);
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    private void setStartTime(Date startTime) {
+    private void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    private void setEndTime(Date endTime) {
+    private void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

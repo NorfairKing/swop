@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -113,8 +113,8 @@ public class ButtonMashingUI implements UserInterface {
     @Override
     public TaskStatusData getUpdateStatusData() {
         if (random.nextBoolean()) return null;
-        Date date1 = getTimeStamp();
-        Date date2 = getTimeStamp();
+        LocalDateTime date1 = getTimeStamp();
+        LocalDateTime date2 = getTimeStamp();
         boolean success = random.nextBoolean();
         return new TaskStatusData(date1, date2, success);
     }
@@ -124,14 +124,16 @@ public class ButtonMashingUI implements UserInterface {
         if (random.nextBoolean()) return null;
         String title = randomString();
         String description = randomString();
-        Date due = getTimeStamp();
+        LocalDateTime due = getTimeStamp();
         return new ProjectData(title, description, due);
     }
 
     @Override
-    public Date getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         if (random.nextBoolean()) return null;
-        return new Date(random.nextLong());
+        return LocalDateTime.of(
+                random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1,
+                random.nextInt(24), random.nextInt(60), random.nextInt(60));
     }
 
     @Override

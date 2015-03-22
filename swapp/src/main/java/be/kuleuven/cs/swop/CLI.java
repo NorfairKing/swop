@@ -1,11 +1,10 @@
 package be.kuleuven.cs.swop;
 
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -273,7 +272,7 @@ public class CLI implements UserInterface {
         System.out.print("# Description: ");
         String description = this.scanner.nextLine();
         System.out.print("# Due Date: ");
-        Date dueTime = getDate();
+        LocalDateTime dueTime = getDate();
         return new ProjectData(title, description, dueTime);
     }
 
@@ -357,10 +356,10 @@ public class CLI implements UserInterface {
         System.out.println("UPDATE TASK STATUS\n########");
 
         System.out.print("# Start Date: ");
-        Date startTime = getDate();
+        LocalDateTime startTime = getDate();
 
         System.out.print("# End Date: ");
-        Date endTime = getDate();
+        LocalDateTime endTime = getDate();
 
         System.out.print("# Was is successful (finish/fail): ");
         boolean successful;
@@ -380,37 +379,37 @@ public class CLI implements UserInterface {
         return new TaskStatusData(startTime, endTime, successful);
     }
 
-    private Date getDate() {
+    private LocalDateTime getDate() {
         while (true) {
             try {
                 String inputText = this.scanner.nextLine();
                 if("now".equals(inputText)){
-                    return new Date();
+                    return LocalDateTime.now();
                 }else{
-                    return parseFormat.parse(inputText);
+                    return LocalDateTime.parse(inputText, parseFormat);
                 }
-            } catch (ParseException e) {
+            } catch (DateTimeParseException e) {
                 System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30 or use \"now\"");
             }
         }
     }
 
     @Override
-    public Date getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         System.out.println("TIME STAMP\n########");
 
         System.out.print("# Time: ");
-        Date time = getDate();
+        LocalDateTime time = getDate();
 
         return time;
     }
 
-    private String formatDate(Date date){
-        return printFormat.format(date);
+    private String formatDate(LocalDateTime date){
+        return date.format(printFormat);
     }
 
     private String formatPeriod(TimePeriod period){
-        return periodDateFormat.format(period.getStartTime()) + " --> " + periodDateFormat.format(period.getStopTime());
+        return period.getStartTime().format(periodDateFormat) + " --> " + period.getStopTime().format(periodDateFormat);
     }
 
     private String formatPercentage(double input){
@@ -450,8 +449,8 @@ public class CLI implements UserInterface {
         return hoursString + sep + minutesString;
     }
 
-    public static final DateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static final DateFormat printFormat = new SimpleDateFormat("EEEE, d MMMM yyyy - HH:mm");
-    public static final DateFormat periodDateFormat = new SimpleDateFormat("E dd/MM/yyyy HH:mm");
+    public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
+    public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
 
 }

@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.data.ProjectData;
@@ -212,7 +212,7 @@ public class SessionController {
     public void startAdvanceTimeSession() {
         // The user indicates he wants to modify the system time
         // The system allows the user to choose a new time
-        Date time = getUi().getTimeStamp();
+        LocalDateTime time = getUi().getTimeStamp();
 
         // if the user cancels.
         if (time == null) return;

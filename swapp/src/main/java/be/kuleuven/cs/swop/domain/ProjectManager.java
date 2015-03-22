@@ -1,6 +1,6 @@
 package be.kuleuven.cs.swop.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,8 +60,8 @@ public class ProjectManager {
      *
      * @return Returns the newly created Project.
      */
-    public Project createProject(String title, String description, Date dueTime) {
-        Date creationTime = Timekeeper.getTime();
+    public Project createProject(String title, String description, LocalDateTime dueTime) {
+        LocalDateTime creationTime = Timekeeper.getTime();
         return createProject(title, description, creationTime, dueTime);
     }
     
@@ -82,7 +82,7 @@ public class ProjectManager {
      *
      * @return Returns the newly created Project.
      */
-    public Project createProject(String title, String description, Date creationTime, Date dueTime) {
+    public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
         Project project = new Project(title, description, creationTime, dueTime);
         addProject(project);
         return project;

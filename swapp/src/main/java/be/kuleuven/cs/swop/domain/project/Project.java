@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.domain.project;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +14,8 @@ public class Project {
 
     private String          title;
     private String          description;
-    private Date            creationTime;
-    private Date            dueTime;
+    private LocalDateTime   creationTime;
+    private LocalDateTime   dueTime;
     private final Set<Task> tasks = new HashSet<Task>();
 
     /**
@@ -30,7 +30,7 @@ public class Project {
      *            The date on which the project should be finished.
      *
      */
-    public Project(String title, String description, Date creationTime, Date dueTime) {
+    public Project(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
         setTitle(title);
         setDescription(description);
         setCreationTime(creationTime);
@@ -144,7 +144,7 @@ public class Project {
      * @return The creation Date
      *
      */
-    public Date getCreationTime() {
+    public LocalDateTime getCreationTime() {
         return creationTime;
     }
 
@@ -154,11 +154,11 @@ public class Project {
      *            The creation time to be checked for validity.
      * @return Must be a valid time | creationTime != null;
      */
-    protected boolean canHaveAsCreationTime(Date creationTime) {
+    protected boolean canHaveAsCreationTime(LocalDateTime creationTime) {
         return creationTime != null;
     }
 
-    private void setCreationTime(Date creationTime) {
+    private void setCreationTime(LocalDateTime creationTime) {
         if (!canHaveAsCreationTime(creationTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_CREATIONTIME); }
         this.creationTime = creationTime;
     }
@@ -169,8 +169,8 @@ public class Project {
      * @return The project's due Date
      *
      */
-    public Date getDueTime() {
-        return (Date) dueTime.clone();
+    public LocalDateTime getDueTime() {
+        return dueTime;
     }
 
     /**
@@ -182,8 +182,8 @@ public class Project {
      * @return The dueTime must be after the creation of this project.
      *
      */
-    protected boolean canHaveAsDueTime(Date dueTime) {
-        return dueTime != null && dueTime.after(getCreationTime());
+    protected boolean canHaveAsDueTime(LocalDateTime dueTime) {
+        return dueTime != null && dueTime.isAfter(getCreationTime());
     }
 
     /**
@@ -196,7 +196,7 @@ public class Project {
      *             If the new Date isn't valid.
      *
      */
-    public void setDueTime(Date dueTime) {
+    public void setDueTime(LocalDateTime dueTime) {
         if (!canHaveAsDueTime(dueTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DUETIME); }
         this.dueTime = dueTime;
     }
@@ -276,14 +276,14 @@ public class Project {
      *
      */
     public boolean isOnTime() {
-        return !getDueTime().before(estimatedFinishTime());
+        return !getDueTime().isBefore(estimatedFinishTime());
     }
     
-    public Date estimatedFinishTime(){
-        Date lastTime = new Date(0);
+    public LocalDateTime estimatedFinishTime(){
+        LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task task: getTasks()) {
-            Date lastTimeOfThis = task.getEstimatedOrRealFinishDate();
-            if (lastTimeOfThis.after(lastTime)) {
+            LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate();
+            if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
             }
         }

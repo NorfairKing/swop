@@ -2,7 +2,7 @@ package be.kuleuven.cs.swop.domain;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,9 +14,6 @@ import org.junit.rules.ExpectedException;
 
 
 public class TimeKeeperTest {
-    private static int minuteMillis= 60 * 1000;
-    private static int hourMillis = 60 * minuteMillis;
-    private static int dayMillis = 24 * hourMillis;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -36,29 +33,72 @@ public class TimeKeeperTest {
     
     @Test
     public void workingMinutesBetweenSimpleTest(){
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(8 * hourMillis)),0);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(8 * hourMillis), new Date(9 * hourMillis)),60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(4 * hourMillis), new Date(10 * hourMillis)),2*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(4 * hourMillis), new Date(10 * hourMillis)),2*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(5 * hourMillis), new Date(17 * hourMillis)),8*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(13 * hourMillis), new Date(18 * hourMillis)),3*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(15 * hourMillis + 30 * minuteMillis), new Date(16 * hourMillis)),30);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 0, 0),
+                LocalDateTime.of(1990, 1, 1, 8, 0)),
+                0);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 8, 0),
+                LocalDateTime.of(1990, 1, 1, 9, 0)),
+                60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 4, 0),
+                LocalDateTime.of(1990, 1, 1, 10, 0)),
+                2*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 5, 0),
+                LocalDateTime.of(1990, 1, 1, 17, 0)),
+                8*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 13, 0),
+                LocalDateTime.of(1990, 1, 1, 18, 0)),
+                3*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 15, 30),
+                LocalDateTime.of(1990, 1, 1, 16, 0)),
+                30);
     }
     @Test
     public void workingMinutesBetweenAdvancedTest(){
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis)),8*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis + 30 * minuteMillis)),8*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(0), new Date(dayMillis + 8 * hourMillis +30 * minuteMillis)),8*60 + 30);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(7 * hourMillis), new Date(dayMillis + 9 * hourMillis)),9*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(15 * hourMillis), new Date(dayMillis + 9 * hourMillis)),2*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(12 * hourMillis), new Date(dayMillis + 13 * hourMillis)),9*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 0, 0),
+                LocalDateTime.of(1990, 1, 2, 0, 0)),
+                8*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 0, 0),
+                LocalDateTime.of(1990, 1, 2, 0, 30)),
+                8*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 0, 0),
+                LocalDateTime.of(1990, 1, 2, 8, 30)),
+                8*60 + 30);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 7, 0),
+                LocalDateTime.of(1990, 1, 2, 9, 0)),
+                9*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 15, 0),
+                LocalDateTime.of(1990, 1, 2, 9, 0)),
+                2*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1990, 1, 1, 12, 0),
+                LocalDateTime.of(1990, 1, 2, 13, 0)),
+                9*60);
     }
     @Test
     public void workingMinutesBetweenComplexTest(){
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(dayMillis), new Date( 5 * dayMillis)),16*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(8 * hourMillis), new Date(6 * dayMillis + 16 * hourMillis)),5*8*60);
-        assertEquals(Timekeeper.workingMinutesBetween(new Date(15 * hourMillis + 30 * minuteMillis), new Date(11 * dayMillis + 9 * hourMillis +30 * minuteMillis)),30 + 8*60 + 5*8*60 + 90);
-
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1970, 1, 2, 0, 0), //friday
+                LocalDateTime.of(1970, 1, 6, 0, 0)),
+                16*60); //over weekend
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1970, 1, 1, 8, 0), //thursday
+                LocalDateTime.of(1970, 1, 7, 16, 0)),
+                5*8*60);
+        assertEquals(Timekeeper.workingMinutesBetween(
+                LocalDateTime.of(1970, 1, 1, 15, 30),
+                LocalDateTime.of(1970, 1, 12, 9, 30)),
+                30 + 8*60 + 5*8*60 + 90);
     }
 
 

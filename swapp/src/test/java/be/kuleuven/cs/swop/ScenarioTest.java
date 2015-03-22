@@ -3,12 +3,9 @@ package be.kuleuven.cs.swop;
 
 import static org.junit.Assert.*;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,20 +38,18 @@ public class ScenarioTest {
 
     @Test
     public void scenario1Test() throws ParseException {
-        DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        dateTimeFormat.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
-
-        Date currentDate = null;
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime currentDate = null;
 
         /*
          * Day 1
          */
-        currentDate = dateTimeFormat.parse("2015-02-09 08:00");
+        currentDate = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
         facade.updateSystemTime(currentDate);
 
         String title = "MobileSteps";
         String description = "develop mobile app for counting steps using a specialised bracelet";
-        Date due = dateTimeFormat.parse("2015-02-13 16:00");
+        LocalDateTime due = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
         ProjectData projectData = new ProjectData(title, description, due);
         ProjectWrapper p1 = facade.createProject(projectData);
 
@@ -119,7 +114,7 @@ public class ScenarioTest {
         /*
          * Day 2
          */
-        currentDate = dateTimeFormat.parse("2015-02-10 08:00");
+        currentDate = LocalDateTime.parse("2015-02-10 08:00", dateTimeFormat);
         facade.updateSystemTime(currentDate);
 
 
@@ -131,8 +126,8 @@ public class ScenarioTest {
         assertEquals(4, facade.getTasksOf(p1).size());
 
 
-        Date t1Start = dateTimeFormat.parse("2015-02-09 08:00");
-        Date t1Stop = dateTimeFormat.parse("2015-02-09 16:00");
+        LocalDateTime t1Start = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
+        LocalDateTime t1Stop = LocalDateTime.parse("2015-02-09 16:00", dateTimeFormat);
         TaskStatusData t1u = new TaskStatusData(t1Start, t1Stop, true);
         facade.updateTaskStatusFor(t1, t1u);
         assertTrue(t1.isFinished());
@@ -158,7 +153,7 @@ public class ScenarioTest {
         /*
          * Day 3
          */
-        currentDate = dateTimeFormat.parse("2015-02-11 08:00");
+        currentDate = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
         facade.updateSystemTime(currentDate);
 
         assertTrue(p1.isOngoing());
@@ -168,8 +163,8 @@ public class ScenarioTest {
         assertTrue(p1.isOnTime());
         assertFalse(p1.isOverTime());;
 
-        Date t2Start = dateTimeFormat.parse("2015-02-10 08:00");
-        Date t2Stop = dateTimeFormat.parse("2015-02-10 16:00");
+        LocalDateTime t2Start = LocalDateTime.parse("2015-02-10 08:00", dateTimeFormat);
+        LocalDateTime t2Stop = LocalDateTime.parse("2015-02-10 16:00", dateTimeFormat);
         TaskStatusData t2u = new TaskStatusData(t2Start, t2Stop, false);
         facade.updateTaskStatusFor(t2, t2u);
         assertTrue(t1.isFinished());
@@ -238,12 +233,12 @@ public class ScenarioTest {
         /*
          * Day 4
          */
-        currentDate = dateTimeFormat.parse("2015-02-13 16:00");
+        currentDate = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
         facade.updateSystemTime(currentDate);
 
 
-        Date t5Start = dateTimeFormat.parse("2015-02-11 08:00");
-        Date t5Stop = dateTimeFormat.parse("2015-02-11 16:00");
+        LocalDateTime t5Start = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
+        LocalDateTime t5Stop = LocalDateTime.parse("2015-02-11 16:00", dateTimeFormat);
         TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
         facade.updateTaskStatusFor(t5, t5u); 
         assertTrue(t1.isFinished());
@@ -252,8 +247,8 @@ public class ScenarioTest {
         assertTrue(t4.canFinish());
         assertTrue(t5.isFinished());
 
-        Date t3Start = dateTimeFormat.parse("2015-02-12 08:00");
-        Date t3Stop = dateTimeFormat.parse("2015-02-12 16:00");
+        LocalDateTime t3Start = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
+        LocalDateTime t3Stop = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
         TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
         facade.updateTaskStatusFor(t3, t3u);
         assertTrue(t1.isFinished());
@@ -262,8 +257,8 @@ public class ScenarioTest {
         assertTrue(t4.canFinish());
         assertTrue(t5.isFinished());
 
-        Date t4Start = dateTimeFormat.parse("2015-02-13 08:00");
-        Date t4Stop = dateTimeFormat.parse("2015-02-13 16:00");
+        LocalDateTime t4Start = LocalDateTime.parse("2015-02-13 08:00", dateTimeFormat);
+        LocalDateTime t4Stop = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
         TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
         facade.updateTaskStatusFor(t4, t4u); 
         assertTrue(t1.isFinished());
