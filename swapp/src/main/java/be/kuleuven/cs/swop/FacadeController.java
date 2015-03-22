@@ -28,18 +28,6 @@ public class FacadeController {
     }
 
     /**
-     * Full constructor
-     *
-     * @param initialisationFilePath The String containing the path pointing towards the
-     * file in YAML format which describes the initial situation for the Task Manager
-     * program.
-     */
-    public FacadeController(String initialisationFilePath) {
-        Timekeeper.setTime(new Date(0));
-        projectManager = new ProjectManager(initialisationFilePath);
-    }
-
-    /**
      * Retrieve every Project managed by this program.
      *
      * @return Returns a Set of ProjectWrappers.
@@ -86,10 +74,15 @@ public class FacadeController {
         if (data.getDescription() == null) { throw new IllegalArgumentException("Null description for project creation"); }
         if (data.getTitle() == null) { throw new IllegalArgumentException("Null title for project creation"); }
         if (data.getDueTime() == null) { throw new IllegalArgumentException("Null due time for project creation"); }
-
-        Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
-
-        return new ProjectWrapper(createdProject);
+        
+        if (data.getCreationTime() == null) {
+            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+            return new ProjectWrapper(createdProject);
+        }
+        else {
+            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getCreationTime(), data.getDueTime());
+            return new ProjectWrapper(createdProject);
+        }
     }
 
     /**
@@ -145,6 +138,24 @@ public class FacadeController {
         task.getTask().setAlternative(alternative.getTask());
 
         return alternative;
+    }
+    
+    /**
+     * Set the alternative of a task.
+     * @param task The task for which to set an alternative.
+     * @param alternative The alternative for the task.
+     */
+    public void setAlternativeFor(TaskWrapper task, TaskWrapper alternative) {
+        task.getTask().setAlternative(alternative.getTask());
+    }
+    
+    /**
+     * Add an existing task as dependency for another.
+     * @param task The task to add a dependency to.
+     * @param dependency The dependency.
+     */
+    public void addDependencyTo(TaskWrapper task, TaskWrapper dependency) {
+        task.getTask().addDependency(dependency.getTask());
     }
 
     /**

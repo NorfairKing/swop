@@ -30,7 +30,7 @@ public class ProjectManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        projectManager = new ProjectManager("");
+        projectManager = new ProjectManager();
     }
 
     @After
@@ -67,26 +67,5 @@ public class ProjectManagerTest {
             projectManager.createProject("test", "test desc", new Date(1), null);
             fail();
         }catch(IllegalArgumentException e){}
-    }
-
-    @Test
-    public void readProjectsFromFileTest() {
-        ProjectManager pm = new ProjectManager("src/test/java/be/kuleuven/cs/swop/defaulttest.tman");
-        
-        assertEquals(pm.getProjects().size(), 3);
-        
-        Project projectX = pm.getProjects().stream()
-                .filter(p -> p.getTitle().equals("project x"))
-                .findFirst().get();
-        Project projectY = pm.getProjects().stream()
-                .filter(p -> p.getTitle().equals("project y"))
-                .findFirst().get();
-        Project projectZ = pm.getProjects().stream()
-                .filter(p -> p.getTitle().equals("project z"))
-                .findFirst().get();
-
-        assertEquals(projectX.getTasks().size(), 1);
-        assertEquals(projectY.getTasks().size(), 4);
-        assertEquals(projectZ.getTasks().size(), 2);
     }
 }

@@ -10,12 +10,11 @@ public class App {
      */
     public static void main(String[] args) {
         UserInterface ui = new CLI();
-        FacadeController facade;
+        FacadeController facade = new FacadeController();
         if (args.length == 1) {
-            String initialisationFilePath = args[0];
-            facade = new FacadeController(initialisationFilePath);
-        } else {
-            facade = new FacadeController();
+            String filePath = args[0];
+            YAMLReader reader = new YAMLReader(facade);
+            reader.read(filePath);
         }
         new SessionController(ui, facade);
         ui.start();
