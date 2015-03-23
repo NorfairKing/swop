@@ -1,12 +1,9 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.facade;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.data.ProjectData;
-import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.ReservationManager;
 import be.kuleuven.cs.swop.domain.TimePeriod;

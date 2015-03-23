@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.SessionController;
+
 
 public class ButtonMashingTest {
 

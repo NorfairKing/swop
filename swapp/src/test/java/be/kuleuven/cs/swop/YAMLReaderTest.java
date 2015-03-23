@@ -7,6 +7,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.ProjectWrapper;
+
 public class YAMLReaderTest {
 
     private static YAMLReader reader;

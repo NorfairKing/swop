@@ -7,8 +7,10 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.data.ProjectData;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.ProjectData;
+import be.kuleuven.cs.swop.facade.SessionController;
 
 
 public class CreateProjectSessionTest {

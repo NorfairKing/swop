@@ -1,5 +1,8 @@
 package be.kuleuven.cs.swop;
 
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.SessionController;
+
 
 public class App {
 

@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.facade;
 
 
 import java.time.LocalDateTime;
