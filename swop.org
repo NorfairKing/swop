@@ -1,4 +1,5 @@
-* Eerste sessie
+* Eerste iteratie
+** Eerste sessie
 - mogen we libraries gebruiken?
     Ja
     Zeker:
@@ -28,7 +29,7 @@
 - Moeten we nog iets doen met dat domain model?
     Nee, dat is gegeven voor deze iteratie
 
-* Tweede sessie
+** Tweede sessie
 - Vragen
   - Recursief falen?
     Nee
@@ -47,7 +48,7 @@
   - session controller
   - UI interface
 
-* Derde sessie
+** Derde sessie
 
 - Wanneer moeten lijsten 'immutable' worden?
   - Overal, ook intern
@@ -85,3 +86,72 @@
   - Oplossing: (misschien?)
     - Laat gewoon de task altijd beslissen over de status.
     - Als op task 'finish' aangeroepen wordt vraagt die aan de status 'bool canFinish()' en dan kiest de task naar welke nieuwe status er veranderd moet worden.
+* Tweede iteratie
+** Eerste sessie
+*** Nieuwe dingen
+**** Nieuw in domein
+    - User (abstract)
+      - Developer
+      - Project manager
+    - Resources
+    - ResourceType
+    - Reservation
+    - Requirement
+
+Beslissingen over domein:
+  - Developers en Project managers zijn disjunct
+  - Resources kunnen niet opgebruikt worden, enkel gereserveerd.
+**** Nieuw in task
+     - developers
+     - plannes start time
+     - duration in MINUTES
+     - berekenen: timespan in which to be executed
+**** Nieuw in task status
+     - executing
+     - available VOOR EEN DEVELOPER
+**** Al de rest
+*** Design problemen
+**** Resource reservations
+   - Oplossing Syd:
+     - Elke task houdt een lijst bij van nodige resourceTYPES
+     - Elke resourceTYPE kent al zijn instantiaties
+     - Elke een resource houdt al zijn reservaties bij
+   - Oplossing Pablo:
+     - Reservation Manager die alle reservations bijhoudt.
+     - Taak moet daaraan kunnen?
+Er zijn twee niveaus van 'available':
+- dependencies door taak zelf
+- resources (reservations) door reservationmanager
+
+**** Probleem: Verschillende soorten data nodig voor de statussen. Bv finished/failed hebben een time-period, terwijl de nieuwe executing een developer nodig heeft.
+     - Oplossing Pablo: Voeg die specifieke data velden toe aan de statussen zelf.
+     - Bv finished heeft een veldje time-period dat aangeeft wanneer er aan de taak gewerkt is. Op de zelfde manier heeft executing een veldje 'developers'.
+Ik zou dan in task een variabele Status bij houden, bij het opvragen, als die null is, wordt er gekeken naar de dependencies en dan gekozen tussen avail/unavail.
+Maar als die niet null is wordt de huidige gewoon terug gegeven.
+Dus weg met de 'isFinal' check, gwn als die toegekend is blijft die.
+Zo kunnen we goed de voordelen van het status pattern gebruiken (namelijk specifieke nodige data voor een bepaalde status bij houden, zelfs al verschilt die vans
+tatus), en tegelijk de flexibiliteit hebben van het automatisch status bepalen gebaseerd op dependencies.
+
+Status is 'available' voor specifieke user, dus misschien een Login-manager die statisch bijhoudt welke user er ingelogd is.8
+
+
+**** Probleem: rechten van users
+ Een Manager mag taken plannen maar een developer niet etc.
+ We moeten daar dus ook rekening mee houden in de UI.
+ 
+ Hier is mijn voorstel:
+ Bij het begin van een sessie vraagt de UI aan de sessioncontroller een
+ selectUserSession aan. De user selecteert dan een User (via
+ UserWrappers). Van daaruit kan de UI sessions aanvragen, en daaraan moet
+ hij dan die userWrapper meegeven zodat de sessioncontroller de
+ permissions kan checken.
+ 
+ Wat ook kan is dat we de sessionController de user(Wrapper) laten
+ bijhouden en de UI gewoon toelaten die te zetten (lijkt me eigenlijk
+ veiliger omdat de UI anders gewoon alle users kan impersoneren).
+ In dit scenario moet de UI echt van user veranderen voor die iets anders
+ kan doen.
+ 
+*** Domain vragen:
+- Time availability per type of per instance van resource?
+  Momenteel per type
