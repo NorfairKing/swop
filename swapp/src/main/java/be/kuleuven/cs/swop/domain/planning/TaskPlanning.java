@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.resource.Reservation;
+import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
@@ -13,9 +13,9 @@ public class TaskPlanning {
     private Set<Developer> developers = new HashSet<Developer>();
     private Task task;
     private TimePeriod period;
-    private Set<Reservation> reservations = new HashSet<Reservation>();
+    private Set<Resource> reservations = new HashSet<Resource>();
 
-    public TaskPlanning(Set<Developer> developers, Task task, TimePeriod period, Set<Reservation> reservations){
+    public TaskPlanning(Set<Developer> developers, Task task, TimePeriod period, Set<Resource> reservations){
         setDevelopers(developers);
         setTask(task);
         setPeriod(period);
@@ -55,14 +55,14 @@ public class TaskPlanning {
         return period != null;
     }
 
-    public Set<Reservation> getReservations() {
+    public Set<Resource> getReservations() {
         return reservations;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
+    public void setReservations(Set<Resource> reservations) {
         this.reservations = reservations;
     }
-    protected boolean canHaveAsReservations(Set<Reservation> reservations){
+    protected boolean canHaveAsReservations(Set<Resource> reservations){
         return !reservations.isEmpty();
     }    
 
