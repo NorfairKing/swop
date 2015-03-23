@@ -14,6 +14,7 @@ import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
 import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
 import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
 import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -24,13 +25,14 @@ import com.google.common.collect.ImmutableSet;
  */
 public class Task {
 
-    private String     description;
-    private double     estimatedDuration;
-    private double     acceptableDeviation;
-    private Set<Task>  dependencies = new HashSet<Task>();
-    private Task       alternative;
-    private TimePeriod performedDuring;
-    private TaskStatus status;
+    private String           description;
+    private double           estimatedDuration;
+    private double           acceptableDeviation;
+    private Set<Task>        dependencies = new HashSet<Task>();
+    private Task             alternative;
+    private TimePeriod       performedDuring;
+    private TaskStatus       status;
+    private Set<Requirement> requirements = new HashSet<Requirement>();
 
     /**
      * Full constructor
@@ -47,6 +49,11 @@ public class Task {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new AvailableStatus());
+    }
+
+    public Task(String description, double estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
+        this(description,estimatedDuration,acceptableDeviation);
+        this.setRequirements(requirements);
     }
 
     /**
@@ -508,10 +515,24 @@ public class Task {
         return false;
     }
 
+    public Set<Requirement> getRequirements() {
+        return ImmutableSet.copyOf(this.requirements);
+    }
+
+    private void setRequirements(Set<Requirement> requirements) {
+        if(!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+        this.requirements = requirements;
+    }
+
+    protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
+        return requirements != null;
+    }
+
     private static final String ERROR_ILLEGAL_DESCRIPTION     = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_DEVIATION       = "Illegal acceptable deviation for task.";
     private static final String ERROR_ILLEGAL_DURATION        = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS          = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE     = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY      = "Illegal dependency set for task.";
+    private static final String ERROR_ILLEGAL_REQUIREMENTS    = "Illegal requirement set for task.";
 }
