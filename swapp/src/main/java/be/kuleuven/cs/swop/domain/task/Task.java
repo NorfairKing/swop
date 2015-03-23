@@ -9,6 +9,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -370,7 +371,7 @@ public class Task {
      * @return Returns true if this Task's status is finished.
      */
     public boolean isFinished() {
-        return getStatus().isFinished();
+        return status.isFinished();
     }
 
     /**
@@ -379,7 +380,7 @@ public class Task {
      * @return Returns true if this Task's status is failed.
      */
     public boolean isFailed() {
-        return getStatus().isFailed();
+        return status.isFailed();
     }
 
     /**
@@ -388,7 +389,7 @@ public class Task {
      * @return Returns true if this Task's can be finished.
      */
     public boolean canFinish(){
-        return getStatus().canFinish();
+        return status.canFinish();
     }
 
     /**
@@ -427,7 +428,7 @@ public class Task {
      *             If this Task can't fail with the current status.
      */
     public void fail(TimePeriod period) {
-        getStatus().fail(period);
+        status.fail(period);
     }
 
     private long getRealDurationMs() {
