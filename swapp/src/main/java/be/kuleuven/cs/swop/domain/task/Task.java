@@ -31,7 +31,6 @@ public class Task {
     private Task       alternative;
     private TimePeriod performedDuring;
     private TaskStatus status;
-    private LocalDateTime plannedStartTime;
 
     /**
      * Full constructor
@@ -507,19 +506,6 @@ public class Task {
             if (!t.isFinishedOrHasFinishedAlternative()) { return true; }
         }
         return false;
-    }
-
-    private void setPlannedStartTime(LocalDateTime plannedStartTime) {
-        if (!canHaveAsPlannedStartTime(plannedStartTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
-        this.plannedStartTime = plannedStartTime;
-    }
-
-    protected boolean canHaveAsPlannedStartTime(LocalDateTime plannedStartTime) {
-        return plannedStartTime != null;
-    }
-
-    public LocalDateTime getPlannedStartTime() {
-        return this.plannedStartTime;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION     = "Illegal project for task.";
