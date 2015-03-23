@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.data.ProjectData;
-import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.facade.ProjectData;
+import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.TaskData;
+import be.kuleuven.cs.swop.facade.TaskStatusData;
+import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 
 /**

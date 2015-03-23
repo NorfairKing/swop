@@ -1,9 +1,7 @@
-package be.kuleuven.cs.swop.data;
+package be.kuleuven.cs.swop.facade;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import be.kuleuven.cs.swop.TaskWrapper;
 
 import com.google.common.collect.ImmutableSet;
 

@@ -9,10 +9,14 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.data.ProjectData;
-import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.data.TaskStatusData;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.ProjectData;
+import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.TaskData;
+import be.kuleuven.cs.swop.facade.TaskStatusData;
+import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 
 public class UpdateTaskStatusSessionTest {
@@ -45,8 +49,8 @@ public class UpdateTaskStatusSessionTest {
         
         controller.startUpdateTaskStatusSession();
 
-        assertTrue(task.getTask().isFinished());
-        assertFalse(task.getTask().isFailed());
+        assertTrue(task.isFinished());
+        assertFalse(task.isFailed());
         assertEquals(task.getEstimatedOrRealFinishDate(), finishDate);
     }
     

@@ -5,9 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.data.ProjectData;
-import be.kuleuven.cs.swop.data.TaskData;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.ProjectData;
+import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.TaskData;
 
 
 public class CreateTaskSessionTest {
