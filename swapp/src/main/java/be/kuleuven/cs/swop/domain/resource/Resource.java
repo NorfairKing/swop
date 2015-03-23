@@ -3,6 +3,10 @@ package be.kuleuven.cs.swop.domain.resource;
 
 public class Resource {
     private ResourceType type;
+    
+    public Resource(ResourceType type){
+        setType(type);
+    }
 
     public ResourceType getType() {
         return type;
