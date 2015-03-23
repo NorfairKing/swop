@@ -1,9 +1,17 @@
-package be.kuleuven.cs.swop.domain.task.status;
+package be.kuleuven.cs.swop.domain.task;
+
+import be.kuleuven.cs.swop.domain.TimePeriod;
+
+
 
 
 public abstract class TaskStatus {
 
-    public TaskStatus() {}
+    private Task task;
+
+    public TaskStatus(Task task) {
+        setTask(task);
+    }
 
     /**
      * Checks whether the project containing this status is finished.
@@ -40,4 +48,30 @@ public abstract class TaskStatus {
      */
     public abstract boolean isFinal();
 
+    public abstract void setAlternative(Task alternative);
+
+    public Task getTask() {
+        return task;
+    }
+
+    protected boolean canHaveAsTask(Task task) {
+        return task != null;
+    }
+
+    public void setTask(Task task) {
+        if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
+        this.task = task;
+    }
+    
+    abstract void finish(TimePeriod period);
+    abstract void fail(TimePeriod period);
+    
+    
+    protected void goToStatus(TaskStatus status){
+        this.task.setStatus(status);
+    }
+    
+    protected abstract boolean canHaveAsAlternative(Task task);
+
+    private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";
 }

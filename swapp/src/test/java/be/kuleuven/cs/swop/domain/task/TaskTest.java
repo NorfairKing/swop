@@ -14,10 +14,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
-import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
-import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
-import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
 
 
 public class TaskTest {
@@ -261,10 +257,9 @@ public class TaskTest {
     @Test
     public void canHaveAsStatusTest(){
         assertFalse(task.canHaveAsStatus(null));
-        assertTrue(task.canHaveAsStatus(new AvailableStatus()));
-        assertTrue(task.canHaveAsStatus(new FinishedStatus()));
-        assertTrue(task.canHaveAsStatus(new FailedStatus()));
-        assertTrue(task.canHaveAsStatus(new UnavailableStatus()));
+        assertTrue(task.canHaveAsStatus(new OngoingStatus(task)));
+        assertTrue(task.canHaveAsStatus(new FinishedStatus(task)));
+        assertTrue(task.canHaveAsStatus(new FailedStatus(task)));
 
     }
 

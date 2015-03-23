@@ -218,7 +218,7 @@ public class ProjectTest {
 
         Timekeeper.setTime(epoch.plusHours(10));
         task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
-        task1.setAlternative(task2);
+        task1.addAlternative(task2);
 
         assertTrue(timeProject.isOnTime());
         assertFalse(timeProject.isOverTime());
@@ -231,7 +231,7 @@ public class ProjectTest {
 
         Timekeeper.setTime(epoch.plusHours(10));
         task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
-        task1.setAlternative(task2);
+        task1.addAlternative(task2);
 
         assertFalse(timeProject.isOnTime());
         assertTrue(timeProject.isOverTime());
@@ -244,7 +244,7 @@ public class ProjectTest {
 
         Timekeeper.setTime(epoch.plusHours(10));
         task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
-        task1.setAlternative(task2);
+        task1.addAlternative(task2);
 
         assertTrue(timeProject.isOnTime());
         assertFalse(timeProject.isOverTime());
@@ -257,7 +257,7 @@ public class ProjectTest {
 
         Timekeeper.setTime(epoch.plusHours(12));
         task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
-        task1.setAlternative(task2);
+        task1.addAlternative(task2);
 
         assertFalse(timeProject.isOnTime());
         assertTrue(timeProject.isOverTime());
@@ -399,7 +399,7 @@ public class ProjectTest {
         
         Timekeeper.setTime(epoch.plusHours(12));
         task4.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
-        task4.setAlternative(task5);
+        task4.addAlternative(task5);
         
         
         assertTrue(p.isOnTime()); // 5+1 hours to go in 36 hours
@@ -438,7 +438,7 @@ public class ProjectTest {
         
         task9.fail(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         Task task13 = p.createTask("task13", 13 * minutesPerHour, 0);
-        task9.setAlternative(task13);
+        task9.addAlternative(task13);
         
         assertTrue(p.isOnTime()); //13+8+3+1 hours to go in 32 hours
         assertFalse(p.isOverTime());
@@ -446,7 +446,7 @@ public class ProjectTest {
         
         task13.fail(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         Task task23 = p.createTask("task23", 23 * minutesPerHour, 0);
-        task13.setAlternative(task23);
+        task13.addAlternative(task23);
         
         assertFalse(p.isOnTime()); // 23+8+3+1 hours to go in 32 hours
         assertTrue(p.isOverTime());

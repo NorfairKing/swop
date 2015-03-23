@@ -9,6 +9,15 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+<<<<<<< HEAD
+import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
+import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
+import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
+import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
+import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
+=======
+>>>>>>> new state patten shit
 
 import com.google.common.collect.ImmutableSet;
 
@@ -346,7 +355,9 @@ public class Task {
         return ImmutableSet.copyOf(this.dependencies);
     }
 
-
+    private TaskStatus getStatus() {
+        return status;
+    }
 
     /**
      * Checks if the given status is a valid status for this Task.

@@ -130,7 +130,7 @@ public class FacadeController {
 
         TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
 
-        task.getTask().setAlternative(alternative.getTask());
+        task.getTask().addAlternative(alternative.getTask());
 
         return alternative;
     }
@@ -141,7 +141,7 @@ public class FacadeController {
      * @param alternative The alternative for the task.
      */
     public void setAlternativeFor(TaskWrapper task, TaskWrapper alternative) {
-        task.getTask().setAlternative(alternative.getTask());
+        task.getTask().addAlternative(alternative.getTask());
     }
     
     /**

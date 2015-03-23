@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.task.status;
+package be.kuleuven.cs.swop.domain.task;
 
 import static org.junit.Assert.*;
 
@@ -10,12 +10,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import be.kuleuven.cs.swop.domain.task.FailedStatus;
+import be.kuleuven.cs.swop.domain.task.FinishedStatus;
+import be.kuleuven.cs.swop.domain.task.OngoingStatus;
+
 public class TaskStatusTest {
-	private AvailableStatus available;
 	private FailedStatus failed;
 	private FinishedStatus finished;
-	private UnavailableStatus unavailable;
+	private OngoingStatus unavailable;
 
+    private Task             task;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -30,10 +34,10 @@ public class TaskStatusTest {
 
 	@Before
 	public void setUp() throws Exception {
-		available = new AvailableStatus();
-		failed = new FailedStatus();
-		finished = new FinishedStatus();
-		unavailable = new UnavailableStatus();
+        task = new Task("Desc", 100, 0.1);
+		failed = new FailedStatus(task);
+		finished = new FinishedStatus(task);
+		unavailable = new OngoingStatus(task);
 	}
 
 	@After
@@ -42,7 +46,6 @@ public class TaskStatusTest {
 	
 	@Test
 	public void isFinishedTest(){
-		assertFalse(available.isFinished());
 		assertFalse(failed.isFinished());
 		assertTrue(finished.isFinished());
 		assertFalse(unavailable.isFinished());
@@ -51,7 +54,6 @@ public class TaskStatusTest {
 	
 	@Test
 	public void isFailedTest(){
-		assertFalse(available.isFailed());
 		assertTrue(failed.isFailed());
 		assertFalse(finished.isFailed());
 		assertFalse(unavailable.isFailed());
@@ -59,15 +61,13 @@ public class TaskStatusTest {
 	
 	@Test
 	public void canFinishTest(){
-		assertTrue(available.canFinish());
 		assertFalse(failed.canFinish());
 		assertFalse(finished.canFinish());
-		assertFalse(unavailable.canFinish());
+		assertTrue(unavailable.canFinish());
 	}
 	
 	@Test
 	public void canFailTest(){
-		assertTrue(available.canFail());
 		assertFalse(failed.canFail());
 		assertFalse(finished.canFail());
 		assertTrue(unavailable.canFail());
@@ -75,7 +75,6 @@ public class TaskStatusTest {
 	
 	@Test
 	public void isFinalTest(){
-		assertFalse(available.isFinal());
 		assertTrue(failed.isFinal());
 		assertTrue(finished.isFinal());
 		assertFalse(unavailable.isFinal());
