@@ -8,7 +8,7 @@ public class TimeConstrainedResourceType extends ResourceType {
 
     private LocalTime startTimeConstraint;
     private LocalTime endTimeConstraint;
-    
+
     // TODO constructor
 
     public LocalTime getStartTimeConstraint() {
