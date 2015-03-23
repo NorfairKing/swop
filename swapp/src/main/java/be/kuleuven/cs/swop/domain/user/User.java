@@ -3,6 +3,10 @@ package be.kuleuven.cs.swop.domain.user;
 
 public abstract class User {
     private String name;
+    
+    public User(String name){
+        setName(name);
+    }
 
     public String getName() {
         return name;
