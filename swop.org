@@ -144,7 +144,7 @@ tatus), en tegelijk de flexibiliteit hebben van het automatisch status bepalen g
 
 Status is 'available' voor specifieke user, dus misschien een Login-manager die statisch bijhoudt welke user er ingelogd is.8
 
-**** Eechten van users
+**** Rechten van users
  Een Manager mag taken plannen maar een developer niet etc.
  We moeten daar dus ook rekening mee houden in de UI.
  
