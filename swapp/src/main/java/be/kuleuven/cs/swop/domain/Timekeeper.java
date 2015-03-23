@@ -3,12 +3,13 @@ package be.kuleuven.cs.swop.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 
 public final class Timekeeper {
 
-    private static LocalDateTime currentTime = LocalDateTime.MIN;
+    private static LocalDateTime currentTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private static int workDayStart = 8;
     private static int workDayEnd = 16;
     private static DayOfWeek[] workDays = new DayOfWeek[]{DayOfWeek.MONDAY,DayOfWeek.TUESDAY,DayOfWeek.WEDNESDAY,DayOfWeek.THURSDAY,DayOfWeek.FRIDAY};

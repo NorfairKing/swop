@@ -168,6 +168,14 @@ public class SessionController {
             }
         } while (true); // loop until proper data is given, or the user cancels.
     }
+    
+    public void startPlanTaskSession(){
+        
+    }
+    
+    public void startResolveConflictSession(){
+        
+    }
 
     /**
      * Starts the "update task status" use case which lets the user interface request
@@ -219,6 +227,10 @@ public class SessionController {
 
         // the system updates the system time.
         getFacade().updateSystemTime(time);
+    }
+    
+    public void startRunSimulationSession(){
+        
     }
 
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";

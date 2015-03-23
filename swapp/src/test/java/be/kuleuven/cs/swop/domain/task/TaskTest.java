@@ -40,7 +40,7 @@ public class TaskTest {
 
     @After
     public void tearDown() throws Exception {}
-
+    
     @Test
     public void canHaveAsDescriptionTest() {
         assertTrue(task.canHaveAsDescription("Testdescription"));
