@@ -86,6 +86,16 @@
   - Oplossing: (misschien?)
     - Laat gewoon de task altijd beslissen over de status.
     - Als op task 'finish' aangeroepen wordt vraagt die aan de status 'bool canFinish()' en dan kiest de task naar welke nieuwe status er veranderd moet worden.
+** Feedback (3.5/4)
+   - leesbaarheid van diagramma's
+   - sequence diagrams: enkel BINNEN domain.
+   - taak status objecten kunnen simpeler!
+   - task status dependent behaviour moet ECHT in status
+   - apparte klassen voor berekeneningen van tijd. (niet in task)
+   - alles kunnen uitleggen als het afhankelijk is van Java (technologisch probleem)
+   - null checks in facade op een betere plaats!
+   - exceptions maken met juiste semantiek
+   - meer op modifiers letten: zo weinig mogelijk visible
 * Tweede iteratie
 ** Eerste sessie
 *** Nieuwe dingen
@@ -123,7 +133,7 @@ Er zijn twee niveaus van 'available':
 - dependencies door taak zelf
 - resources (reservations) door reservationmanager
 
-**** Probleem: Verschillende soorten data nodig voor de statussen. Bv finished/failed hebben een time-period, terwijl de nieuwe executing een developer nodig heeft.
+**** Verschillende soorten data nodig voor de statussen. Bv finished/failed hebben een time-period, terwijl de nieuwe executing een developer nodig heeft.
      - Oplossing Pablo: Voeg die specifieke data velden toe aan de statussen zelf.
      - Bv finished heeft een veldje time-period dat aangeeft wanneer er aan de taak gewerkt is. Op de zelfde manier heeft executing een veldje 'developers'.
 Ik zou dan in task een variabele Status bij houden, bij het opvragen, als die null is, wordt er gekeken naar de dependencies en dan gekozen tussen avail/unavail.
@@ -134,8 +144,7 @@ tatus), en tegelijk de flexibiliteit hebben van het automatisch status bepalen g
 
 Status is 'available' voor specifieke user, dus misschien een Login-manager die statisch bijhoudt welke user er ingelogd is.8
 
-
-**** Probleem: rechten van users
+**** Eechten van users
  Een Manager mag taken plannen maar een developer niet etc.
  We moeten daar dus ook rekening mee houden in de UI.
  
@@ -152,6 +161,10 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
  In dit scenario moet de UI echt van user veranderen voor die iets anders
  kan doen.
  
+**** Waar zetten we de time keeper, waar houden we time bij zodat het binnen het domein blijft
+**** Input file als interface
+**** Task kent momenteel alle statussen, is dat nodig? goede argumentatie guys!
+     We checken die dependencies nu toch at runtime, dus waarom nog die objecten?
 *** Domain vragen:
 - Time availability per type of per instance van resource?
-  Momenteel per type
+  Momenteel per type - OK
