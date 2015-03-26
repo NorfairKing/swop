@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.PlanningManager;
 import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
@@ -14,12 +15,14 @@ import be.kuleuven.cs.swop.domain.task.Task;
 public class FacadeController {
 
     ProjectManager projectManager;
+    PlanningManager planningManager;
 
     /**
      * Full constructor
      */
     public FacadeController() {
         projectManager = new ProjectManager();
+        planningManager = new PlanningManager();
     }
 
     /**
@@ -51,6 +54,27 @@ public class FacadeController {
             }
         }
         return tasks;
+    }
+    
+    /**
+     * Retrieve every unplanned task of a given Project
+     * 
+     * @param project The projectwrapper containing the project from which the unplanned Tasks will be returned.
+     * @return A set of taskwrappers containing the unplanned tasks of the given project.
+     */
+    public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project){
+        Set<TaskWrapper> allTasks = getTasksOf(project);
+        Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
+        for( TaskWrapper t: allTasks){
+            if(planningManager.isUnplanned(t)){
+                unplannedTasks.add(t);
+            }
+        }
+        return unplannedTasks;
+    }
+    
+    public TaskPlanningWrapper getPlanningFor(TaskWrapper task){
+        return new TaskPlanningWrapper(planningManager.getPlanningFor(task.getTask()));
     }
 
     /**
