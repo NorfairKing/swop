@@ -28,12 +28,7 @@ public class PlanningManager {
     }
 
     public boolean isPlanned(Task task) {
-        for (TaskPlanning planning : this.plannings)
-        {
-            if (task == planning.getTask())
-                return true;
-        }
-        return false;
+        return this.getPlanningFor(task) != null;
     }
 
     public boolean isUnplanned(Task task) {
