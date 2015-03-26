@@ -1,7 +1,10 @@
 package be.kuleuven.cs.swop.facade;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.PlanningManager;
@@ -9,7 +12,10 @@ import be.kuleuven.cs.swop.domain.ProjectManager;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.user.Developer;
 
 
 public class FacadeController {
@@ -76,7 +82,31 @@ public class FacadeController {
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task){
         return new TaskPlanningWrapper(planningManager.getPlanningFor(task.getTask()));
     }
+    
+    public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task){
+        return planningManager.getPlanningTimeOptions(task.getTask());
+    }
 
+    public Map<ResourceTypeWrapper,List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time){
+        return planningManager.getPlanningResourceOptions(task.getTask(), time);
+    }
+    
+    public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
+        return planningManager.getPlanningDeveloperOptions(task.getTask(), time);
+    }
+    
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Map<ResourceTypeWrapper, ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
+        Map<ResourceType, Resource> rss = new HashMap<ResourceType,Resource>();
+        for (ResourceTypeWrapper r : resources.keySet()){
+            rss.put(r.getType(), resources.get(r).getResource());
+        }
+        Set<Developer> devs = new HashSet<Developer>();
+        for(DeveloperWrapper d: developers){
+            devs.add(d.getDeveloper());
+        }
+        planningManager.createPlanning(task.getTask(),time,rss,devs);
+    }
+    
     /**
      * Creates a Project, adds it to the program and returns a wrapper containing it.
      *
@@ -217,4 +247,8 @@ public class FacadeController {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         Timekeeper.setTime(time);
     }
+    
+    private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
+
+
 }
