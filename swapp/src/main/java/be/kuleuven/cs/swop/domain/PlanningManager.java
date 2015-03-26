@@ -7,6 +7,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.task.Task;
 
 public class PlanningManager {
 
@@ -21,10 +22,32 @@ public class PlanningManager {
     protected boolean canHaveAsTaskPlanning(TaskPlanning planning){
         return planning != null;
     }
-    public void addProject(TaskPlanning Planning) {
-        if (!canHaveAsTaskPlanning(Planning)) throw new IllegalArgumentException(ERROR_ILLEGAL_Task_Planning);
-        plannings.add(Planning);
+    public void addPlanning(TaskPlanning planning) {
+        if (!canHaveAsTaskPlanning(planning)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK_PLANNING);
+        plannings.add(planning);
     }
 
-    private static String ERROR_ILLEGAL_Task_Planning = "Illegal TaskPlanning in Planning manager.";
+    public boolean isPlanned(Task task) {
+        for (TaskPlanning planning : this.plannings)
+        {
+            if (task == planning.getTask())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isUnPlanned(Task task) {
+        return !this.isPlanned(task);
+    }
+
+    public TaskPlanning getPlanningFor(Task task) {
+        for (TaskPlanning planning : this.plannings)
+        {
+            if (task == planning.getTask())
+                return planning;
+        }
+        return null;
+    }
+
+    private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
 }
