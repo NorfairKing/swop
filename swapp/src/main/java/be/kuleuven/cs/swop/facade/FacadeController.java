@@ -1,6 +1,8 @@
 package be.kuleuven.cs.swop.facade;
 
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +22,7 @@ import be.kuleuven.cs.swop.domain.user.Developer;
 
 public class FacadeController {
 
-    ProjectManager projectManager;
+    ProjectManager  projectManager;
     PlanningManager planningManager;
 
     /**
@@ -48,8 +50,8 @@ public class FacadeController {
     /**
      * Retrieve every Task of the given Project.
      *
-     * @param project This is a ProjectWrapper containing the Project from which the Tasks
-     * will be returned.
+     * @param project
+     *            This is a ProjectWrapper containing the Project from which the Tasks will be returned.
      * @return Returns a Set of TaskWrappers containing the Tasks of the given Project.
      */
     public Set<TaskWrapper> getTasksOf(ProjectWrapper project) {
@@ -61,59 +63,77 @@ public class FacadeController {
         }
         return tasks;
     }
-    
+
     /**
      * Retrieve every unplanned task of a given Project
      * 
-     * @param project The projectwrapper containing the project from which the unplanned Tasks will be returned.
+     * @param project
+     *            The projectwrapper containing the project from which the unplanned Tasks will be returned.
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
-    public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project){
+    public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
         Set<TaskWrapper> allTasks = getTasksOf(project);
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
-        for( TaskWrapper t: allTasks){
-            if(planningManager.isUnplanned(t.getTask())){
+        for (TaskWrapper t : allTasks) {
+            if (planningManager.isUnplanned(t.getTask())) {
                 unplannedTasks.add(t);
             }
         }
         return unplannedTasks;
     }
-    
-    public TaskPlanningWrapper getPlanningFor(TaskWrapper task){
+
+    public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
         return new TaskPlanningWrapper(planningManager.getPlanningFor(task.getTask()));
     }
-    
-    public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task){
-        return planningManager.getPlanningTimeOptions(task.getTask());
+
+    public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
+        return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS);
     }
 
-    public Map<ResourceTypeWrapper,List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time){
-        return planningManager.getPlanningResourceOptions(task.getTask(), time);
+    public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
+        Map<ResourceType, List<Resource>> options = planningManager.getPlanningResourceOptions(task.getTask(), time);
+        Map<ResourceTypeWrapper, List<ResourceWrapper>> wrappedOptions = new HashMap<ResourceTypeWrapper, List<ResourceWrapper>>();
+        for (ResourceType t : options.keySet()) {
+            ResourceTypeWrapper typeWrapper = new ResourceTypeWrapper(t);
+            wrappedOptions.put(typeWrapper, new ArrayList<ResourceWrapper>());
+            for (Resource r : options.get(t)) {
+                ResourceWrapper resourceWrapper = new ResourceWrapper(r);
+                wrappedOptions.get(typeWrapper).add(resourceWrapper);
+            }
+        }
+        return wrappedOptions;
+
     }
-    
+
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        return planningManager.getPlanningDeveloperOptions(task.getTask(), time);
+        Set<Developer> devOptions = planningManager.getPlanningDeveloperOptions(task.getTask(), time);
+        Set<DeveloperWrapper> wrappedDevOptions = new HashSet<DeveloperWrapper>();
+        for (Developer d : devOptions){
+            wrappedDevOptions.add(new DeveloperWrapper(d));
+        }
+        return wrappedDevOptions;
     }
-    
+
     public void createPlanning(TaskWrapper task, LocalDateTime time, Map<ResourceTypeWrapper, ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
-        Map<ResourceType, Resource> rss = new HashMap<ResourceType,Resource>();
-        for (ResourceTypeWrapper r : resources.keySet()){
+        Map<ResourceType, Resource> rss = new HashMap<ResourceType, Resource>();
+        for (ResourceTypeWrapper r : resources.keySet()) {
             rss.put(r.getType(), resources.get(r).getResource());
         }
         Set<Developer> devs = new HashSet<Developer>();
-        for(DeveloperWrapper d: developers){
+        for (DeveloperWrapper d : developers) {
             devs.add(d.getDeveloper());
         }
-        planningManager.createPlanning(task.getTask(),time,rss,devs);
+        planningManager.createPlanning(task.getTask(), time, rss, devs);
     }
-    
+
     /**
      * Creates a Project, adds it to the program and returns a wrapper containing it.
      *
-     * @param data A ProjectData object containing all the information for creating a
-     * Project.
+     * @param data
+     *            A ProjectData object containing all the information for creating a Project.
      *
-     * @throws IllegalArgumentException If some of the given data is incorrect.
+     * @throws IllegalArgumentException
+     *             If some of the given data is incorrect.
      *
      * @return Returns a ProjectWrapper containing the newly created Project.
      *
@@ -123,7 +143,7 @@ public class FacadeController {
         if (data.getDescription() == null) { throw new IllegalArgumentException("Null description for project creation"); }
         if (data.getTitle() == null) { throw new IllegalArgumentException("Null title for project creation"); }
         if (data.getDueTime() == null) { throw new IllegalArgumentException("Null due time for project creation"); }
-        
+
         if (data.getCreationTime() == null) {
             Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
             return new ProjectWrapper(createdProject);
@@ -137,13 +157,14 @@ public class FacadeController {
     /**
      * Creates a Task, adds it to the program and returns a wrapper containing it.
      *
-     * @param project The ProjectWrapper containing the Project for which the new task
-     * will be created.
+     * @param project
+     *            The ProjectWrapper containing the Project for which the new task will be created.
      *
-     * @param data A TaskData object containing all the information for creating a
-     * Task.
+     * @param data
+     *            A TaskData object containing all the information for creating a Task.
      *
-     * @throws IllegalArgumentException If some of the given data is incorrect.
+     * @throws IllegalArgumentException
+     *             If some of the given data is incorrect.
      *
      * @return Returns a TaskWrapper containing the newly created Task.
      *
@@ -155,7 +176,7 @@ public class FacadeController {
         if (data.getDescription() == null) { throw new IllegalArgumentException("Null description for task creation"); }
 
         Task createdTask = project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
-        for (TaskWrapper dependency: data.getDependencies()) {
+        for (TaskWrapper dependency : data.getDependencies()) {
             createdTask.addDependency(dependency.getTask());
         }
 
@@ -163,16 +184,16 @@ public class FacadeController {
     }
 
     /**
-     * Creates an alternative Task for the specified Task,
-     * adds it to the program and returns a wrapper containing it.
+     * Creates an alternative Task for the specified Task, adds it to the program and returns a wrapper containing it.
      *
-     * @param task The TaskWrapper containing the Task for which this method creates an
-     * alternative for.
+     * @param task
+     *            The TaskWrapper containing the Task for which this method creates an alternative for.
      *
-     * @param data A TaskData object containing all the information for creating a
-     * Task.
+     * @param data
+     *            A TaskData object containing all the information for creating a Task.
      *
-     * @throws IllegalArgumentException If some of the given data is incorrect.
+     * @throws IllegalArgumentException
+     *             If some of the given data is incorrect.
      *
      * @return Returns a TaskWrapper containing the newly created Task.
      *
@@ -188,20 +209,26 @@ public class FacadeController {
 
         return alternative;
     }
-    
+
     /**
      * Set the alternative of a task.
-     * @param task The task for which to set an alternative.
-     * @param alternative The alternative for the task.
+     * 
+     * @param task
+     *            The task for which to set an alternative.
+     * @param alternative
+     *            The alternative for the task.
      */
     public void setAlternativeFor(TaskWrapper task, TaskWrapper alternative) {
         task.getTask().addAlternative(alternative.getTask());
     }
-    
+
     /**
      * Add an existing task as dependency for another.
-     * @param task The task to add a dependency to.
-     * @param dependency The dependency.
+     * 
+     * @param task
+     *            The task to add a dependency to.
+     * @param dependency
+     *            The dependency.
      */
     public void addDependencyTo(TaskWrapper task, TaskWrapper dependency) {
         task.getTask().addDependency(dependency.getTask());
@@ -210,13 +237,14 @@ public class FacadeController {
     /**
      * Changes the status of a specified Task.
      *
-     * @param task The TaskWrapper containing the Task for which this method changes the
-     * status.
+     * @param task
+     *            The TaskWrapper containing the Task for which this method changes the status.
      *
-     * @param statusData A TaskStatusData object containing the data for the new Task
-     * status.
+     * @param statusData
+     *            A TaskStatusData object containing the data for the new Task status.
      *
-     * @throws IllegalArgumentException If some of the status data is incorrect.
+     * @throws IllegalArgumentException
+     *             If some of the status data is incorrect.
      *
      */
     public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) throws IllegalArgumentException {
@@ -238,17 +266,18 @@ public class FacadeController {
     /**
      * Changes the program's system time.
      *
-     * @param time The Date containing the new system time.
+     * @param time
+     *            The Date containing the new system time.
      *
-     * @throws IllegalArgumentException If the given Date is invalid.
+     * @throws IllegalArgumentException
+     *             If the given Date is invalid.
      *
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         Timekeeper.setTime(time);
     }
-    
-    private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
 
+    private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
 
 }

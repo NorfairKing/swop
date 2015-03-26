@@ -82,13 +82,13 @@ public class PlanningManager {
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
 
-    public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(Task task, LocalDateTime time) {
+    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         // TODO Auto-generated method stub
         return null;
     }
 
 
-    public Set<DeveloperWrapper> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
+    public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         // TODO Auto-generated method stub
         return null;
     }
