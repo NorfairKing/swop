@@ -37,6 +37,10 @@ public class Resource {
         this.name = name;
     }
 
+    public boolean isOfType(ResourceType type) {
+        return type == this.getType();
+    }
+
     private static final String ERROR_ILLEGAL_TYPE = "Illegal resource type for resource.";
     private static final String ERROR_ILLEGAL_NAME = "Illegal name for resource.";
 }

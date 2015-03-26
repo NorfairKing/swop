@@ -83,6 +83,10 @@ public class TimePeriod {
         this.stopTime = stopTime;
     }
 
+    public boolean isDuring(LocalDateTime time) {
+        return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
+    }
+
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
 }
