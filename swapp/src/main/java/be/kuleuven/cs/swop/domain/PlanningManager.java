@@ -36,7 +36,7 @@ public class PlanningManager {
         return false;
     }
 
-    public boolean isUnPlanned(Task task) {
+    public boolean isUnplanned(Task task) {
         return !this.isPlanned(task);
     }
 
