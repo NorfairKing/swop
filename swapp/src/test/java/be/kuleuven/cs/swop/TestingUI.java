@@ -1,11 +1,16 @@
 package be.kuleuven.cs.swop;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
+import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
@@ -122,5 +127,29 @@ public class TestingUI implements UserInterface {
 
     @Override
     public void start() { }
+
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public LocalDateTime selectTime(List<LocalDateTime> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -72,7 +72,7 @@ public class FacadeController {
         Set<TaskWrapper> allTasks = getTasksOf(project);
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
         for( TaskWrapper t: allTasks){
-            if(planningManager.isUnplanned(t)){
+            if(planningManager.isUnplanned(t.getTask())){
                 unplannedTasks.add(t);
             }
         }

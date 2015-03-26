@@ -6,12 +6,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
+import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
@@ -60,6 +64,7 @@ public class CLI implements UserInterface {
                 System.out.println("project / p:   create project");
                 System.out.println("task    / t:   create task");
                 System.out.println("update  / u:   update task");
+                System.out.println("plan       :   plan task");
                 System.out.println("clock   / c:   update clock");
                 System.out.println("quit    / q:   quit taskman");
                 break;
@@ -79,6 +84,8 @@ public class CLI implements UserInterface {
             case "u":
                 getSessionController().startUpdateTaskStatusSession();
                 break;
+            case "plan":
+                getSessionController().startPlanTaskSession();
             case "clock":
             case "c":
                 getSessionController().startAdvanceTimeSession();
@@ -455,5 +462,29 @@ public class CLI implements UserInterface {
     public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
     public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
+
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public LocalDateTime selectTime(List<LocalDateTime> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
