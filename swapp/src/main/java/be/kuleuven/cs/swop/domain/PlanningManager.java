@@ -1,7 +1,10 @@
 package be.kuleuven.cs.swop.domain;
 
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +13,8 @@ import java.util.ArrayList;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.Timekeeper;
@@ -76,4 +81,20 @@ public class PlanningManager {
     }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+
+    public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(Task task, LocalDateTime time) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public Set<DeveloperWrapper> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void createPlanning(Task task, LocalDateTime time, Map<ResourceType, Resource> rss, Set<Developer> devs) {
+        // TODO Auto-generated method stub
+    }
+
 }
