@@ -1,12 +1,15 @@
 package be.kuleuven.cs.swop.domain.resource;
 
 
-public class Requirement {
+import java.io.Serializable;
+
+
+public class Requirement implements Serializable {
 
     private int          amount;
     private ResourceType type;
-    
-    public Requirement(int amount, ResourceType type){
+
+    public Requirement(int amount, ResourceType type) {
         setAmount(amount);
         setType(type);
     }

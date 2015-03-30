@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.project;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import com.google.common.collect.ImmutableSet;
 
 
-public class Project {
+public class Project implements Serializable {
 
     private String          title;
     private String          description;

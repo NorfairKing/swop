@@ -1,11 +1,12 @@
 package be.kuleuven.cs.swop.domain.task;
 
+
+import java.io.Serializable;
+
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
-
-
-public abstract class TaskStatus {
+public abstract class TaskStatus implements Serializable {
 
     private Task task;
 
@@ -62,15 +63,15 @@ public abstract class TaskStatus {
         if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         this.task = task;
     }
-    
+
     abstract void finish(TimePeriod period);
+
     abstract void fail(TimePeriod period);
-    
-    
-    protected void goToStatus(TaskStatus status){
+
+    protected void goToStatus(TaskStatus status) {
         this.task.setStatus(status);
     }
-    
+
     protected abstract boolean canHaveAsAlternative(Task task);
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";

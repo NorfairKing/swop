@@ -35,29 +35,30 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void start() {
+    public boolean start() {
         System.out.println("Welcome to TaskMan");
         System.out.println("Enter \"h\" for help.");
         System.out.println("Don't forget to set the initial date (\"c\").");
         String command;
-        while (true) {
+        boolean stop = false;
+        while (!stop) {
             command = this.selectCommand();
-            execute(command);
+            stop = execute(command);
         }
+        return true;
     }
 
     private String selectCommand() {
         System.out.print("> ");
-        String line = this.scanner.nextLine();
+        String line = this.getScanner().nextLine();
         return line;
     }
 
-    private void execute(String command) {
+    private boolean execute(String command) {
         switch (command) {
             case "quit":
             case "q":
-                System.exit(0);
-                break;
+                return true;
             case "help":
             case "h":
                 System.out.println("list    / l:   list all projects");
@@ -65,6 +66,7 @@ public class CLI implements UserInterface {
                 System.out.println("task    / t:   create task");
                 System.out.println("update  / u:   update task");
                 System.out.println("plan       :   plan task");
+                System.out.println("simulation :   simulation");
                 System.out.println("clock   / c:   update clock");
                 System.out.println("quit    / q:   quit taskman");
                 break;
@@ -86,6 +88,10 @@ public class CLI implements UserInterface {
                 break;
             case "plan":
                 getSessionController().startPlanTaskSession();
+                break;
+            case "simulation":
+                getSessionController().startRunSimulationSession();
+                break;
             case "clock":
             case "c":
                 getSessionController().startAdvanceTimeSession();
@@ -96,6 +102,7 @@ public class CLI implements UserInterface {
                 System.out.println("Command not recognised.");
                 break;
         }
+        return false;
     }
 
     private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
@@ -239,7 +246,7 @@ public class CLI implements UserInterface {
         do {
             System.out.print("Please pick a number " + "[" + lo + "-" + hi + "] (0 to quit): ");
             try {
-                inputIndex = Integer.parseInt(this.scanner.nextLine());
+                inputIndex = Integer.parseInt(this.getScanner().nextLine());
                 validInput = (inputIndex >= lo && inputIndex <= hi);
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -278,9 +285,9 @@ public class CLI implements UserInterface {
     public ProjectData getProjectData() {
         System.out.println("CREATING PROJECT\n########");
         System.out.print("# Title: ");
-        String title = this.scanner.nextLine();
+        String title = this.getScanner().nextLine();
         System.out.print("# Description: ");
-        String description = this.scanner.nextLine();
+        String description = this.getScanner().nextLine();
         System.out.print("# Due Date: ");
         LocalDateTime dueTime = getDate();
         return new ProjectData(title, description, dueTime);
@@ -291,7 +298,7 @@ public class CLI implements UserInterface {
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
-        String description = this.scanner.nextLine();
+        String description = this.getScanner().nextLine();
 
         boolean validInput;
 
@@ -300,7 +307,7 @@ public class CLI implements UserInterface {
         do {
             System.out.print("# Estimated Duration (minutes): ");
             try {
-                estimatedDuration = Double.parseDouble(scanner.nextLine());
+                estimatedDuration = Double.parseDouble(getScanner().nextLine());
                 validInput = estimatedDuration > 0;
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -315,7 +322,7 @@ public class CLI implements UserInterface {
         do {
             System.out.print("# Acceptable Deviation (%): ");
             try {
-                acceptableDeviation = Double.parseDouble(scanner.nextLine())/100;
+                acceptableDeviation = Double.parseDouble(getScanner().nextLine())/100;
                 validInput = acceptableDeviation >= 0;
             } catch (NumberFormatException e) {
                 validInput = false;
@@ -374,7 +381,7 @@ public class CLI implements UserInterface {
         System.out.print("# Was is successful (finish/fail): ");
         boolean successful;
         do {
-            String success = this.scanner.nextLine();
+            String success = this.getScanner().nextLine();
             if (success.equalsIgnoreCase("finish")) {
                 successful = true;
                 break;
@@ -392,7 +399,7 @@ public class CLI implements UserInterface {
     private LocalDateTime getDate() {
         while (true) {
             try {
-                String inputText = this.scanner.nextLine();
+                String inputText = this.getScanner().nextLine();
                 if("now".equals(inputText)){
                     return LocalDateTime.now();
                 }else{
@@ -486,5 +493,15 @@ public class CLI implements UserInterface {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public UserInterface getSimulationUI() {
+        return new SimulationCLI();
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
 
 }

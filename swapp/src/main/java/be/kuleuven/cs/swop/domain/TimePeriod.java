@@ -1,10 +1,11 @@
 package be.kuleuven.cs.swop.domain;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
-public class TimePeriod {
+public class TimePeriod implements Serializable {
 
     private LocalDateTime startTime;
     private LocalDateTime stopTime;
@@ -12,9 +13,11 @@ public class TimePeriod {
     /**
      * Full Constructor
      *
-     * @param start The Date containing the start of this peroid.
+     * @param start
+     *            The Date containing the start of this peroid.
      *
-     * @param stop The Date containing the end of this peroid.
+     * @param stop
+     *            The Date containing the end of this peroid.
      *
      */
     public TimePeriod(LocalDateTime start, LocalDateTime stop) {
@@ -33,11 +36,10 @@ public class TimePeriod {
     }
 
     /**
-     * Checks whether or not the given time is a valid beginning for this period,
-     * it's valid when the Date isn't null.
+     * Checks whether or not the given time is a valid beginning for this period, it's valid when the Date isn't null.
      *
-     * @param startTime The Date containing the time to be checked if it is a valid
-     * beginning for this perdiod.
+     * @param startTime
+     *            The Date containing the time to be checked if it is a valid beginning for this perdiod.
      *
      * @return Returns true if the given time is a valid beginning for the period.
      *
@@ -62,11 +64,10 @@ public class TimePeriod {
     }
 
     /**
-     * Checks whether or not the given time is a valid ending for this period,
-     * it's valid when the Date isn't null.
+     * Checks whether or not the given time is a valid ending for this period, it's valid when the Date isn't null.
      *
-     * @param stopTime The Date containing the time to be checked if it is a valid
-     * ending for this perdiod.
+     * @param stopTime
+     *            The Date containing the time to be checked if it is a valid ending for this perdiod.
      *
      * @return Returns true if the given time is a valid beginning for the period.
      *
