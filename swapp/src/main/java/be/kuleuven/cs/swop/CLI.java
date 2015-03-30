@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -129,28 +132,27 @@ public class CLI implements UserInterface {
 
         System.out.println("PROJECTS\n########");
         for (ProjectWrapper p : projects) {
-            System.out.println(""
-                    + "# " + p.getTitle() + "\n" 
-                    + "# Desc:    " + p.getDescription() + "\n" 
-                    + "# Created: " + formatDate(p.getCreationTime()) + "\n" 
-                    + "# Due:     " + formatDate(p.getDueTime()) + "\n" 
-                    + "# ETA:     " + formatDate(p.estimatedFinishTime()) + "\n"
-                    + "# ----------------------------------");
+            printProject(p);
+            printDelimiter();
         }
     }
 
     @Override
     public void showProject(ProjectWrapper project) {
-        System.out.println(""
-                + "PROJECT\n########\n" 
+        System.out.println("PROJECT\n########\n");
+        printProject(project);
+        printDelimiter();
+    }
+    
+    private void printProject(ProjectWrapper project) {
+        System.out.println("" 
                 + "# " + project.getTitle() + "\n" 
                 + "# Desc:    " + project.getDescription() + "\n" 
                 + "# Created: " + formatDate(project.getCreationTime()) + "\n" 
                 + "# Due:     " + formatDate(project.getDueTime()) + "\n"
-                + "# ETA:     " + formatDate(project.estimatedFinishTime()) + "\n"
-                + "# ----------------------------------");
-
-
+                + "# ETA:     " + formatDate(project.estimatedFinishTime())
+        );
+        
         if (project.isFinished()) {
             System.out.println("#   Is finished");
         }
@@ -163,19 +165,20 @@ public class CLI implements UserInterface {
 
         System.out.println("TASKS\n########");
         for (TaskWrapper t : tasks) {
-            System.out.println(""
-                    + "# Description: " + t.getDescription() + "\n"
-                    + "#   Dependencies: " + t.getDependencySet().size() + "\n" 
-                    + "#   " + formatDuration(t.getEstimatedDuration()) + "\n"
-                    + "#   Estimated finsih date: " + formatDate(t.getEstimatedOrRealFinishDate()) + "\n"
-                    + "# ----------------------------------");
+            printTask(t);
+            printDelimiter();
         }
     }
 
     @Override
     public void showTask(TaskWrapper task) {
+        System.out.println("TASK\n########\n");
+        printTask(task);
+        printDelimiter();
+    }
+    
+    private void printTask(TaskWrapper task) {
         System.out.println(""
-                + "TASK\n########\n" 
                 + "# " + task.getDescription() + "\n" 
                 + "#   Dependencies: " + task.getDependencySet().size() + "\n" 
                 + "#   Estimated Duration: " + formatDuration(task.getEstimatedDuration()) + "\n" 
@@ -183,7 +186,6 @@ public class CLI implements UserInterface {
                 + "#   Acceptable Deviation: " + formatPercentage(task.getAcceptableDeviation()));
 
         if (task.isFinished()) {
-
             String timeString;
             if (task.wasFinishedEarly()) timeString = "early";
             else if (task.wasFinishedOnTime()) timeString = "on time";
@@ -206,6 +208,7 @@ public class CLI implements UserInterface {
     public void showError(String error) {
         System.out.println("ERROR\n########");
         System.out.println(error);
+        printDelimiter();
     }
 
     @Override
@@ -221,7 +224,7 @@ public class CLI implements UserInterface {
         for (int i = 0; i < projects.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
         }
-        System.out.println("\n# ----------------------------------");
+        printDelimiter();
 
         int index = promptNumber(0, projects.size());
         if (index == 0) {
@@ -271,7 +274,7 @@ public class CLI implements UserInterface {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
         }
-        System.out.println("\n# ----------------------------------");
+        printDelimiter();
 
         int index = promptNumber(0, tasks.size());
         if (index == 0) {
@@ -338,24 +341,41 @@ public class CLI implements UserInterface {
 
     @Override
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
-        List<ProjectWrapper> projects = new ArrayList<>(projectSet);
-        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
+        Map<ProjectWrapper, Set<TaskWrapper>> projectMap = new HashMap<>();
+        for(ProjectWrapper p: projectSet) {
+            projectMap.put(p, p.getTasks());
+        }
+        return selectTaskFromProjects(projectMap);
+    }
+    
+    /**
+     * Select task from project, but shows only a selection of the tasks of each project.
+     * @param projectMap The selection of tasks for each project.
+     * @return The selected task.
+     */
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        List<Entry<ProjectWrapper, Set<TaskWrapper>>> tuples = new ArrayList<>(projectMap.entrySet());
+        // sort tuples on project title
+        tuples.sort((p1, p2) -> p1.getKey().getTitle().compareTo(p2.getKey().getTitle()));
 
+        // gather all tasks in one list
         List<TaskWrapper> allTasks = new ArrayList<TaskWrapper>();
-        for (ProjectWrapper project : projects) {
-            List<TaskWrapper> projectTasks = new ArrayList<TaskWrapper>();
-            projectTasks.addAll(project.getTasks());
+        for (Entry<ProjectWrapper, Set<TaskWrapper>> e : tuples) {
+            List<TaskWrapper> projectTasks = new ArrayList<TaskWrapper>(e.getValue());
             projectTasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
-
             allTasks.addAll(projectTasks);
         }
+        
+        // print selection info
         System.out.println("SELECT TASK\n########");
-
         int taskId = 0;
-        for (int p = 0; p < projects.size(); ++p) {
-            System.out.println("# " + projects.get(p).getTitle());
-            for (int t = 0; t < projects.get(p).getTasks().size(); ++t) {
-                System.out.println("    # " + (taskId + 1) + ") " + allTasks.get(taskId++).getDescription());
+        for (Entry<ProjectWrapper, Set<TaskWrapper>> e : tuples) {
+            System.out.println("# " + e.getKey().getTitle());
+            int taskCountForThisProject = e.getValue().size();
+            for (int t = 0; t < taskCountForThisProject; ++t) {
+                System.out.println("    # " + (taskId + 1) + ") " + allTasks.get(taskId).getDescription());
+                taskId++;
             }
         }
 
@@ -367,7 +387,7 @@ public class CLI implements UserInterface {
             return allTasks.get(index - 1);
         }
     }
-
+    
     @Override
     public TaskStatusData getUpdateStatusData() {
         System.out.println("UPDATE TASK STATUS\n########");
@@ -379,21 +399,28 @@ public class CLI implements UserInterface {
         LocalDateTime endTime = getDate();
 
         System.out.print("# Was is successful (finish/fail): ");
+        boolean successful = getBoolean("finish", "fail");
+
+        return new TaskStatusData(startTime, endTime, successful);
+    }
+    
+    private boolean getBoolean(String trueString, String falseString) {
         boolean successful;
+        
         do {
             String success = this.getScanner().nextLine();
-            if (success.equalsIgnoreCase("finish")) {
+            if (success.equalsIgnoreCase(trueString)) {
                 successful = true;
                 break;
-            } else if (success.equalsIgnoreCase("fail")) {
+            } else if (success.equalsIgnoreCase(falseString)) {
                 successful = false;
                 break;
             } else {
-                System.out.print("# Please type \"finish\" or \"fail\": ");
+                System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\": ");
             }
         } while (true);
-
-        return new TaskStatusData(startTime, endTime, successful);
+        
+        return successful;
     }
 
     private LocalDateTime getDate() {
@@ -465,35 +492,62 @@ public class CLI implements UserInterface {
         }
         return hoursString + sep + minutesString;
     }
-
-    public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
-    public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
-
-    @Override
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        // TODO Auto-generated method stub
-        return null;
+    
+    private void printDelimiter() {
+        System.out.println("# ----------------------------------");
     }
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        // TODO Auto-generated method stub
-        return null;
+        System.out.println("SELECT TIME\n########");
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println("# " + (i + 1) + ") " + formatDate(options.get(i)));
+        }
+        printDelimiter();
+        
+        int index = promptNumber(0, options.size());
+        if (index == 0) {
+            return null;
+        } else {
+            return options.get(index - 1);
+        }
     }
 
     @Override
     public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+        // not 100% on what this method should do :P
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        // TODO Auto-generated method stub
+        List<DeveloperWrapper> developers = new ArrayList<>(developerOptions);
+        System.out.println("SELECT DEVELOPERS\n########");
+        for (int i = 0; i < developers.size(); i++) {
+            System.out.println("# " + (i + 1) + ") " + developers.get(i).getName());
+        }
+        printDelimiter();
+        
+        Set<DeveloperWrapper> selectedDevelopers = new HashSet<>();
+        do {
+            int index = promptNumber(0, developers.size());
+            if (index == 0) {
+                break;
+            } else {
+                DeveloperWrapper selected = developers.get(index - 1);
+                if (selectedDevelopers.contains(selected)) {
+                    System.out.println("That developer was already selected...");
+                } else {
+                    System.out.println("Developer added, select another one? (0 to stop): ");
+                    selectedDevelopers.add(selected);
+                }
+            }
+        } while (true);
+        
         return null;
     }
-
+    
     @Override
     public UserInterface getSimulationUI() {
         return new SimulationCLI();
@@ -502,6 +556,11 @@ public class CLI implements UserInterface {
     public Scanner getScanner() {
         return scanner;
     }
+    
+    public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
+    public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
+
 
 
 }

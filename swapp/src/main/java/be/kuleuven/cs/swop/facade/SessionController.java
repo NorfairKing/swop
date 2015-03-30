@@ -196,6 +196,8 @@ public class SessionController {
         if (chosenTime == null) return;
 
         Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = facade.getPlanningResourceOptions(selectedTask, chosenTime);
+        // FIXME reSourceOptions has al all values the entire list of tasks
+        // so each project has all tasks as value, even those of other projects.
         Map<ResourceTypeWrapper, ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
         if (chosenResources == null) return;
 
