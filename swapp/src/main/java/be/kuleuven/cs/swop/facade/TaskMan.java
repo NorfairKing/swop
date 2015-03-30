@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.domain.PlanningManager;
 import be.kuleuven.cs.swop.domain.ProjectManager;
@@ -121,11 +122,8 @@ public class TaskMan implements Serializable {
         return wrappedDevOptions;
     }
 
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Map<ResourceTypeWrapper, ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
-        Map<ResourceType, Resource> rss = new HashMap<ResourceType, Resource>();
-        for (ResourceTypeWrapper r : resources.keySet()) {
-            rss.put(r.getType(), resources.get(r).getResource());
-        }
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
+        Set<Resource> rss = resources.stream().map(p -> p.getResource()).collect(Collectors.toSet());
         Set<Developer> devs = new HashSet<Developer>();
         for (DeveloperWrapper d : developers) {
             devs.add(d.getDeveloper());

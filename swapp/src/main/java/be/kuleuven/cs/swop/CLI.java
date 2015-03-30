@@ -514,10 +514,38 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
-        // not 100% on what this method should do :P
-        // TODO Auto-generated method stub
-        return null;
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+        List<Entry<ResourceTypeWrapper, List<ResourceWrapper>>> tuples = new ArrayList<>(options.entrySet());
+        // sort tuples on project title
+        tuples.sort((p1, p2) -> p1.getKey().getName().compareTo(p2.getKey().getName()));
+
+        Set<ResourceWrapper> selected = new HashSet<>();
+        for (Entry<ResourceTypeWrapper, List<ResourceWrapper>> e : tuples) {
+            selected.add(selectResourceFor(e.getKey(), e.getValue()));
+        }
+        
+        return selected;
+    }
+    
+    private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
+        if (resources.isEmpty()) {
+            System.out.println("No resource to select.");
+            return null;
+        }
+        
+        resources.sort((t1, t2) -> t1.getName().compareTo(t2.getName()));
+        System.out.println("SELECT RESOURCE FOR " + type.getName() + "\n########");
+        for (int i = 0; i < resources.size(); i++) {
+            System.out.println("# " + (i + 1) + ") " + resources.get(i).getName());
+        }
+        printDelimiter();
+
+        int index = promptNumber(0, resources.size());
+        if (index == 0) {
+            return null;
+        } else {
+            return resources.get(index - 1);
+        }
     }
 
     @Override

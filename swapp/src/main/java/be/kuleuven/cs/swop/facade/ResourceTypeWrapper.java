@@ -22,6 +22,10 @@ public class ResourceTypeWrapper {
         if (!canHaveAsType(type)){throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);}
         this.type = type;
     }
+    
+    public String getName() {
+        return type.getName();
+    }
 
     private static final String ERROR_ILLEGAL_TYPE = "Invalid resource type for resource type wrapper.";
 }

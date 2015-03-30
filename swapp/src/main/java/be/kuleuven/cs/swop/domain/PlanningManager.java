@@ -136,8 +136,8 @@ public class PlanningManager implements Serializable {
         return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime time, List<Resource> resources, Set<Developer> devs) {
-        TaskPlanning newplanning = new TaskPlanning(devs, task, new TimePeriod(time,time.plusMinutes((long) task.getEstimatedDuration())), new HashSet<Resource>(resources));
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> resources, Set<Developer> devs) {
+        TaskPlanning newplanning = new TaskPlanning(devs, task, new TimePeriod(time,time.plusMinutes((long) task.getEstimatedDuration())),resources);
         this.plannings.add(newplanning);
     }
 

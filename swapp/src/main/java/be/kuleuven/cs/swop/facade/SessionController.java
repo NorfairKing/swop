@@ -185,6 +185,8 @@ public class SessionController {
             }
         }
         // The user selects the tasks he wants to plan
+        // FIXME unplannedTaskMap has as values the entire list of tasks
+        // so each project has all tasks as value, even those of other projects.
         TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
         if (selectedTask == null) return;
 
@@ -196,9 +198,7 @@ public class SessionController {
         if (chosenTime == null) return;
 
         Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = facade.getPlanningResourceOptions(selectedTask, chosenTime);
-        // FIXME reSourceOptions has al all values the entire list of tasks
-        // so each project has all tasks as value, even those of other projects.
-        Map<ResourceTypeWrapper, ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
         if (chosenResources == null) return;
 
         Set<DeveloperWrapper> developerOptions = facade.getPlanningDeveloperOptions(selectedTask, chosenTime);
