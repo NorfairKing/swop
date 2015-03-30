@@ -196,7 +196,7 @@ public class SessionController {
         if (chosenTime == null) return;
 
         Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = facade.getPlanningResourceOptions(selectedTask, chosenTime);
-        Map<ResourceTypeWrapper, ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
         if (chosenResources == null) return;
 
         Set<DeveloperWrapper> developerOptions = facade.getPlanningDeveloperOptions(selectedTask, chosenTime);
