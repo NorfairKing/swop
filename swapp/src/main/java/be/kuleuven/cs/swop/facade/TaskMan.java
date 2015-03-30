@@ -95,7 +95,14 @@ public class TaskMan implements Serializable {
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
-        return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS);
+        List<LocalDateTime> tempForDebugging = new ArrayList<>();
+        tempForDebugging.add(LocalDateTime.MIN);
+        tempForDebugging.add(LocalDateTime.now());
+        tempForDebugging.add(LocalDateTime.MAX);
+        return tempForDebugging;
+        
+        // FIXME Infinite loop it seems.
+        //return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS);
     }
 
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {

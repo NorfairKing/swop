@@ -550,6 +550,10 @@ public class CLI implements UserInterface {
 
     @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        if (developerOptions == null || developerOptions.size() == 0) {
+            System.out.println("No developers to select.");
+        }
+        
         List<DeveloperWrapper> developers = new ArrayList<>(developerOptions);
         System.out.println("SELECT DEVELOPERS\n########");
         for (int i = 0; i < developers.size(); i++) {
