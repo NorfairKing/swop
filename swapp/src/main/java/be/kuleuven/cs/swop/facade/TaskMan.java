@@ -20,7 +20,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 
-public class FacadeController {
+public class TaskMan {
 
     ProjectManager  projectManager;
     PlanningManager planningManager;
@@ -28,7 +28,7 @@ public class FacadeController {
     /**
      * Full constructor
      */
-    public FacadeController() {
+    public TaskMan() {
         projectManager = new ProjectManager();
         planningManager = new PlanningManager();
     }

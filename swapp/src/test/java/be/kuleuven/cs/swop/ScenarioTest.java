@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -23,11 +23,11 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 public class ScenarioTest {
 
-    private static FacadeController facade;
+    private static TaskMan facade;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        facade = new FacadeController();
+        facade = new TaskMan();
     }
 
     @AfterClass

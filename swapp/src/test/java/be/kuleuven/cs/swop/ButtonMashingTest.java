@@ -7,14 +7,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.SessionController;
 
 
 public class ButtonMashingTest {
 
     private static ButtonMashingUI  ui;
-    private static FacadeController facade;
+    private static TaskMan facade;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {}
@@ -25,7 +25,7 @@ public class ButtonMashingTest {
     @Before
     public void setUp() throws Exception {
         ui = new ButtonMashingUI();
-        facade = new FacadeController();
+        facade = new TaskMan();
         new SessionController(ui, facade);
         ui.start();
     }

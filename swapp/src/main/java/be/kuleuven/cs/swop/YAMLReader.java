@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -23,9 +23,9 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 public class YAMLReader {
     
-    FacadeController facade;
+    TaskMan facade;
     
-    public YAMLReader(FacadeController facade) {
+    public YAMLReader(TaskMan facade) {
         this.facade = facade;
     }
     

@@ -14,7 +14,7 @@ import be.kuleuven.cs.swop.domain.ProjectManager;
 public class SessionController {
 
     private UserInterface    ui;
-    private FacadeController facade;
+    private TaskMan facade;
 
     /**
      * Full constructor
@@ -25,7 +25,7 @@ public class SessionController {
      * the TaskMan.
      *
      */
-    public SessionController(UserInterface ui, FacadeController facade) {
+    public SessionController(UserInterface ui, TaskMan facade) {
         setUi(ui);
         setFacade(facade);
     }
@@ -65,7 +65,7 @@ public class SessionController {
      * @return Returns a FacadeController.
      *
      */
-    public FacadeController getFacade() {
+    public TaskMan getFacade() {
         return facade;
     }
 
@@ -77,11 +77,11 @@ public class SessionController {
      * @return Returns true if the given facade is valid for this program.
      *
      */
-    protected boolean canHaveAsFacade(FacadeController facade) {
+    protected boolean canHaveAsFacade(TaskMan facade) {
         return facade != null;
     }
 
-    private void setFacade(FacadeController facade) {
+    private void setFacade(TaskMan facade) {
         if (!canHaveAsFacade(facade)) throw new IllegalArgumentException(ERROR_ILLEGAL_FACADE);
         this.facade = facade;
     }

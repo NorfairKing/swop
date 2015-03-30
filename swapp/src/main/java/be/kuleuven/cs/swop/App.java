@@ -1,6 +1,6 @@
 package be.kuleuven.cs.swop;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.SessionController;
 
 
@@ -13,7 +13,7 @@ public class App {
      */
     public static void main(String[] args) {
         UserInterface ui = new CLI();
-        FacadeController facade = new FacadeController();
+        TaskMan facade = new TaskMan();
         if (args.length == 1) {
             String filePath = args[0];
             YAMLReader reader = new YAMLReader(facade);

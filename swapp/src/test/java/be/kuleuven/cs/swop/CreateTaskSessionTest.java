@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.domain.Timekeeper;
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -15,13 +15,13 @@ import be.kuleuven.cs.swop.facade.TaskData;
 
 public class CreateTaskSessionTest {
     private static TestingUI  ui;
-    private static FacadeController facade;
+    private static TaskMan facade;
     private static SessionController controller;
     
     @Before
     public void setUp() throws Exception {
         ui = new TestingUI();
-        facade = new FacadeController();
+        facade = new TaskMan();
         controller = new SessionController(ui, facade);
         
         facade.createProject(new ProjectData("Title", "Descr", Timekeeper.getTime().plusHours(1)));
