@@ -153,6 +153,10 @@ public interface UserInterface {
 
     /**
      * Starts the user interface
+     * 
+     * @return returns whether the usage of the interface was successful.
      */
-    public void start();
+    public boolean start();
+
+    public UserInterface getSimulationUI();
 }

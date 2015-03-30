@@ -1,34 +1,29 @@
 package be.kuleuven.cs.swop.domain;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
-
-import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
-import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
-public class PlanningManager {
+import com.google.common.collect.ImmutableSet;
+
+
+public class PlanningManager implements Serializable {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
     private Set<Resource> resources = new HashSet<Resource>();
     private Set<Developer> developers = new HashSet<Developer>();
-
-    public PlanningManager() {}
 
     public Set<TaskPlanning> getTaskPlannings() {
         return ImmutableSet.copyOf(plannings);

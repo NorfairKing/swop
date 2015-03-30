@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +19,7 @@ import com.google.common.collect.ImmutableSet;
  *
  *
  */
-public class Task {
+public class Task implements Serializable {
 
     private String           description;
     private double           estimatedDuration;
@@ -47,7 +48,7 @@ public class Task {
     }
 
     public Task(String description, double estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
-        this(description,estimatedDuration,acceptableDeviation);
+        this(description, estimatedDuration, acceptableDeviation);
         this.setRequirements(requirements);
     }
 
@@ -105,11 +106,9 @@ public class Task {
     }
 
     /**
-     * Retrieves the best estimated finish time or, if this Task has finished,
-     * the real time when the Task finished.
+     * Retrieves the best estimated finish time or, if this Task has finished, the real time when the Task finished.
      *
-     * @return Returns a Date containing the estimated or real time when the Task should
-     * be finished.
+     * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate() {
         if (isFinished()) return getPerformedDuring().getStopTime();
@@ -129,17 +128,17 @@ public class Task {
             lastOfDependencies = now;
         }
 
-        return addWorkingMinutes(lastOfDependencies, (long)getEstimatedDuration());
+        return addWorkingMinutes(lastOfDependencies, (long) getEstimatedDuration());
     }
 
     private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
         // Take care of weekends
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
-          date = date.plusDays(2).withHour(8).withMinute(0).withSecond(0);
+            date = date.plusDays(2).withHour(8).withMinute(0).withSecond(0);
         } else if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-          date = date.plusDays(1).withHour(8).withMinute(0).withSecond(0);
+            date = date.plusDays(1).withHour(8).withMinute(0).withSecond(0);
         }
-        
+
         if (date.getHour() < 8) {
             // Working day hasn't started. Reset date to start of this working day
             date = date.withHour(8).withMinute(0).withSecond(0);
@@ -150,19 +149,19 @@ public class Task {
         // Get minutes from date to endOfCurrentWorkingDay
         long minutesCovered = ChronoUnit.MINUTES.between(date, endOfCurrentWorkingDay);
         if (minutesCovered >= minutes) {
-          // If minutesCovered covers the minutes value passed, that means result is the same working
-          // day. Just add minutes and return
-          return date.plusMinutes(minutes);
+            // If minutesCovered covers the minutes value passed, that means result is the same working
+            // day. Just add minutes and return
+            return date.plusMinutes(minutes);
         } else {
-          // Calculate remainingMinutes, and then recursively call this method with next working day
-          long remainingMinutes = minutes - minutesCovered;
-          return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8).withMinute(0).withSecond(0), remainingMinutes);
+            // Calculate remainingMinutes, and then recursively call this method with next working day
+            long remainingMinutes = minutes - minutesCovered;
+            return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8).withMinute(0).withSecond(0), remainingMinutes);
         }
     }
 
     private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies() {
         LocalDateTime lastTime = LocalDateTime.MIN;
-        for (Task dependency: getDependencySet()) {
+        for (Task dependency : getDependencySet()) {
             LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate();
             if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
@@ -266,29 +265,19 @@ public class Task {
     }
 
     /**
-     * Checks whether of not the given Task is a valid alternative for this Task, this Task can't have an alternative Task when the new alternative is null, when this Task already has a alternative and
-     * when the new alternative Task doesn't create a dependency loop when the new alternative is replaced by this Task, this Task has to be failed before you can set an alternative.
+     * Checks whether of not the given Task is a valid alternative for this Task, this Task can't have an alternative Task when the new alternative is null, when this Task already has a alternative
+     * and when the new alternative Task doesn't create a dependency loop when the new alternative is replaced by this Task, this Task has to be failed before you can set an alternative.
      *
      * @param alternative
      *            The Task to be checked as possible alternative for this Task.
      * @return Returns true if the given Task can be an alternative for this Task.
      */
     public boolean canHaveAsAlternative(Task alternative) {
-        if(alternative == null){
-            return false;
-        }
-        if(this.alternative != null){
-            return false;
-        }
-        if (!status.canHaveAsAlternative(alternative)){
-            return false;
-        }
-        if(alternative.containsDependency(this)){
-            return false;
-        }
-        if(this == alternative){
-            return false;
-        }
+        if (alternative == null) { return false; }
+        if (this.alternative != null) { return false; }
+        if (!status.canHaveAsAlternative(alternative)) { return false; }
+        if (alternative.containsDependency(this)) { return false; }
+        if (this == alternative) { return false; }
         return true;
     }
 
@@ -304,10 +293,11 @@ public class Task {
         status.setAlternative(alternative);
     }
 
-    void setAlternative(Task alternative){
-        if (!canHaveAsAlternative(alternative)){throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);}
+    void setAlternative(Task alternative) {
+        if (!canHaveAsAlternative(alternative)) { throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE); }
         this.alternative = alternative;
     }
+
     /**
      * Retrieves the TimePeriod for when this Task was performed.
      *
@@ -347,8 +337,6 @@ public class Task {
         return ImmutableSet.copyOf(this.dependencies);
     }
 
-
-
     /**
      * Checks if the given status is a valid status for this Task.
      *
@@ -359,7 +347,7 @@ public class Task {
     protected boolean canHaveAsStatus(TaskStatus status) {
         return status != null && status.getTask() == this;
     }
-    
+
     void setStatus(TaskStatus status) {
         if (!canHaveAsStatus(status)) throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
         this.status = status;
@@ -388,7 +376,7 @@ public class Task {
      *
      * @return Returns true if this Task's can be finished.
      */
-    public boolean canFinish(){
+    public boolean canFinish() {
         return status.canFinish();
     }
 
@@ -409,7 +397,7 @@ public class Task {
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
      *
      * @param period
-     *             The TimePeriod for when there has been worked on this project.
+     *            The TimePeriod for when there has been worked on this project.
      *
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
@@ -422,7 +410,7 @@ public class Task {
      * Changes this Task's status to failed if possible, otherwise it throws an exception.
      *
      * @param period
-     *             The TimePeriod for when there has been worked on this project.
+     *            The TimePeriod for when there has been worked on this project.
      *
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
@@ -435,7 +423,7 @@ public class Task {
         return ChronoUnit.MILLIS.between(
                 getPerformedDuring().getStartTime(),
                 getPerformedDuring().getStopTime()
-            );
+                );
     }
 
     protected double getRealDuration() {
@@ -497,7 +485,7 @@ public class Task {
     }
 
     private void setRequirements(Set<Requirement> requirements) {
-        if(!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+        if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements = requirements;
     }
 
@@ -505,11 +493,11 @@ public class Task {
         return requirements != null;
     }
 
-    private static final String ERROR_ILLEGAL_DESCRIPTION     = "Illegal project for task.";
-    private static final String ERROR_ILLEGAL_DEVIATION       = "Illegal acceptable deviation for task.";
-    private static final String ERROR_ILLEGAL_DURATION        = "Illegal estimated duration for task.";
-    private static final String ERROR_ILLEGAL_STATUS          = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_ALTERNATIVE     = "Illegal original for task.";
-    private static final String ERROR_ILLEGAL_DEPENDENCY      = "Illegal dependency set for task.";
-    private static final String ERROR_ILLEGAL_REQUIREMENTS    = "Illegal requirement set for task.";
+    private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";
+    private static final String ERROR_ILLEGAL_DEVIATION    = "Illegal acceptable deviation for task.";
+    private static final String ERROR_ILLEGAL_DURATION     = "Illegal estimated duration for task.";
+    private static final String ERROR_ILLEGAL_STATUS       = "Illegal status for task.";
+    private static final String ERROR_ILLEGAL_ALTERNATIVE  = "Illegal original for task.";
+    private static final String ERROR_ILLEGAL_DEPENDENCY   = "Illegal dependency set for task.";
+    private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for task.";
 }

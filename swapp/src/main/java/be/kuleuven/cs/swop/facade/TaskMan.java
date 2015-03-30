@@ -1,6 +1,12 @@
 package be.kuleuven.cs.swop.facade;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +26,8 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 
-public class TaskMan {
+@SuppressWarnings("serial")
+public class TaskMan implements Serializable {
 
     ProjectManager  projectManager;
     PlanningManager planningManager;
@@ -108,7 +115,7 @@ public class TaskMan {
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         Set<Developer> devOptions = planningManager.getPlanningDeveloperOptions(task.getTask(), time);
         Set<DeveloperWrapper> wrappedDevOptions = new HashSet<DeveloperWrapper>();
-        for (Developer d : devOptions){
+        for (Developer d : devOptions) {
             wrappedDevOptions.add(new DeveloperWrapper(d));
         }
         return wrappedDevOptions;
@@ -277,11 +284,29 @@ public class TaskMan {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         Timekeeper.setTime(time);
     }
-    
-    
-    public TaskMan getDeepCopy(){
-        return null;
-        
+
+    public TaskMan getDeepCopy() {
+        TaskMan orig = this;
+        TaskMan obj = null;
+        try {
+            // Write the object out to a byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(orig);
+            out.flush();
+            out.close();
+
+            // Make an input stream from the byte array and read
+            // a copy of the object back in.
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            obj = (TaskMan) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return obj;
+
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;

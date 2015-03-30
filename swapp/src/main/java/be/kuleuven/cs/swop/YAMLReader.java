@@ -32,10 +32,9 @@ public class YAMLReader {
     @SuppressWarnings("unchecked")
     public void read(String initFile) {
         try {
-            System.out.println("Importing: " + initFile);
-            
             // Setup
-            InputStream input = new FileInputStream(new File(initFile));
+            File f = new File(initFile);
+            InputStream input = new FileInputStream(f);
             Yaml yaml = new Yaml();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Map<String, List<Map<String, Object>>> parsedFile = (Map<String, List<Map<String, Object>>>) yaml.load(input);

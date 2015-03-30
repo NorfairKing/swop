@@ -1,16 +1,18 @@
 package be.kuleuven.cs.swop.domain;
 
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import be.kuleuven.cs.swop.domain.project.Project;
 import be.kuleuven.cs.swop.domain.task.Task;
 
+import com.google.common.collect.ImmutableSet;
 
-public class ProjectManager {
+
+public class ProjectManager implements Serializable {
 
     private final Set<Project> projects = new HashSet<Project>();
 
@@ -64,7 +66,7 @@ public class ProjectManager {
         LocalDateTime creationTime = Timekeeper.getTime();
         return createProject(title, description, creationTime, dueTime);
     }
-    
+
     /**
      * Creates and returns a new Project with the given arguments, this method is used by the importer of the yaml file because the creationTime is specified.
      *
