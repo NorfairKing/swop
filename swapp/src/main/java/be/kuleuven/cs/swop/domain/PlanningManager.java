@@ -16,7 +16,9 @@ import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
@@ -24,6 +26,7 @@ public class PlanningManager {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
     private Set<Resource> resources = new HashSet<Resource>();
+    private Set<Developer> developers = new HashSet<Developer>();
 
     public PlanningManager() {}
 
@@ -77,7 +80,29 @@ public class PlanningManager {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
+        Set<Resource> availableResources = new HashSet<Resource>(this.resources);
+        availableResources.removeAll(usedResources);
+        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
+        availableDevelopers.removeAll(usedDevelopers);
+        for (Requirement req : task.getRequirements()) {
+            if (!hasResourcesOfType(req.getType(), availableResources, req.getAmount()))
+                return false;
+        }
+        if(availableDevelopers.isEmpty())
+            return false;
         return true;
+    }
+
+    private boolean hasResourcesOfType(ResourceType type, Set<Resource> resources, int number) {
+        int counter = 0;
+        for (Resource resource : resources) {
+            if (resource.getType() == type) {
+                counter++;
+            }
+            if (counter >= number)
+                return true;
+        }
+        return false;
     }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
