@@ -277,6 +277,12 @@ public class TaskMan {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
         Timekeeper.setTime(time);
     }
+    
+    
+    public TaskMan getDeepCopy(){
+        return null;
+        
+    }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
 
