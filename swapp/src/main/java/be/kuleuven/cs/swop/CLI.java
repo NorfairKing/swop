@@ -108,8 +108,8 @@ public class CLI implements UserInterface {
         return false;
     }
 
-    private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
-
+    // Data methods
+    
     @Override
     public SessionController getSessionController() {
         return this.sessionController;
@@ -124,6 +124,17 @@ public class CLI implements UserInterface {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
     }
+    
+    @Override
+    public UserInterface getSimulationUI() {
+        return new SimulationCLI();
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+    
+    // Interface methods
 
     @Override
     public void showProjects(Set<ProjectWrapper> projectSet) {
@@ -156,6 +167,41 @@ public class CLI implements UserInterface {
         if (project.isFinished()) {
             System.out.println("#   Is finished");
         }
+    }
+    
+    @Override
+    public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
+        if (projectSet.isEmpty()) {
+            System.out.println("No projects to select.");
+            return null;
+        }
+
+        List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
+        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
+        System.out.println("SELECT PROJECT\n########");
+        for (int i = 0; i < projects.size(); i++) {
+            System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
+        }
+        printDelimiter();
+
+        int index = promptNumber(0, projects.size());
+        if (index == 0) {
+            return null;
+        } else {
+            return projects.get(index - 1);
+        }
+    }
+    
+    @Override
+    public ProjectData getProjectData() {
+        System.out.println("CREATING PROJECT\n########");
+        System.out.print("# Title: ");
+        String title = promptString();
+        System.out.print("# Description: ");
+        String description = promptString();
+        System.out.print("# Due Date: ");
+        LocalDateTime dueTime = promptDate();
+        return new ProjectData(title, description, dueTime);
     }
 
     @Override
@@ -205,63 +251,6 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void showError(String error) {
-        System.out.println("ERROR\n########");
-        System.out.println(error);
-        printDelimiter();
-    }
-
-    @Override
-    public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
-        if (projectSet.isEmpty()) {
-            System.out.println("No projects to select.");
-            return null;
-        }
-
-        List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
-        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
-        System.out.println("SELECT PROJECT\n########");
-        for (int i = 0; i < projects.size(); i++) {
-            System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
-        }
-        printDelimiter();
-
-        int index = promptNumber(0, projects.size());
-        if (index == 0) {
-            return null;
-        } else {
-            return projects.get(index - 1);
-        }
-    }
-
-    /**
-     * Prompt for a number between lo and hi inclusive.
-     * 
-     * @param lo
-     *            The lower bound
-     * @param hi
-     *            THe upper bound
-     * @return an interger between lo and hi inclusive
-     */
-    private int promptNumber(int lo, int hi) {
-        boolean validInput;
-        int inputIndex = 0;
-        do {
-            System.out.print("Please pick a number " + "[" + lo + "-" + hi + "] (0 to quit): ");
-            try {
-                inputIndex = Integer.parseInt(this.getScanner().nextLine());
-                validInput = (inputIndex >= lo && inputIndex <= hi);
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-        return inputIndex;
-    }
-
-    @Override
     public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
         if (taskSet.isEmpty()) {
             System.out.println("No tasks to select.");
@@ -285,55 +274,17 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public ProjectData getProjectData() {
-        System.out.println("CREATING PROJECT\n########");
-        System.out.print("# Title: ");
-        String title = this.getScanner().nextLine();
-        System.out.print("# Description: ");
-        String description = this.getScanner().nextLine();
-        System.out.print("# Due Date: ");
-        LocalDateTime dueTime = getDate();
-        return new ProjectData(title, description, dueTime);
-    }
-
-    @Override
     public TaskData getTaskData() {
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
-        String description = this.getScanner().nextLine();
+        String description = promptString();
 
-        boolean validInput;
-
-        validInput = false;
-        double estimatedDuration = 0;
-        do {
-            System.out.print("# Estimated Duration (minutes): ");
-            try {
-                estimatedDuration = Double.parseDouble(getScanner().nextLine());
-                validInput = estimatedDuration > 0;
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
-
-        validInput = false;
-        double acceptableDeviation = 0;
-        do {
-            System.out.print("# Acceptable Deviation (%): ");
-            try {
-                acceptableDeviation = Double.parseDouble(getScanner().nextLine())/100;
-                validInput = acceptableDeviation >= 0;
-            } catch (NumberFormatException e) {
-                validInput = false;
-            }
-            if (!validInput) {
-                System.out.println("Invalid input, try again!");
-            }
-        } while (!validInput);
+        System.out.print("# Estimated Duration (minutes): ");
+        double estimatedDuration = promptDouble();
+        
+        System.out.print("# Acceptable Deviation (%): ");
+        double acceptableDeviation = promptPercentageAsDouble();
 
         return new TaskData(description, estimatedDuration, acceptableDeviation);
 
@@ -393,108 +344,25 @@ public class CLI implements UserInterface {
         System.out.println("UPDATE TASK STATUS\n########");
 
         System.out.print("# Start Date: ");
-        LocalDateTime startTime = getDate();
+        LocalDateTime startTime = promptDate();
 
         System.out.print("# End Date: ");
-        LocalDateTime endTime = getDate();
+        LocalDateTime endTime = promptDate();
 
         System.out.print("# Was is successful (finish/fail): ");
-        boolean successful = getBoolean("finish", "fail");
+        boolean successful = promptBoolean("finish", "fail");
 
         return new TaskStatusData(startTime, endTime, successful);
     }
     
-    private boolean getBoolean(String trueString, String falseString) {
-        boolean successful;
-        
-        do {
-            String success = this.getScanner().nextLine();
-            if (success.equalsIgnoreCase(trueString)) {
-                successful = true;
-                break;
-            } else if (success.equalsIgnoreCase(falseString)) {
-                successful = false;
-                break;
-            } else {
-                System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\": ");
-            }
-        } while (true);
-        
-        return successful;
-    }
-
-    private LocalDateTime getDate() {
-        while (true) {
-            try {
-                String inputText = this.getScanner().nextLine();
-                if("now".equals(inputText)){
-                    return LocalDateTime.now();
-                }else{
-                    return LocalDateTime.parse(inputText, parseFormat);
-                }
-            } catch (DateTimeParseException e) {
-                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30 or use \"now\"");
-            }
-        }
-    }
-
     @Override
     public LocalDateTime getTimeStamp() {
         System.out.println("TIME STAMP\n########");
 
         System.out.print("# Time: ");
-        LocalDateTime time = getDate();
+        LocalDateTime time = promptDate();
 
         return time;
-    }
-
-    private String formatDate(LocalDateTime date){
-        return date.format(printFormat);
-    }
-
-    private String formatPeriod(TimePeriod period){
-        return period.getStartTime().format(periodDateFormat) + " --> " + period.getStopTime().format(periodDateFormat);
-    }
-
-    private String formatPercentage(double input){
-        return (int) (input * 100) + "%";
-    }
-
-    private String formatDuration(double input){
-        int hours = ((int) input)/60;
-        int minutes = (int) (input % 60);
-        String hoursString;
-        String minutesString;
-        String sep = ", ";
-        switch(hours){
-            case 0:
-                hoursString = "";
-                sep = "";
-                break;
-            case 1:
-                hoursString = "1 hour";
-                break;
-            default:
-                hoursString = hours + " hours";
-                break;
-        }
-        switch(minutes){
-            case 0:
-                minutesString = "";
-                sep = "";
-                break;
-            case 1:
-                minutesString = "1 minute";
-                break;
-            default:
-                minutesString = minutes + " minutes";
-                break;
-        }
-        return hoursString + sep + minutesString;
-    }
-    
-    private void printDelimiter() {
-        System.out.println("# ----------------------------------");
     }
 
     @Override
@@ -581,18 +449,160 @@ public class CLI implements UserInterface {
     }
     
     @Override
-    public UserInterface getSimulationUI() {
-        return new SimulationCLI();
-    }
-
-    public Scanner getScanner() {
-        return scanner;
+    public void showError(String error) {
+        System.out.println("ERROR\n########");
+        System.out.println(error);
+        printDelimiter();
     }
     
+    // Format methods
+    
+    private String formatDate(LocalDateTime date){
+        return date.format(printFormat);
+    }
+
+    private String formatPeriod(TimePeriod period){
+        return period.getStartTime().format(periodDateFormat) + " --> " + period.getStopTime().format(periodDateFormat);
+    }
+
+    private String formatPercentage(double input){
+        return (int) (input * 100) + "%";
+    }
+
+    private String formatDuration(double input){
+        int hours = ((int) input)/60;
+        int minutes = (int) (input % 60);
+        String hoursString;
+        String minutesString;
+        String sep = ", ";
+        switch(hours){
+            case 0:
+                hoursString = "";
+                sep = "";
+                break;
+            case 1:
+                hoursString = "1 hour";
+                break;
+            default:
+                hoursString = hours + " hours";
+                break;
+        }
+        switch(minutes){
+            case 0:
+                minutesString = "";
+                sep = "";
+                break;
+            case 1:
+                minutesString = "1 minute";
+                break;
+            default:
+                minutesString = minutes + " minutes";
+                break;
+        }
+        return hoursString + sep + minutesString;
+    }
+
+    // Prompt Methods
+
+    /**
+     * Prompt for a number between lo and hi inclusive.
+     * 
+     * @param lo
+     *            The lower bound
+     * @param hi
+     *            THe upper bound
+     * @return an interger between lo and hi inclusive
+     */
+    private int promptNumber(int lo, int hi) {
+        boolean validInput;
+        int inputIndex = 0;
+        do {
+            System.out.print("Please pick a number " + "[" + lo + "-" + hi + "] (0 to quit): ");
+            try {
+                inputIndex = Integer.parseInt(this.getScanner().nextLine());
+                validInput = (inputIndex >= lo && inputIndex <= hi);
+            } catch (NumberFormatException e) {
+                validInput = false;
+            }
+            if (!validInput) {
+                System.out.println("Invalid input, try again!");
+            }
+        } while (!validInput);
+        return inputIndex;
+    }
+    
+    private String promptString() {
+        return this.getScanner().nextLine();
+    }
+    
+    private LocalDateTime promptDate() {
+        while (true) {
+            try {
+                String inputText = this.getScanner().nextLine();
+                if("now".equals(inputText)){
+                    return LocalDateTime.now();
+                }else{
+                    return LocalDateTime.parse(inputText, parseFormat);
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30 or use \"now\"");
+            }
+        }
+    }
+    
+    private boolean promptBoolean(String trueString, String falseString) {
+        boolean successful;
+        
+        do {
+            String success = this.getScanner().nextLine();
+            if (success.equalsIgnoreCase(trueString)) {
+                successful = true;
+                break;
+            } else if (success.equalsIgnoreCase(falseString)) {
+                successful = false;
+                break;
+            } else {
+                System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\": ");
+            }
+        } while (true);
+        
+        return successful;
+    }
+    
+    /**
+     * Asks the user to give a number in percentage.
+     * @return A double representing this percentage (1 = 100%, 0 = 0%, 0.5 = 50%, ...)
+     */
+    private double promptPercentageAsDouble() {
+        do {
+            try {
+                return Double.parseDouble(getScanner().nextLine())/100;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, try again: ");
+            }
+        } while (true);
+    }
+    
+    private double promptDouble() {
+        do {
+            try {
+                return Double.parseDouble(getScanner().nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, try again: ");
+            }
+        } while (true);
+    }
+    
+    // Other helper functions
+    
+    private void printDelimiter() {
+        System.out.println("# ----------------------------------");
+    }
+    
+    // Constants
     public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
     public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
-
-
-
+    
+    private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 }
