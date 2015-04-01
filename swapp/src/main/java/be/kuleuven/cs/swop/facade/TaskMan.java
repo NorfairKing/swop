@@ -58,23 +58,6 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieve every Task of the given Project.
-     *
-     * @param project
-     *            This is a ProjectWrapper containing the Project from which the Tasks will be returned.
-     * @return Returns a Set of TaskWrappers containing the Tasks of the given Project.
-     */
-    public Set<TaskWrapper> getTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> tasks = new HashSet<TaskWrapper>();
-        for (Project p : projectManager.getProjects()) {
-            for (Task t : p.getTasks()) {
-                tasks.add(new TaskWrapper(t));
-            }
-        }
-        return tasks;
-    }
-
-    /**
      * Retrieve every unplanned task of a given Project
      * 
      * @param project
@@ -82,7 +65,7 @@ public class TaskMan implements Serializable {
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> allTasks = getTasksOf(project);
+        Set<TaskWrapper> allTasks = project.getTasks();
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
         for (TaskWrapper t : allTasks) {
             if (planningManager.isUnplanned(t.getTask())) {

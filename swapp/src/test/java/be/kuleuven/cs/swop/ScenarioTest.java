@@ -68,7 +68,7 @@ public class ScenarioTest {
         double ad1 = 0;
         TaskData t1r = new TaskData(d1, ed1, ad1);
         TaskWrapper t1 = taskMan.createTaskFor(p1, t1r);
-        assertEquals(1, taskMan.getTasksOf(p1).size());
+        assertEquals(1, p1.getTasks().size());
         assertEquals(0,t1.getDependencySet().size());
         assertFalse(t1.isFinished());
         assertFalse(t1.isFailed());
@@ -81,7 +81,7 @@ public class ScenarioTest {
         TaskData t2r = new TaskData(d2, ed2, ad2);
         t2r.addDependency(t1);
         TaskWrapper t2 = taskMan.createTaskFor(p1, t2r);
-        assertEquals(2, taskMan.getTasksOf(p1).size());
+        assertEquals(2, p1.getTasks().size());
         assertEquals(1,t2.getDependencySet().size());
         assertFalse(t2.isFinished());
         assertFalse(t2.isFailed());
@@ -94,7 +94,7 @@ public class ScenarioTest {
         TaskData t3r = new TaskData(d3, ed3, ad3);
         t3r.addDependency(t2);
         TaskWrapper t3 = taskMan.createTaskFor(p1, t3r);
-        assertEquals(3, taskMan.getTasksOf(p1).size());
+        assertEquals(3, p1.getTasks().size());
         assertEquals(1,t3.getDependencySet().size());
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
@@ -126,7 +126,7 @@ public class ScenarioTest {
         assertTrue(p1.isOnTime(taskMan.getSystemTime()));
         assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
         assertEquals(1,taskMan.getProjects().size());
-        assertEquals(4, taskMan.getTasksOf(p1).size());
+        assertEquals(4, p1.getTasks().size());
 
 
         LocalDateTime t1Start = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
@@ -162,7 +162,7 @@ public class ScenarioTest {
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertEquals(1,taskMan.getProjects().size());
-        assertEquals(4, taskMan.getTasksOf(p1).size());
+        assertEquals(4, p1.getTasks().size());
         assertTrue(p1.isOnTime(taskMan.getSystemTime()));
         assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
 
@@ -194,7 +194,7 @@ public class ScenarioTest {
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertEquals(1,taskMan.getProjects().size());
-        assertEquals(5, taskMan.getTasksOf(p1).size());
+        assertEquals(5, p1.getTasks().size());
 
 
         //assertFalse(p1.isOnTime()); 
@@ -273,7 +273,7 @@ public class ScenarioTest {
         assertFalse(p1.isOngoing());
         assertTrue(p1.isFinished());
         assertEquals(1,taskMan.getProjects().size());
-        assertEquals(5, taskMan.getTasksOf(p1).size());
+        assertEquals(5, p1.getTasks().size());
         assertTrue(p1.isOnTime(taskMan.getSystemTime()));;
         assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
 
