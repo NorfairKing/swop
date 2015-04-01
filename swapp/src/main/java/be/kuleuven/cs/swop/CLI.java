@@ -156,12 +156,14 @@ public class CLI implements UserInterface {
     }
     
     private void printProject(ProjectWrapper project) {
+        LocalDateTime currentTime = sessionController.getTaskMan().getSystemTime();
+        
         System.out.println("" 
                 + "# " + project.getTitle() + "\n" 
                 + "# Desc:    " + project.getDescription() + "\n" 
                 + "# Created: " + formatDate(project.getCreationTime()) + "\n" 
                 + "# Due:     " + formatDate(project.getDueTime()) + "\n"
-                + "# ETA:     " + formatDate(project.estimatedFinishTime())
+                + "# ETA:     " + formatDate(project.estimatedFinishTime(currentTime))
         );
         
         if (project.isFinished()) {
@@ -224,11 +226,13 @@ public class CLI implements UserInterface {
     }
     
     private void printTask(TaskWrapper task) {
+        LocalDateTime currentTime = sessionController.getTaskMan().getSystemTime();
+        
         System.out.println(""
                 + "# " + task.getDescription() + "\n" 
                 + "#   Dependencies: " + task.getDependencySet().size() + "\n" 
                 + "#   Estimated Duration: " + formatDuration(task.getEstimatedDuration()) + "\n" 
-                + "#   Estimated finsih date: " + formatDate(task.getEstimatedOrRealFinishDate()) + "\n"
+                + "#   Estimated finsih date: " + formatDate(task.getEstimatedOrRealFinishDate(currentTime)) + "\n"
                 + "#   Acceptable Deviation: " + formatPercentage(task.getAcceptableDeviation()));
 
         if (task.isFinished()) {

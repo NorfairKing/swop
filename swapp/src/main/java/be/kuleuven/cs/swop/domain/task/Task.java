@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
 
 import com.google.common.collect.ImmutableSet;
@@ -110,7 +109,7 @@ public class Task implements Serializable {
      *
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
-    public LocalDateTime getEstimatedOrRealFinishDate() {
+    public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
         if (isFinished()) return getPerformedDuring().getStopTime();
         if (isFailed()) {
             if (getAlternative() == null) {
@@ -118,12 +117,12 @@ public class Task implements Serializable {
                 return getPerformedDuring().getStopTime();
             }
             else {
-                return getAlternative().getEstimatedOrRealFinishDate();
+                return getAlternative().getEstimatedOrRealFinishDate(currentDate);
             }
         }
 
-        LocalDateTime lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies();
-        LocalDateTime now = Timekeeper.getTime();
+        LocalDateTime lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
+        LocalDateTime now = currentDate;
         if (lastOfDependencies.isBefore(now)) {
             lastOfDependencies = now;
         }
@@ -159,10 +158,10 @@ public class Task implements Serializable {
         }
     }
 
-    private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies() {
+    private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
         LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task dependency : getDependencySet()) {
-            LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate();
+            LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate(currentDate);
             if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
             }
@@ -333,7 +332,7 @@ public class Task implements Serializable {
      *
      * @return Returns a Set containing the Tasks which are dependencies of this Task.
      */
-    public Set<Task> getDependencySet() {
+    public ImmutableSet<Task> getDependencySet() {
         return ImmutableSet.copyOf(this.dependencies);
     }
 
@@ -480,7 +479,7 @@ public class Task implements Serializable {
         return false;
     }
 
-    public Set<Requirement> getRequirements() {
+    public ImmutableSet<Requirement> getRequirements() {
         return ImmutableSet.copyOf(this.requirements);
     }
 

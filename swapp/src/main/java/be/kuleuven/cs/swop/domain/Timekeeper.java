@@ -1,15 +1,14 @@
 package be.kuleuven.cs.swop.domain;
 
-
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
+public class Timekeeper implements Serializable {
 
-public final class Timekeeper {
-
-    private static LocalDateTime currentTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+    private LocalDateTime currentTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private static int workDayStart = 8;
     private static int workDayEnd = 16;
     private static DayOfWeek[] workDays = new DayOfWeek[]{DayOfWeek.MONDAY,DayOfWeek.TUESDAY,DayOfWeek.WEDNESDAY,DayOfWeek.THURSDAY,DayOfWeek.FRIDAY};
@@ -19,7 +18,7 @@ public final class Timekeeper {
      * 
      * @return Returns the current system time.
      */
-    public static LocalDateTime getTime() {
+    public LocalDateTime getTime() {
         return (LocalDateTime) currentTime;
     }
 
@@ -32,7 +31,7 @@ public final class Timekeeper {
      * @return Returns true if the given Date isn't null.
      *
      */
-    protected static boolean canHaveAsTime(LocalDateTime time) {
+    protected boolean canHaveAsTime(LocalDateTime time) {
         return time != null;
     }
 
@@ -46,18 +45,21 @@ public final class Timekeeper {
      *             If the given Date is invalid, which means that it's null.
      *
      */
-    public static void setTime(LocalDateTime time) {
+    public void setTime(LocalDateTime time) {
         if (!canHaveAsTime(time)) { throw new IllegalArgumentException("Invalid time for the system."); }
         currentTime = (LocalDateTime) time;
     }
 
+    
+    
+    // Time helper functions
+    
     private static LocalDateTime startOfDay(LocalDateTime input){
         return input.withSecond(0).withMinute(0).withHour(0);
     }
     private static LocalDateTime endOfDay(LocalDateTime input){
         return startOfDay(input).plusDays(1);
     }
-
     
     // time1 and time2 need to be on the same day!!!w
     private static int timeInSingleDayBetween(LocalDateTime time1, LocalDateTime time2){
@@ -86,8 +88,8 @@ public final class Timekeeper {
         }else{
             return 0;
         }
-
     }
+    
     private static boolean isWorkDay(LocalDateTime time){
         DayOfWeek day = time.getDayOfWeek();
         for(DayOfWeek d: workDays){

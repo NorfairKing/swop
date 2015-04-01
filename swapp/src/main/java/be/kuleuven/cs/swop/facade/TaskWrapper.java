@@ -181,8 +181,8 @@ public class TaskWrapper {
     }
     
     
-    public LocalDateTime getEstimatedOrRealFinishDate() {
-        return getTask().getEstimatedOrRealFinishDate();
+    public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentTime) {
+        return getTask().getEstimatedOrRealFinishDate(currentTime);
     }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";

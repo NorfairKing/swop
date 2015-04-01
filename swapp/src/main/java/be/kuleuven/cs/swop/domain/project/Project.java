@@ -252,7 +252,7 @@ public class Project implements Serializable {
      * @return Returns the Set of Tasks.
      *
      */
-    public Set<Task> getTasks() {
+    public ImmutableSet<Task> getTasks() {
         return ImmutableSet.copyOf(tasks);
     }
 
@@ -276,14 +276,14 @@ public class Project implements Serializable {
      * @return Returns true if this project is on time.
      *
      */
-    public boolean isOnTime() {
-        return !getDueTime().isBefore(estimatedFinishTime());
+    public boolean isOnTime(LocalDateTime currentDate) {
+        return !getDueTime().isBefore(estimatedFinishTime(currentDate));
     }
     
-    public LocalDateTime estimatedFinishTime(){
+    public LocalDateTime estimatedFinishTime(LocalDateTime currentDate){
         LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task task: getTasks()) {
-            LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate();
+            LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate(currentDate);
             if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
             }
@@ -297,8 +297,8 @@ public class Project implements Serializable {
      * @return Returns false when this Project is on time.
      *
      */
-    public boolean isOverTime() {
-        return !isOnTime();
+    public boolean isOverTime(LocalDateTime currentDate) {
+        return !isOnTime(currentDate);
     }
 
     private static final String ERROR_ILLEGAL_TITLE        = "Illegal title for project.";

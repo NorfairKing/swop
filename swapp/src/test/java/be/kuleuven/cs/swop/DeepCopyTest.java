@@ -1,12 +1,8 @@
 package be.kuleuven.cs.swop;
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import be.kuleuven.cs.swop.YAMLReader;
 import be.kuleuven.cs.swop.facade.TaskMan;

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
@@ -19,12 +18,8 @@ import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
-import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.user.Developer;
-
-import com.google.common.collect.ImmutableSet;
-
 
 public class PlanningManager implements Serializable {
 
@@ -32,7 +27,7 @@ public class PlanningManager implements Serializable {
     private Set<Resource> resources = new HashSet<Resource>();
     private Set<Developer> developers = new HashSet<Developer>();
 
-    public Set<TaskPlanning> getTaskPlannings() {
+    public ImmutableSet<TaskPlanning> getTaskPlannings() {
         return ImmutableSet.copyOf(plannings);
     }
 
@@ -61,8 +56,7 @@ public class PlanningManager implements Serializable {
         return null;
     }
 
-    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n) {
-        LocalDateTime currentTime = Timekeeper.getTime();
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {
         currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
         while (timeOptions.size() < n) {

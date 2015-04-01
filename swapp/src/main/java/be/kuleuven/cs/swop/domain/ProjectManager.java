@@ -26,7 +26,7 @@ public class ProjectManager implements Serializable {
      *
      * @return Returns a Set containing the project's this manager manages.
      */
-    public Set<Project> getProjects() {
+    public ImmutableSet<Project> getProjects() {
         return ImmutableSet.copyOf(projects);
     }
 
@@ -46,25 +46,6 @@ public class ProjectManager implements Serializable {
     private void addProject(Project project) {
         if (!canHaveAsProject(project)) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
         projects.add(project);
-    }
-
-    /**
-     * Creates and returns a new Project with the given arguments.
-     *
-     * @param title
-     *            A String containing the title for the new Project.
-     *
-     * @param description
-     *            A String containing the description for the new Project.
-     *
-     * @param dueTime
-     *            A Date containing the time for when the Project is due to be completed.
-     *
-     * @return Returns the newly created Project.
-     */
-    public Project createProject(String title, String description, LocalDateTime dueTime) {
-        LocalDateTime creationTime = Timekeeper.getTime();
-        return createProject(title, description, creationTime, dueTime);
     }
 
     /**

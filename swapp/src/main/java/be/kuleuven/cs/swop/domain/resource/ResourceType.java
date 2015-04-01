@@ -19,7 +19,7 @@ public class ResourceType implements Serializable {
         this.setConflictsWith(conflicts);
     }
 
-    public Set<ResourceType> getRequirements() {
+    public ImmutableSet<ResourceType> getRequirements() {
         return ImmutableSet.copyOf(this.requirements);
     }
 
@@ -32,7 +32,7 @@ public class ResourceType implements Serializable {
         return requirements != null;
     }
 
-    public Set<ResourceType> getConflictsWith() {
+    public ImmutableSet<ResourceType> getConflictsWith() {
         return ImmutableSet.copyOf(this.conflictsWith);
     }
 

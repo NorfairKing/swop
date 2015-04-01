@@ -32,6 +32,7 @@ public class TaskMan implements Serializable {
 
     ProjectManager  projectManager;
     PlanningManager planningManager;
+    Timekeeper      timeKeeper;
 
     /**
      * Full constructor
@@ -39,6 +40,7 @@ public class TaskMan implements Serializable {
     public TaskMan() {
         projectManager = new ProjectManager();
         planningManager = new PlanningManager();
+        timeKeeper = new Timekeeper();
     }
 
     /**
@@ -157,7 +159,7 @@ public class TaskMan implements Serializable {
         if (data.getDueTime() == null) { throw new IllegalArgumentException("Null due time for project creation"); }
 
         if (data.getCreationTime() == null) {
-            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), timeKeeper.getTime(), data.getDueTime());
             return new ProjectWrapper(createdProject);
         }
         else {
@@ -287,7 +289,16 @@ public class TaskMan implements Serializable {
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        Timekeeper.setTime(time);
+        timeKeeper.setTime(time);
+    }
+    
+    /**
+     * Returns the current system time
+     * 
+     * @return The current system time
+     */
+    public LocalDateTime getSystemTime() {
+        return timeKeeper.getTime();
     }
 
     public TaskMan getDeepCopy() {

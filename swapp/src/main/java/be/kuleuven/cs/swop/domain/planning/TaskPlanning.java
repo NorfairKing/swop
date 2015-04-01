@@ -2,8 +2,11 @@ package be.kuleuven.cs.swop.domain.planning;
 
 
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.resource.Resource;
@@ -25,12 +28,16 @@ public class TaskPlanning implements Serializable {
         setReservations(reservations);
     }
 
-    public Set<Developer> getDevelopers() {
-        return developers;
+    public ImmutableSet<Developer> getDevelopers() {
+        return ImmutableSet.copyOf(developers);
     }
 
-    public void setDevelopers(Set<Developer> developers) {
-        this.developers = developers;
+    private void setDevelopers(Set<Developer> developers) {
+        if (!canHaveAsDevelopers(developers)) {
+            throw new InvalidParameterException("Invalid developers set for planning.");
+        }
+        this.developers.clear();
+        this.developers.addAll(developers);
     }
 
     protected boolean canHaveAsDevelopers(Set<Developer> developers) {
@@ -61,12 +68,16 @@ public class TaskPlanning implements Serializable {
         return period != null;
     }
 
-    public Set<Resource> getReservations() {
-        return reservations;
+    public ImmutableSet<Resource> getReservations() {
+        return ImmutableSet.copyOf(reservations);
     }
 
-    public void setReservations(Set<Resource> reservations) {
-        this.reservations = reservations;
+    private void setReservations(Set<Resource> reservations) {
+        if (!canHaveAsReservations(reservations)) {
+            throw new InvalidParameterException("Invalid reservations set for planning.");
+        }
+        this.reservations.clear();
+        this.reservations.addAll(reservations);
     }
 
     protected boolean canHaveAsReservations(Set<Resource> reservations) {

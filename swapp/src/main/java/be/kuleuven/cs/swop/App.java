@@ -13,13 +13,13 @@ public class App {
      */
     public static void main(String[] args) {
         UserInterface ui = new CLI();
-        TaskMan facade = new TaskMan();
+        TaskMan taskMan = new TaskMan();
         if (args.length == 1) {
             String filePath = args[0];
-            YAMLReader reader = new YAMLReader(facade);
+            YAMLReader reader = new YAMLReader(taskMan);
             reader.read(filePath);
         }
-        new SessionController(ui, facade);
+        new SessionController(ui, taskMan);
         ui.start();
     }
 }
