@@ -280,6 +280,11 @@ public class Project implements Serializable {
         return !getDueTime().isBefore(estimatedFinishTime(currentDate));
     }
     
+    /**
+     * Calculated the estimated finish time for this project.
+     * @param currentDate The current system time on which to base the estimation.
+     * @return The estimated finish time.
+     */
     public LocalDateTime estimatedFinishTime(LocalDateTime currentDate){
         LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task task: getTasks()) {

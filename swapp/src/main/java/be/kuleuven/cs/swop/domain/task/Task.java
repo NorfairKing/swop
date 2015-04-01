@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
 
@@ -127,35 +128,7 @@ public class Task implements Serializable {
             lastOfDependencies = now;
         }
 
-        return addWorkingMinutes(lastOfDependencies, (long) getEstimatedDuration());
-    }
-
-    private static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
-        // Take care of weekends
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
-            date = date.plusDays(2).withHour(8).withMinute(0).withSecond(0);
-        } else if (date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            date = date.plusDays(1).withHour(8).withMinute(0).withSecond(0);
-        }
-
-        if (date.getHour() < 8) {
-            // Working day hasn't started. Reset date to start of this working day
-            date = date.withHour(8).withMinute(0).withSecond(0);
-        }
-
-        LocalDateTime endOfCurrentWorkingDay = date.withHour(16).withMinute(0).withSecond(0);
-
-        // Get minutes from date to endOfCurrentWorkingDay
-        long minutesCovered = ChronoUnit.MINUTES.between(date, endOfCurrentWorkingDay);
-        if (minutesCovered >= minutes) {
-            // If minutesCovered covers the minutes value passed, that means result is the same working
-            // day. Just add minutes and return
-            return date.plusMinutes(minutes);
-        } else {
-            // Calculate remainingMinutes, and then recursively call this method with next working day
-            long remainingMinutes = minutes - minutesCovered;
-            return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8).withMinute(0).withSecond(0), remainingMinutes);
-        }
+        return TimeCalculator.addWorkingMinutes(lastOfDependencies, (long) getEstimatedDuration());
     }
 
     private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
@@ -418,15 +391,10 @@ public class Task implements Serializable {
         status.fail(period);
     }
 
-    private long getRealDurationMs() {
-        return ChronoUnit.MILLIS.between(
-                getPerformedDuring().getStartTime(),
-                getPerformedDuring().getStopTime()
-                );
-    }
-
     protected double getRealDuration() {
-        return (double) getRealDurationMs() / 1000 / 60;
+        return (double) TimeCalculator.getDurationMinutes(
+                getPerformedDuring().getStartTime(),
+                getPerformedDuring().getStopTime());
     }
 
     protected double getBestDuration() {
