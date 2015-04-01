@@ -147,7 +147,7 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
         // TODO Auto-generated method stub
         return null;
     }
