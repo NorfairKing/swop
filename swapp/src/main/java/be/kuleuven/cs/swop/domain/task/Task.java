@@ -2,9 +2,7 @@ package be.kuleuven.cs.swop.domain.task;
 
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
