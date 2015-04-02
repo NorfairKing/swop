@@ -19,6 +19,7 @@ import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.TimeCalculator;
 
 public class PlanningManager implements Serializable {
 
@@ -59,10 +60,14 @@ public class PlanningManager implements Serializable {
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {
         currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
-        while (timeOptions.size() < n) {
+        if (this.resources.isEmpty()) //safety checks
+            return timeOptions;
+        if (task.getRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
+            return timeOptions;
+        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty?
             if (this.isValidTimeForTask(currentTime,task))
                 timeOptions.add(currentTime);
-            currentTime = currentTime.plusHours(1);
+            currentTime = TimeCalculator.addWorkingMinutes(currentTime,60);
         }
         return timeOptions;
     }
