@@ -307,6 +307,20 @@ public class TaskMan implements Serializable {
         return obj;
 
     }
+    
+    // TODO: implement and document
+    public ResourceTypeWrapper createResourceType(ResourceTypeData data){
+    	return null;
+    }
+    
+    // TODO: implement and document
+    public ResourceWrapper createResource(ResourceData data){
+    	return null;
+    }
+    
+    public DeveloperWrapper createDeveloper(DeveloperData data){
+    	return null;
+    }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
 

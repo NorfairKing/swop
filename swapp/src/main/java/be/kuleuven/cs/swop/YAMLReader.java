@@ -16,6 +16,9 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
+import be.kuleuven.cs.swop.facade.DeveloperData;
+import be.kuleuven.cs.swop.facade.ResourceData;
+import be.kuleuven.cs.swop.facade.ResourceTypeData;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -62,7 +65,7 @@ public class YAMLReader {
             for (Map<String, Object> resourceType : parsedFile.get("resourceTypes")) {
 
                 // Requirements
-                List<ResourceTypeWrapper> requirements = new ArrayList<ResourceTypeWrapper>();
+                Set<ResourceTypeWrapper> requirements = new HashSet<ResourceTypeWrapper>();
                 List<Integer> reqs = (List<Integer>) resourceType.get("requires");
                 if (reqs != null) {
                     for (int index : reqs) {
@@ -72,7 +75,7 @@ public class YAMLReader {
                 }
 
                 // Conflicts
-                List<ResourceTypeWrapper> conflicts = new ArrayList<ResourceTypeWrapper>();
+                Set<ResourceTypeWrapper> conflicts = new HashSet<ResourceTypeWrapper>();
                 List<Integer> confs = (List<Integer>) resourceType.get("requires");
                 if (confs != null) {
                     for (int index : confs) {
@@ -82,8 +85,7 @@ public class YAMLReader {
                 }
 
                 String name = (String) resourceType.get("name");
-                //TODO: add resource to facade, this is placeholder
-                ResourceTypeWrapper newType = null;
+                ResourceTypeWrapper newType = facade.createResourceType(new ResourceTypeData(name, requirements, conflicts));
                 resourceTypes.add(newType);
             }
 
@@ -92,14 +94,14 @@ public class YAMLReader {
                 String name = (String) resource.get("name");
                 int typeId = (int) resource.get("type");
                 ResourceTypeWrapper type = resourceTypes.get(typeId);
-                // TODO: add resource to facade
+                ResourceWrapper newRes = facade.createResource(new ResourceData(name, type));
+                resources.add(newRes);
             }
 
             // Add developers
             for (Map<String, Object> developer : parsedFile.get("developers")) {
                 String name = (String) developer.get("name");
-                // TODO: add developer to facade
-                DeveloperWrapper dev = null;
+                DeveloperWrapper dev = facade.createDeveloper(new DeveloperData(name));
                 developers.add(dev);
             }
 
@@ -176,9 +178,10 @@ public class YAMLReader {
                 }
 
                 // Keep track for planning
-                int planning = (int) task.get("planning");
-                taskPlannings.put(planning, t);
-
+				Object planning = task.get("planning");
+				if(planning != null){
+	                taskPlannings.put((Integer) planning, t);
+				}
 
 
                 // Add to tracking list
@@ -203,13 +206,14 @@ public class YAMLReader {
                 List<Integer> planResources = (List<Integer>) planning.get("resources");
                 Map<ResourceTypeWrapper, ResourceWrapper> currentResources = new HashMap<ResourceTypeWrapper, ResourceWrapper>();
                 if (planResources != null) {
-                    for (int index : planResources) {
-                        ResourceWrapper rec = resources.get(index);
-                        currentResources.put(key, value)
+                    for (Object oRecs : planResources) {
+                    	HashMap<String,Integer> recs = (HashMap<String,Integer>) oRecs;
+                    	ResourceTypeWrapper type = resourceTypes.get(recs.get("type"));
+                    	int quantity = recs.get("quantity");
                     }
                 }
-
-                facade.createPlanning(taskPlannings.get(planningIndex), startTime, currentResources, currentDevs);
+                // DEAL PROPERLY WITH PLANNINGS AND RESERVATIONS
+                facade.createPlanning(taskPlannings.get(planningIndex), startTime, null, currentDevs);
                 planningIndex++;
             }
 
