@@ -578,13 +578,8 @@ public class CLI implements UserInterface {
      * @return A double representing this percentage (1 = 100%, 0 = 0%, 0.5 = 50%, ...)
      */
     private double promptPercentageAsDouble() {
-        do {
-            try {
-                return Double.parseDouble(getScanner().nextLine())/100;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input, try again: ");
-            }
-        } while (true);
+        double percentage = promptDouble();
+        return percentage / 100.0;
     }
     
     private double promptDouble() {
