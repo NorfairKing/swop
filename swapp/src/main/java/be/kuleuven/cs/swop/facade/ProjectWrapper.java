@@ -117,8 +117,8 @@ public class ProjectWrapper {
      * @return Returns true if the containing Project is on time.
      *
      */
-    public boolean isOnTime(){
-        return getProject().isOnTime();
+    public boolean isOnTime(LocalDateTime currentDate){
+        return getProject().isOnTime(currentDate);
     }
 
     /**
@@ -127,8 +127,8 @@ public class ProjectWrapper {
      * @return Returns true if the containing Project isn't on time.
      *
      */
-    public boolean isOverTime(){
-        return getProject().isOverTime();
+    public boolean isOverTime(LocalDateTime currentDate){
+        return getProject().isOverTime(currentDate);
     }
 
     /**
@@ -150,8 +150,8 @@ public class ProjectWrapper {
      * Get the estimated finish time for this project
      * @return The estimated finish time.
      */
-    public LocalDateTime estimatedFinishTime(){
-        return project.estimatedFinishTime();
+    public LocalDateTime estimatedFinishTime(LocalDateTime currentTime){
+        return project.estimatedFinishTime(currentTime);
     }
 
     private final String ERROR_ILLEGAL_PROJECT = "Illegal project for project wrapper";

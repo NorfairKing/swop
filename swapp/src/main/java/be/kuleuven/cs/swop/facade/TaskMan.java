@@ -1,6 +1,12 @@
 package be.kuleuven.cs.swop.facade;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.domain.PlanningManager;
 import be.kuleuven.cs.swop.domain.ProjectManager;
@@ -20,17 +27,20 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 
-public class FacadeController {
+@SuppressWarnings("serial")
+public class TaskMan implements Serializable {
 
     ProjectManager  projectManager;
     PlanningManager planningManager;
+    Timekeeper      timeKeeper;
 
     /**
      * Full constructor
      */
-    public FacadeController() {
+    public TaskMan() {
         projectManager = new ProjectManager();
         planningManager = new PlanningManager();
+        timeKeeper = new Timekeeper();
     }
 
     /**
@@ -48,23 +58,6 @@ public class FacadeController {
     }
 
     /**
-     * Retrieve every Task of the given Project.
-     *
-     * @param project
-     *            This is a ProjectWrapper containing the Project from which the Tasks will be returned.
-     * @return Returns a Set of TaskWrappers containing the Tasks of the given Project.
-     */
-    public Set<TaskWrapper> getTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> tasks = new HashSet<TaskWrapper>();
-        for (Project p : projectManager.getProjects()) {
-            for (Task t : p.getTasks()) {
-                tasks.add(new TaskWrapper(t));
-            }
-        }
-        return tasks;
-    }
-
-    /**
      * Retrieve every unplanned task of a given Project
      * 
      * @param project
@@ -72,7 +65,7 @@ public class FacadeController {
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> allTasks = getTasksOf(project);
+        Set<TaskWrapper> allTasks = project.getTasks();
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
         for (TaskWrapper t : allTasks) {
             if (planningManager.isUnplanned(t.getTask())) {
@@ -87,7 +80,14 @@ public class FacadeController {
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
-        return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS);
+        List<LocalDateTime> tempForDebugging = new ArrayList<>();
+        tempForDebugging.add(LocalDateTime.MIN);
+        tempForDebugging.add(LocalDateTime.now());
+        tempForDebugging.add(LocalDateTime.MAX);
+        return tempForDebugging;
+        
+        // FIXME Infinite loop it seems.
+        //return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS);
     }
 
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
@@ -108,17 +108,14 @@ public class FacadeController {
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         Set<Developer> devOptions = planningManager.getPlanningDeveloperOptions(task.getTask(), time);
         Set<DeveloperWrapper> wrappedDevOptions = new HashSet<DeveloperWrapper>();
-        for (Developer d : devOptions){
+        for (Developer d : devOptions) {
             wrappedDevOptions.add(new DeveloperWrapper(d));
         }
         return wrappedDevOptions;
     }
 
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Map<ResourceTypeWrapper, Set<ResourceWrapper>> resources, Set<DeveloperWrapper> developers) {
-        Map<ResourceType, Resource> rss = new HashMap<ResourceType, Resource>();
-        for (ResourceTypeWrapper r : resources.keySet()) {
-            rss.put(r.getType(), resources.get(r).getResource()); // FIXME
-        }
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
+        Set<Resource> rss = resources.stream().map(p -> p.getResource()).collect(Collectors.toSet());
         Set<Developer> devs = new HashSet<Developer>();
         for (DeveloperWrapper d : developers) {
             devs.add(d.getDeveloper());
@@ -145,7 +142,7 @@ public class FacadeController {
         if (data.getDueTime() == null) { throw new IllegalArgumentException("Null due time for project creation"); }
 
         if (data.getCreationTime() == null) {
-            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getDueTime());
+            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), timeKeeper.getTime(), data.getDueTime());
             return new ProjectWrapper(createdProject);
         }
         else {
@@ -275,7 +272,40 @@ public class FacadeController {
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        Timekeeper.setTime(time);
+        timeKeeper.setTime(time);
+    }
+    
+    /**
+     * Returns the current system time
+     * 
+     * @return The current system time
+     */
+    public LocalDateTime getSystemTime() {
+        return timeKeeper.getTime();
+    }
+
+    public TaskMan getDeepCopy() {
+        TaskMan orig = this;
+        TaskMan obj = null;
+        try {
+            // Write the object out to a byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(orig);
+            out.flush();
+            out.close();
+
+            // Make an input stream from the byte array and read
+            // a copy of the object back in.
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            obj = (TaskMan) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return obj;
+
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;

@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -23,11 +23,11 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 public class ScenarioTest {
 
-    private static FacadeController facade;
+    private static TaskMan taskMan;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        facade = new FacadeController();
+        taskMan = new TaskMan();
     }
 
     @AfterClass
@@ -48,27 +48,27 @@ public class ScenarioTest {
          * Day 1
          */
         currentDate = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
-        facade.updateSystemTime(currentDate);
+        taskMan.updateSystemTime(currentDate);
 
         String title = "MobileSteps";
         String description = "develop mobile app for counting steps using a specialised bracelet";
         LocalDateTime due = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
         ProjectData projectData = new ProjectData(title, description, due);
-        ProjectWrapper p1 = facade.createProject(projectData);
+        ProjectWrapper p1 = taskMan.createProject(projectData);
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
-        assertTrue(p1.isOnTime());
-        assertFalse(p1.isOverTime());;
-        assertEquals(1, facade.getProjects().size());
+        assertTrue(p1.isOnTime(taskMan.getSystemTime()));
+        assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
+        assertEquals(1, taskMan.getProjects().size());
 
 
         String d1 = "design system";
         double ed1 = 8 * 60;
         double ad1 = 0;
         TaskData t1r = new TaskData(d1, ed1, ad1);
-        TaskWrapper t1 = facade.createTaskFor(p1, t1r);
-        assertEquals(1, facade.getTasksOf(p1).size());
+        TaskWrapper t1 = taskMan.createTaskFor(p1, t1r);
+        assertEquals(1, p1.getTasks().size());
         assertEquals(0,t1.getDependencySet().size());
         assertFalse(t1.isFinished());
         assertFalse(t1.isFailed());
@@ -80,8 +80,8 @@ public class ScenarioTest {
         double ad2 = 0.5;
         TaskData t2r = new TaskData(d2, ed2, ad2);
         t2r.addDependency(t1);
-        TaskWrapper t2 = facade.createTaskFor(p1, t2r);
-        assertEquals(2, facade.getTasksOf(p1).size());
+        TaskWrapper t2 = taskMan.createTaskFor(p1, t2r);
+        assertEquals(2, p1.getTasks().size());
         assertEquals(1,t2.getDependencySet().size());
         assertFalse(t2.isFinished());
         assertFalse(t2.isFailed());
@@ -93,8 +93,8 @@ public class ScenarioTest {
         double ad3 = 0;
         TaskData t3r = new TaskData(d3, ed3, ad3);
         t3r.addDependency(t2);
-        TaskWrapper t3 = facade.createTaskFor(p1, t3r);
-        assertEquals(3, facade.getTasksOf(p1).size());
+        TaskWrapper t3 = taskMan.createTaskFor(p1, t3r);
+        assertEquals(3, p1.getTasks().size());
         assertEquals(1,t3.getDependencySet().size());
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
@@ -106,7 +106,7 @@ public class ScenarioTest {
         double ad4 = 0;
         TaskData t4r = new TaskData(d4, ed4, ad4);
         t4r.addDependency(t2);
-        TaskWrapper t4 = facade.createTaskFor(p1, t4r);
+        TaskWrapper t4 = taskMan.createTaskFor(p1, t4r);
         assertEquals(1,t4.getDependencySet().size());
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
@@ -118,21 +118,21 @@ public class ScenarioTest {
          * Day 2
          */
         currentDate = LocalDateTime.parse("2015-02-10 08:00", dateTimeFormat);
-        facade.updateSystemTime(currentDate);
+        taskMan.updateSystemTime(currentDate);
 
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
-        assertTrue(p1.isOnTime());
-        assertFalse(p1.isOverTime());;
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(4, facade.getTasksOf(p1).size());
+        assertTrue(p1.isOnTime(taskMan.getSystemTime()));
+        assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
+        assertEquals(1,taskMan.getProjects().size());
+        assertEquals(4, p1.getTasks().size());
 
 
         LocalDateTime t1Start = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
         LocalDateTime t1Stop = LocalDateTime.parse("2015-02-09 16:00", dateTimeFormat);
         TaskStatusData t1u = new TaskStatusData(t1Start, t1Stop, true);
-        facade.updateTaskStatusFor(t1, t1u);
+        taskMan.updateTaskStatusFor(t1, t1u);
         assertTrue(t1.isFinished());
 
 
@@ -157,19 +157,19 @@ public class ScenarioTest {
          * Day 3
          */
         currentDate = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
-        facade.updateSystemTime(currentDate);
+        taskMan.updateSystemTime(currentDate);
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(4, facade.getTasksOf(p1).size());
-        assertTrue(p1.isOnTime());
-        assertFalse(p1.isOverTime());;
+        assertEquals(1,taskMan.getProjects().size());
+        assertEquals(4, p1.getTasks().size());
+        assertTrue(p1.isOnTime(taskMan.getSystemTime()));
+        assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
 
         LocalDateTime t2Start = LocalDateTime.parse("2015-02-10 08:00", dateTimeFormat);
         LocalDateTime t2Stop = LocalDateTime.parse("2015-02-10 16:00", dateTimeFormat);
         TaskStatusData t2u = new TaskStatusData(t2Start, t2Stop, false);
-        facade.updateTaskStatusFor(t2, t2u);
+        taskMan.updateTaskStatusFor(t2, t2u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t3.canFinish());
@@ -184,7 +184,7 @@ public class ScenarioTest {
         double ad5 = 1;
         TaskData t5d = new TaskData(d5, ed5, ad5);
         t5d.addDependency(t1);
-        TaskWrapper t5 = facade.createAlternativeFor(t2, t5d);
+        TaskWrapper t5 = taskMan.createAlternativeFor(t2, t5d);
         assertEquals(1,t5.getDependencySet().size());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
@@ -193,14 +193,14 @@ public class ScenarioTest {
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(5, facade.getTasksOf(p1).size());
+        assertEquals(1,taskMan.getProjects().size());
+        assertEquals(5, p1.getTasks().size());
 
 
         //assertFalse(p1.isOnTime()); 
         //assertTrue(p1.isOverTime());
-        assertTrue(p1.isOnTime()); //FIXME: MISTAKE IN ASSIGNMENT?
-        assertFalse(p1.isOverTime());
+        assertTrue(p1.isOnTime(taskMan.getSystemTime())); //FIXME: MISTAKE IN ASSIGNMENT?
+        assertFalse(p1.isOverTime(taskMan.getSystemTime()));
 
 
 
@@ -237,13 +237,13 @@ public class ScenarioTest {
          * Day 4
          */
         currentDate = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
-        facade.updateSystemTime(currentDate);
+        taskMan.updateSystemTime(currentDate);
 
 
         LocalDateTime t5Start = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
         LocalDateTime t5Stop = LocalDateTime.parse("2015-02-11 16:00", dateTimeFormat);
         TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
-        facade.updateTaskStatusFor(t5, t5u); 
+        taskMan.updateTaskStatusFor(t5, t5u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(t3.canFinish());
@@ -253,7 +253,7 @@ public class ScenarioTest {
         LocalDateTime t3Start = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
         LocalDateTime t3Stop = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
         TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
-        facade.updateTaskStatusFor(t3, t3u);
+        taskMan.updateTaskStatusFor(t3, t3u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(t3.isFinished());
@@ -263,7 +263,7 @@ public class ScenarioTest {
         LocalDateTime t4Start = LocalDateTime.parse("2015-02-13 08:00", dateTimeFormat);
         LocalDateTime t4Stop = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
         TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
-        facade.updateTaskStatusFor(t4, t4u); 
+        taskMan.updateTaskStatusFor(t4, t4u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(t3.isFinished());
@@ -272,10 +272,10 @@ public class ScenarioTest {
 
         assertFalse(p1.isOngoing());
         assertTrue(p1.isFinished());
-        assertEquals(1,facade.getProjects().size());
-        assertEquals(5, facade.getTasksOf(p1).size());
-        assertTrue(p1.isOnTime());;
-        assertFalse(p1.isOverTime());;
+        assertEquals(1,taskMan.getProjects().size());
+        assertEquals(5, p1.getTasks().size());
+        assertTrue(p1.isOnTime(taskMan.getSystemTime()));;
+        assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
 
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());

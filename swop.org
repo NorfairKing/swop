@@ -168,3 +168,27 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
 *** Domain vragen:
 - Time availability per type of per instance van resource?
   Momenteel per type - OK
+** Tweede sessie
+*** Planning idee:
+    - Pablo
+      Undo, redo system
+    - Syd
+      nieuwe instantiatie van Facade en sessioncontroller met apparte simulation UI
+      
+      DIT DOEN
+*** Task status idee
+    - task status pattern: performedDuring in pattern? want da's status-afhankelijke data
+
+      OK, MAAR geen state pattern want state pattern is stateless
+      (idem voor alternative)
+      DIT DOEN
+*** Session controller idee:
+    - Syd:
+      Session controller houdt een lijst van sessions bij die overerver van een abstracte klasse session
+      UI kan aan die lijst en roept gewoon execute aan op zo'n object.
+      gevolg: UI losgekoppeld van individuele sessions.
+
+    - Pablo:
+      typ hier
+    
+      GEEN VAN BEIDE

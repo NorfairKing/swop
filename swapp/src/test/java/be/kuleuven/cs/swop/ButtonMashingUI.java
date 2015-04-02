@@ -179,7 +179,9 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public void start() {}
+    public boolean start() {
+        return random.nextDouble() < 0.5;
+    }
 
     public void performActions(int amount) {
         for (int i = 0; i < amount; i++) {
@@ -223,7 +225,7 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -232,6 +234,11 @@ public class ButtonMashingUI implements UserInterface {
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public UserInterface getSimulationUI() {
+        return this;
     }
 
 }

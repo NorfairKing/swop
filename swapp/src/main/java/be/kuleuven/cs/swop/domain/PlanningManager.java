@@ -1,33 +1,33 @@
 package be.kuleuven.cs.swop.domain;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
-import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
-public class PlanningManager {
+public class PlanningManager implements Serializable {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
     private Set<Resource> resources = new HashSet<Resource>();
+    private Set<Developer> developers = new HashSet<Developer>();
 
-    public PlanningManager() {}
-
-    public Set<TaskPlanning> getTaskPlannings() {
+    public ImmutableSet<TaskPlanning> getTaskPlannings() {
         return ImmutableSet.copyOf(plannings);
     }
 
@@ -56,8 +56,7 @@ public class PlanningManager {
         return null;
     }
 
-    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n) {
-        LocalDateTime currentTime = Timekeeper.getTime();
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {
         currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
         while (timeOptions.size() < n) {
@@ -77,24 +76,64 @@ public class PlanningManager {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
+        Set<Resource> availableResources = new HashSet<Resource>(this.resources);
+        availableResources.removeAll(usedResources);
+        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
+        availableDevelopers.removeAll(usedDevelopers);
+        for (Requirement req : task.getRequirements()) {
+            if (!hasResourcesOfType(req.getType(), availableResources, req.getAmount()))
+                return false;
+        }
+        if(availableDevelopers.isEmpty())
+            return false;
         return true;
     }
 
-    private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+    private boolean hasResourcesOfType(ResourceType type, Set<Resource> resources, int number) {
+        int counter = 0;
+        for (Resource resource : resources) {
+            if (resource.getType() == type) {
+                counter++;
+            }
+            if (counter >= number)
+                return true;
+        }
+        return false;
+    }
 
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Resource> usedResources = new HashSet<Resource>();
+        for (TaskPlanning planning : this.plannings) {
+            if (planning.getPeriod().isDuring(time)) {
+                usedResources.addAll(planning.getReservations());
+            }
+        }
+        Set<Resource> availableResources = new HashSet<Resource>(this.resources);
+        availableResources.removeAll(usedResources);
+        Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
+        for (Requirement req : task.getRequirements()) {
+            map.put(req.getType(), this.resources.stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
+        }
+        return map;
     }
 
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Developer> usedDevelopers = new HashSet<Developer>();
+        for (TaskPlanning planning : this.plannings) {
+            if (planning.getPeriod().isDuring(time)) {
+                usedDevelopers.addAll(planning.getDevelopers());
+            }
+        }
+        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
+        availableDevelopers.removeAll(usedDevelopers);
+        return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Map<ResourceType, Resource> rss, Set<Developer> devs) {
-        // TODO Auto-generated method stub
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> resources, Set<Developer> devs) {
+        TaskPlanning newplanning = new TaskPlanning(devs, task, new TimePeriod(time,time.plusMinutes((long) task.getEstimatedDuration())),resources);
+        this.plannings.add(newplanning);
     }
 
+    private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
 }

@@ -1,7 +1,9 @@
 package be.kuleuven.cs.swop.domain.resource;
 
+import java.io.Serializable;
 
-public class Resource {
+
+public class Resource implements Serializable{
 
     private ResourceType type;
     private String       name;

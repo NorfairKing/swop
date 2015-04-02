@@ -7,17 +7,17 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 
 public class YAMLReaderTest {
 
     private static YAMLReader reader;
-    private static FacadeController facade;
+    private static TaskMan facade;
     
     @Before
     public void setUp() throws Exception {
-        facade = new FacadeController();
+        facade = new TaskMan();
         reader = new YAMLReader(facade);
     }
 

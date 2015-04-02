@@ -24,6 +24,10 @@ public class DeveloperWrapper {
         if (!canHaveAsDeveloper(developer)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEVELOPER); }
         this.developer = developer;
     }
+    
+    public String getName() {
+        return developer.getName();
+    }
 
     private static final String ERROR_ILLEGAL_DEVELOPER = "Invalid developer for developer wrapper";
 }

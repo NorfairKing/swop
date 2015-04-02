@@ -1,7 +1,5 @@
 package be.kuleuven.cs.swop.facade;
 
-
-import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -9,7 +7,6 @@ import com.google.common.collect.ImmutableSet;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 

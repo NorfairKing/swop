@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,32 +21,35 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 public class TestingUI implements UserInterface {
 
     private SessionController sessionController;
-    private LocalDateTime requestTime;
-    private ProjectData requestProjectData;
-    private ProjectWrapper requestProject;
-    private TaskData requestTaskData;
-    private TaskWrapper requestTask;
-    private TaskStatusData requestTaskStatusData;
-    
-    @Override
-    public void showProjects(Set<ProjectWrapper> projects) { }
+    private LocalDateTime     requestTime;
+    private ProjectData       requestProjectData;
+    private ProjectWrapper    requestProject;
+    private TaskData          requestTaskData;
+    private TaskWrapper       requestTask;
+    private TaskStatusData    requestTaskStatusData;
 
     @Override
-    public void showProject(ProjectWrapper project) { }
+    public void showProjects(Set<ProjectWrapper> projects) {}
 
     @Override
-    public void showTasks(Set<TaskWrapper> tasks) { }
+    public void showProject(ProjectWrapper project) {}
 
     @Override
-    public void showTask(TaskWrapper task) { }
+    public void showTasks(Set<TaskWrapper> tasks) {}
+
+    @Override
+    public void showTask(TaskWrapper task) {}
 
     /**
      * Set the request project.
-     * @param proj The project that should be returned when calling selectProject
+     * 
+     * @param proj
+     *            The project that should be returned when calling selectProject
      */
     public void setRequestProject(ProjectWrapper proj) {
         requestProject = proj;
     }
+
     /**
      * Ignores the set and just returns the requestProject.
      */
@@ -67,6 +71,7 @@ public class TestingUI implements UserInterface {
     public void setRequestTask(TaskWrapper task) {
         requestTask = task;
     }
+
     /**
      * Ignores the list and just returns the set request task.
      */
@@ -75,20 +80,19 @@ public class TestingUI implements UserInterface {
         return requestTask;
     }
 
-    
     public void setRequestTaskData(TaskData data) {
         requestTaskData = data;
     }
+
     @Override
     public TaskData getTaskData() {
         return requestTaskData;
     }
 
-    
     public void setRequestTaskStatusData(TaskStatusData data) {
         requestTaskStatusData = data;
     }
-    
+
     @Override
     public TaskStatusData getUpdateStatusData() {
         return requestTaskStatusData;
@@ -97,7 +101,7 @@ public class TestingUI implements UserInterface {
     public void setRequestProjectDate(ProjectData data) {
         requestProjectData = data;
     }
-    
+
     @Override
     public ProjectData getProjectData() {
         return requestProjectData;
@@ -106,14 +110,14 @@ public class TestingUI implements UserInterface {
     public void setRequestTime(LocalDateTime time) {
         requestTime = time;
     }
-    
+
     @Override
     public LocalDateTime getTimeStamp() {
         return requestTime;
     }
 
     @Override
-    public void showError(String error) { }
+    public void showError(String error) {}
 
     @Override
     public SessionController getSessionController() {
@@ -126,7 +130,38 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public void start() { }
+    public boolean start() {
+        return true;
+    }
+
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public LocalDateTime selectTime(List<LocalDateTime> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public UserInterface getSimulationUI() {
+        return this;
+    }
 
     @Override
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {

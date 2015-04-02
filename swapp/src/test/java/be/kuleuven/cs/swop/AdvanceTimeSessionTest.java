@@ -7,21 +7,20 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.domain.Timekeeper;
-import be.kuleuven.cs.swop.facade.FacadeController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.SessionController;
 
 public class AdvanceTimeSessionTest {
     
     private static TestingUI  ui;
-    private static FacadeController facade;
+    private static TaskMan taskMan;
     private static SessionController controller;
     
     @Before
     public void setUp() throws Exception {
         ui = new TestingUI();
-        facade = new FacadeController();
-        controller = new SessionController(ui, facade);
+        taskMan = new TaskMan();
+        controller = new SessionController(ui, taskMan);
         ui.start();
     }
     
@@ -32,7 +31,7 @@ public class AdvanceTimeSessionTest {
         
         controller.startAdvanceTimeSession();
         
-        assertEquals(Timekeeper.getTime(), time);
+        assertEquals(taskMan.getSystemTime(), time);
     }
     
     @Test
@@ -47,9 +46,9 @@ public class AdvanceTimeSessionTest {
         if (time == null) return;
 
         // the system updates the system time.
-        facade.updateSystemTime(time);
+        taskMan.updateSystemTime(time);
         
-        assertEquals(Timekeeper.getTime(), time);
+        assertEquals(taskMan.getSystemTime(), time);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -64,8 +63,8 @@ public class AdvanceTimeSessionTest {
         //if (time == null) return; let's assume this check isn't done in the session
 
         // the system updates the system time.
-        facade.updateSystemTime(time);
+        taskMan.updateSystemTime(time);
         
-        assertEquals(Timekeeper.getTime(), time);
+        assertEquals(taskMan.getSystemTime(), time);
     }
 }

@@ -14,9 +14,8 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-import be.kuleuven.cs.swop.domain.resource.ResourceType;
+import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
-import be.kuleuven.cs.swop.facade.FacadeController;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
@@ -27,20 +26,19 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 
 public class YAMLReader {
-
-    FacadeController facade;
-
-    public YAMLReader(FacadeController facade) {
+    
+    TaskMan facade;
+    
+    public YAMLReader(TaskMan facade) {
         this.facade = facade;
     }
 
     @SuppressWarnings("unchecked")
     public void read(String initFile) {
         try {
-            System.out.println("Importing: " + initFile);
-
             // Setup
-            InputStream input = new FileInputStream(new File(initFile));
+            File f = new File(initFile);
+            InputStream input = new FileInputStream(f);
             Yaml yaml = new Yaml();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Map<String, List<Map<String, Object>>> parsedFile = (Map<String, List<Map<String, Object>>>) yaml.load(input);

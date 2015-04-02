@@ -13,19 +13,20 @@ import be.kuleuven.cs.swop.domain.ProjectManager;
 
 public class SessionController {
 
-    private UserInterface    ui;
-    private FacadeController facade;
+    private UserInterface ui;
+    private TaskMan       taskMan;
 
     /**
      * Full constructor
      *
-     * @param ui The UserInterface used to interact with the user.
+     * @param ui
+     *            The UserInterface used to interact with the user.
      *
-     * @param facade The FacadeController that collects and protects the information from
-     * the TaskMan.
+     * @param facade
+     *            The FacadeController that collects and protects the information from the TaskMan.
      *
      */
-    public SessionController(UserInterface ui, FacadeController facade) {
+    public SessionController(UserInterface ui, TaskMan facade) {
         setUi(ui);
         setFacade(facade);
     }
@@ -44,7 +45,8 @@ public class SessionController {
     /**
      * Checks whether or not the given user interface can be used by our program.
      *
-     * @param ui The UserInterface to be checked for validity.
+     * @param ui
+     *            The UserInterface to be checked for validity.
      *
      * @return Returns true if the given user interface is valid.
      *
@@ -65,35 +67,35 @@ public class SessionController {
      * @return Returns a FacadeController.
      *
      */
-    public FacadeController getFacade() {
-        return facade;
+    public TaskMan getTaskMan() {
+        return taskMan;
     }
 
     /**
      * Checks whether or not the given facade is a valid facade for this program.
      *
-     * @param facade The FacadeController to be checked for validity.
+     * @param facade
+     *            The FacadeController to be checked for validity.
      *
      * @return Returns true if the given facade is valid for this program.
      *
      */
-    protected boolean canHaveAsFacade(FacadeController facade) {
+    protected boolean canHaveAsFacade(TaskMan facade) {
         return facade != null;
     }
 
-    private void setFacade(FacadeController facade) {
+    private void setFacade(TaskMan facade) {
         if (!canHaveAsFacade(facade)) throw new IllegalArgumentException(ERROR_ILLEGAL_FACADE);
-        this.facade = facade;
+        this.taskMan = facade;
     }
 
     /**
-     * Starts the "show projects" use case and lets the user interface show a list all the
-     * projects.
+     * Starts the "show projects" use case and lets the user interface show a list all the projects.
      */
     public void startShowProjectsSession() {
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
-        Set<ProjectWrapper> projects = getFacade().getProjects();
+        Set<ProjectWrapper> projects = getTaskMan().getProjects();
         getUi().showProjects(projects);
 
         // The user selects a project to view more details
@@ -116,8 +118,7 @@ public class SessionController {
     }
 
     /**
-     * Starts the "create project" use case which lets the user interface request
-     * the information necessary for creating a new project from the user.
+     * Starts the "create project" use case which lets the user interface request the information necessary for creating a new project from the user.
      */
     public void startCreateProjectSession() {
         do {
@@ -130,25 +131,24 @@ public class SessionController {
 
             // The project is created using the data provided by the user
             try {
-                getFacade().createProject(data);
+                getTaskMan().createProject(data);
                 // finish only when successful
                 break;
             } catch (IllegalArgumentException e) {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
-        } while (true); //loop until user gives proper data, or cancels.
+        } while (true); // loop until user gives proper data, or cancels.
     }
 
     /**
-     * Starts the "create task" use case which lets the user interface request
-     * the information necessary for creating a new task from the user.
+     * Starts the "create task" use case which lets the user interface request the information necessary for creating a new task from the user.
      */
     public void startCreateTaskSession() {
         // The user indicates he wants to create a new task
         do {
             // the system asks for which project to create a task
             // slight deviation from use-case, as they don't specify when the user should select this
-            Set<ProjectWrapper> projects = getFacade().getProjects();
+            Set<ProjectWrapper> projects = getTaskMan().getProjects();
             ProjectWrapper project = getUi().selectProject(projects);
 
             // If the user indicates he wants to leave the overview.
@@ -162,7 +162,7 @@ public class SessionController {
 
             // The system creates the task
             try {
-                getFacade().createTaskFor(project, data);
+                getTaskMan().createTaskFor(project, data);
                 // Finish only when successful
                 break;
             } catch (IllegalArgumentException e) {
@@ -170,55 +170,53 @@ public class SessionController {
             }
         } while (true); // loop until proper data is given, or the user cancels.
     }
-    
-    public void startPlanTaskSession(){
+
+    public void startPlanTaskSession() {
         // The system shows a list of all currently unplanned tasks and the project they belong to.
-        Set<ProjectWrapper> allProjects = facade.getProjects();
-        Map<ProjectWrapper,Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper,Set<TaskWrapper>>();
-        
-        for(ProjectWrapper p : allProjects){
-            Set<TaskWrapper> unplannedTasks = facade.getUnplannedTasksOf(p);
-            if (!unplannedTasks.isEmpty()){
+        Set<ProjectWrapper> allProjects = taskMan.getProjects();
+        Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+
+        for (ProjectWrapper p : allProjects) {
+            Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
+            if (!unplannedTasks.isEmpty()) {
                 unplannedTaskMap.put(p, unplannedTasks);
             }
         }
         // The user selects the tasks he wants to plan
         TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
         if (selectedTask == null) return;
-        
-        List<LocalDateTime> timeOptions = facade.getPlanningTimeOptions(selectedTask);
-        
+
+        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
+
         // The system shows the first three possible starting times.
         // The user selects a proposed time
         LocalDateTime chosenTime = getUi().selectTime(timeOptions);
         if (chosenTime == null) return;
-        
-        
-        Map<ResourceTypeWrapper,List<ResourceWrapper>> resourceOptions = facade.getPlanningResourceOptions(selectedTask, chosenTime);
-        Map<ResourceTypeWrapper,ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+
+        Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = taskMan.getPlanningResourceOptions(selectedTask, chosenTime);
+        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
         if (chosenResources == null) return;
-        
-        Set<DeveloperWrapper> developerOptions = facade.getPlanningDeveloperOptions(selectedTask, chosenTime);
+
+        Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
         Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
         if (chosenDevelopers == null) return;
-        
-        facade.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+
+        taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
     }
-    
-    public void startResolveConflictSession(){
-        
+
+    public void startResolveConflictSession() {
+
     }
 
     /**
-     * Starts the "update task status" use case which lets the user interface request
-     * the information necessary for updating the task status from the user.
+     * Starts the "update task status" use case which lets the user interface request the information necessary for updating the task status from the user.
      */
     public void startUpdateTaskStatusSession() {
         // User indicates he wants to update the status of a task
-        
+
         // The system show a list of all available tasks and the projects they belong to
         // The user selects a task he wants to change
-        Set<ProjectWrapper> projects = getFacade().getProjects();
+        Set<ProjectWrapper> projects = getTaskMan().getProjects();
         TaskWrapper task = getUi().selectTaskFromProjects(projects);
 
         // if the user indicates he wants to leave the overview.
@@ -233,7 +231,7 @@ public class SessionController {
                 if (statusData == null) return;
 
                 // the system updates the task status
-                getFacade().updateTaskStatusFor(task, statusData);
+                getTaskMan().updateTaskStatusFor(task, statusData);
 
                 // Finish wel successful
                 break;
@@ -242,12 +240,11 @@ public class SessionController {
             } catch (IllegalStateException e) {
                 getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
             }
-        } while (true); //loop until proper data was given or user canceled.
+        } while (true); // loop until proper data was given or user canceled.
     }
 
     /**
-     * Starts the "advance time" use case which lets the user interface request a new time
-     * for the system from the user.
+     * Starts the "advance time" use case which lets the user interface request a new time for the system from the user.
      */
     public void startAdvanceTimeSession() {
         // The user indicates he wants to modify the system time
@@ -258,11 +255,17 @@ public class SessionController {
         if (time == null) return;
 
         // the system updates the system time.
-        getFacade().updateSystemTime(time);
+        getTaskMan().updateSystemTime(time);
     }
-    
-    public void startRunSimulationSession(){
-        
+
+    public void startRunSimulationSession() {
+        UserInterface ui = getUi().getSimulationUI();
+        TaskMan simulationFacade = getTaskMan().getDeepCopy();
+        new SessionController(ui, simulationFacade);
+        boolean successful = ui.start();
+        if (successful) {
+            this.taskMan = simulationFacade;
+        }
     }
 
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";

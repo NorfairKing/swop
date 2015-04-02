@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.project;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import com.google.common.collect.ImmutableSet;
 
 
-public class Project {
+public class Project implements Serializable {
 
     private String          title;
     private String          description;
@@ -251,7 +252,7 @@ public class Project {
      * @return Returns the Set of Tasks.
      *
      */
-    public Set<Task> getTasks() {
+    public ImmutableSet<Task> getTasks() {
         return ImmutableSet.copyOf(tasks);
     }
 
@@ -275,14 +276,19 @@ public class Project {
      * @return Returns true if this project is on time.
      *
      */
-    public boolean isOnTime() {
-        return !getDueTime().isBefore(estimatedFinishTime());
+    public boolean isOnTime(LocalDateTime currentDate) {
+        return !getDueTime().isBefore(estimatedFinishTime(currentDate));
     }
     
-    public LocalDateTime estimatedFinishTime(){
+    /**
+     * Calculated the estimated finish time for this project.
+     * @param currentDate The current system time on which to base the estimation.
+     * @return The estimated finish time.
+     */
+    public LocalDateTime estimatedFinishTime(LocalDateTime currentDate){
         LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task task: getTasks()) {
-            LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate();
+            LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate(currentDate);
             if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
             }
@@ -296,8 +302,8 @@ public class Project {
      * @return Returns false when this Project is on time.
      *
      */
-    public boolean isOverTime() {
-        return !isOnTime();
+    public boolean isOverTime(LocalDateTime currentDate) {
+        return !isOnTime(currentDate);
     }
 
     private static final String ERROR_ILLEGAL_TITLE        = "Illegal title for project.";

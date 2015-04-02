@@ -3,11 +3,15 @@ package be.kuleuven.cs.swop.domain.resource;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.io.Serializable;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
 
-public class ResourceType {
 
-    private String name;
+public class ResourceType implements Serializable {
+
+    private String            name;
     private Set<ResourceType> requirements;
     private Set<ResourceType> conflictsWith;
 
@@ -17,12 +21,12 @@ public class ResourceType {
         this.setConflictsWith(conflicts);
     }
 
-    public Set<ResourceType> getRequirements() {
+    public ImmutableSet<ResourceType> getRequirements() {
         return ImmutableSet.copyOf(this.requirements);
     }
 
     private void setRequirements(Set<ResourceType> requirements) {
-        if(!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+        if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements = requirements;
     }
 
@@ -30,12 +34,12 @@ public class ResourceType {
         return requirements != null;
     }
 
-    public Set<ResourceType> getConflictsWith() {
+    public ImmutableSet<ResourceType> getConflictsWith() {
         return ImmutableSet.copyOf(this.conflictsWith);
     }
 
     private void setConflictsWith(Set<ResourceType> conflictsWith) {
-        if(!canHaveAsConflictsWith(conflictsWith)) throw new IllegalArgumentException(ERROR_ILLEGAL_CONFLICTS);
+        if (!canHaveAsConflictsWith(conflictsWith)) throw new IllegalArgumentException(ERROR_ILLEGAL_CONFLICTS);
         this.conflictsWith = conflictsWith;
     }
 
@@ -44,7 +48,7 @@ public class ResourceType {
     }
 
     private void setName(String name) {
-        if(!canHaveAsName(name)) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
+        if (!canHaveAsName(name)) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
         this.name = name;
     }
 
@@ -56,7 +60,7 @@ public class ResourceType {
         return this.name;
     }
 
-    private static final String ERROR_ILLEGAL_REQUIREMENTS    = "Illegal requirement set for resource type.";
+    private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
     private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";
-    private static final String ERROR_ILLEGAL_NAME    = "Illegal name for resource type.";
+    private static final String ERROR_ILLEGAL_NAME         = "Illegal name for resource type.";
 }
