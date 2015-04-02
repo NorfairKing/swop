@@ -147,20 +147,20 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
 **** Rechten van users
  Een Manager mag taken plannen maar een developer niet etc.
  We moeten daar dus ook rekening mee houden in de UI.
- 
+
  Hier is mijn voorstel:
  Bij het begin van een sessie vraagt de UI aan de sessioncontroller een
  selectUserSession aan. De user selecteert dan een User (via
  UserWrappers). Van daaruit kan de UI sessions aanvragen, en daaraan moet
  hij dan die userWrapper meegeven zodat de sessioncontroller de
  permissions kan checken.
- 
+
  Wat ook kan is dat we de sessionController de user(Wrapper) laten
  bijhouden en de UI gewoon toelaten die te zetten (lijkt me eigenlijk
  veiliger omdat de UI anders gewoon alle users kan impersoneren).
  In dit scenario moet de UI echt van user veranderen voor die iets anders
  kan doen.
- 
+
 **** Waar zetten we de time keeper, waar houden we time bij zodat het binnen het domein blijft
 **** Input file als interface
 **** Task kent momenteel alle statussen, is dat nodig? goede argumentatie guys!
@@ -174,7 +174,7 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
       Undo, redo system
     - Syd
       nieuwe instantiatie van Facade en sessioncontroller met apparte simulation UI
-      
+
       DIT DOEN
 *** Task status idee
     - task status pattern: performedDuring in pattern? want da's status-afhankelijke data
@@ -190,5 +190,8 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
 
     - Pablo:
       typ hier
-    
+
       GEEN VAN BEIDE
+
+*** Reservations
+Als een task langer duurt dan verwacht, dan worden zijn resources ook langer gebruikt. Een TaskPlanning zijn period gaat dan ook aangeven dat deze langer geduurd heeft.
