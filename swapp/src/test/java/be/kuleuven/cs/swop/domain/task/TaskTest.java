@@ -67,22 +67,12 @@ public class TaskTest {
 
     @Test
     public void setEstimatedDurationTest() {
-        double dur = 10;
+        long dur = 10;
         task.setEstimatedDuration(dur);
         assertTrue(dur == task.getEstimatedDuration());
 
         try{
             task.setEstimatedDuration(-1);
-            fail();
-        }catch(IllegalArgumentException e){}
-
-        try{
-            task.setEstimatedDuration(Double.NaN);
-            fail();
-        }catch(IllegalArgumentException e){}
-
-        try{
-            task.setEstimatedDuration(Double.POSITIVE_INFINITY);
             fail();
         }catch(IllegalArgumentException e){}
     }

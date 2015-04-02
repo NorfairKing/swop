@@ -64,7 +64,7 @@ public class ScenarioTest {
 
 
         String d1 = "design system";
-        double ed1 = 8 * 60;
+        long ed1 = 8 * 60;
         double ad1 = 0;
         TaskData t1r = new TaskData(d1, ed1, ad1);
         TaskWrapper t1 = taskMan.createTaskFor(p1, t1r);
@@ -76,7 +76,7 @@ public class ScenarioTest {
         assertTrue(t1.getAlternative() == null);
 
         String d2 = "implement system in native code";
-        double ed2 = 16 * 60;
+        long ed2 = 16 * 60;
         double ad2 = 0.5;
         TaskData t2r = new TaskData(d2, ed2, ad2);
         t2r.addDependency(t1);
@@ -89,7 +89,7 @@ public class ScenarioTest {
         assertTrue(t2.getAlternative() == null);
 
         String d3 = "test system";
-        double ed3 = 8 * 60;
+        long ed3 = 8 * 60;
         double ad3 = 0;
         TaskData t3r = new TaskData(d3, ed3, ad3);
         t3r.addDependency(t2);
@@ -102,7 +102,7 @@ public class ScenarioTest {
         assertTrue(t3.getAlternative() == null);
 
         String d4 = "write documentation";
-        double ed4 = 8 * 60;
+        long ed4 = 8 * 60;
         double ad4 = 0;
         TaskData t4r = new TaskData(d4, ed4, ad4);
         t4r.addDependency(t2);
@@ -180,7 +180,7 @@ public class ScenarioTest {
 
 
         String d5 = "implement system with phonegap";
-        double ed5 = 8*60;
+        long ed5 = 8*60;
         double ad5 = 1;
         TaskData t5d = new TaskData(d5, ed5, ad5);
         t5d.addDependency(t1);

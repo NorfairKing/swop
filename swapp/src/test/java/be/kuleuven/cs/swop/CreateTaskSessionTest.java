@@ -70,7 +70,7 @@ public class CreateTaskSessionTest {
     public void flowTestNullDescr() {
         ProjectWrapper project = taskMan.getProjects().stream().findFirst().get();
         String descr = null;
-        double dur = 50;
+        long dur = 50;
         double dev = .5;
         TaskData data = new TaskData(descr, dur, dev);
         
@@ -81,7 +81,7 @@ public class CreateTaskSessionTest {
     public void flowTestInvalidDur() {
         ProjectWrapper project = taskMan.getProjects().stream().findFirst().get();
         String descr = "Good descr";
-        double dur = -50; //can't be negative
+        long dur = -50; //can't be negative
         double dev = .5;
         TaskData data = new TaskData(descr, dur, dev);
         
@@ -92,7 +92,7 @@ public class CreateTaskSessionTest {
     public void flowTestInvalidDev() {
         ProjectWrapper project = taskMan.getProjects().stream().findFirst().get();
         String descr = "Good descr";
-        double dur = 50;
+        long dur = 50;
         double dev = -.5; //can't be negative
         TaskData data = new TaskData(descr, dur, dev);
         
