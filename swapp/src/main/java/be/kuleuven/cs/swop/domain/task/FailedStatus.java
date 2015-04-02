@@ -1,13 +1,17 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
+import java.time.LocalDateTime;
+
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
-public class FailedStatus extends TaskStatus {
+public class FailedStatus extends PerformedStatus {
 
-    public FailedStatus(Task task) {
-        super(task);
+    private Task alternative;
+
+    FailedStatus(Task task, TimePeriod performedDuring) {
+        super(task, performedDuring);
     }
 
     /**
@@ -16,7 +20,7 @@ public class FailedStatus extends TaskStatus {
      * @return Returns false.
      */
     @Override
-    public boolean isFinished() {
+    boolean isFinished() {
         return false;
     }
 
@@ -26,60 +30,73 @@ public class FailedStatus extends TaskStatus {
      * @return Returns true.
      */
     @Override
-    public boolean isFailed() {
+    boolean isFailed() {
         return true;
     }
 
+    @Override
+    void setAlternative(Task alternative) {
+        if (!canHaveAsAlternative(alternative)) { throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE); }
+        this.alternative = alternative;
+    }
+
     /**
-     * Checks whether this status is final and therefore can't be changed.
+     * Retrieves the alternative Task for this Task for when this Task has failed.
      *
-     * @return Returns true.
+     * @return The alternative Task.
      */
     @Override
-    public boolean isFinal() {
+    Task getAlternative() {
+        return alternative;
+    }
+
+    /**
+     * Checks whether of not the given Task is a valid alternative for this Task, this Task can't have an alternative Task when the new alternative is null, when this Task already has a alternative
+     * and when the new alternative Task doesn't create a dependency loop when the new alternative is replaced by this Task, this Task has to be failed before you can set an alternative.
+     *
+     * @param alternative
+     *            The Task to be checked as possible alternative for this Task.
+     * @return Returns true if the given Task can be an alternative for this Task.
+     */
+    protected boolean canHaveAsAlternative(Task alternative) {
+        if (alternative == null) { return false; }
+        if (this.alternative != null) { return false; }
+        if (alternative.containsDependency(getTask())) { return false; }
+        if (getTask() == alternative) { return false; }
         return true;
     }
 
-    /**
-     * Checks whether the project containing this status can finish.
-     *
-     * @return Returns false.
-     */
     @Override
-    public boolean canFinish() {
+    boolean isFinishedOrHasFinishedAlternative() {
+        if (alternative == null) return false;
+        return alternative.isFinishedOrHasFinishedAlternative();
+    }
+
+    @Override
+    LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
+        if (getAlternative() == null) {
+            // Makes no sense but the assignment said so...
+            return getPerformedDuring().getStopTime();
+        }
+        else {
+            return getAlternative().getEstimatedOrRealFinishDate(currentDate);
+        }
+    }
+
+    @Override
+    boolean wasFinishedOnTime() {
         return false;
     }
 
-    /**
-     * Checks whether the project containing this status can fail.
-     *
-     * @return Returns false.
-     */
     @Override
-    public boolean canFail() {
+    boolean wasFinishedEarly() {
         return false;
     }
 
     @Override
-    public void setAlternative(Task alternative) {
-        getTask().setAlternative(alternative);
+    boolean wasFinishedLate() {
+        return false;
     }
 
-    @Override
-    void fail(TimePeriod period) {
-        throw new IllegalStateException(ERROR_FAIL);
-    }
-
-    @Override
-    void finish(TimePeriod period) {
-        throw new IllegalStateException(ERROR_FINISH);
-    }
-
-    private static String ERROR_FINISH = "Can't finish a failed task.";
-    private static String ERROR_FAIL   = "Can't fail a failed task.";
-    @Override
-    protected boolean canHaveAsAlternative(Task task) {
-        return task != null;
-    }
-
+    private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal alternative for failed status.";
 }

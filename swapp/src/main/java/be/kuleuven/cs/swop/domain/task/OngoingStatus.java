@@ -4,7 +4,7 @@ package be.kuleuven.cs.swop.domain.task;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
-public class OngoingStatus extends TaskStatus {
+public class OngoingStatus extends IncompleteStatus {
 
     public OngoingStatus(Task task) {
         super(task);
@@ -16,7 +16,7 @@ public class OngoingStatus extends TaskStatus {
      * @return Returns false.
      */
     @Override
-    public boolean isFinished() {
+    boolean isFinished() {
         return false;
     }
 
@@ -26,7 +26,7 @@ public class OngoingStatus extends TaskStatus {
      * @return Returns false.
      */
     @Override
-    public boolean isFailed() {
+    boolean isFailed() {
         return false;
     }
 
@@ -36,7 +36,7 @@ public class OngoingStatus extends TaskStatus {
      * @return Returns false.
      */
     @Override
-    public boolean isFinal() {
+    boolean isFinal() {
         return false;
     }
 
@@ -46,7 +46,7 @@ public class OngoingStatus extends TaskStatus {
      * @return Returns false.
      */
     @Override
-    public boolean canFinish() {
+    boolean canFinish() {
         return !getTask().hasUnfinishedDependencies();
     }
 
@@ -56,39 +56,20 @@ public class OngoingStatus extends TaskStatus {
      * @return Returns true.
      */
     @Override
-    public boolean canFail() {
+    boolean canFail() {
         return true;
     }
 
     @Override
-    public void setAlternative(Task alternative) {
-        throw new IllegalStateException(ERROR_SET_ALTERNATIVE_ERROR);
-    }
-
-    @Override
     void finish(TimePeriod period) {
-        if (getTask().hasUnfinishedDependencies()) {
-            throw new IllegalStateException(ERROR_FINISH);
-        }
-        else {
-            getTask().performedDuring(period);
-            goToStatus(new FinishedStatus(getTask()));
-        }
+        throw new IllegalStateException(ERROR_FINISH);
     }
 
     @Override
-    void fail(TimePeriod period) {
-        getTask().performedDuring(period);
-        goToStatus(new FailedStatus(getTask()));
+    Task getAlternative() {
+        return null;
     }
 
-    private static String ERROR_FINISH                = "Can't finish a task with unfinished dependencies.";
-
-    private static String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";
-
-    @Override
-    protected boolean canHaveAsAlternative(Task task) {
-        return false;
-    }
+    private static String ERROR_FINISH = "Can't finish a task that has not been started.";
 
 }

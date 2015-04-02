@@ -173,68 +173,30 @@ public class TaskTest {
     }
 
     @Test
-    public void canHaveAsAlternativeTest() {
-        Task task2 = new Task("Hi", 1, 0);
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
-        assertFalse(task.canHaveAsAlternative(task2));
-
-        task.fail(period);
-
-        assertTrue(task.canHaveAsAlternative(task2));
-
-        task2.fail(period);
-        assertTrue(task.canHaveAsAlternative(task2));
-
-        assertFalse(task.canHaveAsAlternative(null));
-
-        task = new Task("Hi", 1, 0);
-        task2 = new Task("Hi", 1, 0);
-        Task task3 = new Task("Hi", 1, 0);
-        Task task4 = new Task("Hi", 1, 0);
-        task3.addDependency(task);
-        task2.addDependency(task3);
-        task4.addDependency(task);
-        task.fail(period);
-        assertFalse(task.canHaveAsAlternative(task2));
-        assertFalse(task.canHaveAsAlternative(task4));
-
-    }
-
-    @Test
     public void setAlternativeTest() {
         Task task2 = new Task("Hi", 1, 0);
         TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         try{
-            task.setAlternative(task2);
+            task.addAlternative(task2);
             fail();
-        }catch(IllegalArgumentException e){}
+        }catch(IllegalStateException e){}
 
         try{
-            task.setAlternative(null);
+            task.addAlternative(null);
             fail();
-        }catch(IllegalArgumentException e){}
+        }catch(IllegalStateException e){}
 
         task.fail(period);
 
 
         try{
-            task.setAlternative(task);
+            task.addAlternative(task);
             fail();
         }catch(IllegalArgumentException e){}
 
-        task.setAlternative(task2);
+        task.addAlternative(task2);
         assertTrue(task.getAlternative() == task2);
-    }
-
-    @Test
-    public void canHaveBeenPerfomedDuringTest() {
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
-        assertTrue(task.canHaveBeenPerfomedDuring(period));
-        assertFalse(task.canHaveBeenPerfomedDuring(null));
-        task.finish(period);
-        assertFalse(task.canHaveBeenPerfomedDuring(period));
-        assertTrue(period == task.getPerformedDuring());
     }
 
     @Test
@@ -246,11 +208,7 @@ public class TaskTest {
 
     @Test
     public void canHaveAsStatusTest(){
-        assertFalse(task.canHaveAsStatus(null));
-        assertTrue(task.canHaveAsStatus(new OngoingStatus(task)));
-        assertTrue(task.canHaveAsStatus(new FinishedStatus(task)));
-        assertTrue(task.canHaveAsStatus(new FailedStatus(task)));
-
+        // TODO rewrite
     }
 
     @Test
@@ -312,13 +270,17 @@ public class TaskTest {
         TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         assertFalse(task.isFinishedOrHasFinishedAlternative());
+        // can't finish a task that has not been started.
+        // Has to be 'executing first
+        // Hi to whomever this is, if not me.
+        // also to me, of course.
         task.finish(period);
         assertTrue(task.isFinishedOrHasFinishedAlternative());
 
         Task task2 = new Task("Hi",1,0);
         Task task3 = new Task("Hi2",1,0);
         task2.fail(period);
-        task2.setAlternative(task3);
+        task2.addAlternative(task3);
         assertFalse(task2.isFinishedOrHasFinishedAlternative());
         task3.finish(period);
         assertTrue(task2.isFinishedOrHasFinishedAlternative());

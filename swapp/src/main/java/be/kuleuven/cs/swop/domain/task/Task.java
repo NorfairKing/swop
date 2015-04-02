@@ -23,8 +23,6 @@ public class Task implements Serializable {
     private long             estimatedDuration;
     private double           acceptableDeviation;
     private Set<Task>        dependencies = new HashSet<Task>();
-    private Task             alternative;
-    private TimePeriod       performedDuring;
     private TaskStatus       status;
     private Set<Requirement> requirements = new HashSet<Requirement>();
 
@@ -109,27 +107,10 @@ public class Task implements Serializable {
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
-        if (isFinished()) return getPerformedDuring().getStopTime();
-        if (isFailed()) {
-            if (getAlternative() == null) {
-                // Makes no sense but the assignment said so...
-                return getPerformedDuring().getStopTime();
-            }
-            else {
-                return getAlternative().getEstimatedOrRealFinishDate(currentDate);
-            }
-        }
-
-        LocalDateTime lastOfDependencies = getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
-        LocalDateTime now = currentDate;
-        if (lastOfDependencies.isBefore(now)) {
-            lastOfDependencies = now;
-        }
-
-        return TimeCalculator.addWorkingMinutes(lastOfDependencies, (long) getEstimatedDuration());
+        return status.getEstimatedOrRealFinishDate(currentDate);
     }
 
-    private LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
+    LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
         LocalDateTime lastTime = LocalDateTime.MIN;
         for (Task dependency : getDependencySet()) {
             LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate(currentDate);
@@ -154,7 +135,7 @@ public class Task implements Serializable {
         this.estimatedDuration = estimatedDuration;
     }
 
-    private boolean containsDependency(Task dependency) {
+    boolean containsDependency(Task dependency) {
         if (dependency == null) { return true; }
         for (Task subDep : this.getDependencySet()) {
             if (subDep == dependency) { return true; }
@@ -226,32 +207,6 @@ public class Task implements Serializable {
     }
 
     /**
-     * Retrieves the alternative Task for this Task for when this Task has failed.
-     *
-     * @return The alternative Task.
-     */
-    public Task getAlternative() {
-        return alternative;
-    }
-
-    /**
-     * Checks whether of not the given Task is a valid alternative for this Task, this Task can't have an alternative Task when the new alternative is null, when this Task already has a alternative
-     * and when the new alternative Task doesn't create a dependency loop when the new alternative is replaced by this Task, this Task has to be failed before you can set an alternative.
-     *
-     * @param alternative
-     *            The Task to be checked as possible alternative for this Task.
-     * @return Returns true if the given Task can be an alternative for this Task.
-     */
-    public boolean canHaveAsAlternative(Task alternative) {
-        if (alternative == null) { return false; }
-        if (this.alternative != null) { return false; }
-        if (!status.canHaveAsAlternative(alternative)) { return false; }
-        if (alternative.containsDependency(this)) { return false; }
-        if (this == alternative) { return false; }
-        return true;
-    }
-
-    /**
      * Sets an alternative Task for this Task for when this Task failed, the alternative can't be null, can't create a dependency loop and this Task has to be failed.
      *
      * @param alternative
@@ -261,41 +216,6 @@ public class Task implements Serializable {
      */
     public void addAlternative(Task alternative) {
         status.setAlternative(alternative);
-    }
-
-    void setAlternative(Task alternative) {
-        if (!canHaveAsAlternative(alternative)) { throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE); }
-        this.alternative = alternative;
-    }
-
-    /**
-     * Retrieves the TimePeriod for when this Task was performed.
-     *
-     * @return Returns a TimePeriod for when the Task was performed or null if the Task isn't failed of finished yet.
-     */
-    public TimePeriod getPerformedDuring() {
-        return performedDuring;
-    }
-
-    /**
-     * Checks whether or not this Task can be performed during the given timespan.
-     *
-     * @param timespan
-     *            The TimePeriod that has to be checked.
-     * @return Returns true if this Task could be performed during the given TimePeriod.
-     */
-    protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan) {
-        return timespan != null && performedDuring == null;
-    }
-
-    /**
-     * Sets the timespan for this Task for when it was performed.
-     *
-     * @param timespan
-     *            The TimePeriod for when during the Task was performed.
-     */
-    void performedDuring(TimePeriod timespan) {
-        this.performedDuring = timespan;
     }
 
     /**
@@ -351,19 +271,6 @@ public class Task implements Serializable {
     }
 
     /**
-     * Checks if this Task is finished or if the Task has failed, if it's alternative has finished.
-     *
-     * @return Returns true if this task or it's alternative is finished.
-     */
-    public boolean isFinishedOrHasFinishedAlternative() {
-        if (isFinished()) return true;
-
-        if (getAlternative() == null) return false;
-
-        return getAlternative().isFinishedOrHasFinishedAlternative();
-    }
-
-    /**
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
      *
      * @param period
@@ -403,40 +310,6 @@ public class Task implements Serializable {
         return getEstimatedDuration() + (long)((double)getEstimatedDuration() * getAcceptableDeviation());
     }
 
-    /**
-     * Checks whether or not this Task was finished before the estimated duration minus the acceptable deviation.
-     *
-     * @return Returns true if the Task has finished before the estimated duration minus the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
-     */
-    public boolean wasFinishedEarly() {
-        if (!isFinished()) return false;
-
-        return getRealDuration() < getBestDuration();
-    }
-
-    /**
-     * Checks whether or not this Task was finished within the acceptable deviation.
-     *
-     * @return Returns true if this Task has finished within the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
-     */
-    public boolean wasFinishedOnTime() {
-        if (!isFinished()) return false;
-
-        double realDuration = getRealDuration();
-        return realDuration >= getBestDuration() && realDuration <= getWorstDuration();
-    }
-
-    /**
-     * Checks whether or not this Task was finished after the estimated duration plus the acceptable deviation.
-     *
-     * @return Returns true if the Task has finished before after the estimated duration plus the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
-     */
-    public boolean wasFinishedLate() {
-        if (!isFinished()) return false;
-
-        return getRealDuration() > getWorstDuration();
-    }
-
     boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
         for (Task t : dependencies) {
@@ -458,11 +331,26 @@ public class Task implements Serializable {
         return requirements != null;
     }
 
+    public TimePeriod getPerformedDuring() {
+        return status.getPerformedDuring();
+    }
+
+    public boolean wasFinishedOnTime() {
+        return status.wasFinishedOnTime();
+    }
+
+    public boolean wasFinishedEarly() {
+        return status.wasFinishedEarly();
+    }
+
+    public boolean wasFinishedLate() {
+        return status.wasFinishedLate();
+    }
+
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_DEVIATION    = "Illegal acceptable deviation for task.";
     private static final String ERROR_ILLEGAL_DURATION     = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS       = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_ALTERNATIVE  = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY   = "Illegal dependency set for task.";
     private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for task.";
 }
