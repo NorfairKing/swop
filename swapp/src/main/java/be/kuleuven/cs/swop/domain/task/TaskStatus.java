@@ -4,8 +4,6 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 
 import java.io.Serializable;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
-
 
 public abstract class TaskStatus implements Serializable {
 

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
-import be.kuleuven.cs.swop.domain.ProjectManager;
 
 
 public class SessionController {
