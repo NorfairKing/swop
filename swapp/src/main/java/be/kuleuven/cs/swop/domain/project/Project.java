@@ -240,7 +240,7 @@ public class Project implements Serializable {
      * @return The newly created Task.
      *
      */
-    public Task createTask(String description, double estimatedDuration, double acceptableDeviation) {
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation) {
         Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
         addTask(newTask);
         return newTask;

@@ -18,7 +18,6 @@ import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
-import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 public class PlanningManager implements Serializable {
@@ -71,7 +70,7 @@ public class PlanningManager implements Serializable {
         Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
                 usedResources.addAll(planning.getReservations());
                 usedDevelopers.addAll(planning.getDevelopers());
             }
@@ -104,7 +103,7 @@ public class PlanningManager implements Serializable {
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         Set<Resource> usedResources = new HashSet<Resource>();
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
                 usedResources.addAll(planning.getReservations());
             }
         }
@@ -121,7 +120,7 @@ public class PlanningManager implements Serializable {
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         Set<Developer> usedDevelopers = new HashSet<Developer>();
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
@@ -130,8 +129,8 @@ public class PlanningManager implements Serializable {
         return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Resource> resources, Set<Developer> devs) {
-        TaskPlanning newplanning = new TaskPlanning(devs, task, new TimePeriod(time,time.plusMinutes((long) task.getEstimatedDuration())),resources);
+    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) {
+        TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
         this.plannings.add(newplanning);
     }
 

@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.planning;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,13 +19,13 @@ public class TaskPlanning implements Serializable {
 
     private Set<Developer> developers   = new HashSet<Developer>();
     private Task           task;
-    private TimePeriod     period;
+    private LocalDateTime  plannedStartTime;
     private Set<Resource>  reservations = new HashSet<Resource>();
 
-    public TaskPlanning(Set<Developer> developers, Task task, TimePeriod period, Set<Resource> reservations) {
+    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime, Set<Resource> reservations) {
         setDevelopers(developers);
         setTask(task);
-        setPeriod(period);
+        setPlannedStartTime(plannedStartTime);
         setReservations(reservations);
     }
 
@@ -49,6 +50,9 @@ public class TaskPlanning implements Serializable {
     }
 
     public void setTask(Task task) {
+        if (!canHaveAsTask(task)) {
+            throw new IllegalArgumentException("Invalid task for this planning.");
+        }
         this.task = task;
     }
 
@@ -56,16 +60,19 @@ public class TaskPlanning implements Serializable {
         return task != null;
     }
 
-    public TimePeriod getPeriod() {
-        return period;
+    public LocalDateTime getPlannedStartTime() {
+        return plannedStartTime;
     }
 
-    public void setPeriod(TimePeriod period) {
-        this.period = period;
+    public void setPlannedStartTime(LocalDateTime plannedStartTime) {
+        if (!canHaveAsPlannedStartTime(plannedStartTime)) {
+            throw new IllegalArgumentException("Invalid startime for this planning.");
+        }
+        this.plannedStartTime = plannedStartTime;
     }
 
-    protected boolean canHaveAsPeriod(TimePeriod period) {
-        return period != null;
+    protected boolean canHaveAsPlannedStartTime(LocalDateTime plannedStartTime) {
+        return plannedStartTime != null;
     }
 
     public ImmutableSet<Resource> getReservations() {
@@ -82,6 +89,16 @@ public class TaskPlanning implements Serializable {
 
     protected boolean canHaveAsReservations(Set<Resource> reservations) {
         return !reservations.isEmpty();
+    }
+    
+    public TimePeriod getEstimatedOrRealPeriod() {
+        if (getTask().isFailed() || getTask().isFinished()) {
+            return getTask().getPerformedDuring();
+        } else {
+            long taskDur = getTask().getEstimatedDuration();
+            LocalDateTime estimatedEndTime = getPlannedStartTime().plusMinutes(taskDur);
+            return new TimePeriod(getPlannedStartTime(), estimatedEndTime);
+        }
     }
 
 }

@@ -285,7 +285,7 @@ public class CLI implements UserInterface {
         String description = promptString();
 
         System.out.print("# Estimated Duration (minutes): ");
-        double estimatedDuration = promptDouble();
+        long estimatedDuration = promptLong();
         
         System.out.print("# Acceptable Deviation (%): ");
         double acceptableDeviation = promptPercentageAsDouble();
@@ -591,6 +591,16 @@ public class CLI implements UserInterface {
         do {
             try {
                 return Double.parseDouble(getScanner().nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, try again: ");
+            }
+        } while (true);
+    }
+    
+    private long promptLong() {
+        do {
+            try {
+                return Long.parseLong(getScanner().nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, try again: ");
             }

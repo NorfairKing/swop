@@ -63,7 +63,7 @@ public class YAMLReader {
                 // Create task
                 TaskData tData = new TaskData(
                         (String) task.get("description"),
-                        (double) (int) task.get("estimatedDuration"),
+                        (long) (int) task.get("estimatedDuration"),
                         (double) (int) task.get("acceptableDeviation")/100
                     );
                 TaskWrapper t = facade.createTaskFor(project, tData);

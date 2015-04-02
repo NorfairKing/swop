@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableSet;
 public class Task implements Serializable {
 
     private String           description;
-    private double           estimatedDuration;
+    private long             estimatedDuration;
     private double           acceptableDeviation;
     private Set<Task>        dependencies = new HashSet<Task>();
     private Task             alternative;
@@ -38,14 +38,14 @@ public class Task implements Serializable {
      * @param acceptableDeviation
      *            The acceptable deviation of time in which the task can be completed.
      */
-    public Task(String description, double estimatedDuration, double acceptableDeviation) {
+    public Task(String description, long estimatedDuration, double acceptableDeviation) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
     }
 
-    public Task(String description, double estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
+    public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
         this(description, estimatedDuration, acceptableDeviation);
         this.setRequirements(requirements);
     }
@@ -99,7 +99,7 @@ public class Task implements Serializable {
      *
      * @return Returns a double containing the estimated duration in minutes.
      */
-    public double getEstimatedDuration() {
+    public long getEstimatedDuration() {
         return estimatedDuration;
     }
 
@@ -149,7 +149,7 @@ public class Task implements Serializable {
      * @throws IllegalArgumentException
      *             If the given duration is not valid.
      */
-    public void setEstimatedDuration(double estimatedDuration) {
+    public void setEstimatedDuration(long estimatedDuration) {
         if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
         this.estimatedDuration = estimatedDuration;
     }
@@ -389,18 +389,18 @@ public class Task implements Serializable {
         status.fail(period);
     }
 
-    protected double getRealDuration() {
-        return (double) TimeCalculator.getDurationMinutes(
+    protected long getRealDuration() {
+        return TimeCalculator.getDurationMinutes(
                 getPerformedDuring().getStartTime(),
                 getPerformedDuring().getStopTime());
     }
 
-    protected double getBestDuration() {
-        return getEstimatedDuration() - getEstimatedDuration() * getAcceptableDeviation();
+    protected long getBestDuration() {
+        return getEstimatedDuration() - (long)((double)getEstimatedDuration() * getAcceptableDeviation());
     }
 
-    protected double getWorstDuration() {
-        return getEstimatedDuration() + getEstimatedDuration() * getAcceptableDeviation();
+    protected long getWorstDuration() {
+        return getEstimatedDuration() + (long)((double)getEstimatedDuration() * getAcceptableDeviation());
     }
 
     /**

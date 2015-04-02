@@ -9,11 +9,11 @@ import com.google.common.collect.ImmutableSet;
 public class TaskData {
 
     private String description;
-    private double estimatedDuration;
+    private long estimatedDuration;
     private double acceptableDeviation;
     private final Set<TaskWrapper> dependencies = new HashSet<>();
 
-    public TaskData(String description, double estimatedDuration, double acceptableDeviation) {
+    public TaskData(String description, long estimatedDuration, double acceptableDeviation) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
@@ -27,11 +27,11 @@ public class TaskData {
         this.description = description;
     }
 
-    public double getEstimatedDuration() {
+    public long getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    private void setEstimatedDuration(double estimatedDuration) {
+    private void setEstimatedDuration(long estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 

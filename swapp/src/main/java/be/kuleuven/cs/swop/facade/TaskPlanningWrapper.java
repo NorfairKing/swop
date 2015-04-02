@@ -40,7 +40,7 @@ public class TaskPlanningWrapper {
     }
 
     public TimePeriod getPeriod() {
-        return planning.getPeriod();
+        return planning.getEstimatedOrRealPeriod();
     }
 
     public Set<Resource> getReservations() {
