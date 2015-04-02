@@ -82,7 +82,7 @@ projects:
     dueTime      : "2015-04-30 18:00"
 
 plannings:
-  - plannedStartTime : "2014-01-01 10:00"
+  - plannedStartTime : "2014-01-01 09:00"
     developers       : [0, 1]
     resources        : [{type: 0,  quantity: 2}, {type: 2,  quantity: 1}]
   - plannedStartTime : "2014-01-02 17:00"

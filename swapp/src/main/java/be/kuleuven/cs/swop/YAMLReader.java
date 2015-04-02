@@ -49,12 +49,15 @@ public class YAMLReader {
             Map<String, List<Map<String, Object>>> parsedFile = (Map<String, List<Map<String, Object>>>) yaml.load(input);
 
             // Remember variables in order
-            List<ProjectWrapper> projects = new ArrayList<>();
-            List<TaskWrapper> tasks = new ArrayList<>();
-            List<ResourceTypeWrapper> resourceTypes = new ArrayList<>();
-            List<ResourceWrapper> resources = new ArrayList<>();
-            List<DeveloperWrapper> developers = new ArrayList<>();
-            Map<Integer,TaskWrapper> taskPlannings = new HashMap<Integer,TaskWrapper>();
+            List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>();
+            List<TaskWrapper> tasks = new ArrayList<TaskWrapper>();
+            List<ResourceTypeWrapper> resourceTypes = new ArrayList<ResourceTypeWrapper>();
+            List<ResourceWrapper> resources = new ArrayList<ResourceWrapper>();
+            List<DeveloperWrapper> developers = new ArrayList<DeveloperWrapper>();
+            Map<TaskWrapper, Integer> planningTasks = new HashMap<TaskWrapper, Integer>();
+            Map<Integer,Set<DeveloperWrapper>> planningDevelopers = new HashMap<Integer,Set<DeveloperWrapper>>();
+            Map<Integer,LocalDateTime> planningStartDates = new HashMap<Integer,LocalDateTime>();
+            Map<TaskWrapper, Set<ResourceWrapper>> taskResources = new HashMap<TaskWrapper, Set<ResourceWrapper>>();
 
             // Set system time
             Object dateObject = parsedFile.get("systemTime");
@@ -180,8 +183,10 @@ public class YAMLReader {
                 // Keep track for planning
 				Object planning = task.get("planning");
 				if(planning != null){
-	                taskPlannings.put((Integer) planning, t);
+				    planningTasks.put(t, (Integer) planning);
 				}
+				
+				taskResources.put(t, new HashSet<ResourceWrapper>());
 
 
                 // Add to tracking list
@@ -189,11 +194,11 @@ public class YAMLReader {
 
             }
 
-            // Add plannings
+            // Add developers to plannings
             int planningIndex = 0;
             for (Map<String, Object> planning : parsedFile.get("plannings")) {
                 LocalDateTime startTime = LocalDateTime.parse((String) planning.get("plannedStartTime"), format);
-
+                planningStartDates.put(planningIndex, startTime);
                 // Add developers
                 List<Integer> devs = (List<Integer>) planning.get("developers");
                 Set<DeveloperWrapper> currentDevs = new HashSet<DeveloperWrapper>();
@@ -203,19 +208,36 @@ public class YAMLReader {
                         currentDevs.add(dev);
                     }
                 }
-                List<Integer> planResources = (List<Integer>) planning.get("resources");
-                Map<ResourceTypeWrapper, ResourceWrapper> currentResources = new HashMap<ResourceTypeWrapper, ResourceWrapper>();
-                if (planResources != null) {
-                    for (Object oRecs : planResources) {
-                    	HashMap<String,Integer> recs = (HashMap<String,Integer>) oRecs;
-                    	ResourceTypeWrapper type = resourceTypes.get(recs.get("type"));
-                    	int quantity = recs.get("quantity");
-                    }
-                }
+                planningDevelopers.put(planningIndex, currentDevs);
+                
+            
                 // DEAL PROPERLY WITH PLANNINGS AND RESERVATIONS
-                facade.createPlanning(taskPlannings.get(planningIndex), startTime, null, currentDevs);
                 planningIndex++;
             }
+            
+            
+
+            // Add reservations
+            for (Map<String, Object> reservation : parsedFile.get("reservations")) {
+                int resourceId = (Integer) reservation.get("resource");
+                int taskId = (Integer) reservation.get("task");
+                TaskWrapper task = tasks.get(taskId);
+                ResourceWrapper resource = resources.get(resourceId);
+                taskResources.get(task).add(resource);
+            }
+            
+            // Save all the plannins
+            for(TaskWrapper task : tasks){
+                if(planningTasks.containsKey(task)){
+                    int planningId = planningTasks.get(task);
+                    Set<DeveloperWrapper> devs = planningDevelopers.get(planningId);
+                    LocalDateTime startTime = planningStartDates.get(planningId);
+                    Set<ResourceWrapper> resourceSet = taskResources.get(task);
+                    facade.createPlanning(task, startTime, resourceSet, devs);
+                }
+            }
+
+            
 
 
         } catch (FileNotFoundException e) {

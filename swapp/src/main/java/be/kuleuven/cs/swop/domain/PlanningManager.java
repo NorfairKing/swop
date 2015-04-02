@@ -20,11 +20,13 @@ import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 
 public class PlanningManager implements Serializable {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
     private Set<Resource> resources = new HashSet<Resource>();
+    private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
     private Set<Developer> developers = new HashSet<Developer>();
 
     public ImmutableSet<TaskPlanning> getTaskPlannings() {
@@ -133,6 +135,24 @@ public class PlanningManager implements Serializable {
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> resources, Set<Developer> devs) {
         TaskPlanning newplanning = new TaskPlanning(devs, task, new TimePeriod(time,time.plusMinutes((long) task.getEstimatedDuration())),resources);
         this.plannings.add(newplanning);
+    }
+    
+    public Developer createDeveloper(String name){
+        Developer dev = new Developer(name);
+        developers.add(dev);
+        return dev;
+    }
+
+    public Resource createResource(String name, ResourceType type){
+        Resource resource = new Resource(type,name);
+        resources.add(resource);
+        return resource;
+    }
+    
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts){
+        ResourceType type = new ResourceType(name,requires,conflicts);
+        resourceTypes.add(type);
+        return type;
     }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";

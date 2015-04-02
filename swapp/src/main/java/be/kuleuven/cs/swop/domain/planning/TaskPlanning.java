@@ -81,7 +81,7 @@ public class TaskPlanning implements Serializable {
     }
 
     protected boolean canHaveAsReservations(Set<Resource> reservations) {
-        return !reservations.isEmpty();
+        return reservations != null;
     }
 
 }

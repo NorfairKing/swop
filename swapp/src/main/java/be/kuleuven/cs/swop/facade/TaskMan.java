@@ -310,16 +310,28 @@ public class TaskMan implements Serializable {
     
     // TODO: implement and document
     public ResourceTypeWrapper createResourceType(ResourceTypeData data){
-    	return null;
+        Set<ResourceType> requires = new HashSet<ResourceType>();
+        Set<ResourceType> conflicts = new HashSet<ResourceType>();
+        for(ResourceTypeWrapper type : data.getRequires()){
+            requires.add(type.getType());
+        }
+        for(ResourceTypeWrapper type : data.getConflicts()){
+            conflicts.add(type.getType());
+        }
+        ResourceType type = planningManager.createResourceType(data.getName(), requires, conflicts);
+        return new ResourceTypeWrapper(type);
     }
     
     // TODO: implement and document
     public ResourceWrapper createResource(ResourceData data){
-    	return null;
+    	Resource res = planningManager.createResource(data.getName(), data.getType().getType());
+    	return new ResourceWrapper(res);
     }
     
+    //TODO: implement and document
     public DeveloperWrapper createDeveloper(DeveloperData data){
-    	return null;
+    	Developer dev = planningManager.createDeveloper(data.getName());
+    	return new DeveloperWrapper(dev);
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
