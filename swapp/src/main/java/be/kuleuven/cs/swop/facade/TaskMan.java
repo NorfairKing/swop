@@ -58,23 +58,6 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieve every Task of the given Project.
-     *
-     * @param project
-     *            This is a ProjectWrapper containing the Project from which the Tasks will be returned.
-     * @return Returns a Set of TaskWrappers containing the Tasks of the given Project.
-     */
-    public Set<TaskWrapper> getTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> tasks = new HashSet<TaskWrapper>();
-        for (Project p : projectManager.getProjects()) {
-            for (Task t : p.getTasks()) {
-                tasks.add(new TaskWrapper(t));
-            }
-        }
-        return tasks;
-    }
-
-    /**
      * Retrieve every unplanned task of a given Project
      * 
      * @param project
@@ -82,7 +65,7 @@ public class TaskMan implements Serializable {
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
-        Set<TaskWrapper> allTasks = getTasksOf(project);
+        Set<TaskWrapper> allTasks = project.getTasks();
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
         for (TaskWrapper t : allTasks) {
             if (planningManager.isUnplanned(t.getTask())) {
@@ -323,6 +306,32 @@ public class TaskMan implements Serializable {
         }
         return obj;
 
+    }
+    
+    // TODO: implement and document
+    public ResourceTypeWrapper createResourceType(ResourceTypeData data){
+        Set<ResourceType> requires = new HashSet<ResourceType>();
+        Set<ResourceType> conflicts = new HashSet<ResourceType>();
+        for(ResourceTypeWrapper type : data.getRequires()){
+            requires.add(type.getType());
+        }
+        for(ResourceTypeWrapper type : data.getConflicts()){
+            conflicts.add(type.getType());
+        }
+        ResourceType type = planningManager.createResourceType(data.getName(), requires, conflicts);
+        return new ResourceTypeWrapper(type);
+    }
+    
+    // TODO: implement and document
+    public ResourceWrapper createResource(ResourceData data){
+    	Resource res = planningManager.createResource(data.getName(), data.getType().getType());
+    	return new ResourceWrapper(res);
+    }
+    
+    //TODO: implement and document
+    public DeveloperWrapper createDeveloper(DeveloperData data){
+    	Developer dev = planningManager.createDeveloper(data.getName());
+    	return new DeveloperWrapper(dev);
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;

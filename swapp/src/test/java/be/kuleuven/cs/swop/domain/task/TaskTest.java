@@ -17,7 +17,7 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
 public class TaskTest {
-
+    private double delta = 10e-15;
     private Task             task;
 
     @Rule
@@ -36,7 +36,7 @@ public class TaskTest {
 
     @After
     public void tearDown() throws Exception {}
-    
+
     @Test
     public void canHaveAsDescriptionTest() {
         assertTrue(task.canHaveAsDescription("Testdescription"));
@@ -160,10 +160,10 @@ public class TaskTest {
     @Test
     public void setAcceptableDeviation() {
         task.setAcceptableDeviation(0.5);
-        assertTrue(0.5 == task.getAcceptableDeviation());
+        assertEquals(0.5, task.getAcceptableDeviation(), delta);
 
         task.setAcceptableDeviation(0);
-        assertTrue(0 == task.getAcceptableDeviation());
+        assertEquals(0,task.getAcceptableDeviation(),delta);
 
         try{
             task.setAcceptableDeviation(-0.5);
@@ -207,7 +207,7 @@ public class TaskTest {
         task.fail(period);
         assertFalse(task.canHaveAsAlternative(task2));
         assertFalse(task.canHaveAsAlternative(task4));
-        
+
     }
 
     @Test
@@ -383,7 +383,7 @@ public class TaskTest {
         assertFalse(task.wasFinishedLate());
 
         TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
-        
+
         Task task2 = new Task("Hi",10,0);
         task2.finish(period);
         assertFalse(task2.wasFinishedLate());

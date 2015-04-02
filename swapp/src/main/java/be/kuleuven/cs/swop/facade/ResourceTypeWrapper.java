@@ -7,7 +7,7 @@ public class ResourceTypeWrapper {
     private ResourceType type;
     
     public ResourceTypeWrapper(ResourceType resource){
-        setType(type);
+        setType(resource);
     }
 
     ResourceType getType() {

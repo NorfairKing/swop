@@ -182,8 +182,6 @@ public class SessionController {
             }
         }
         // The user selects the tasks he wants to plan
-        // FIXME unplannedTaskMap has as values the entire list of tasks
-        // so each project has all tasks as value, even those of other projects.
         TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
         if (selectedTask == null) return;
 
