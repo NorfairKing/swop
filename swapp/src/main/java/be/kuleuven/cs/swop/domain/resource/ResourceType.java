@@ -1,10 +1,7 @@
 package be.kuleuven.cs.swop.domain.resource;
 
 import java.util.Set;
-import java.util.HashSet;
-
 import java.io.Serializable;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
