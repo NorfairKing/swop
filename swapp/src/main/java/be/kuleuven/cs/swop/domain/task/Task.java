@@ -303,11 +303,11 @@ public class Task implements Serializable {
     }
 
     protected long getBestDuration() {
-        return getEstimatedDuration() - (long)((double)getEstimatedDuration() * getAcceptableDeviation());
+        return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
 
     protected long getWorstDuration() {
-        return getEstimatedDuration() + (long)((double)getEstimatedDuration() * getAcceptableDeviation());
+        return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
 
     boolean hasUnfinishedDependencies() {
@@ -347,10 +347,19 @@ public class Task implements Serializable {
         return status.wasFinishedLate();
     }
 
+    public boolean isFinishedOrHasFinishedAlternative() {
+        return status.isFinishedOrHasFinishedAlternative();
+    }
+
+    public Task getAlternative() {
+        return status.getAlternative();
+    }
+
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";
     private static final String ERROR_ILLEGAL_DEVIATION    = "Illegal acceptable deviation for task.";
     private static final String ERROR_ILLEGAL_DURATION     = "Illegal estimated duration for task.";
     private static final String ERROR_ILLEGAL_STATUS       = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY   = "Illegal dependency set for task.";
     private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for task.";
+
 }
