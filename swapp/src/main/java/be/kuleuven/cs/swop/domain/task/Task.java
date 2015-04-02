@@ -9,11 +9,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
-import be.kuleuven.cs.swop.domain.task.status.AvailableStatus;
-import be.kuleuven.cs.swop.domain.task.status.FailedStatus;
-import be.kuleuven.cs.swop.domain.task.status.FinishedStatus;
-import be.kuleuven.cs.swop.domain.task.status.TaskStatus;
-import be.kuleuven.cs.swop.domain.task.status.UnavailableStatus;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -24,13 +20,14 @@ import com.google.common.collect.ImmutableSet;
  */
 public class Task {
 
-    private String     description;
-    private double     estimatedDuration;
-    private double     acceptableDeviation;
-    private Set<Task>  dependencies = new HashSet<Task>();
-    private Task       alternative;
-    private TimePeriod performedDuring;
-    private TaskStatus status;
+    private String           description;
+    private double           estimatedDuration;
+    private double           acceptableDeviation;
+    private Set<Task>        dependencies = new HashSet<Task>();
+    private Task             alternative;
+    private TimePeriod       performedDuring;
+    private TaskStatus       status;
+    private Set<Requirement> requirements = new HashSet<Requirement>();
 
     /**
      * Full constructor
@@ -46,7 +43,12 @@ public class Task {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
-        setStatus(new AvailableStatus());
+        setStatus(new OngoingStatus(this));
+    }
+
+    public Task(String description, double estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
+        this(description,estimatedDuration,acceptableDeviation);
+        this.setRequirements(requirements);
     }
 
     /**
@@ -278,7 +280,7 @@ public class Task {
         if(this.alternative != null){
             return false;
         }
-        if(!isFailed()){
+        if (!status.canHaveAsAlternative(alternative)){
             return false;
         }
         if(alternative.containsDependency(this)){
@@ -298,11 +300,14 @@ public class Task {
      * @throws IllegalArgumentException
      *             If the Task can't have the given Task as alternative.
      */
-    public void setAlternative(Task alternative) {
-        if (!canHaveAsAlternative(alternative)) throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);
-        this.alternative = alternative;
+    public void addAlternative(Task alternative) {
+        status.setAlternative(alternative);
     }
 
+    void setAlternative(Task alternative){
+        if (!canHaveAsAlternative(alternative)){throw new IllegalArgumentException(ERROR_ILLEGAL_ALTERNATIVE);}
+        this.alternative = alternative;
+    }
     /**
      * Retrieves the TimePeriod for when this Task was performed.
      *
@@ -329,7 +334,7 @@ public class Task {
      * @param timespan
      *            The TimePeriod for when during the Task was performed.
      */
-    private void performedDuring(TimePeriod timespan) {
+    void performedDuring(TimePeriod timespan) {
         this.performedDuring = timespan;
     }
 
@@ -342,17 +347,7 @@ public class Task {
         return ImmutableSet.copyOf(this.dependencies);
     }
 
-    private TaskStatus getStatus() {
-        if (this.status.isFinal()) {
-            return this.status;
-        } else {
-            if (this.hasUnfinishedDependencies()) {
-                return new UnavailableStatus();
-            } else {
-                return new AvailableStatus();
-            }
-        }
-    }
+
 
     /**
      * Checks if the given status is a valid status for this Task.
@@ -362,10 +357,10 @@ public class Task {
      * @return Returns true if this status is valid and therefore isn't null.
      */
     protected boolean canHaveAsStatus(TaskStatus status) {
-        return status != null;
+        return status != null && status.getTask() == this;
     }
-
-    private void setStatus(TaskStatus status) {
+    
+    void setStatus(TaskStatus status) {
         if (!canHaveAsStatus(status)) throw new IllegalArgumentException(ERROR_ILLEGAL_STATUS);
         this.status = status;
     }
@@ -376,7 +371,7 @@ public class Task {
      * @return Returns true if this Task's status is finished.
      */
     public boolean isFinished() {
-        return getStatus().isFinished();
+        return status.isFinished();
     }
 
     /**
@@ -385,7 +380,7 @@ public class Task {
      * @return Returns true if this Task's status is failed.
      */
     public boolean isFailed() {
-        return getStatus().isFailed();
+        return status.isFailed();
     }
 
     /**
@@ -394,7 +389,7 @@ public class Task {
      * @return Returns true if this Task's can be finished.
      */
     public boolean canFinish(){
-        return getStatus().canFinish();
+        return status.canFinish();
     }
 
     /**
@@ -420,12 +415,7 @@ public class Task {
      *             If this Task can't finish with the current status.
      */
     public void finish(TimePeriod period) {
-        if (getStatus().canFinish()) {
-            this.performedDuring(period);
-            setStatus(new FinishedStatus());
-        } else {
-            throw new IllegalStateException("Can't finish when status is " + getStatus().toString());
-        }
+        status.finish(period);
     }
 
     /**
@@ -438,13 +428,7 @@ public class Task {
      *             If this Task can't fail with the current status.
      */
     public void fail(TimePeriod period) {
-        if (getStatus().canFail()) {
-            this.performedDuring(period);
-
-            setStatus(new FailedStatus());
-        } else {
-            throw new IllegalStateException();
-        }
+        status.fail(period);
     }
 
     private long getRealDurationMs() {
@@ -500,12 +484,25 @@ public class Task {
         return getRealDuration() > getWorstDuration();
     }
 
-    private boolean hasUnfinishedDependencies() {
+    boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
         for (Task t : dependencies) {
             if (!t.isFinishedOrHasFinishedAlternative()) { return true; }
         }
         return false;
+    }
+
+    public Set<Requirement> getRequirements() {
+        return ImmutableSet.copyOf(this.requirements);
+    }
+
+    private void setRequirements(Set<Requirement> requirements) {
+        if(!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+        this.requirements = requirements;
+    }
+
+    protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
+        return requirements != null;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION     = "Illegal project for task.";
@@ -514,4 +511,5 @@ public class Task {
     private static final String ERROR_ILLEGAL_STATUS          = "Illegal status for task.";
     private static final String ERROR_ILLEGAL_ALTERNATIVE     = "Illegal original for task.";
     private static final String ERROR_ILLEGAL_DEPENDENCY      = "Illegal dependency set for task.";
+    private static final String ERROR_ILLEGAL_REQUIREMENTS    = "Illegal requirement set for task.";
 }

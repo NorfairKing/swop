@@ -1,9 +1,14 @@
-package be.kuleuven.cs.swop.domain.task.status;
+package be.kuleuven.cs.swop.domain.task;
+
+
+import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
 public class FailedStatus extends TaskStatus {
 
-    public FailedStatus() {}
+    public FailedStatus(Task task) {
+        super(task);
+    }
 
     /**
      * Checks whether the project containing this status is finished.
@@ -53,6 +58,28 @@ public class FailedStatus extends TaskStatus {
     @Override
     public boolean canFail() {
         return false;
+    }
+
+    @Override
+    public void setAlternative(Task alternative) {
+        getTask().setAlternative(alternative);
+    }
+
+    @Override
+    void fail(TimePeriod period) {
+        throw new IllegalStateException(ERROR_FAIL);
+    }
+
+    @Override
+    void finish(TimePeriod period) {
+        throw new IllegalStateException(ERROR_FINISH);
+    }
+
+    private static String ERROR_FINISH = "Can't finish a failed task.";
+    private static String ERROR_FAIL   = "Can't fail a failed task.";
+    @Override
+    protected boolean canHaveAsAlternative(Task task) {
+        return task != null;
     }
 
 }

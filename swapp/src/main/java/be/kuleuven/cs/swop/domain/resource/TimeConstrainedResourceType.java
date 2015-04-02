@@ -2,14 +2,17 @@ package be.kuleuven.cs.swop.domain.resource;
 
 
 import java.time.LocalTime;
+import java.util.Set;
 
 
 public class TimeConstrainedResourceType extends ResourceType {
 
+    public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts) {
+        super(name, requirements, conflicts);
+    }
+
     private LocalTime startTimeConstraint;
     private LocalTime endTimeConstraint;
-
-    // TODO constructor
 
     public LocalTime getStartTimeConstraint() {
         return startTimeConstraint;

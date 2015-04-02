@@ -4,9 +4,11 @@ package be.kuleuven.cs.swop.domain.resource;
 public class Resource {
 
     private ResourceType type;
+    private String       name;
 
-    public Resource(ResourceType type) {
+    public Resource(ResourceType type, String name) {
         setType(type);
+        setName(name);
     }
 
     public ResourceType getType() {
@@ -22,5 +24,23 @@ public class Resource {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    protected boolean canHaveAsName(String name) {
+        return name != null;
+    }
+
+    private void setName(String name) {
+        if (!canHaveAsName(name)) { throw new IllegalArgumentException(ERROR_ILLEGAL_NAME); }
+        this.name = name;
+    }
+
+    public boolean isOfType(ResourceType type) {
+        return type == this.getType();
+    }
+
     private static final String ERROR_ILLEGAL_TYPE = "Illegal resource type for resource.";
+    private static final String ERROR_ILLEGAL_NAME = "Illegal name for resource.";
 }

@@ -1,16 +1,29 @@
 package be.kuleuven.cs.swop.domain;
 
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.user.Developer;
 
 public class PlanningManager {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
+    private Set<Resource> resources = new HashSet<Resource>();
 
     public PlanningManager() {}
 
@@ -21,10 +34,67 @@ public class PlanningManager {
     protected boolean canHaveAsTaskPlanning(TaskPlanning planning){
         return planning != null;
     }
-    public void addProject(TaskPlanning Planning) {
-        if (!canHaveAsTaskPlanning(Planning)) throw new IllegalArgumentException(ERROR_ILLEGAL_Task_Planning);
-        plannings.add(Planning);
+    public void addPlanning(TaskPlanning planning) {
+        if (!canHaveAsTaskPlanning(planning)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK_PLANNING);
+        plannings.add(planning);
     }
 
-    private static String ERROR_ILLEGAL_Task_Planning = "Illegal TaskPlanning in Planning manager.";
+    public boolean isPlanned(Task task) {
+        return this.getPlanningFor(task) != null;
+    }
+
+    public boolean isUnplanned(Task task) {
+        return !this.isPlanned(task);
+    }
+
+    public TaskPlanning getPlanningFor(Task task) {
+        for (TaskPlanning planning : this.plannings)
+        {
+            if (task == planning.getTask())
+                return planning;
+        }
+        return null;
+    }
+
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n) {
+        LocalDateTime currentTime = Timekeeper.getTime();
+        currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
+        List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
+        while (timeOptions.size() < n) {
+            if (this.isValidTimeForTask(currentTime,task))
+                timeOptions.add(currentTime);
+            currentTime = currentTime.plusHours(1);
+        }
+        return timeOptions;
+    }
+
+    private boolean isValidTimeForTask(LocalDateTime time, Task task) {
+        Set<Resource> usedResources = new HashSet<Resource>();
+        Set<Developer> usedDevelopers = new HashSet<Developer>();
+        for (TaskPlanning planning : this.plannings) {
+            if (planning.getPeriod().isDuring(time)) {
+                usedResources.addAll(planning.getReservations());
+                usedDevelopers.addAll(planning.getDevelopers());
+            }
+        }
+        return true;
+    }
+
+    private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+
+    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void createPlanning(Task task, LocalDateTime time, Map<ResourceType, Resource> rss, Set<Developer> devs) {
+        // TODO Auto-generated method stub
+    }
+
 }

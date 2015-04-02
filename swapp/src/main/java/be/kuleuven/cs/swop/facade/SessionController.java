@@ -1,10 +1,14 @@
 package be.kuleuven.cs.swop.facade;
 
 
+import java.util.List;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.domain.ProjectManager;
 
 
 public class SessionController {
@@ -168,7 +172,37 @@ public class SessionController {
     }
     
     public void startPlanTaskSession(){
+        // The system shows a list of all currently unplanned tasks and the project they belong to.
+        Set<ProjectWrapper> allProjects = facade.getProjects();
+        Map<ProjectWrapper,Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper,Set<TaskWrapper>>();
         
+        for(ProjectWrapper p : allProjects){
+            Set<TaskWrapper> unplannedTasks = facade.getUnplannedTasksOf(p);
+            if (!unplannedTasks.isEmpty()){
+                unplannedTaskMap.put(p, unplannedTasks);
+            }
+        }
+        // The user selects the tasks he wants to plan
+        TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+        if (selectedTask == null) return;
+        
+        List<LocalDateTime> timeOptions = facade.getPlanningTimeOptions(selectedTask);
+        
+        // The system shows the first three possible starting times.
+        // The user selects a proposed time
+        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+        if (chosenTime == null) return;
+        
+        
+        Map<ResourceTypeWrapper,List<ResourceWrapper>> resourceOptions = facade.getPlanningResourceOptions(selectedTask, chosenTime);
+        Map<ResourceTypeWrapper,ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+        if (chosenResources == null) return;
+        
+        Set<DeveloperWrapper> developerOptions = facade.getPlanningDeveloperOptions(selectedTask, chosenTime);
+        Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
+        if (chosenDevelopers == null) return;
+        
+        facade.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
     }
     
     public void startResolveConflictSession(){
