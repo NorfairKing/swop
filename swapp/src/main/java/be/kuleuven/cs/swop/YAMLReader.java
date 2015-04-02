@@ -9,8 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,9 +28,9 @@ import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 
 public class YAMLReader {
-    
+
     TaskMan facade;
-    
+
     public YAMLReader(TaskMan facade) {
         this.facade = facade;
     }
@@ -203,7 +205,7 @@ public class YAMLReader {
                 if (planResources != null) {
                     for (int index : planResources) {
                         ResourceWrapper rec = resources.get(index);
-                        currentResources.add(rec);
+                        currentResources.put(key, value)
                     }
                 }
 

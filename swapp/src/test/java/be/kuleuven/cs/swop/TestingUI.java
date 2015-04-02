@@ -163,28 +163,4 @@ public class TestingUI implements UserInterface {
         return this;
     }
 
-    @Override
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public LocalDateTime selectTime(List<LocalDateTime> options) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<ResourceTypeWrapper, ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
