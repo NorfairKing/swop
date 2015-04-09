@@ -31,17 +31,42 @@ import be.kuleuven.cs.swop.domain.user.User;
 @SuppressWarnings("serial")
 public class TaskMan implements Serializable {
 
-    ProjectManager  projectManager;
-    PlanningManager planningManager;
-    Timekeeper      timeKeeper;
+    private ProjectManager  projectManager;
+    private PlanningManager planningManager;
+    private Timekeeper      timeKeeper;
 
     /**
      * Full constructor
      */
     public TaskMan() {
-        projectManager = new ProjectManager();
-        planningManager = new PlanningManager();
-        timeKeeper = new Timekeeper();
+        setProjectManager(new ProjectManager());
+        setPlanningManager(new PlanningManager());
+        setTimeKeeper(new Timekeeper());
+    }
+    
+    // Getters and setters of internal state
+    private ProjectManager getProjectManager() {
+        return projectManager;
+    }
+
+    private void setProjectManager(ProjectManager projectManager) {
+        this.projectManager = projectManager;
+    }
+
+    private PlanningManager getPlanningManager() {
+        return planningManager;
+    }
+
+    private void setPlanningManager(PlanningManager planningManager) {
+        this.planningManager = planningManager;
+    }
+
+    private Timekeeper getTimeKeeper() {
+        return timeKeeper;
+    }
+
+    private void setTimeKeeper(Timekeeper timeKeeper) {
+        this.timeKeeper = timeKeeper;
     }
     
     /**
@@ -52,7 +77,7 @@ public class TaskMan implements Serializable {
     public Set<UserWrapper> getUsers() {
         //FIXME Also return manager
         Set<UserWrapper> result = new HashSet<>();
-        for (User user: planningManager.getDevelopers()) {
+        for (User user: getPlanningManager().getDevelopers()) {
             result.add(new UserWrapper(user));
         }
         return result;
@@ -63,7 +88,7 @@ public class TaskMan implements Serializable {
      * @param user The user to make active.
      */
     public void setActiveUser(UserWrapper user) {
-        planningManager.setActiveUser(user.getUser());
+        getPlanningManager().setActiveUser(user.getUser());
     }
 
     /**
@@ -74,7 +99,7 @@ public class TaskMan implements Serializable {
      */
     public Set<ProjectWrapper> getProjects() {
         Set<ProjectWrapper> result = new HashSet<ProjectWrapper>();
-        for (Project realProject : projectManager.getProjects()) {
+        for (Project realProject : getProjectManager().getProjects()) {
             result.add(new ProjectWrapper(realProject));
         }
         return result;
@@ -91,7 +116,7 @@ public class TaskMan implements Serializable {
         Set<TaskWrapper> allTasks = project.getTasks();
         Set<TaskWrapper> unplannedTasks = new HashSet<TaskWrapper>();
         for (TaskWrapper t : allTasks) {
-            if (planningManager.isUnplanned(t.getTask())) {
+            if (getPlanningManager().isUnplanned(t.getTask())) {
                 unplannedTasks.add(t);
             }
         }
@@ -99,16 +124,16 @@ public class TaskMan implements Serializable {
     }
 
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
-        return new TaskPlanningWrapper(planningManager.getPlanningFor(task.getTask()));
+        return new TaskPlanningWrapper(getPlanningManager().getPlanningFor(task.getTask()));
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
         // FIXME Infinite loop it seems.
-        return planningManager.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, timeKeeper.getTime());
+        return getPlanningManager().getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, getTimeKeeper().getTime());
     }
 
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
-        Map<ResourceType, List<Resource>> options = planningManager.getPlanningResourceOptions(task.getTask(), time);
+        Map<ResourceType, List<Resource>> options = getPlanningManager().getPlanningResourceOptions(task.getTask(), time);
         Map<ResourceTypeWrapper, List<ResourceWrapper>> wrappedOptions = new HashMap<ResourceTypeWrapper, List<ResourceWrapper>>();
         for (ResourceType t : options.keySet()) {
             ResourceTypeWrapper typeWrapper = new ResourceTypeWrapper(t);
@@ -123,7 +148,7 @@ public class TaskMan implements Serializable {
     }
 
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        Set<Developer> devOptions = planningManager.getPlanningDeveloperOptions(task.getTask(), time);
+        Set<Developer> devOptions = getPlanningManager().getPlanningDeveloperOptions(task.getTask(), time);
         Set<DeveloperWrapper> wrappedDevOptions = new HashSet<DeveloperWrapper>();
         for (Developer d : devOptions) {
             wrappedDevOptions.add(new DeveloperWrapper(d));
@@ -137,7 +162,7 @@ public class TaskMan implements Serializable {
         for (DeveloperWrapper d : developers) {
             devs.add(d.getDeveloper());
         }
-        planningManager.createPlanning(task.getTask(), time, rss, devs);
+        getPlanningManager().createPlanning(task.getTask(), time, rss, devs);
     }
 
     /**
@@ -159,11 +184,11 @@ public class TaskMan implements Serializable {
         if (data.getDueTime() == null) { throw new IllegalArgumentException("Null due time for project creation"); }
 
         if (data.getCreationTime() == null) {
-            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), timeKeeper.getTime(), data.getDueTime());
+            Project createdProject = getProjectManager().createProject(data.getTitle(), data.getDescription(), getTimeKeeper().getTime(), data.getDueTime());
             return new ProjectWrapper(createdProject);
         }
         else {
-            Project createdProject = projectManager.createProject(data.getTitle(), data.getDescription(), data.getCreationTime(), data.getDueTime());
+            Project createdProject = getProjectManager().createProject(data.getTitle(), data.getDescription(), data.getCreationTime(), data.getDueTime());
             return new ProjectWrapper(createdProject);
         }
     }
@@ -215,7 +240,7 @@ public class TaskMan implements Serializable {
     public TaskWrapper createAlternativeFor(TaskWrapper task, TaskData data) {
         if (task == null) { throw new IllegalArgumentException("Trying to create alternative for null task"); }
 
-        Project project = projectManager.getProjectFor(task.getTask());
+        Project project = getProjectManager().getProjectFor(task.getTask());
 
         TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
 
@@ -289,7 +314,7 @@ public class TaskMan implements Serializable {
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        timeKeeper.setTime(time);
+        getTimeKeeper().setTime(time);
     }
     
     /**
@@ -298,10 +323,58 @@ public class TaskMan implements Serializable {
      * @return The current system time
      */
     public LocalDateTime getSystemTime() {
-        return timeKeeper.getTime();
+        return getTimeKeeper().getTime();
     }
-
-    public TaskMan getDeepCopy() {
+    
+    // TODO: implement and document
+    public ResourceTypeWrapper createResourceType(ResourceTypeData data){
+        Set<ResourceType> requires = new HashSet<ResourceType>();
+        Set<ResourceType> conflicts = new HashSet<ResourceType>();
+        for(ResourceTypeWrapper type : data.getRequires()){
+            requires.add(type.getType());
+        }
+        for(ResourceTypeWrapper type : data.getConflicts()){
+            conflicts.add(type.getType());
+        }
+        ResourceType type = getPlanningManager().createResourceType(data.getName(), requires, conflicts);
+        return new ResourceTypeWrapper(type);
+    }
+    
+    // TODO: implement and document
+    public ResourceWrapper createResource(ResourceData data){
+    	Resource res = getPlanningManager().createResource(data.getName(), data.getType().getType());
+    	return new ResourceWrapper(res);
+    }
+    
+    //TODO: implement and document
+    public DeveloperWrapper createDeveloper(DeveloperData data){
+    	Developer dev = getPlanningManager().createDeveloper(data.getName());
+    	return new DeveloperWrapper(dev);
+    }
+    
+    // Memento pattern
+    public Memento saveToMemento() {
+        return new Memento(this);
+    }
+    public void restoreFromMemento(Memento memento) {
+        setPlanningManager(memento.getSavedState().getPlanningManager());
+        setProjectManager(memento.getSavedState().getProjectManager());
+        setTimeKeeper(memento.getSavedState().getTimeKeeper());
+    }
+    
+    public static class Memento {
+        private TaskMan state;
+        
+        public Memento(TaskMan state) {
+            this.state = state.getDeepCopy();
+        }
+        
+        TaskMan getSavedState() {
+            return state;
+        }
+    }
+    
+    private TaskMan getDeepCopy() {
         TaskMan orig = this;
         TaskMan obj = null;
         try {
@@ -322,33 +395,6 @@ public class TaskMan implements Serializable {
             cnfe.printStackTrace();
         }
         return obj;
-
-    }
-    
-    // TODO: implement and document
-    public ResourceTypeWrapper createResourceType(ResourceTypeData data){
-        Set<ResourceType> requires = new HashSet<ResourceType>();
-        Set<ResourceType> conflicts = new HashSet<ResourceType>();
-        for(ResourceTypeWrapper type : data.getRequires()){
-            requires.add(type.getType());
-        }
-        for(ResourceTypeWrapper type : data.getConflicts()){
-            conflicts.add(type.getType());
-        }
-        ResourceType type = planningManager.createResourceType(data.getName(), requires, conflicts);
-        return new ResourceTypeWrapper(type);
-    }
-    
-    // TODO: implement and document
-    public ResourceWrapper createResource(ResourceData data){
-    	Resource res = planningManager.createResource(data.getName(), data.getType().getType());
-    	return new ResourceWrapper(res);
-    }
-    
-    //TODO: implement and document
-    public DeveloperWrapper createDeveloper(DeveloperData data){
-    	Developer dev = planningManager.createDeveloper(data.getName());
-    	return new DeveloperWrapper(dev);
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;

@@ -22,6 +22,7 @@ import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
@@ -126,11 +127,6 @@ public class CLI implements UserInterface {
     public void setSessionController(SessionController session) {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
-    }
-    
-    @Override
-    public UserInterface getSimulationUI() {
-        return new SimulationCLI();
     }
 
     public Scanner getScanner() {
@@ -418,6 +414,23 @@ public class CLI implements UserInterface {
         System.out.println("ERROR\n########");
         System.out.println(error);
         printDelimiter();
+    }
+    
+    public SimulationStepData getSimulationStepData() {
+        System.out.println("Continue the simulation? (\"continue\", \"realize\" or \"cancel\")");
+        
+        do {
+            String reply = this.getScanner().nextLine();
+            if (reply.equalsIgnoreCase("continue")) {
+                return new SimulationStepData(true, false);
+            } else if (reply.equalsIgnoreCase("realize")) {
+                return new SimulationStepData(false, true);
+            } else if (reply.equalsIgnoreCase("cancel")) {
+                return new SimulationStepData(false, false);
+            } else {
+                System.out.print("# Please type \"continue\", \"realize\" or \"cancel\": ");
+            }
+        } while (true);
     }
     
     // Format methods

@@ -12,6 +12,7 @@ import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
@@ -161,11 +162,15 @@ public interface UserInterface {
     public void setSessionController(SessionController session);
 
     /**
+     * Asks the user if he wants to continue the simulation
+     * @return True if the user wants to continue, false if not.
+     */
+    public SimulationStepData getSimulationStepData();
+    
+    /**
      * Starts the user interface
      * 
      * @return returns whether the usage of the interface was successful.
      */
     public boolean start();
-
-    public UserInterface getSimulationUI();
 }

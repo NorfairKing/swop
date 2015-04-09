@@ -128,6 +128,9 @@ public class SessionController {
 
         // The system presents an overview of the task details
         getUi().showTask(task);
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     /**
@@ -151,6 +154,9 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until user gives proper data, or cancels.
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     /**
@@ -182,6 +188,9 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until proper data is given, or the user cancels.
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     public void startPlanTaskSession() {
@@ -215,10 +224,16 @@ public class SessionController {
         if (chosenDevelopers == null) return;
 
         taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     public void startResolveConflictSession() {
 
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     /**
@@ -254,6 +269,9 @@ public class SessionController {
                 getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
             }
         } while (true); // loop until proper data was given or user canceled.
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
     /**
@@ -269,16 +287,41 @@ public class SessionController {
 
         // the system updates the system time.
         getTaskMan().updateSystemTime(time);
+        
+        // Handle the simulation step in in a simulation
+        handleSimulationStep();
     }
 
+    TaskMan.Memento taskManBackup;
     public void startRunSimulationSession() {
-        UserInterface ui = getUi().getSimulationUI();
-        TaskMan simulationFacade = getTaskMan().getDeepCopy();
-        new SessionController(ui, simulationFacade);
-        boolean successful = ui.start();
-        if (successful) {
-            this.taskMan = simulationFacade;
+        // The user indicates he wants to start a simulation
+        taskManBackup = getTaskMan().saveToMemento();
+    }
+    
+    private void handleSimulationStep() {
+        if (taskManBackup != null) {
+            SimulationStepData simData = getUi().getSimulationStepData();
+            if (!simData.getContinueSimulation()) {
+                if (simData.getRealizeSimulation()) {
+                    realizeSimulation();
+                }
+                else {
+                    cancelSimulation();
+                }
+            }
         }
+    }
+    
+    private void realizeSimulation() {
+        // The user indicates he wants to realize the simulation
+        // Nothing has to be done. Just throw away the backup.
+        taskManBackup = null;
+    }
+    
+    private void cancelSimulation() {
+        // The user indicates he wants to cancel the simulation.
+        getTaskMan().restoreFromMemento(taskManBackup);
+        taskManBackup = null;
     }
 
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";
