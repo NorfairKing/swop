@@ -23,9 +23,11 @@ public class DeepCopyTest {
 
     @Test
     public void test() {
-        TaskMan before = original;
+        fail();
+        // FIXME
+        /*TaskMan before = original;
         TaskMan after = before.getDeepCopy();
-        assertFalse(before == after);
+        assertFalse(before == after);*/
     }
 
 }

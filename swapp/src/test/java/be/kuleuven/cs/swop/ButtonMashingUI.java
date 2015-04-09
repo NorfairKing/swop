@@ -14,6 +14,7 @@ import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
@@ -241,10 +242,10 @@ public class ButtonMashingUI implements UserInterface {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     @Override
-    public UserInterface getSimulationUI() {
-        return this;
+    public SimulationStepData getSimulationStepData() {
+        return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
     }
 
 }
