@@ -16,17 +16,28 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public class TestingUI implements UserInterface {
 
     private SessionController sessionController;
+    private UserWrapper       selectUser;
     private LocalDateTime     requestTime;
     private ProjectData       requestProjectData;
     private ProjectWrapper    requestProject;
     private TaskData          requestTaskData;
     private TaskWrapper       requestTask;
     private TaskStatusData    requestTaskStatusData;
+    
+    public void setSelectUser(UserWrapper user) {
+        selectUser = user;
+    }
+    
+    @Override
+    public UserWrapper selectUser(Set<UserWrapper> users) {
+        return selectUser;
+    }
 
     @Override
     public void showProjects(Set<ProjectWrapper> projects) {}

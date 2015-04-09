@@ -15,9 +15,18 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public interface UserInterface {
+    
+    /**
+     * Shows a list of all users and makes the user select one.
+     * 
+     * @param users A list of all known users.
+     * @return The selected user from the users list.
+     */
+    public UserWrapper selectUser(Set<UserWrapper> users);
 
     /**
      * Shows a list of Projects this program manages to the user.

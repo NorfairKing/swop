@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
@@ -23,6 +25,7 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 /**
@@ -135,6 +138,11 @@ public class CLI implements UserInterface {
     }
     
     // Interface methods
+    
+    @Override
+    public UserWrapper selectUser(Set<UserWrapper> usersSet) {
+        return selectFromCollection(usersSet, "users", u -> u.getName());
+    }
 
     @Override
     public void showProjects(Set<ProjectWrapper> projectSet) {
@@ -173,25 +181,7 @@ public class CLI implements UserInterface {
     
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
-        if (projectSet.isEmpty()) {
-            System.out.println("No projects to select.");
-            return null;
-        }
-
-        List<ProjectWrapper> projects = new ArrayList<ProjectWrapper>(projectSet);
-        projects.sort((p1, p2) -> p1.getTitle().compareTo(p2.getTitle()));
-        System.out.println("SELECT PROJECT\n########");
-        for (int i = 0; i < projects.size(); i++) {
-            System.out.println("# " + (i + 1) + ") " + projects.get(i).getTitle());
-        }
-        printDelimiter();
-
-        int index = promptNumber(0, projects.size());
-        if (index == 0) {
-            return null;
-        } else {
-            return projects.get(index - 1);
-        }
+        return selectFromCollection(projectSet, "projects", p -> p.getTitle());
     }
     
     @Override
@@ -256,25 +246,7 @@ public class CLI implements UserInterface {
 
     @Override
     public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
-        if (taskSet.isEmpty()) {
-            System.out.println("No tasks to select.");
-            return null;
-        }
-
-        List<TaskWrapper> tasks = new ArrayList<TaskWrapper>(taskSet);
-        tasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
-        System.out.println("SELECT TASK\n########");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("# " + (i + 1) + ") " + tasks.get(i).getDescription());
-        }
-        printDelimiter();
-
-        int index = promptNumber(0, tasks.size());
-        if (index == 0) {
-            return null;
-        } else {
-            return tasks.get(index - 1);
-        }
+        return selectFromCollection(taskSet, "tasks", p -> p.getDescription());
     }
 
     @Override
@@ -371,18 +343,7 @@ public class CLI implements UserInterface {
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        System.out.println("SELECT TIME\n########");
-        for (int i = 0; i < options.size(); i++) {
-            System.out.println("# " + (i + 1) + ") " + formatDate(options.get(i)));
-        }
-        printDelimiter();
-        
-        int index = promptNumber(0, options.size());
-        if (index == 0) {
-            return null;
-        } else {
-            return options.get(index - 1);
-        }
+        return selectFromCollection(options, "time", o -> formatDate(o));
     }
 
     @Override
@@ -600,6 +561,28 @@ public class CLI implements UserInterface {
                 System.out.println("Invalid input, try again: ");
             }
         } while (true);
+    }
+    
+    private <T> T selectFromCollection(Collection<T> collection, String heading, Function<T, String> toString) {
+        if (collection.isEmpty()) {
+            System.out.println("No " + heading.toLowerCase() + " to select.");
+            return null;
+        }
+
+        List<T> list = new ArrayList<>(collection);
+        list.sort((u1, u2) -> toString.apply(u1).compareTo(toString.apply(u2)));
+        System.out.println("SELECT " + heading.toUpperCase() + "\n########");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("# " + (i + 1) + ") " + toString.apply(list.get(i)));
+        }
+        printDelimiter();
+
+        int index = promptNumber(0, list.size());
+        if (index == 0) {
+            return null;
+        } else {
+            return list.get(index - 1);
+        }
     }
     
     // Other helper functions

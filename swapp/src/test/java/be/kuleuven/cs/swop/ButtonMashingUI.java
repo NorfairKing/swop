@@ -17,6 +17,7 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public class ButtonMashingUI implements UserInterface {
@@ -44,6 +45,11 @@ public class ButtonMashingUI implements UserInterface {
     public void setSessionController(SessionController session) {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
+    }
+    
+    @Override
+    public UserWrapper selectUser(Set<UserWrapper> users) {
+        return selectFromCollection(users);
     }
 
     @Override
