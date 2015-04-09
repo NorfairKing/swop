@@ -19,6 +19,7 @@ import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.user.User;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 
 public class PlanningManager implements Serializable {
@@ -27,6 +28,7 @@ public class PlanningManager implements Serializable {
     private Set<Resource> resources = new HashSet<Resource>();
     private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
     private Set<Developer> developers = new HashSet<Developer>();
+    private User activeUser;
 
     public ImmutableSet<TaskPlanning> getTaskPlannings() {
         return ImmutableSet.copyOf(plannings);
@@ -140,6 +142,27 @@ public class PlanningManager implements Serializable {
         this.plannings.add(newplanning);
     }
     
+    public ImmutableSet<Developer> getDevelopers() {
+        return ImmutableSet.copyOf(developers);
+    }
+    
+    public User getActiveUser() {
+        return activeUser;
+    }
+
+    public void setActiveUser(User user) {
+        if (!canHaveAsActiveUser(user)) {
+            throw new IllegalArgumentException(ERROR_ILLEGAL_ACTIVE_USER);
+        }
+        this.activeUser = user;
+    }
+    
+    public boolean canHaveAsActiveUser(User user) {
+        // this seems a bit silly but makes every consistent
+        // if we later decide to put restrictions on this refactoring will be easier.
+        return true;
+    }
+
     public Developer createDeveloper(String name){
         Developer dev = new Developer(name);
         developers.add(dev);
@@ -159,4 +182,5 @@ public class PlanningManager implements Serializable {
     }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+    private static String ERROR_ILLEGAL_ACTIVE_USER = "Illegal active user in Planning manager.";
 }

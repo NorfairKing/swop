@@ -87,6 +87,20 @@ public class SessionController {
         if (!canHaveAsFacade(facade)) throw new IllegalArgumentException(ERROR_ILLEGAL_FACADE);
         this.taskMan = facade;
     }
+    
+    /**
+     * Starts a session to select the user.
+     * This isn't specified in the exercise, but in the current design we need this.
+     */
+    public void startSelectUserSession() {
+        Set<UserWrapper> users = getTaskMan().getUsers();
+        
+        UserWrapper user = getUi().selectUser(users);
+        
+        if (user == null) return;
+        
+        getTaskMan().setActiveUser(user);
+    }
 
     /**
      * Starts the "show projects" use case and lets the user interface show a list all the projects.

@@ -25,6 +25,7 @@ import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.user.User;
 
 
 @SuppressWarnings("serial")
@@ -41,6 +42,28 @@ public class TaskMan implements Serializable {
         projectManager = new ProjectManager();
         planningManager = new PlanningManager();
         timeKeeper = new Timekeeper();
+    }
+    
+    /**
+     * Retrieve all known users
+     * 
+     * @return A set of all known users, currently only developers
+     */
+    public Set<UserWrapper> getUsers() {
+        //FIXME Also return manager
+        Set<UserWrapper> result = new HashSet<>();
+        for (User user: planningManager.getDevelopers()) {
+            result.add(new UserWrapper(user));
+        }
+        return result;
+    }
+    
+    /**
+     * Sets the active user of the system
+     * @param user The user to make active.
+     */
+    public void setActiveUser(UserWrapper user) {
+        planningManager.setActiveUser(user.getUser());
     }
 
     /**
