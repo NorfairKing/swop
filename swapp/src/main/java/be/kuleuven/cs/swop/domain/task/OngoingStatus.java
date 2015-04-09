@@ -62,7 +62,8 @@ public class OngoingStatus extends IncompleteStatus {
 
     @Override
     void finish(TimePeriod period) {
-        throw new IllegalStateException(ERROR_FINISH);
+        goToStatus(new FinishedStatus(getTask(), period)); // FIXME: THIS IS WRONG!! Temporary so Pablo can work on the UI. DELETE THIS LINE AND UNCOMMENT THE ONE BELOW
+    	//throw new IllegalStateException(ERROR_FINISH);
     }
 
     @Override
