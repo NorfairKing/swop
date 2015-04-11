@@ -69,6 +69,7 @@ public class CLI implements UserInterface {
             case "help":
             case "h":
                 System.out.println("list    / l:   list all projects");
+                System.out.println("user       :   select the current user");
                 System.out.println("project / p:   create project");
                 System.out.println("task    / t:   create task");
                 System.out.println("update  / u:   update task");
@@ -76,6 +77,9 @@ public class CLI implements UserInterface {
                 System.out.println("simulation :   simulation");
                 System.out.println("clock   / c:   update clock");
                 System.out.println("quit    / q:   quit taskman");
+                break;
+            case "user":
+                getSessionController().startSelectUserSession();
                 break;
             case "list":
             case "l":
