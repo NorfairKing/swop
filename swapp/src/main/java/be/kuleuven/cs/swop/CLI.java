@@ -263,7 +263,7 @@ public class CLI implements UserInterface {
         System.out.print("# Acceptable Deviation (%): ");
         double acceptableDeviation = promptPercentageAsDouble();
 
-        return new TaskData(description, estimatedDuration, acceptableDeviation);
+        return new TaskData(description, estimatedDuration, acceptableDeviation, null); //TODO: add support for requirements
 
     }
 

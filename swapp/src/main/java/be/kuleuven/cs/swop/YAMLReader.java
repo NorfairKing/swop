@@ -49,6 +49,7 @@ public class YAMLReader {
 	List<ResourceWrapper> resources = new ArrayList<ResourceWrapper>();
 	List<DeveloperWrapper> developers = new ArrayList<DeveloperWrapper>();
 	List<LocalTime[]> availabilities = new ArrayList<LocalTime[]>();
+	List<Map<ResourceTypeWrapper,Integer>> resourceRequirements = new ArrayList<Map<ResourceTypeWrapper,Integer>>();
 	Map<TaskWrapper, Integer> planningTasks = new HashMap<TaskWrapper, Integer>();
 	Map<Integer,Set<DeveloperWrapper>> planningDevelopers = new HashMap<Integer,Set<DeveloperWrapper>>();
 	Map<Integer,LocalDateTime> planningStartDates = new HashMap<Integer,LocalDateTime>();
@@ -89,6 +90,7 @@ public class YAMLReader {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void processResourceTypes(Map<String, List<Map<String, Object>>> parsedFile){
 		for (Map<String, Object> resourceType : parsedFile.get("resourceTypes")) {
 
@@ -161,19 +163,36 @@ public class YAMLReader {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void processTasks(Map<String, List<Map<String, Object>>> parsedFile){
 		for (Map<String, Object> task : parsedFile.get("tasks")) {
+			
+			
 			// Get project of this task
 			int projectIndex = (int) task.get("project");
 			ProjectWrapper project = projects.get(projectIndex);
+			
+			// Get required resources if necessary
+			Object planning = task.get("planning");
+			Map<ResourceTypeWrapper, Integer> requirements = null;
+			if(planning != null){
+				requirements = resourceRequirements.get((int) planning);
+			}
+			
+			
 			// Create task
 			TaskData tData = new TaskData(
 					(String) task.get("description"),
 					(long) (int) task.get("estimatedDuration"),
-					(double) (int) task.get("acceptableDeviation")/100
+					(double) (int) task.get("acceptableDeviation")/100,
+					requirements
 					);
 			TaskWrapper t = facade.createTaskFor(project, tData);
 
+			
+			
+			
+			
 			// Add dependencies
 			List<Integer> prerequisites = (List<Integer>) task.get("prerequisiteTasks");
 			if (prerequisites != null) {
@@ -233,7 +252,6 @@ public class YAMLReader {
 			}
 
 			// Keep track for planning
-			Object planning = task.get("planning");
 			if(planning != null){
 				planningTasks.put(t, (Integer) planning);
 			}
@@ -247,11 +265,15 @@ public class YAMLReader {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void preProcessPlannings(Map<String, List<Map<String, Object>>> parsedFile){
 		int planningIndex = 0;
 		for (Map<String, Object> planning : parsedFile.get("plannings")) {
+			
+			// Add start date
 			LocalDateTime startTime = LocalDateTime.parse((String) planning.get("plannedStartTime"), format);
 			planningStartDates.put(planningIndex, startTime);
+			
 			// Add developers
 			List<Integer> devs = (List<Integer>) planning.get("developers");
 			Set<DeveloperWrapper> currentDevs = new HashSet<DeveloperWrapper>();
@@ -261,7 +283,21 @@ public class YAMLReader {
 					currentDevs.add(dev);
 				}
 			}
+			
 			planningDevelopers.put(planningIndex, currentDevs);
+			
+			// Add resource requirements
+			Map<ResourceTypeWrapper,Integer> requirements = new HashMap<ResourceTypeWrapper,Integer>();
+			List<Map<String, Integer>> derp = (List<Map<String, Integer>>) planning.get("resources");
+			for( Map<String, Integer> current : derp){
+				ResourceTypeWrapper resourceType = resourceTypes.get(current.get("type"));
+				Integer quantity = current.get("quantity");
+				requirements.put(resourceType, quantity);
+			}
+			resourceRequirements.add(requirements);
+			
+			
+			
 			planningIndex++;
 		}
 	}
@@ -288,7 +324,6 @@ public class YAMLReader {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void read(String initFile) {
 		try {
 			// Setup
@@ -311,17 +346,17 @@ public class YAMLReader {
 
 			// Read projects
 			processProjects(parsedFile);
+			
+			// Read and format developers and resources from plannings
+			preProcessPlannings(parsedFile);
 
 			// Read tasks
 			processTasks(parsedFile);
 
-			// Add developers to plannings
-			preProcessPlannings(parsedFile);
-
 			// Add reservations
 			processReservations(parsedFile);
 
-			// Save all the plannings
+			// Save all the plannings with the required information
 			processPlannings(parsedFile);
 
 			System.out.println("Successfully imported file.");

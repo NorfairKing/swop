@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 import com.google.common.collect.ImmutableSet;
@@ -242,6 +243,12 @@ public class Project implements Serializable {
      */
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation) {
         Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
+        addTask(newTask);
+        return newTask;
+    }
+    
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
+        Task newTask = new Task(description, estimatedDuration, acceptableDeviation, requirements);
         addTask(newTask);
         return newTask;
     }

@@ -23,6 +23,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
@@ -216,7 +217,17 @@ public class TaskMan implements Serializable {
 
 		if (data.getDescription() == null) { throw new IllegalArgumentException("Null description for task creation"); }
 
-		Task createdTask = project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());
+		Task createdTask;
+		if(data.getRequirements() != null){
+			Set<Requirement> reqs = new HashSet<Requirement>();
+			for(ResourceTypeWrapper type : data.getRequirements().keySet()){
+				reqs.add(new Requirement(data.getRequirements().get(type), type.getType()));
+			}			
+			createdTask = project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation(), reqs);
+		}else{
+			createdTask = project.getProject().createTask(data.getDescription(), data.getEstimatedDuration(), data.getAcceptableDeviation());	
+		}
+		
 		for (TaskWrapper dependency : data.getDependencies()) {
 			createdTask.addDependency(dependency.getTask());
 		}
