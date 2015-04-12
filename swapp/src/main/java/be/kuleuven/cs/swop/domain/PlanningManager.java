@@ -117,6 +117,7 @@ public class PlanningManager implements Serializable {
         }
         Set<Resource> availableResources = new HashSet<Resource>(this.resources);
         availableResources.removeAll(usedResources);
+        availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(time)).collect(Collectors.toSet());
         Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
         for (Requirement req : task.getRequirements()) {
             map.put(req.getType(), this.resources.stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
