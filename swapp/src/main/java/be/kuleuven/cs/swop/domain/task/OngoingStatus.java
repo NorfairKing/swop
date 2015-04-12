@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop.domain.task;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
+@SuppressWarnings("serial")
 public class OngoingStatus extends IncompleteStatus {
 
     public OngoingStatus(Task task) {

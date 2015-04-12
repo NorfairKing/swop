@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.user;
 import java.io.Serializable;
 
 
+@SuppressWarnings("serial")
 public abstract class User implements Serializable{
     private String name;
     

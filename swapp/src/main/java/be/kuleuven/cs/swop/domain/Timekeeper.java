@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+@SuppressWarnings("serial")
 public class Timekeeper implements Serializable {
 
     private LocalDateTime currentTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);

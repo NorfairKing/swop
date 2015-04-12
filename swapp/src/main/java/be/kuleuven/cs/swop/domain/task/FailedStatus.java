@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
+@SuppressWarnings("serial")
 public class FailedStatus extends PerformedStatus {
 
     private Task alternative;

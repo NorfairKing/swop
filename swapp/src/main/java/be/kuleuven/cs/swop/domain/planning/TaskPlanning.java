@@ -15,6 +15,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 
 
+@SuppressWarnings("serial")
 public class TaskPlanning implements Serializable {
 
     private Set<Developer> developers   = new HashSet<Developer>();

@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
+@SuppressWarnings("serial")
 abstract class TaskStatus implements Serializable {
 
     private Task task;

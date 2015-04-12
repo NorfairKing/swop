@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.resource;
 import java.io.Serializable;
 
 
+@SuppressWarnings("serial")
 public class Resource implements Serializable{
 
     private ResourceType type;

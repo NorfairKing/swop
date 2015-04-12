@@ -7,6 +7,7 @@ import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
+@SuppressWarnings("serial")
 public abstract class PerformedStatus extends TaskStatus {
 
 	private DateTimePeriod performedDuring;

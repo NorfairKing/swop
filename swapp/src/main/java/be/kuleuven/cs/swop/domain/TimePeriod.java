@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 
+@SuppressWarnings("serial")
 public class TimePeriod implements Serializable {
 
     private LocalTime startTime;

@@ -12,6 +12,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import com.google.common.collect.ImmutableSet;
 
 
+@SuppressWarnings("serial")
 public class Project implements Serializable {
 
     private String          title;

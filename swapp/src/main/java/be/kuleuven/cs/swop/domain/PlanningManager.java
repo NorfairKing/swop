@@ -22,6 +22,7 @@ import be.kuleuven.cs.swop.domain.user.Developer;
 import be.kuleuven.cs.swop.domain.user.User;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 
+@SuppressWarnings("serial")
 public class PlanningManager implements Serializable {
 
     private Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();

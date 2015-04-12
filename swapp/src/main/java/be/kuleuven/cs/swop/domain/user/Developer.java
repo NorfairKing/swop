@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.user;
 
 
+@SuppressWarnings("serial")
 public class Developer extends User {
 
     public Developer(String name) {

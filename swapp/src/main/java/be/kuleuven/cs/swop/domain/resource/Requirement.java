@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop.domain.resource;
 import java.io.Serializable;
 
 
+@SuppressWarnings("serial")
 public class Requirement implements Serializable {
 
     private int          amount;

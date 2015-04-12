@@ -12,6 +12,7 @@ import be.kuleuven.cs.swop.domain.task.Task;
 import com.google.common.collect.ImmutableSet;
 
 
+@SuppressWarnings("serial")
 public class ProjectManager implements Serializable {
 
     private final Set<Project> projects = new HashSet<Project>();

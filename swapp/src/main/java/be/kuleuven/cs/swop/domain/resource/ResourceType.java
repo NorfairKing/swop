@@ -7,9 +7,9 @@ import java.time.LocalTime;
 
 import com.google.common.collect.ImmutableSet;
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
+@SuppressWarnings("serial")
 public class ResourceType implements Serializable {
 
 	private String            name;

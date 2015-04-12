@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
  *
  *
  */
+@SuppressWarnings("serial")
 public class Task implements Serializable {
 
     private String           description;
