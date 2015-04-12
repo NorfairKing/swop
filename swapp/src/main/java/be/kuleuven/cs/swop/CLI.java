@@ -45,9 +45,8 @@ public class CLI implements UserInterface {
 
     @Override
     public boolean start() {
-        System.out.println("Welcome to TaskMan");
+        System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
-        System.out.println("Don't forget to set the initial date (\"c\").");
         String command;
         boolean stop = false;
         while (!stop) {
