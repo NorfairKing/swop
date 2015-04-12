@@ -66,6 +66,8 @@ abstract class TaskStatus implements Serializable {
     abstract void finish(TimePeriod period);
 
     abstract void fail(TimePeriod period);
+    
+    abstract void execute();
 
     void goToStatus(TaskStatus status) {
         this.task.setStatus(status);

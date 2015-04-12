@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.FailedStatusData;
+import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -131,7 +133,7 @@ public class ScenarioTest {
 
         LocalDateTime t1Start = LocalDateTime.parse("2015-02-09 08:00", dateTimeFormat);
         LocalDateTime t1Stop = LocalDateTime.parse("2015-02-09 16:00", dateTimeFormat);
-        TaskStatusData t1u = new TaskStatusData(t1Start, t1Stop, true);
+        TaskStatusData t1u = new FinishedStatusData(t1Start, t1Stop);
         taskMan.updateTaskStatusFor(t1, t1u);
         assertTrue(t1.isFinished());
 
@@ -168,7 +170,7 @@ public class ScenarioTest {
 
         LocalDateTime t2Start = LocalDateTime.parse("2015-02-10 08:00", dateTimeFormat);
         LocalDateTime t2Stop = LocalDateTime.parse("2015-02-10 16:00", dateTimeFormat);
-        TaskStatusData t2u = new TaskStatusData(t2Start, t2Stop, false);
+        TaskStatusData t2u = new FailedStatusData(t2Start, t2Stop);
         taskMan.updateTaskStatusFor(t2, t2u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
@@ -242,7 +244,7 @@ public class ScenarioTest {
 
         LocalDateTime t5Start = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
         LocalDateTime t5Stop = LocalDateTime.parse("2015-02-11 16:00", dateTimeFormat);
-        TaskStatusData t5u = new TaskStatusData(t5Start, t5Stop, true);
+        TaskStatusData t5u = new FinishedStatusData(t5Start, t5Stop);
         taskMan.updateTaskStatusFor(t5, t5u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
@@ -252,7 +254,7 @@ public class ScenarioTest {
 
         LocalDateTime t3Start = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
         LocalDateTime t3Stop = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
-        TaskStatusData t3u = new TaskStatusData(t3Start, t3Stop, true);
+        TaskStatusData t3u = new FinishedStatusData(t3Start, t3Stop);
         taskMan.updateTaskStatusFor(t3, t3u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
@@ -262,7 +264,7 @@ public class ScenarioTest {
 
         LocalDateTime t4Start = LocalDateTime.parse("2015-02-13 08:00", dateTimeFormat);
         LocalDateTime t4Stop = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
-        TaskStatusData t4u = new TaskStatusData(t4Start, t4Stop, true);
+        TaskStatusData t4u = new FinishedStatusData(t4Start, t4Stop);
         taskMan.updateTaskStatusFor(t4, t4u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());

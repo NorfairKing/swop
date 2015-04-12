@@ -17,6 +17,8 @@ import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.FailedStatusData;
+import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
@@ -327,8 +329,11 @@ public class CLI implements UserInterface {
 
         System.out.print("# Was is successful (finish/fail): ");
         boolean successful = promptBoolean("finish", "fail");
-
-        return new TaskStatusData(startTime, endTime, successful);
+        if(successful){
+        	return new FinishedStatusData(startTime, endTime);
+        }else{
+        	return new FailedStatusData(startTime, endTime);
+        }
     }
     
     @Override

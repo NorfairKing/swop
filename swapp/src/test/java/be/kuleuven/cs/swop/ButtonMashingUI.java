@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.FailedStatusData;
+import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
@@ -131,7 +133,14 @@ public class ButtonMashingUI implements UserInterface {
         LocalDateTime date1 = getTimeStamp();
         LocalDateTime date2 = getTimeStamp();
         boolean success = random.nextBoolean();
-        return new TaskStatusData(date1, date2, success);
+        
+        //TODO: this needs to be reviewed and properly updated for the new status system
+        
+        if(success){
+        	return new FinishedStatusData(date1, date2);
+        }else{
+        	return new FailedStatusData(date1, date2);
+        }
     }
 
     @Override

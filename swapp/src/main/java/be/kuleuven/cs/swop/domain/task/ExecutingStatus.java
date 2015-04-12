@@ -44,6 +44,11 @@ public class ExecutingStatus extends IncompleteStatus {
             goToStatus(new FinishedStatus(getTask(), period));
         }
     }
+    
+    @Override
+    void execute(){
+        throw new IllegalStateException(ERROR_EXECUTE);
+    }
 
     @Override
     Task getAlternative() {
@@ -51,4 +56,5 @@ public class ExecutingStatus extends IncompleteStatus {
     }
 
     private static String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
+    private static String ERROR_EXECUTE = "Can't execute a task that's already being executed.";
 }

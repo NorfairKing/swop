@@ -295,6 +295,10 @@ public class Task implements Serializable {
     public void fail(TimePeriod period) {
         status.fail(period);
     }
+    
+    public void execute(){
+    	status.execute();
+    }
 
     protected long getRealDuration() {
         return TimeCalculator.getDurationMinutes(

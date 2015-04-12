@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -41,7 +42,7 @@ public class UpdateTaskStatusSessionTest {
     public void test() {
         LocalDateTime curTime = taskMan.getSystemTime();
         LocalDateTime finishDate = curTime.plusHours(1);
-        TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
+        TaskStatusData data = new FinishedStatusData(curTime, finishDate);
         
         ui.setRequestTask(task);
         ui.setRequestTaskStatusData(data);
@@ -57,7 +58,7 @@ public class UpdateTaskStatusSessionTest {
     public void flowTest() {
         LocalDateTime curTime = taskMan.getSystemTime();
         LocalDateTime finishDate = curTime.plusHours(1);
-        TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
+        TaskStatusData data = new FinishedStatusData(curTime, finishDate);
             
     
         taskMan.updateTaskStatusFor(task, data);
@@ -72,7 +73,7 @@ public class UpdateTaskStatusSessionTest {
     public void flowTestInvalidDates() {
         LocalDateTime curTime = taskMan.getSystemTime();
         LocalDateTime finishDate = curTime.minusHours(1); //should be after the start-time.
-        TaskStatusData data = new TaskStatusData(curTime, finishDate, true);
+        TaskStatusData data = new FinishedStatusData(curTime, finishDate);
         
         taskMan.updateTaskStatusFor(task, data);
     }
