@@ -122,7 +122,7 @@ public interface UserInterface {
      * 
      * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
      */
-    public TaskStatusData getUpdateStatusData();
+    public TaskStatusData getUpdateStatusData(TaskWrapper task);
 
     /**
      * Request data from the user necessary for creating a new Project.

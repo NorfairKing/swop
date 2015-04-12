@@ -139,6 +139,14 @@ public class TaskWrapper {
     public boolean isFailed() {
         return getTask().isFailed();
     }
+    
+    public boolean isExecuting(){
+    	return getTask().isExecuting();
+    }
+    
+    public boolean isFinal(){
+    	return getTask().isFinal();
+    }
 
     /**
      * Checks whether or not the containing Task can finish.

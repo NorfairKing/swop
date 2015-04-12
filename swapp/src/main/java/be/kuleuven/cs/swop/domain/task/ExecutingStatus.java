@@ -20,6 +20,12 @@ public class ExecutingStatus extends IncompleteStatus {
     boolean isFailed() {
         return false;
     }
+    
+    @Override
+    boolean isExecuting() {
+    	return true;
+    }
+
 
     @Override
     boolean canFinish() {

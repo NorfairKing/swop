@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -328,22 +329,55 @@ public class CLI implements UserInterface {
     }
     
     @Override
-    public TaskStatusData getUpdateStatusData() {
+    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
+    	
+    	// Pretty damn ugly way to do it, feel free to refactor
+    	
         System.out.println("UPDATE TASK STATUS\n########");
+        boolean needsDates = false;
+        
+        boolean executing = task.isExecuting();
+        boolean successful = false;
+        boolean start = false;
+        
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        
+        if(executing){
+            System.out.print("# Was the task successful (finish/fail): ");
+            successful = promptBoolean("finish", "fail");
+            needsDates = true;
 
+        }else{
+            System.out.print("# execute or fail the task (execute/fail): ");
+        	start = promptBoolean("execute", "fail");
+        	if(!start){
+        		needsDates = true;
+        	}
+        }
+
+        if(needsDates){
         System.out.print("# Start Date: ");
-        LocalDateTime startTime = promptDate();
+        startTime = promptDate();
 
         System.out.print("# End Date: ");
-        LocalDateTime endTime = promptDate();
-
-        System.out.print("# Was is successful (finish/fail): ");
-        boolean successful = promptBoolean("finish", "fail");
-        if(successful){
-        	return new FinishedStatusData(startTime, endTime);
-        }else{
-        	return new FailedStatusData(startTime, endTime);
+        endTime = promptDate();
         }
+        
+        if(executing){
+            if(successful){
+            	return new FinishedStatusData(startTime, endTime);
+            }else{
+            	return new FailedStatusData(startTime, endTime);
+            }
+        }else{
+        	if(start){
+        		return new ExecutingStatusData();
+        	}else{
+        		return new FailedStatusData(startTime, endTime);
+        	}
+        }
+
     }
     
     @Override

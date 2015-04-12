@@ -40,6 +40,11 @@ public class OngoingStatus extends IncompleteStatus {
     boolean isFinal() {
         return false;
     }
+    
+    @Override
+    boolean isExecuting() {
+    	return false;
+    }
 
     /**
      * Checks whether the project containing this status can finish.

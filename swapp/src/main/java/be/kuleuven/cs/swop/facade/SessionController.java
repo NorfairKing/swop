@@ -250,11 +250,15 @@ public class SessionController {
 
         // if the user indicates he wants to leave the overview.
         if (task == null) return;
+        if(task.isFinal()){
+        	System.out.println("Can't update task: this task is already final.");
+        	return;
+        }
 
         do {
             try {
                 // The user enters all required details
-                TaskStatusData statusData = getUi().getUpdateStatusData();
+                TaskStatusData statusData = getUi().getUpdateStatusData(task);
 
                 // if the user cancels.
                 if (statusData == null) return;

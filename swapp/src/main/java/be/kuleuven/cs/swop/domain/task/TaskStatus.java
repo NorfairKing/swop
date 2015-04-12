@@ -29,6 +29,8 @@ abstract class TaskStatus implements Serializable {
      * @return Returns a true if Task containing this status is failed.
      */
     abstract boolean isFailed();
+    
+    abstract boolean isExecuting();
 
     /**
      * Checks whether the project containing this status can finish.

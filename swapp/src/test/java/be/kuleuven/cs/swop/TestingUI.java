@@ -106,7 +106,7 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public TaskStatusData getUpdateStatusData() {
+    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
         return requestTaskStatusData;
     }
 

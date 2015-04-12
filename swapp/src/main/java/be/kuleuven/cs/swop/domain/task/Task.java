@@ -261,6 +261,14 @@ public class Task implements Serializable {
     public boolean isFailed() {
         return status.isFailed();
     }
+    
+    public boolean isExecuting(){
+    	return status.isExecuting();
+    }
+    
+    public boolean isFinal(){
+    	return status.isFinal();
+    }
 
     /**
      * Checks whether or not this Task can finish.

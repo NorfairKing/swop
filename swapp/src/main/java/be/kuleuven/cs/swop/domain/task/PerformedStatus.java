@@ -46,6 +46,12 @@ public abstract class PerformedStatus extends TaskStatus {
 	boolean isFinal() {
 		return true;
 	}
+	
+    @Override
+    boolean isExecuting() {
+    	return false;
+    }
+
 
 	@Override
 	void fail(DateTimePeriod period) {

@@ -128,7 +128,7 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public TaskStatusData getUpdateStatusData() {
+    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
         if (random.nextBoolean()) return null;
         LocalDateTime date1 = getTimeStamp();
         LocalDateTime date2 = getTimeStamp();
