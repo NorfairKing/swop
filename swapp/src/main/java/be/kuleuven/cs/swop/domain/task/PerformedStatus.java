@@ -4,14 +4,14 @@ package be.kuleuven.cs.swop.domain.task;
 import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public abstract class PerformedStatus extends TaskStatus {
 
-	private TimePeriod performedDuring;
+	private DateTimePeriod performedDuring;
 
-	PerformedStatus(Task task, TimePeriod performedDuring) {
+	PerformedStatus(Task task, DateTimePeriod performedDuring) {
 		super(task);
 		this.performedDuring(performedDuring);
 	}
@@ -47,12 +47,12 @@ public abstract class PerformedStatus extends TaskStatus {
 	}
 
 	@Override
-	void fail(TimePeriod period) {
+	void fail(DateTimePeriod period) {
 		throw new IllegalStateException(ERROR_FAIL);
 	}
 
 	@Override
-	void finish(TimePeriod period) {
+	void finish(DateTimePeriod period) {
 		throw new IllegalStateException(ERROR_FINISH);
 	}
 
@@ -67,7 +67,7 @@ public abstract class PerformedStatus extends TaskStatus {
 	 * @return Returns a TimePeriod for when the Task was performed or null if the Task isn't failed of finished yet.
 	 */
 	@Override
-	TimePeriod getPerformedDuring() {
+	DateTimePeriod getPerformedDuring() {
 		return performedDuring;
 	}
 
@@ -80,7 +80,7 @@ public abstract class PerformedStatus extends TaskStatus {
 	 *            The TimePeriod that has to be checked.
 	 * @return Returns true if this Task could be performed during the given TimePeriod.
 	 */
-	protected boolean canHaveBeenPerfomedDuring(TimePeriod timespan) {
+	protected boolean canHaveBeenPerfomedDuring(DateTimePeriod timespan) {
 		return timespan != null;
 	}
 
@@ -90,7 +90,7 @@ public abstract class PerformedStatus extends TaskStatus {
 	 * @param timespan
 	 *            The TimePeriod for when during the Task was performed.
 	 */
-	void performedDuring(TimePeriod timespan) {
+	void performedDuring(DateTimePeriod timespan) {
 		if (!canHaveBeenPerfomedDuring(timespan)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }
 		this.performedDuring = timespan;
 	}

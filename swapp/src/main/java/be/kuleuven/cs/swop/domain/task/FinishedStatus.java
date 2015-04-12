@@ -3,12 +3,12 @@ package be.kuleuven.cs.swop.domain.task;
 
 import java.time.LocalDateTime;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class FinishedStatus extends PerformedStatus {
 
-    FinishedStatus(Task task, TimePeriod performedDuring) {
+    FinishedStatus(Task task, DateTimePeriod performedDuring) {
         super(task, performedDuring);
     }
 

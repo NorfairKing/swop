@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class OngoingStatus extends IncompleteStatus {
@@ -61,7 +61,7 @@ public class OngoingStatus extends IncompleteStatus {
     }
 
     @Override
-    void finish(TimePeriod period) {
+    void finish(DateTimePeriod period) {
     	throw new IllegalStateException(ERROR_FINISH);
     }
     

@@ -13,11 +13,11 @@ import org.junit.rules.ExpectedException;
 
 public class TimePeriodTest {
 
-    private static TimePeriod validTimePeriod1;
+    private static DateTimePeriod validTimePeriod1;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        validTimePeriod1 = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        validTimePeriod1 = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
     }
 
     @AfterClass
@@ -31,11 +31,11 @@ public class TimePeriodTest {
 
     @Test
     public void constructorValidTest() {
-        new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         
-        new TimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+        new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
         
-        new TimePeriod(LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+        new DateTimePeriod(LocalDateTime.now(), LocalDateTime.now().plusHours(1));
     }
 
     @Rule
@@ -44,15 +44,15 @@ public class TimePeriodTest {
     @Test
     public void constructorInvalidTest() {
         try{
-            new TimePeriod(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1)); 
+            new DateTimePeriod(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1)); 
         }catch(IllegalArgumentException e){}
 
         try{
-            new TimePeriod(null, LocalDateTime.now());
+            new DateTimePeriod(null, LocalDateTime.now());
         }catch(IllegalArgumentException e){}
 
         try{
-            new TimePeriod(LocalDateTime.now(), null);
+            new DateTimePeriod(LocalDateTime.now(), null);
         }catch(IllegalArgumentException e){}
     }
 

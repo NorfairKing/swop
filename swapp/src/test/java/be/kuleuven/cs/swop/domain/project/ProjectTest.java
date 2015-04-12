@@ -17,7 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -83,7 +83,7 @@ public class ProjectTest {
         assertTrue(project.isOngoing());
         Task test = project.createTask("desc", 1, 0);
         assertTrue(project.isOngoing());
-        test.finish(new TimePeriod(epoch, epoch.plusHours(1)));
+        test.finish(new DateTimePeriod(epoch, epoch.plusHours(1)));
         assertFalse(project.isOngoing());
 
     }
@@ -93,7 +93,7 @@ public class ProjectTest {
         assertFalse(project.isFinished());
         Task test = project.createTask("desc", 1, 0);
         assertFalse(project.isFinished());
-        test.finish(new TimePeriod(epoch, epoch.plusHours(1)));
+        test.finish(new DateTimePeriod(epoch, epoch.plusHours(1)));
         assertTrue(project.isFinished());
 
     }
@@ -213,7 +213,7 @@ public class ProjectTest {
         Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(10);
-        task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
+        task1.fail(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
         task1.addAlternative(task2);
 
         assertTrue(timeProject.isOnTime(curTime));
@@ -226,7 +226,7 @@ public class ProjectTest {
         Task task2 = timeProject.createTask("task2", 7 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(10);
-        task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
+        task1.fail(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
         task1.addAlternative(task2);
 
         assertFalse(timeProject.isOnTime(curTime));
@@ -239,7 +239,7 @@ public class ProjectTest {
         Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(10);
-        task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
+        task1.fail(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
         task1.addAlternative(task2);
 
         assertTrue(timeProject.isOnTime(curTime));
@@ -252,7 +252,7 @@ public class ProjectTest {
         Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(12);
-        task1.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
+        task1.fail(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
         task1.addAlternative(task2);
 
         assertFalse(timeProject.isOnTime(curTime));
@@ -340,7 +340,7 @@ public class ProjectTest {
         assertFalse(p.isOverTime(epoch));
         
         LocalDateTime curTime = epoch.plusHours(12);
-        task4.finish(new TimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
+        task4.finish(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
         
         assertFalse(p.isOnTime(curTime)); // 9+8+3+4 > 20
         assertTrue(p.isOverTime(curTime));
@@ -351,7 +351,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
         
         LocalDateTime curTime = epoch.plusHours(2);
-        task1.finish(new TimePeriod(epoch, epoch.plusHours(2)));
+        task1.finish(new DateTimePeriod(epoch, epoch.plusHours(2)));
         
         assertTrue(timeProject.isOnTime(curTime));
         assertFalse(timeProject.isOverTime(curTime));
@@ -367,7 +367,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
         
         LocalDateTime curTime = epoch.plusHours(15);
-        task1.finish(new TimePeriod(epoch.plusHours(12), epoch.plusHours(14)));
+        task1.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(14)));
         
         assertTrue(timeProject.isOnTime(curTime));
         assertFalse(timeProject.isOverTime(curTime));
@@ -394,7 +394,7 @@ public class ProjectTest {
         task1.addDependency(task4);
         
         curTime = epoch.plusHours(12);
-        task4.fail(new TimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
+        task4.fail(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
         task4.addAlternative(task5);
         
         
@@ -410,8 +410,8 @@ public class ProjectTest {
         task5.addDependency(task7);
         
         curTime = epoch.plusHours(16);
-        task7.finish(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
-        task2.finish(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
+        task7.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
+        task2.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         
         assertTrue(p.isOnTime(curTime)); // 12 hours to go in 32 hours
         assertFalse(p.isOverTime(curTime));
@@ -432,7 +432,7 @@ public class ProjectTest {
         assertFalse(p.isOnTime(curTime)); // 12+9+8+3+1=33 hours to go in 32 hours
         assertTrue(p.isOverTime(curTime));
         
-        task9.fail(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
+        task9.fail(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         Task task13 = p.createTask("task13", 13 * minutesPerHour, 0);
         task9.addAlternative(task13);
         
@@ -440,7 +440,7 @@ public class ProjectTest {
         assertFalse(p.isOverTime(curTime));
         
         
-        task13.fail(new TimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
+        task13.fail(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         Task task23 = p.createTask("task23", 23 * minutesPerHour, 0);
         task13.addAlternative(task23);
         

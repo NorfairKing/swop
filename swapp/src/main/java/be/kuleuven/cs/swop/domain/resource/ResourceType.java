@@ -3,9 +3,11 @@ package be.kuleuven.cs.swop.domain.resource;
 import java.util.Set;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.google.common.collect.ImmutableSet;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
 public class ResourceType implements Serializable {
@@ -22,7 +24,7 @@ public class ResourceType implements Serializable {
 		this.setConflictsWith(conflicts, selfConflicting);
 	}
 
-	public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, TimePeriod dailyAvailability, boolean selfConflicting) {
+	public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod dailyAvailability) {
 		this(name, requirements, conflicts, selfConflicting);
 		this.setDailyAvailability(dailyAvailability);
 	}
@@ -83,12 +85,17 @@ public class ResourceType implements Serializable {
 		return this.dailyAvailability;
 	}
 
-	public boolean isAvailableDuring(LocalDateTime time) {
+	
+	public boolean isAvailableDuring(LocalTime time) {
 		if (this.hasAvailabilityPeriod) {
 			return this.getDailyAvailability().isDuring(time);
 		} else {
 			return true;
 		}
+	}
+	
+	public boolean isAvailableDuring(LocalDateTime date){
+		return isAvailableDuring(LocalTime.from(date));
 	}
 
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";

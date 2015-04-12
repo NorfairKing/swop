@@ -13,7 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class TaskTest {
@@ -175,7 +175,7 @@ public class TaskTest {
     @Test
     public void setAlternativeTest() {
         Task task2 = new Task("Hi", 1, 0);
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         try{
             task.addAlternative(task2);
@@ -214,14 +214,14 @@ public class TaskTest {
     @Test
     public void finishTest(){
         assertFalse(task.isFinished());
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.finish(period);
         assertTrue(task.isFinished());
     }
 
     @Test
     public void finishInvalidTest(){
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         Task dep = new Task("Hi",1,0);
         task.addDependency(dep);
         exception.expect(IllegalStateException.class);
@@ -241,7 +241,7 @@ public class TaskTest {
     @Test
     public void failTest(){
         assertFalse(task.isFailed());
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.fail(period);
         assertTrue(task.isFailed());
 
@@ -254,7 +254,7 @@ public class TaskTest {
 
     @Test
     public void failInvalidTest(){
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
         task.fail(period);
         exception.expect(IllegalStateException.class);
         task.fail(period);
@@ -267,7 +267,7 @@ public class TaskTest {
 
     @Test
     public void isFinishedOrHasFinishedAlternativeTest(){
-        TimePeriod period = new TimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         assertFalse(task.isFinishedOrHasFinishedAlternative());
         // can't finish a task that has not been started.
@@ -291,7 +291,7 @@ public class TaskTest {
         assertFalse(task.wasFinishedOnTime());
 
         Task task2 = new Task("Hi",10,0);
-        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
         task2.finish(period);
         assertTrue(task2.wasFinishedOnTime());
 
@@ -313,7 +313,7 @@ public class TaskTest {
         assertFalse(task.wasFinishedEarly());
 
         Task task2 = new Task("Hi",10,0);
-        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
         task2.finish(period);
         assertFalse(task2.wasFinishedEarly());
 
@@ -334,7 +334,7 @@ public class TaskTest {
     public void wasFinishedLateTest(){
         assertFalse(task.wasFinishedLate());
 
-        TimePeriod period = new TimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
 
         Task task2 = new Task("Hi",10,0);
         task2.finish(period);

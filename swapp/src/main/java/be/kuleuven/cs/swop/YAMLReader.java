@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class YAMLReader {
 			InputStream input = new FileInputStream(f);
 			Yaml yaml = new Yaml();
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			DateTimeFormatter timeformat = DateTimeFormatter.ofPattern("HH:mm");
 			Map<String, List<Map<String, Object>>> parsedFile = (Map<String, List<Map<String, Object>>>) yaml.load(input);
 
 			// Remember variables in order
@@ -57,6 +59,7 @@ public class YAMLReader {
 			List<ResourceTypeWrapper> resourceTypes = new ArrayList<ResourceTypeWrapper>();
 			List<ResourceWrapper> resources = new ArrayList<ResourceWrapper>();
 			List<DeveloperWrapper> developers = new ArrayList<DeveloperWrapper>();
+			List<LocalTime[]> availabilities = new ArrayList<LocalTime[]>();
 			Map<TaskWrapper, Integer> planningTasks = new HashMap<TaskWrapper, Integer>();
 			Map<Integer,Set<DeveloperWrapper>> planningDevelopers = new HashMap<Integer,Set<DeveloperWrapper>>();
 			Map<Integer,LocalDateTime> planningStartDates = new HashMap<Integer,LocalDateTime>();
@@ -66,6 +69,20 @@ public class YAMLReader {
 			Object dateObject = parsedFile.get("systemTime");
 			String dateString = dateObject.toString();
 			facade.updateSystemTime(LocalDateTime.parse(dateString, format));
+			
+			// Read dailyAvailabities
+			for (Map<String, Object> avail : parsedFile.get("dailyAvailability")) {
+				if (avail != null) {
+					Object start = avail.get("startTime");
+					Object end = avail.get("endTime");
+					if(start != null && end != null){
+						LocalTime[] period = new LocalTime[2];
+						period[0] = LocalTime.parse(start.toString(),timeformat);
+						period[1] = LocalTime.parse(end.toString(),timeformat);
+						availabilities.add(period);
+					}
+				}
+			}
 
 			// Read resourceTypes
 			for (Map<String, Object> resourceType : parsedFile.get("resourceTypes")) {
@@ -95,10 +112,14 @@ public class YAMLReader {
 					}
 				}
 				
-				//TODO: deal with dailyAvailability
-
+				Object dailyAvail = resourceType.get("dailyAvailability");
+				LocalTime[] avail = new LocalTime[0];
+				if(dailyAvail != null){
+					avail = availabilities.get((int) dailyAvail);
+				}
+				
 				String name = (String) resourceType.get("name");
-				ResourceTypeWrapper newType = facade.createResourceType(new ResourceTypeData(name, requirements, conflicts, selfConflicting));
+				ResourceTypeWrapper newType = facade.createResourceType(new ResourceTypeData(name, requirements, conflicts, selfConflicting, avail));
 				
 				resourceTypes.add(newType);
 			}

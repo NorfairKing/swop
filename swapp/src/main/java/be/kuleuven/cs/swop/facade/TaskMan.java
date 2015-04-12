@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.domain.PlanningManager;
 import be.kuleuven.cs.swop.domain.ProjectManager;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.project.Project;
@@ -297,7 +299,7 @@ public class TaskMan implements Serializable {
 			if (performedStatusData.getStartTime() == null) { throw new IllegalArgumentException("Null start time for status update"); }
 			if (performedStatusData.getEndTime() == null) { throw new IllegalArgumentException("Null end time for status update"); }
 
-			TimePeriod timePeriod = new TimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
+			DateTimePeriod timePeriod = new DateTimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
 
 			if (performedStatusData.isSuccessful()) {
 				task.getTask().finish(timePeriod);
@@ -349,7 +351,14 @@ public class TaskMan implements Serializable {
 		for(ResourceTypeWrapper type : data.getConflicts()){
 			conflicts.add(type.getType());
 		}
-		ResourceType type = getPlanningManager().createResourceType(data.getName(), requires, conflicts, data.isSelfConflicting());
+		
+		TimePeriod availability = null;
+		if(data.getAvailibility().length == 2){
+			availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
+		}
+		
+		
+		ResourceType type = getPlanningManager().createResourceType(data.getName(), requires, conflicts, data.isSelfConflicting(), availability);
 		return new ResourceTypeWrapper(type);
 	}
 

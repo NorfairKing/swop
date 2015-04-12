@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.task.Task;
 
 
@@ -102,7 +102,7 @@ public class TaskWrapper {
      *
      * @return Returns the TimePeriod containing for when this Task is performed during.
      */
-    public TimePeriod getPerformedDuring() {
+    public DateTimePeriod getPerformedDuring() {
         return getTask().getPerformedDuring();
     }
 

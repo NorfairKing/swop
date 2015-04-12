@@ -9,7 +9,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
@@ -91,13 +91,13 @@ public class TaskPlanning implements Serializable {
         return reservations != null;
     }
     
-    public TimePeriod getEstimatedOrRealPeriod() {
+    public DateTimePeriod getEstimatedOrRealPeriod() {
         if (getTask().isFailed() || getTask().isFinished()) {
             return getTask().getPerformedDuring();
         } else {
             long taskDur = getTask().getEstimatedDuration();
             LocalDateTime estimatedEndTime = getPlannedStartTime().plusMinutes(taskDur);
-            return new TimePeriod(getPlannedStartTime(), estimatedEndTime);
+            return new DateTimePeriod(getPlannedStartTime(), estimatedEndTime);
         }
     }
 

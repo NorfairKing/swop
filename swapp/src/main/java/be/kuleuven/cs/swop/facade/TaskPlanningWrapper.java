@@ -4,7 +4,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.user.Developer;
@@ -39,7 +39,7 @@ public class TaskPlanningWrapper {
         return new TaskWrapper(planning.getTask());
     }
 
-    public TimePeriod getPeriod() {
+    public DateTimePeriod getPeriod() {
         return planning.getEstimatedOrRealPeriod();
     }
 

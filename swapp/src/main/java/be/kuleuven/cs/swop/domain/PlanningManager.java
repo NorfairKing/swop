@@ -176,8 +176,13 @@ public class PlanningManager implements Serializable {
         return resource;
     }
     
-    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting){
-        ResourceType type = new ResourceType(name,requires,conflicts, selfConflicting);
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
+    	ResourceType type;
+    	if(availability != null){
+        	type = new ResourceType(name,requires,conflicts, selfConflicting, availability);
+        }else{
+        	type = new ResourceType(name,requires,conflicts, selfConflicting);
+        }
         resourceTypes.add(type);
         return type;
     }

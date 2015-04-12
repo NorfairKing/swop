@@ -15,7 +15,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
@@ -448,7 +448,7 @@ public class CLI implements UserInterface {
         return date.format(printFormat);
     }
 
-    private String formatPeriod(TimePeriod period){
+    private String formatPeriod(DateTimePeriod period){
         return period.getStartTime().format(periodDateFormat) + " --> " + period.getStopTime().format(periodDateFormat);
     }
 

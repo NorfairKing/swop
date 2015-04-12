@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.domain.task;
 
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -63,9 +63,9 @@ abstract class TaskStatus implements Serializable {
         this.task = task;
     }
 
-    abstract void finish(TimePeriod period);
+    abstract void finish(DateTimePeriod period);
 
-    abstract void fail(TimePeriod period);
+    abstract void fail(DateTimePeriod period);
     
     abstract void execute();
 
@@ -86,7 +86,7 @@ abstract class TaskStatus implements Serializable {
 
     abstract void setAlternative(Task alternative);
 
-    abstract TimePeriod getPerformedDuring();
+    abstract DateTimePeriod getPerformedDuring();
 
     /**
      * Checks whether or not this Task was finished within the acceptable deviation.

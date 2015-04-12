@@ -4,7 +4,7 @@ package be.kuleuven.cs.swop.domain.task;
 import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public abstract class IncompleteStatus extends TaskStatus {
@@ -40,7 +40,7 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    void fail(TimePeriod period) {
+    void fail(DateTimePeriod period) {
         goToStatus(new FailedStatus(getTask(), period));
     }
 
@@ -50,7 +50,7 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    TimePeriod getPerformedDuring() {
+    DateTimePeriod getPerformedDuring() {
         return null;
     }
 

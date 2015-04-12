@@ -3,14 +3,14 @@ package be.kuleuven.cs.swop.domain.task;
 
 import java.time.LocalDateTime;
 
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class FailedStatus extends PerformedStatus {
 
     private Task alternative;
 
-    FailedStatus(Task task, TimePeriod performedDuring) {
+    FailedStatus(Task task, DateTimePeriod performedDuring) {
         super(task, performedDuring);
     }
 

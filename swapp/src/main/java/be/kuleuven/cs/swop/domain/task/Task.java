@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
-import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
 
 import com.google.common.collect.ImmutableSet;
@@ -279,7 +279,7 @@ public class Task implements Serializable {
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
      */
-    public void finish(TimePeriod period) {
+    public void finish(DateTimePeriod period) {
         status.finish(period);
     }
 
@@ -292,7 +292,7 @@ public class Task implements Serializable {
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
      */
-    public void fail(TimePeriod period) {
+    public void fail(DateTimePeriod period) {
         status.fail(period);
     }
     
@@ -335,7 +335,7 @@ public class Task implements Serializable {
         return requirements != null;
     }
 
-    public TimePeriod getPerformedDuring() {
+    public DateTimePeriod getPerformedDuring() {
         return status.getPerformedDuring();
     }
 

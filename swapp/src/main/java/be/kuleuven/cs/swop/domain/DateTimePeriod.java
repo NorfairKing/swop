@@ -3,25 +3,24 @@ package be.kuleuven.cs.swop.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
-public class TimePeriod implements Serializable {
+public class DateTimePeriod implements Serializable {
 
-    private LocalTime startTime;
-    private LocalTime stopTime;
+    private LocalDateTime startTime;
+    private LocalDateTime stopTime;
 
     /**
      * Full Constructor
      *
      * @param start
-     *            The Time containing the start of this period.
+     *            The Date containing the start of this peroid.
      *
      * @param stop
-     *            The Time containing the end of this period.
+     *            The Date containing the end of this peroid.
      *
      */
-    public TimePeriod(LocalTime start, LocalTime stop) {
+    public DateTimePeriod(LocalDateTime start, LocalDateTime stop) {
         setStartTime(start);
         setStopTime(stop);
     }
@@ -32,24 +31,24 @@ public class TimePeriod implements Serializable {
      * @return The Date containing the start of this period.
      *
      */
-    public LocalTime getStartTime() {
-        return (LocalTime) startTime;
+    public LocalDateTime getStartTime() {
+        return (LocalDateTime) startTime;
     }
 
     /**
      * Checks whether or not the given time is a valid beginning for this period, it's valid when the Date isn't null.
      *
      * @param startTime
-     *            The Time containing the time to be checked if it is a valid beginning for this period.
+     *            The Date containing the time to be checked if it is a valid beginning for this perdiod.
      *
      * @return Returns true if the given time is a valid beginning for the period.
      *
      */
-    protected boolean canHaveAsStartTime(LocalTime startTime) {
+    protected boolean canHaveAsStartTime(LocalDateTime startTime) {
         return startTime != null;
     }
 
-    private void setStartTime(LocalTime startTime) {
+    private void setStartTime(LocalDateTime startTime) {
         if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
         this.startTime = startTime;
     }
@@ -57,39 +56,39 @@ public class TimePeriod implements Serializable {
     /**
      * Retries the time on which this period ends.
      *
-     * @return The Time containing the end of this period.
+     * @return The Date containing the end of this period.
      *
      */
-    public LocalTime getStopTime() {
-        return (LocalTime) stopTime;
+    public LocalDateTime getStopTime() {
+        return (LocalDateTime) stopTime;
     }
 
     /**
      * Checks whether or not the given time is a valid ending for this period, it's valid when the Date isn't null.
      *
      * @param stopTime
-     *            The Time containing the time to be checked if it is a valid ending for this perdiod.
+     *            The Date containing the time to be checked if it is a valid ending for this perdiod.
      *
      * @return Returns true if the given time is a valid beginning for the period.
      *
      */
-    protected boolean canHaveAsStopTime(LocalTime stopTime) {
+    protected boolean canHaveAsStopTime(LocalDateTime stopTime) {
         return stopTime != null && startTime != null && startTime.isBefore(stopTime);
     }
 
     /**
      * Has to be used AFTER setStartTime().
      */
-    private void setStopTime(LocalTime stopTime) {
+    private void setStopTime(LocalDateTime stopTime) {
         if (!canHaveAsStopTime(stopTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
         this.stopTime = stopTime;
     }
 
-    public boolean isDuring(LocalTime time) {
+    public boolean isDuring(LocalDateTime time) {
         return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
     }
 
-    public boolean isDuring(TimePeriod period) {
+    public boolean isDuring(DateTimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }
 
