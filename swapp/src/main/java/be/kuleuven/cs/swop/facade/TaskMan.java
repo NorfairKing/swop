@@ -349,7 +349,7 @@ public class TaskMan implements Serializable {
 		for(ResourceTypeWrapper type : data.getConflicts()){
 			conflicts.add(type.getType());
 		}
-		ResourceType type = getPlanningManager().createResourceType(data.getName(), requires, conflicts);
+		ResourceType type = getPlanningManager().createResourceType(data.getName(), requires, conflicts, data.isSelfConflicting());
 		return new ResourceTypeWrapper(type);
 	}
 

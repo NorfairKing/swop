@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class TimeConstrainedResourceType extends ResourceType {
 
-    public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts) {
-        super(name, requirements, conflicts);
+    public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting) {
+        super(name, requirements, conflicts, selfConflicting);
     }
 
     private LocalTime startTimeConstraint;

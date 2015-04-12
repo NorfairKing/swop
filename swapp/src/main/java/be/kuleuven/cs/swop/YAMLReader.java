@@ -82,16 +82,24 @@ public class YAMLReader {
 
 				// Conflicts
 				Set<ResourceTypeWrapper> conflicts = new HashSet<ResourceTypeWrapper>();
-				List<Integer> confs = (List<Integer>) resourceType.get("requires");
+				List<Integer> confs = (List<Integer>) resourceType.get("conflictsWith");
+				boolean selfConflicting = false; // Resourcetypes can conflict with themselves.
 				if (confs != null) {
 					for (int index : confs) {
+						if(index == resourceTypes.size()){
+							selfConflicting = true;
+							continue;
+						}
 						ResourceTypeWrapper conf = resourceTypes.get(index);
 						conflicts.add(conf);                                                
 					}
 				}
+				
+				//TODO: deal with dailyAvailability
 
 				String name = (String) resourceType.get("name");
-				ResourceTypeWrapper newType = facade.createResourceType(new ResourceTypeData(name, requirements, conflicts));
+				ResourceTypeWrapper newType = facade.createResourceType(new ResourceTypeData(name, requirements, conflicts, selfConflicting));
+				
 				resourceTypes.add(newType);
 			}
 
@@ -225,9 +233,6 @@ public class YAMLReader {
 					}
 				}
 				planningDevelopers.put(planningIndex, currentDevs);
-
-
-				// DEAL PROPERLY WITH PLANNINGS AND RESERVATIONS
 				planningIndex++;
 			}
 
@@ -242,7 +247,7 @@ public class YAMLReader {
 				taskResources.get(task).add(resource);
 			}
 
-			// Save all the plannins
+			// Save all the plannings
 			for(TaskWrapper task : tasks){
 				if(planningTasks.containsKey(task)){
 					int planningId = planningTasks.get(task);
@@ -254,13 +259,15 @@ public class YAMLReader {
 			}
 
 
-
+			System.out.println("Imported.");
 
 		} catch (FileNotFoundException e) {
 			System.out.println("Couldn't import data from file: Not found.");
 		} catch (DateTimeParseException e) {
-			System.out.println("Couldn't import data from file: Invalid date format");
+			System.out.println("Couldn't import data from file: Invalid date format.");
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			System.out.println("Couldn't import data from file: Missing fields. This probably means you're importing an old file.");
 		}
 	}
 }

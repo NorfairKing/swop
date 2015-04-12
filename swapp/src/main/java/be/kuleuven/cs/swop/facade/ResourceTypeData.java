@@ -7,10 +7,12 @@ public class ResourceTypeData {
 	private String name;
 	private Set<ResourceTypeWrapper> requires;
 	private Set<ResourceTypeWrapper> conflicts;
-	public ResourceTypeData(String name, Set<ResourceTypeWrapper> requires, Set<ResourceTypeWrapper> conflicts ){
+	private boolean selfConflicting;
+	public ResourceTypeData(String name, Set<ResourceTypeWrapper> requires, Set<ResourceTypeWrapper> conflicts, boolean selfConflicting ){
 		this.setName(name);
 		this.setRequires(requires);
 		this.setConflicts(conflicts);
+		this.setSelfConflicting(selfConflicting);
 	}
 	public String getName() {
 		return name;
@@ -29,6 +31,12 @@ public class ResourceTypeData {
 	}
 	public void setConflicts(Set<ResourceTypeWrapper> conflicts) {
 		this.conflicts = conflicts;
+	}
+	public boolean isSelfConflicting() {
+		return selfConflicting;
+	}
+	public void setSelfConflicting(boolean selfConflicting) {
+		this.selfConflicting = selfConflicting;
 	}
 
 }
