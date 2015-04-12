@@ -429,6 +429,14 @@ public class TaskMan implements Serializable {
 		}
 		return obj;
 	}
+	
+	public Set<ResourceTypeWrapper> getResourceTypes(){
+		Set<ResourceTypeWrapper> result = new HashSet<ResourceTypeWrapper>();
+		for (ResourceType realType : getPlanningManager().getResourceTypes()) {
+			result.add(new ResourceTypeWrapper(realType));
+		}
+		return result;
+	}
 
 	private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
 

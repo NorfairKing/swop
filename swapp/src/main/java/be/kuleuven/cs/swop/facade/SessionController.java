@@ -174,11 +174,12 @@ public class SessionController {
             if (project == null) return;
 
             // The system shows the task creation form
-            TaskData data = getUi().getTaskData();
+            Set<ResourceTypeWrapper> resourceTypes = getTaskMan().getResourceTypes();
+            TaskData data = getUi().getTaskData(resourceTypes);
 
-            // if the user indiactes he wants to leave the overview.
-            if (data == null) return;
-
+            // if the user indicates he wants to leave the overview.
+            if (data == null) return;            
+            
             // The system creates the task
             try {
                 getTaskMan().createTaskFor(project, data);

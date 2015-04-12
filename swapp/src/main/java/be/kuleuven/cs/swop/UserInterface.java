@@ -115,7 +115,7 @@ public interface UserInterface {
      *
      * @return Returns a TaskData object containing the data for creating a Task.
      */
-    public TaskData getTaskData();
+    public TaskData getTaskData(Set<ResourceTypeWrapper> types);
 
     /**
      * Request data from the user for finishing or failing a Task,

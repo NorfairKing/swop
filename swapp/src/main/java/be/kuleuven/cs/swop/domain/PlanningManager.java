@@ -186,6 +186,10 @@ public class PlanningManager implements Serializable {
         resourceTypes.add(type);
         return type;
     }
+    
+    public ImmutableSet<ResourceType> getResourceTypes(){
+    	return ImmutableSet.copyOf(resourceTypes);
+    }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static String ERROR_ILLEGAL_ACTIVE_USER = "Illegal active user in Planning manager.";

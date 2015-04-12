@@ -97,7 +97,7 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData() {
+    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
         return requestTaskData;
     }
 

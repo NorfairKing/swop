@@ -251,7 +251,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData() {
+    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
@@ -263,7 +263,18 @@ public class CLI implements UserInterface {
         System.out.print("# Acceptable Deviation (%): ");
         double acceptableDeviation = promptPercentageAsDouble();
 
-        return new TaskData(description, estimatedDuration, acceptableDeviation, null); //TODO: add support for requirements
+        Map<ResourceTypeWrapper, Integer> reqs = new HashMap<ResourceTypeWrapper, Integer>();
+        while(true){
+        	ResourceTypeWrapper selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
+        	if(selectedType == null){
+        		break;
+        	}
+        	int amount = promptPosInteger("Quantity required");
+        	reqs.put(selectedType, amount);
+        	types.remove(selectedType);
+        }
+        
+        return new TaskData(description, estimatedDuration, acceptableDeviation, reqs);
 
     }
 
@@ -507,6 +518,25 @@ public class CLI implements UserInterface {
             try {
                 inputIndex = Integer.parseInt(this.getScanner().nextLine());
                 validInput = (inputIndex >= lo && inputIndex <= hi);
+            } catch (NumberFormatException e) {
+                validInput = false;
+            }
+            if (!validInput) {
+                System.out.println("Invalid input, try again!");
+            }
+        } while (!validInput);
+        return inputIndex;
+    }
+    
+    private int promptPosInteger(String question){
+        boolean validInput;
+
+        int inputIndex = 0;
+        do {
+            System.out.print(question + ": ");
+            try {
+                inputIndex = Integer.parseInt(this.getScanner().nextLine());
+                validInput = (inputIndex > 0);
             } catch (NumberFormatException e) {
                 validInput = false;
             }

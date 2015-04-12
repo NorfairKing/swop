@@ -115,7 +115,7 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData() {
+    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
         if (random.nextBoolean()) return null;
         String description = randomString();
         boolean negative1 = random.nextBoolean();
