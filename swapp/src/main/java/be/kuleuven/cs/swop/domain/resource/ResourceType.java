@@ -2,20 +2,29 @@ package be.kuleuven.cs.swop.domain.resource;
 
 import java.util.Set;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.google.common.collect.ImmutableSet;
 
+import be.kuleuven.cs.swop.domain.TimePeriod;
 
 public class ResourceType implements Serializable {
 
     private String            name;
     private Set<ResourceType> requirements;
     private Set<ResourceType> conflictsWith;
+    private TimePeriod        dailyAvailability;
+    private boolean           hasAvailabilityPeriod = false;
 
     public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts) {
         this.setName(name);
         this.setRequirements(requirements);
         this.setConflictsWith(conflicts);
+    }
+
+    public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, TimePeriod dailyAvailability) {
+        this(name, requirements, conflicts);
+        this.setDailyAvailability(dailyAvailability);
     }
 
     public ImmutableSet<ResourceType> getRequirements() {
@@ -40,6 +49,16 @@ public class ResourceType implements Serializable {
         this.conflictsWith = conflictsWith;
     }
 
+    private void setDailyAvailability(TimePeriod availability) {
+        if(!canHaveAsAvailability(availability)) throw new IllegalArgumentException(ERROR_ILLEGAL_AVAILABILITY);
+        this.dailyAvailability = availability;
+        this.hasAvailabilityPeriod = true;
+    }
+
+    protected boolean canHaveAsAvailability(TimePeriod availability) {
+        return availability != null;
+    }
+
     protected boolean canHaveAsConflictsWith(Set<ResourceType> conflictsWith) {
         return conflictsWith != null;
     }
@@ -57,7 +76,20 @@ public class ResourceType implements Serializable {
         return this.name;
     }
 
+    private TimePeriod getDailyAvailability() {
+        return this.dailyAvailability;
+    }
+
+    public boolean isAvailableDuring(LocalDateTime time) {
+        if (this.hasAvailabilityPeriod) {
+            return this.getDailyAvailability().isDuring(time);
+        } else {
+            return true;
+        }
+    }
+
     private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
     private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";
     private static final String ERROR_ILLEGAL_NAME         = "Illegal name for resource type.";
+    private static final String ERROR_ILLEGAL_AVAILABILITY = "Illegal daily availability TimePeriod for resource type.";
 }

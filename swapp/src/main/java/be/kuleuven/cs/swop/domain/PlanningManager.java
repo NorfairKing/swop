@@ -83,7 +83,7 @@ public class PlanningManager implements Serializable {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
-        Set<Resource> availableResources = new HashSet<Resource>(this.resources);
+        Set<Resource> availableResources = new HashSet<Resource>(this.resources.stream().filter(r -> r.getType().isAvailableDuring(time)).collect(Collectors.toSet()));
         availableResources.removeAll(usedResources);
         Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
         availableDevelopers.removeAll(usedDevelopers);
