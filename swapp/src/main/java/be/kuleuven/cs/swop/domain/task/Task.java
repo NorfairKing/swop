@@ -402,6 +402,9 @@ public class Task implements Serializable {
         Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
         for (Requirement req : recReqs) {
             for (ResourceType conflictType : req.getType().getConflictsWith()) {
+                if (conflictType == req.getType() && req.getAmount() > 1) {
+                    return true;
+                }
                 for (Requirement req2 : recReqs) {
                     if (conflictType == req2.getType()) {
                         return true;
