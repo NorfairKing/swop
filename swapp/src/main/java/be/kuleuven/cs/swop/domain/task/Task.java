@@ -9,6 +9,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
+import be.kuleuven.cs.swop.domain.resource.ResourceType;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -341,7 +342,7 @@ public class Task implements Serializable {
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null;
+        return requirements != null && !this.hasConflictingRequirements(requirements);
     }
 
     public DateTimePeriod getPerformedDuring() {
@@ -366,6 +367,49 @@ public class Task implements Serializable {
 
     public Task getAlternative() {
         return status.getAlternative();
+    }
+
+    private Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
+        Set<ResourceType> types = new HashSet<ResourceType>();
+        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndRequirementsRecursiveTo(types));;
+        return types;
+    }
+
+    public ImmutableSet<Requirement> getRecursiveRequirements() {
+        return this.getRecursiveRequirements(this.getRequirements());
+    }
+
+    public ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
+        Set<ResourceType> types = this.getRecursiveResourceTypes(reqs);
+        Set<Requirement> response = new HashSet<Requirement>();
+        for (ResourceType type : types) {
+            boolean found = false;
+            for (Requirement req : reqs) {
+                if ( type == req.getType() ) {
+                    response.add(req);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                response.add(new Requirement(1, type));
+            }
+        }
+        return ImmutableSet.copyOf(response);
+    }
+
+    public boolean hasConflictingRequirements(Set<Requirement> reqs) {
+        Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
+        for (Requirement req : recReqs) {
+            for (ResourceType conflictType : req.getType().getConflictsWith()) {
+                for (Requirement req2 : recReqs) {
+                    if (conflictType == req2.getType()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";

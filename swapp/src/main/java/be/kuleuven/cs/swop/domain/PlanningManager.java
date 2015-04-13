@@ -65,7 +65,7 @@ public class PlanningManager implements Serializable {
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
         if (this.resources.isEmpty()) //safety checks
             return timeOptions;
-        if (task.getRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
+        if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
             return timeOptions;
         for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty?
             if (this.isValidTimeForTask(currentTime,task))
@@ -88,7 +88,7 @@ public class PlanningManager implements Serializable {
         availableResources.removeAll(usedResources);
         Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
         availableDevelopers.removeAll(usedDevelopers);
-        for (Requirement req : task.getRequirements()) {
+        for (Requirement req : task.getRecursiveRequirements()) {
             if (!hasResourcesOfType(req.getType(), availableResources, req.getAmount()))
                 return false;
         }
@@ -120,7 +120,7 @@ public class PlanningManager implements Serializable {
         availableResources.removeAll(usedResources);
         availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(time)).collect(Collectors.toSet());
         Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
-        for (Requirement req : task.getRequirements()) {
+        for (Requirement req : task.getRecursiveRequirements()) {
             map.put(req.getType(), this.resources.stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
         }
         return map;

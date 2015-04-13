@@ -42,6 +42,12 @@ public class ResourceType implements Serializable {
 		return requirements != null;
 	}
 
+    public void addThisAndRequirementsRecursiveTo(Set<ResourceType> resourceSet) {
+        resourceSet.add(this);
+        this.getRequirements().stream().filter( req -> !resourceSet.contains(req))
+                                       .forEach( req -> req.addThisAndRequirementsRecursiveTo(resourceSet));
+    }
+
 	public ImmutableSet<ResourceType> getConflictsWith() {
 		return ImmutableSet.copyOf(this.conflictsWith);
 	}
