@@ -64,7 +64,7 @@ public class FinishedStatus extends PerformedStatus {
 
     @Override
     boolean wasFinishedEarly() {
-        return getRealDuration() <= getTask().getBestDuration();
+        return getRealDuration() < getTask().getBestDuration();
     }
 
     private static String ERROR_SET_ALTERNATIVE = "Can't set an alternative for a finished task.";
