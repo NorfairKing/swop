@@ -30,6 +30,10 @@ public class TestingUI implements UserInterface {
     private TaskData          requestTaskData;
     private TaskWrapper       requestTask;
     private TaskStatusData    requestTaskStatusData;
+    private LocalDateTime     requestSelectTime;
+    private Set<ResourceWrapper> requestResourcesSet;
+    private Set<DeveloperWrapper> requestDevelopersSet;
+    private SimulationStepData requestSimStepData;
     
     public void setSelectUser(UserWrapper user) {
         selectUser = user;
@@ -92,6 +96,11 @@ public class TestingUI implements UserInterface {
         return requestTask;
     }
 
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        return requestTask;
+    }
+    
     public void setRequestTaskData(TaskData data) {
         requestTaskData = data;
     }
@@ -146,34 +155,40 @@ public class TestingUI implements UserInterface {
         return true;
     }
 
-    @Override
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        // TODO Auto-generated method stub
-        return null;
+    public void setSelectTime(LocalDateTime time) {
+        requestSelectTime = time;
     }
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        // TODO Auto-generated method stub
-        return null;
+        return requestSelectTime;
+    }
+    
+    public void setSelectResourcesFor(Set<ResourceWrapper> set) {
+        requestResourcesSet = set;
     }
 
     @Override
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
-        // TODO Auto-generated method stub
-        return null;
+        return requestResourcesSet;
+    }
+    
+    public void setSelectDevelopers(Set<DeveloperWrapper> set) {
+        requestDevelopersSet = set;
     }
 
     @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        // TODO Auto-generated method stub
-        return null;
+        return requestDevelopersSet;
+    }
+    
+    public void setSimulationStepData(SimulationStepData data) {
+        requestSimStepData = data;
     }
     
     @Override
     public SimulationStepData getSimulationStepData() {
-        // TODO Auto-generated method stub
-        return null;
+        return requestSimStepData;
     }
 
 }
