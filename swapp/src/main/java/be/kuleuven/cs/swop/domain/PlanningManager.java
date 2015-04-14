@@ -78,13 +78,14 @@ public class PlanningManager implements Serializable {
     private boolean isValidTimeForTask(LocalDateTime time, Task task) {
         Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
+        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedResources.addAll(planning.getReservations());
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
-        Set<Resource> availableResources = new HashSet<Resource>(this.resources.stream().filter(r -> r.getType().isAvailableDuring(time)).collect(Collectors.toSet()));
+        Set<Resource> availableResources = new HashSet<Resource>(this.resources.stream().filter(r -> r.getType().isAvailableDuring(period)).collect(Collectors.toSet()));
         availableResources.removeAll(usedResources);
         Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
         availableDevelopers.removeAll(usedDevelopers);
@@ -111,14 +112,15 @@ public class PlanningManager implements Serializable {
 
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         Set<Resource> usedResources = new HashSet<Resource>();
+        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedResources.addAll(planning.getReservations());
             }
         }
         Set<Resource> availableResources = new HashSet<Resource>(this.resources);
         availableResources.removeAll(usedResources);
-        availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(time)).collect(Collectors.toSet());
+        availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(period)).collect(Collectors.toSet());
         Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
         for (Requirement req : task.getRecursiveRequirements()) {
             map.put(req.getType(), this.resources.stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
@@ -129,8 +131,9 @@ public class PlanningManager implements Serializable {
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         Set<Developer> usedDevelopers = new HashSet<Developer>();
+        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
         for (TaskPlanning planning : this.plannings) {
-            if (planning.getEstimatedOrRealPeriod().isDuring(time)) {
+            if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }

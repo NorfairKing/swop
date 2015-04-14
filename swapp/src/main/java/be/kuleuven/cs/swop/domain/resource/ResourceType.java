@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 import com.google.common.collect.ImmutableSet;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
 @SuppressWarnings("serial")
@@ -102,6 +103,18 @@ public class ResourceType implements Serializable {
 	
 	public boolean isAvailableDuring(LocalDateTime date){
 		return isAvailableDuring(LocalTime.from(date));
+	}
+
+	public boolean isAvailableDuring(TimePeriod period) {
+		if (this.hasAvailabilityPeriod) {
+			return this.getDailyAvailability().isDuring(period);
+		} else {
+			return true;
+		}
+	}
+
+	public boolean isAvailableDuring(DateTimePeriod period){
+		return isAvailableDuring(new TimePeriod(LocalTime.from(period.getStartTime()),LocalTime.from(period.getStopTime())));
 	}
 
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
