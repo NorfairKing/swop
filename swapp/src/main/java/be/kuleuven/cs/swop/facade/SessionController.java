@@ -14,6 +14,7 @@ public class SessionController {
 
     private UserInterface ui;
     private TaskMan       taskMan;
+    private TaskMan.Memento taskManBackup;
 
     /**
      * Full constructor
@@ -115,7 +116,10 @@ public class SessionController {
         ProjectWrapper project = getUi().selectProject(projects);
 
         // if the user indicates he wants to leave the overview.
-        if (project == null) return;
+        if (project == null) {
+            handleSimulationStep();
+            return;
+        }
 
         // The system presents an overview of the project details
         getUi().showProject(project);
@@ -124,12 +128,15 @@ public class SessionController {
         TaskWrapper task = getUi().selectTask(project.getTasks());
 
         // if the user indicates he wants to leave the overview.
-        if (task == null) return;
+        if (task == null) {
+            handleSimulationStep();
+            return;
+        }
 
         // The system presents an overview of the task details
         getUi().showTask(task);
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
@@ -155,7 +162,7 @@ public class SessionController {
             }
         } while (true); // loop until user gives proper data, or cancels.
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
@@ -171,14 +178,14 @@ public class SessionController {
             ProjectWrapper project = getUi().selectProject(projects);
 
             // If the user indicates he wants to leave the overview.
-            if (project == null) return;
+            if (project == null) break;
 
             // The system shows the task creation form
             Set<ResourceTypeWrapper> resourceTypes = getTaskMan().getResourceTypes();
             TaskData data = getUi().getTaskData(resourceTypes);
 
             // if the user indicates he wants to leave the overview.
-            if (data == null) return;            
+            if (data == null) break;            
             
             // The system creates the task
             try {
@@ -190,7 +197,7 @@ public class SessionController {
             }
         } while (true); // loop until proper data is given, or the user cancels.
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
@@ -207,33 +214,45 @@ public class SessionController {
         }
         // The user selects the tasks he wants to plan
         TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
-        if (selectedTask == null) return;
+        if (selectedTask == null) {
+            handleSimulationStep();
+            return;
+        }
 
         List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
 
         // The system shows the first three possible starting times.
         // The user selects a proposed time
         LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-        if (chosenTime == null) return;
+        if (chosenTime == null) {
+            handleSimulationStep();
+            return;
+        }
 
         Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = taskMan.getPlanningResourceOptions(selectedTask, chosenTime);
         Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
-        if (chosenResources == null) return;
+        if (chosenResources == null) {
+            handleSimulationStep();
+            return;
+        }
 
         Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
         Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
-        if (chosenDevelopers == null) return;
+        if (chosenDevelopers == null) {
+            handleSimulationStep();
+            return;
+        }
 
         taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
     public void startResolveConflictSession() {
 
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
@@ -249,10 +268,14 @@ public class SessionController {
         TaskWrapper task = getUi().selectTaskFromProjects(projects);
 
         // if the user indicates he wants to leave the overview.
-        if (task == null) return;
+        if (task == null) {
+            handleSimulationStep();
+            return;
+        }
+        
         if(task.isFinal()){
         	System.out.println("Can't update task: this task is already final.");
-        	return;
+        	handleSimulationStep();
         }
 
         do {
@@ -261,7 +284,7 @@ public class SessionController {
                 TaskStatusData statusData = getUi().getUpdateStatusData(task);
 
                 // if the user cancels.
-                if (statusData == null) return;
+                if (statusData == null) break;
 
                 // the system updates the task status
                 getTaskMan().updateTaskStatusFor(task, statusData);
@@ -275,7 +298,7 @@ public class SessionController {
             }
         } while (true); // loop until proper data was given or user canceled.
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
@@ -288,16 +311,18 @@ public class SessionController {
         LocalDateTime time = getUi().getTimeStamp();
 
         // if the user cancels.
-        if (time == null) return;
+        if (time == null) {
+            handleSimulationStep();
+            return;
+        }
 
         // the system updates the system time.
         getTaskMan().updateSystemTime(time);
         
-        // Handle the simulation step in in a simulation
+        // End session
         handleSimulationStep();
     }
 
-    TaskMan.Memento taskManBackup;
     public void startRunSimulationSession() {
         // The user indicates he wants to start a simulation
         taskManBackup = getTaskMan().saveToMemento();
