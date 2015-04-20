@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.domain.resource;
 
 
 import java.io.Serializable;
+import java.util.Set;
 
 
 @SuppressWarnings("serial")
@@ -39,6 +40,19 @@ public class Requirement implements Serializable {
     public void setType(ResourceType type) {
         if (!canHaveAsType(type)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE); }
         this.type = type;
+    }
+
+    public boolean isSatisfiedWith(Set<Resource> resources) {
+        int counter = 0;
+        for (Resource resource : resources) {
+            if (resource.getType() == this.getType()) {
+                counter++;
+            }
+            if (counter > this.getAmount()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String ERROR_ILLEGAL_AMOUNT = "Illegal amount for requirement";
