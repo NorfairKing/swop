@@ -39,14 +39,14 @@ public class Task implements Serializable {
      *            The acceptable deviation of time in which the task can be completed.
      */
     public Task(String description, long estimatedDuration, double acceptableDeviation) {
+        this(description,estimatedDuration,acceptableDeviation,null);
+    }
+
+    public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
-    }
-
-    public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
-        this(description, estimatedDuration, acceptableDeviation);
         this.setRequirements(requirements);
     }
 
@@ -337,8 +337,9 @@ public class Task implements Serializable {
     }
 
     private void setRequirements(Set<Requirement> requirements) {
+        if(requirements == null){return;}
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
-        this.requirements = requirements;
+        this.requirements.addAll(requirements);
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {

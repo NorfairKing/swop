@@ -99,8 +99,8 @@ public class SessionController {
         UserWrapper user = getUi().selectUser(users);
         
         if (user == null) return;
-        
-        getTaskMan().setActiveUser(user);
+        // what do we do here?
+        //getTaskMan().setActiveUser(user);
     }
 
     /**

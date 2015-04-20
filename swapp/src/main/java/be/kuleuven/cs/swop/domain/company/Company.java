@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -53,6 +56,14 @@ public class Company {
     public ImmutableSet<Project> getProjects() {
         return getProjectManager().getProjects();
     }
+    
+    public ImmutableSet<ResourceType> getResourceTypes() {
+        return getPlanningManager().getResourceTypes();
+    }
+    
+    public Project getProjectFor(Task task){
+        return getProjectManager().getProjectFor(task);
+    }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
         Set<Task> all = project.getTasks();
@@ -90,4 +101,44 @@ public class Company {
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
         return getProjectManager().createProject(title, description, creationTime, dueTime);
     }
+
+    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
+        Task t = project.createTask(description, estimatedDuration, acceptableDeviation);
+        dependencies.forEach(d -> t.addDependency(d));
+        return t;
+    }
+    
+    public void setAlternativeFor(Task t, Task alt){
+        t.addAlternative(alt);
+    }
+    
+    public void addDependencyTo(Task t,Task dep){
+        t.addDependency(dep);
+    }
+    
+    public void finishTask(Task t, DateTimePeriod period){
+        t.finish(period);
+    }
+    
+    public void failTask(Task t,DateTimePeriod period){
+        t.fail(period);
+    }
+    
+    public void startExecutingTask(Task t){
+        t.execute();
+    }
+    
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability){
+        return getPlanningManager().createResourceType(name, requires, conflicts, selfConflicting, availability);
+    }
+    
+    public Resource createResource(String name, ResourceType type){
+        return getPlanningManager().createResource(name, type);
+    }
+
+    public Developer createDeveloper(String name) {
+        return getPlanningManager().createDeveloper(name);
+    }
+
+
 }
