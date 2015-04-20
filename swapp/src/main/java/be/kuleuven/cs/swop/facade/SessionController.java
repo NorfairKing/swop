@@ -274,7 +274,7 @@ public class SessionController {
         }
         
         if(task.isFinal()){
-        	System.out.println("Can't update task: this task is already final.");
+            getUi().showError("Can't update task: this task is already final.");
         	handleSimulationStep();
         	return;
         }
