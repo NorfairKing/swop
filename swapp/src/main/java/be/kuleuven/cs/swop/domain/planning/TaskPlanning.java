@@ -83,7 +83,7 @@ public class TaskPlanning implements Serializable {
     private void setReservations(Set<Resource> reservations) {
         if (!canHaveAsReservations(reservations)) {
             throw new InvalidParameterException("Invalid reservations set for planning.");
-        }
+        }//FIXME correct resources and developers
         this.reservations.clear();
         this.reservations.addAll(reservations);
     }

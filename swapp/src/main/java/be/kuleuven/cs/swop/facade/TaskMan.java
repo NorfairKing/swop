@@ -395,7 +395,8 @@ public class TaskMan implements Serializable {
 	}
 
 	public static class Memento {
-		private TaskMan state;
+
+        private TaskMan state;
 
 		public Memento(TaskMan state) {
 			this.state = state.getDeepCopy();
