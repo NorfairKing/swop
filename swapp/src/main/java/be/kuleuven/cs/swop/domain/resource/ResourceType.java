@@ -91,7 +91,7 @@ public class ResourceType implements Serializable {
 	}
 
 	public boolean isAvailableDuring(DateTimePeriod period){
-		return isAvailableDuring(new TimePeriod(LocalTime.from(period.getStartTime()),LocalTime.from(period.getStopTime())));
+        return true;
 	}
 
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
