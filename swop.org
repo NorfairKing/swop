@@ -195,3 +195,13 @@ Status is 'available' voor specifieke user, dus misschien een Login-manager die 
 
 *** Reservations
 Als een task langer duurt dan verwacht, dan worden zijn resources ook langer gebruikt. Een TaskPlanning zijn period gaat dan ook aangeven dat deze langer geduurd heeft.
+
+* Vragen: 20 april
+- Kunnen er meerdere managers zijn, of is er gewoon een 'manager mode' waarin planning gedaan kan worden?
+- User access control? User heeft hoop methodes "canDo..." voor elke functionaliteit? Meerdere facade-controllers (per user-soort één)?
+- Moet een task-planning wie dat hem geplant heeft?
+- Moet de UI geresctricteerd worden gebaseerd op de user?
+- Parallelle classe-structuren (data objecten), kan dat beter?
+- Planning, specifieke resource vs type.
+- TimeCalculator = singleton?
+- Geneste simulaties?
