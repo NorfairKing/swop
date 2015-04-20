@@ -14,39 +14,39 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 public class ResourceType implements Serializable {
 
 	private String            name;
-	private Set<ResourceType> requirements;
+	private Set<ResourceType> dependencies;
 	private Set<ResourceType> conflictsWith;
-	private TimePeriod        dailyAvailability;
-	private boolean           hasAvailabilityPeriod = false;
 
-	public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting) {
+	/**
+	 * 
+	 * @param name
+	 * @param dependencies
+	 * @param conflicts
+	 * @param selfConflicting want alsge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types
+	 */
+	public ResourceType(String name, Set<ResourceType> dependencies, Set<ResourceType> conflicts, boolean selfConflicting) {
 		this.setName(name);
-		this.setRequirements(requirements);
+		this.setDependencies(dependencies);
 		this.setConflictsWith(conflicts, selfConflicting);
 	}
 
-	public ResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod dailyAvailability) {
-		this(name, requirements, conflicts, selfConflicting);
-		this.setDailyAvailability(dailyAvailability);
-	}
-
 	public ImmutableSet<ResourceType> getRequirements() {
-		return ImmutableSet.copyOf(this.requirements);
+		return ImmutableSet.copyOf(this.dependencies);
 	}
 
-	private void setRequirements(Set<ResourceType> requirements) {
-		if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
-		this.requirements = requirements;
+	private void setDependencies(Set<ResourceType> dependenciess) {
+		if (!canHaveAsDependencies(dependenciess)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+		this.dependencies = dependenciess;
 	}
 
-	protected boolean canHaveAsRequirements(Set<ResourceType> requirements) {
-		return requirements != null;
+	protected boolean canHaveAsDependencies(Set<ResourceType> dependencies) {
+		return dependencies != null;
 	}
 
-    public void addThisAndRequirementsRecursiveTo(Set<ResourceType> resourceSet) {
+    public void addThisAndDependenciesRecursiveTo(Set<ResourceType> resourceSet) {
         resourceSet.add(this);
         this.getRequirements().stream().filter( req -> !resourceSet.contains(req))
-                                       .forEach( req -> req.addThisAndRequirementsRecursiveTo(resourceSet));
+                                       .forEach( req -> req.addThisAndDependenciesRecursiveTo(resourceSet));
     }
 
 	public ImmutableSet<ResourceType> getConflictsWith() {
@@ -59,16 +59,6 @@ public class ResourceType implements Serializable {
 		if(selfConflicting){
 			this.conflictsWith.add(this);
 		}
-	}
-
-	private void setDailyAvailability(TimePeriod availability) {
-		if(!canHaveAsAvailability(availability)) throw new IllegalArgumentException(ERROR_ILLEGAL_AVAILABILITY);
-		this.dailyAvailability = availability;
-		this.hasAvailabilityPeriod = true;
-	}
-
-	protected boolean canHaveAsAvailability(TimePeriod availability) {
-		return availability != null;
 	}
 
 	protected boolean canHaveAsConflictsWith(Set<ResourceType> conflictsWith) {
@@ -88,29 +78,16 @@ public class ResourceType implements Serializable {
 		return this.name;
 	}
 
-	private TimePeriod getDailyAvailability() {
-		return this.dailyAvailability;
-	}
-
 	
 	public boolean isAvailableDuring(LocalTime time) {
-		if (this.hasAvailabilityPeriod) {
-			return this.getDailyAvailability().isDuring(time);
-		} else {
-			return true;
-		}
+        return true;
 	}
 	
-	public boolean isAvailableDuring(LocalDateTime date){
+    public boolean isAvailableDuring(LocalDateTime date){
 		return isAvailableDuring(LocalTime.from(date));
-	}
-
+    }
 	public boolean isAvailableDuring(TimePeriod period) {
-		if (this.hasAvailabilityPeriod) {
-			return this.getDailyAvailability().isDuring(period);
-		} else {
-			return true;
-		}
+	    return true;
 	}
 
 	public boolean isAvailableDuring(DateTimePeriod period){
@@ -120,5 +97,4 @@ public class ResourceType implements Serializable {
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
 	private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";
 	private static final String ERROR_ILLEGAL_NAME         = "Illegal name for resource type.";
-	private static final String ERROR_ILLEGAL_AVAILABILITY = "Illegal daily availability TimePeriod for resource type.";
 }

@@ -371,7 +371,7 @@ public class Task implements Serializable {
 
     private Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
         Set<ResourceType> types = new HashSet<ResourceType>();
-        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndRequirementsRecursiveTo(types));;
+        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndDependenciesRecursiveTo(types));;
         return types;
     }
 

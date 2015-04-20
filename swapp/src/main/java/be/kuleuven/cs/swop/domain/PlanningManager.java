@@ -17,6 +17,7 @@ import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.resource.Requirement;
 import be.kuleuven.cs.swop.domain.resource.Resource;
 import be.kuleuven.cs.swop.domain.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.task.Task;
 import be.kuleuven.cs.swop.domain.user.Developer;
 import be.kuleuven.cs.swop.domain.user.User;
@@ -183,7 +184,7 @@ public class PlanningManager implements Serializable {
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
     	ResourceType type;
     	if(availability != null){
-        	type = new ResourceType(name,requires,conflicts, selfConflicting, availability);
+        	type = new TimeConstrainedResourceType(name,requires,conflicts, selfConflicting, availability);
         }else{
         	type = new ResourceType(name,requires,conflicts, selfConflicting);
         }
