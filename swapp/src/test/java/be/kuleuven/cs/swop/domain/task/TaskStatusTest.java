@@ -10,9 +10,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import be.kuleuven.cs.swop.domain.task.FailedStatus;
-import be.kuleuven.cs.swop.domain.task.FinishedStatus;
-import be.kuleuven.cs.swop.domain.task.OngoingStatus;
+import be.kuleuven.cs.swop.domain.company.task.FailedStatus;
+import be.kuleuven.cs.swop.domain.company.task.FinishedStatus;
+import be.kuleuven.cs.swop.domain.company.task.OngoingStatus;
+import be.kuleuven.cs.swop.domain.company.task.Task;
 
 public class TaskStatusTest {
 

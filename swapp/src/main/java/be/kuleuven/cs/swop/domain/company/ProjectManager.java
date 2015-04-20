@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.company;
 
 
 import java.io.Serializable;
@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.project.Project;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.task.Task;
 
 import com.google.common.collect.ImmutableSet;
 

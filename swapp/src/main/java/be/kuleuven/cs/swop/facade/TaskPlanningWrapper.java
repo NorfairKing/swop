@@ -5,9 +5,9 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
-import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 public class TaskPlanningWrapper {

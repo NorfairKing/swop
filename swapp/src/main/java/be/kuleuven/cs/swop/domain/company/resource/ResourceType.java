@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.resource;
+package be.kuleuven.cs.swop.domain.company.resource;
 
 import java.util.Set;
 import java.io.Serializable;

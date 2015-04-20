@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.task.Task;
+import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class TaskWrapper {

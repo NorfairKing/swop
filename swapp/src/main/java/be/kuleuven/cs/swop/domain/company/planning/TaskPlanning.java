@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.planning;
+package be.kuleuven.cs.swop.domain.company.planning;
 
 
 import java.io.Serializable;
@@ -10,10 +10,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.resource.Requirement;
-import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.task.Task;
-import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.task.Task;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 @SuppressWarnings("serial")

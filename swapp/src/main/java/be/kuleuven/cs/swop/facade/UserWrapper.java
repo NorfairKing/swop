@@ -1,6 +1,6 @@
 package be.kuleuven.cs.swop.facade;
 
-import be.kuleuven.cs.swop.domain.user.User;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 public class UserWrapper {

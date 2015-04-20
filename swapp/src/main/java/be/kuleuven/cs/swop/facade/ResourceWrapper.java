@@ -1,6 +1,6 @@
 package be.kuleuven.cs.swop.facade;
 
-import be.kuleuven.cs.swop.domain.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
 
 public class ResourceWrapper {
     

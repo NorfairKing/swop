@@ -1,7 +1,7 @@
 package be.kuleuven.cs.swop.facade;
 
 
-import be.kuleuven.cs.swop.domain.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 public class DeveloperWrapper {

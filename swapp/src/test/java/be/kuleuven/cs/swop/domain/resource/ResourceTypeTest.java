@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+
 
 public class ResourceTypeTest {
     

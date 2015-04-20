@@ -12,7 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import be.kuleuven.cs.swop.domain.project.Project;
+import be.kuleuven.cs.swop.domain.company.ProjectManager;
+import be.kuleuven.cs.swop.domain.company.project.Project;
 
 
 public class ProjectManagerTest {

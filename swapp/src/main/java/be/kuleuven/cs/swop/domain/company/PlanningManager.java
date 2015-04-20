@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.company;
 
 
 import java.io.Serializable;
@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
-import be.kuleuven.cs.swop.domain.planning.TaskPlanning;
-import be.kuleuven.cs.swop.domain.resource.Requirement;
-import be.kuleuven.cs.swop.domain.resource.Resource;
-import be.kuleuven.cs.swop.domain.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.resource.TimeConstrainedResourceType;
-import be.kuleuven.cs.swop.domain.task.Task;
-import be.kuleuven.cs.swop.domain.user.Developer;
-import be.kuleuven.cs.swop.domain.user.User;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
+import be.kuleuven.cs.swop.domain.company.task.Task;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.User;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
+import be.kuleuven.cs.swop.domain.TimePeriod;
 
 @SuppressWarnings("serial")
 public class PlanningManager implements Serializable {
@@ -30,7 +32,6 @@ public class PlanningManager implements Serializable {
     private Set<Resource> resources = new HashSet<Resource>();
     private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
     private Set<Developer> developers = new HashSet<Developer>();
-    private User activeUser;
 
     public ImmutableSet<TaskPlanning> getTaskPlannings() {
         return ImmutableSet.copyOf(plannings);
@@ -150,17 +151,6 @@ public class PlanningManager implements Serializable {
     
     public ImmutableSet<Developer> getDevelopers() {
         return ImmutableSet.copyOf(developers);
-    }
-    
-    public User getActiveUser() {
-        return activeUser;
-    }
-
-    public void setActiveUser(User user) {
-        if (!canHaveAsActiveUser(user)) {
-            throw new IllegalArgumentException(ERROR_ILLEGAL_ACTIVE_USER);
-        }
-        this.activeUser = user;
     }
     
     public boolean canHaveAsActiveUser(User user) {

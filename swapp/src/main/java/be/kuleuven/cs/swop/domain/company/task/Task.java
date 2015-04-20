@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.task;
+package be.kuleuven.cs.swop.domain.company.task;
 
 
 import java.io.Serializable;
@@ -8,8 +8,8 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.resource.Requirement;
-import be.kuleuven.cs.swop.domain.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 import com.google.common.collect.ImmutableSet;
 
