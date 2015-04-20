@@ -11,22 +11,21 @@ Task --> "0..1" Task : alternative >
 Task --> "0..*"  Task : dependsOn >
 Task --> "1" TimePeriod : performedDuring >
 
-Task ..> AvailableStatus
-Task ..> UnavailableStatus
-Task ..> FinishedStatus
-Task ..> FailedStatus
+Task ..> OngoingStatus
 
 TimePeriod --> "1" Date : startTime
 TimePeriod --> "1" Date : endTime
 
-TaskStatus <|-- AvailableStatus
-TaskStatus <|-- UnavailableStatus
-TaskStatus <|-- FinishedStatus
-TaskStatus <|-- FailedStatus
+TaskStatus --> "knows his" Task
+TaskStatus <|-- IncompleteStatus
+TaskStatus <|-- PerformedStatus
+IncompleteStatus <|-- OngoingStatus
+IncompleteStatus <|-- ExecutingStatus
+PerformedStatus <|-- FinishedStatus
+PerformedStatus <|-- FailedStatus
 
 class ProjectManager {
-
-    Project createProject(String title, String description, Date dueTime)
+    Project createProject(...)
     void initialiseWith(String initFile)
 }
 
@@ -36,7 +35,7 @@ class Project {
   Date creationTime
   Date dueTime
 
-  void createTask(String description, double estimatedDuration, double acceptableDeviation)
+  void createTask(...)
 }
 
 class Task {
@@ -44,25 +43,31 @@ class Task {
   double estimatedDuration
   double acceptableDeviation
 
-  void finish(TimePeriod performedDuring)
-  void fail(TimePeriod performedDuring)
+  void finish(TimePeriod perfDuring)
+  void fail(TimePeriod perfDuring)
 }
 
 class TaskStatus {
+  Task task
+
   boolean isFinished()
   boolean isFailed()
-  boolean canFinish()
-  boolean canFail()
-  boolean isFinal()
 }
 
-class AvailableStatus{
+class IncompleteStatus {
 }
-class UnavailableStatus{
+class ExecutingStatus {
 }
-class FinishedStatus{
+class OngoingStatus {
 }
-class FailedStatus{
+
+class PerformedStatus {
+  DateTimePeriod performedDuring
+}
+class FinishedStatus {
+}
+class FailedStatus {
+  Task alternative
 }
 
 class TimePeriod {
