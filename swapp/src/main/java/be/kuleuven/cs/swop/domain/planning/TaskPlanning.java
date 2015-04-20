@@ -37,7 +37,7 @@ public class TaskPlanning implements Serializable {
 
     private void setDevelopers(Set<Developer> developers) {
         if (!canHaveAsDevelopers(developers)) {
-            throw new InvalidParameterException("Invalid developers set for planning.");
+            throw new InvalidParameterException(ERROR_INVALID_DEVELOPERS);
         }
         this.developers.clear();
         this.developers.addAll(developers);
@@ -53,7 +53,7 @@ public class TaskPlanning implements Serializable {
 
     public void setTask(Task task) {
         if (!canHaveAsTask(task)) {
-            throw new IllegalArgumentException("Invalid task for this planning.");
+            throw new IllegalArgumentException(ERROR_INVALID_TASK);
         }
         this.task = task;
     }
@@ -68,7 +68,7 @@ public class TaskPlanning implements Serializable {
 
     public void setPlannedStartTime(LocalDateTime plannedStartTime) {
         if (!canHaveAsPlannedStartTime(plannedStartTime)) {
-            throw new IllegalArgumentException("Invalid startime for this planning.");
+            throw new IllegalArgumentException(ERROR_INVALID_STARTIME);
         }
         this.plannedStartTime = plannedStartTime;
     }
@@ -83,7 +83,7 @@ public class TaskPlanning implements Serializable {
 
     private void setReservations(Set<Resource> reservations) {
         if (!canHaveAsReservations(reservations)) {
-            throw new InvalidParameterException("Invalid reservations set for planning.");
+            throw new InvalidParameterException(ERROR_INVALID_RESERVATIONS);
         }//FIXME correct resources and developers
         this.reservations.clear();
         this.reservations.addAll(reservations);
@@ -106,4 +106,8 @@ public class TaskPlanning implements Serializable {
         }
     }
 
+    private static final String ERROR_INVALID_DEVELOPERS = "Invalid developers set for planning.";
+    private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations set for planning.";
+    private static final String ERROR_INVALID_STARTIME = "Invalid startime for this planning.";
+    private static final String ERROR_INVALID_TASK = "Invalid task for this planning.";
 }
