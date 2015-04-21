@@ -2,6 +2,8 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -64,6 +66,18 @@ public class OngoingStatus extends IncompleteStatus {
     @Override
     boolean canFail() {
         return true;
+    }
+    
+    @Override
+    boolean canExecute(User user) {
+    	//TODO: Check if all the conditions are met, some are missing (resources, are developers assigned, etc)
+    	if(!(user instanceof Developer)){
+    		return false;
+    	}
+    	if(getTask().hasUnfinishedDependencies()){
+    		return false;
+    	}
+    	return true;
     }
 
     @Override

@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -35,6 +36,11 @@ public class ExecutingStatus extends IncompleteStatus {
     @Override
     boolean canFail() {
         return true;
+    }
+    
+    @Override
+    boolean canExecute(User user) {
+    	return false;
     }
 
     @Override

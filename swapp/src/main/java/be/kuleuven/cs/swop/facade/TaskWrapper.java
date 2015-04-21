@@ -192,6 +192,10 @@ public class TaskWrapper {
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentTime) {
         return getTask().getEstimatedOrRealFinishDate(currentTime);
     }
+    
+    public boolean canExecute(UserWrapper user){
+    	return getTask().canExecute(user.getUser());
+    }
 
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";
 

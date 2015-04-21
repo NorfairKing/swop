@@ -5,7 +5,12 @@ import static org.junit.Assert.*;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,8 +18,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.DeveloperData;
+import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
+import be.kuleuven.cs.swop.facade.ResourceData;
+import be.kuleuven.cs.swop.facade.ResourceTypeData;
+import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
+import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -64,21 +76,37 @@ public class ScenarioTest {
         assertFalse(p1.isOverTime(taskMan.getSystemTime()));;
         assertEquals(1, taskMan.getProjects().size());
 
+        
+        ResourceTypeWrapper whiteboardType = taskMan.createResourceType(new ResourceTypeData("whiteboard", 
+        		new HashSet<ResourceTypeWrapper>(), 
+        		new HashSet<ResourceTypeWrapper>(), false, new LocalTime[0]));
+        ResourceWrapper whiteboard = taskMan.createResource(new ResourceData("whiteboard 1", whiteboardType));
+        
+        ResourceTypeWrapper testSetupType = taskMan.createResourceType(new ResourceTypeData("distributed testing setup", 
+        		new HashSet<ResourceTypeWrapper>(), 
+        		new HashSet<ResourceTypeWrapper>(), false, new LocalTime[0]));
+        ResourceWrapper testSetup = taskMan.createResource(new ResourceData("test setup 1", testSetupType));
+        
+        DeveloperWrapper devX = taskMan.createDeveloper(new DeveloperData("Mister X"));
+        DeveloperWrapper devY = taskMan.createDeveloper(new DeveloperData("Miss Y"));
 
         String d1 = "design system";
-        long ed1 = 8 * 60;
+        long ed1 = 480;
         double ad1 = 0;
-        TaskData t1r = new TaskData(d1, ed1, ad1);
+        Map<ResourceTypeWrapper, Integer> req1 = new HashMap<ResourceTypeWrapper, Integer>();
+        req1.put(whiteboardType, 1);
+        TaskData t1r = new TaskData(d1, ed1, ad1, req1);
         TaskWrapper t1 = taskMan.createTaskFor(p1, t1r);
         assertEquals(1, p1.getTasks().size());
         assertEquals(0,t1.getDependencySet().size());
         assertFalse(t1.isFinished());
         assertFalse(t1.isFailed());
-        assertTrue(t1.canFinish());
+        assertFalse(t1.canFinish());
         assertTrue(t1.getAlternative() == null);
+        assertFalse(t1.canExecute(devX.getAsUser())); // False because it is not planned yet
 
         String d2 = "implement system in native code";
-        long ed2 = 16 * 60;
+        long ed2 = 128;
         double ad2 = 0.5;
         TaskData t2r = new TaskData(d2, ed2, ad2);
         t2r.addDependency(t1);
@@ -89,11 +117,14 @@ public class ScenarioTest {
         assertFalse(t2.isFailed());
         assertFalse(t2.canFinish());
         assertTrue(t2.getAlternative() == null);
+        assertFalse(t2.canExecute(devX.getAsUser()));
 
         String d3 = "test system";
-        long ed3 = 8 * 60;
+        long ed3 = 480;
         double ad3 = 0;
-        TaskData t3r = new TaskData(d3, ed3, ad3);
+        Map<ResourceTypeWrapper, Integer> req2 = new HashMap<ResourceTypeWrapper, Integer>();
+        req2.put(testSetupType, 1);
+        TaskData t3r = new TaskData(d3, ed3, ad3, req2);
         t3r.addDependency(t2);
         TaskWrapper t3 = taskMan.createTaskFor(p1, t3r);
         assertEquals(3, p1.getTasks().size());
@@ -102,9 +133,11 @@ public class ScenarioTest {
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertTrue(t3.getAlternative() == null);
+        assertFalse(t3.canExecute(devX.getAsUser()));
+
 
         String d4 = "write documentation";
-        long ed4 = 8 * 60;
+        long ed4 = 480;
         double ad4 = 0;
         TaskData t4r = new TaskData(d4, ed4, ad4);
         t4r.addDependency(t2);
@@ -114,7 +147,43 @@ public class ScenarioTest {
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertTrue(t4.getAlternative() == null);
+        assertFalse(t4.canExecute(devX.getAsUser()));
+        
+        
+        //FIXME: check if these worked?
+        Set<ResourceWrapper> t1res = new HashSet<ResourceWrapper>();
+        t1res.add(whiteboard);      
+        Set<DeveloperWrapper> t1dev = new HashSet<DeveloperWrapper>();
+        t1dev.add(devX);
+        taskMan.createPlanning(t1, LocalDateTime.of(2015, 2, 9, 9, 0), t1res, t1dev);
+        
+        
+        Set<ResourceWrapper> t2res = new HashSet<ResourceWrapper>();
+        Set<DeveloperWrapper> t2dev = new HashSet<DeveloperWrapper>();
+        t2dev.add(devX);
+        t2dev.add(devY);
+        taskMan.createPlanning(t2, LocalDateTime.of(2015, 2, 10, 10, 0), t2res, t2dev);
+        
+        
+        Set<ResourceWrapper> t3res = new HashSet<ResourceWrapper>();
+        t3res.add(testSetup);      
+        Set<DeveloperWrapper> t3dev = new HashSet<DeveloperWrapper>();
+        t3dev.add(devX);
+        taskMan.createPlanning(t3, LocalDateTime.of(2015, 2, 12, 9, 0), t3res, t3dev);
+        
+        Set<ResourceWrapper> t4res = new HashSet<ResourceWrapper>();
+        Set<DeveloperWrapper> t4dev = new HashSet<DeveloperWrapper>();
+        t4dev.add(devX);
+        taskMan.createPlanning(t4, LocalDateTime.of(2015, 2, 13, 12, 0), t4res, t4dev);
+        
+        
+        assertTrue(t1.canExecute(devX.getAsUser()));
+        assertFalse(t2.canExecute(devX.getAsUser()));
+        assertFalse(t3.canExecute(devX.getAsUser()));
+        assertFalse(t4.canExecute(devX.getAsUser()));
 
+        
+        taskMan.updateTaskStatusFor(t1, new ExecutingStatusData(devX.getAsUser()));
 
         /*
          * Day 2
@@ -138,22 +207,30 @@ public class ScenarioTest {
         assertTrue(t1.isFinished());
 
 
+        taskMan.updateTaskStatusFor(t2, new ExecutingStatusData(devX.getAsUser()));
+        
+        
         assertTrue(t1.isFinished());
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
+        assertFalse(t1.canExecute(devX.getAsUser()));
         assertFalse(t2.isFinished());
         assertFalse(t2.isFailed());
         assertTrue(t2.canFinish());
         assertNull(t2.getAlternative());
+        assertFalse(t2.canExecute(devX.getAsUser()));
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
+        assertFalse(t3.canExecute(devX.getAsUser()));
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
+        assertFalse(t4.canExecute(devX.getAsUser()));
+
 
         /*
          * Day 3
@@ -174,7 +251,9 @@ public class ScenarioTest {
         taskMan.updateTaskStatusFor(t2, t2u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
+        assertFalse(t3.canExecute(devX.getAsUser()));
         assertFalse(t3.canFinish());
+        assertFalse(t4.canExecute(devX.getAsUser()));
         assertFalse(t4.canFinish());
         assertNull(t2.getAlternative());
 
@@ -182,7 +261,7 @@ public class ScenarioTest {
 
 
         String d5 = "implement system with phonegap";
-        long ed5 = 8*60;
+        long ed5 = 480;
         double ad5 = 1;
         TaskData t5d = new TaskData(d5, ed5, ad5);
         t5d.addDependency(t1);
@@ -190,18 +269,21 @@ public class ScenarioTest {
         assertEquals(1,t5.getDependencySet().size());
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
-        assertTrue(t5.canFinish());
+        assertFalse(t5.canFinish());
         assertNull(t5.getAlternative());
+        assertFalse(t5.canExecute(devX.getAsUser()));
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
         assertEquals(1,taskMan.getProjects().size());
         assertEquals(5, p1.getTasks().size());
 
-
+        taskMan.createPlanning(t5, LocalDateTime.of(2015, 2, 11, 8, 0), t2res, t2dev);
+        
+        
         //assertFalse(p1.isOnTime()); 
         //assertTrue(p1.isOverTime());
-        assertTrue(p1.isOnTime(taskMan.getSystemTime())); //FIXME: MISTAKE IN ASSIGNMENT?
+        assertTrue(p1.isOnTime(taskMan.getSystemTime())); //FIXME: MISTAKE IN ASSIGNMENT? Is it still?
         assertFalse(p1.isOverTime(taskMan.getSystemTime()));
 
 
@@ -210,48 +292,72 @@ public class ScenarioTest {
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
+        assertFalse(t1.canExecute(devX.getAsUser()));
 
 
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
         assertNotNull(t2.getAlternative());
+        assertFalse(t2.canExecute(devX.getAsUser()));
 
 
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
+        assertFalse(t3.canExecute(devX.getAsUser()));
 
 
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
+        assertFalse(t4.canExecute(devX.getAsUser()));
+
 
 
         assertFalse(t5.isFinished());
         assertFalse(t5.isFailed());
+        assertFalse(t5.canFinish());
+        assertNull(t5.getAlternative());
+        assertTrue(t5.canExecute(devX.getAsUser()));
+        
+        
+        taskMan.updateTaskStatusFor(t5, new ExecutingStatusData(devX.getAsUser()));
+        
+        assertEquals(1,t5.getDependencySet().size());
+        assertFalse(t5.isFinished());
+        assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
         assertNull(t5.getAlternative());
+        assertFalse(t5.canExecute(devX.getAsUser()));
 
+        
         /*
-         * Day 4
+         * Day 4 - NOT IN ASSIGNMENT
          */
-        currentDate = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
+        currentDate = LocalDateTime.parse("2015-02-12 8:00", dateTimeFormat);
         taskMan.updateSystemTime(currentDate);
-
-
+        
         LocalDateTime t5Start = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
         LocalDateTime t5Stop = LocalDateTime.parse("2015-02-11 16:00", dateTimeFormat);
         TaskStatusData t5u = new FinishedStatusData(t5Start, t5Stop);
         taskMan.updateTaskStatusFor(t5, t5u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
-        assertTrue(t3.canFinish());
-        assertTrue(t4.canFinish());
+        assertTrue(t3.canExecute(devX.getAsUser()));
+        assertTrue(t4.canExecute(devX.getAsUser()));
         assertTrue(t5.isFinished());
-
+        
+        taskMan.updateTaskStatusFor(t3, new ExecutingStatusData(devX.getAsUser()));
+        assertTrue(t3.canFinish());
+        
+        
+        /*
+         * End of Day 4 - NOT IN ASSIGNMENT
+         */
+        
         LocalDateTime t3Start = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
         LocalDateTime t3Stop = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
         TaskStatusData t3u = new FinishedStatusData(t3Start, t3Stop);
@@ -259,8 +365,22 @@ public class ScenarioTest {
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(t3.isFinished());
-        assertTrue(t4.canFinish());
+        assertTrue(t4.canExecute(devX.getAsUser()));
         assertTrue(t5.isFinished());
+        
+        /*
+         * Day 5 - Morning - NOT IN ASSIGNMENT
+         */
+        
+        
+        taskMan.updateTaskStatusFor(t4, new ExecutingStatusData(devX.getAsUser()));
+        assertTrue(t4.canFinish());
+        
+        /*
+         * Day 5
+         */
+        currentDate = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
+        taskMan.updateSystemTime(currentDate);
 
         LocalDateTime t4Start = LocalDateTime.parse("2015-02-13 08:00", dateTimeFormat);
         LocalDateTime t4Stop = LocalDateTime.parse("2015-02-13 16:00", dateTimeFormat);
