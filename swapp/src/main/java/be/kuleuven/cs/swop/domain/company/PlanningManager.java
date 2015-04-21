@@ -54,10 +54,11 @@ public class PlanningManager implements Serializable {
     
     /**
      * Is this developer available at this time
-     * @param dev
-     * @param task
-     * @param time
-     * @return
+     * 
+     * @param dev The developer for whom we are checking
+     * @param task The task that you want to do
+     * @param time The time on which you want to do it
+     * @return Whether the developer is available to do this task at the given time
      */
     public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
         for (TaskPlanning plan: plannings) {
