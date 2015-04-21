@@ -39,6 +39,7 @@ public class CLI implements UserInterface {
 
     private Scanner           scanner;
     private SessionController sessionController;
+    private UserWrapper       user;
 
     public CLI() {
         this.scanner = new Scanner(System.in);
@@ -48,6 +49,7 @@ public class CLI implements UserInterface {
     public boolean start() {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
+        login();
         String command;
         boolean stop = false;
         while (!stop) {
@@ -57,6 +59,10 @@ public class CLI implements UserInterface {
         return true;
     }
 
+    private void login() {
+        user = sessionController.startSelectUserSession();
+    }
+
     private String selectCommand() {
         System.out.print("> ");
         String line = this.getScanner().nextLine();
@@ -64,22 +70,11 @@ public class CLI implements UserInterface {
     }
 
     private boolean execute(String command) {
+
         switch (command) {
-            case "quit":
             case "q":
+            case "quit":
                 return true;
-            case "help":
-            case "h":
-                System.out.println("list    / l:   list all projects");
-                System.out.println("user       :   select the current user");
-                System.out.println("project / p:   create project");
-                System.out.println("task    / t:   create task");
-                System.out.println("update  / u:   update task");
-                System.out.println("plan       :   plan task");
-                System.out.println("simulation :   simulation");
-                System.out.println("clock   / c:   update clock");
-                System.out.println("quit    / q:   quit taskman");
-                break;
             case "user":
                 getSessionController().startSelectUserSession();
                 break;
@@ -87,39 +82,72 @@ public class CLI implements UserInterface {
             case "l":
                 getSessionController().startShowProjectsSession();
                 break;
-            case "project":
-            case "p":
-                getSessionController().startCreateProjectSession();
-                break;
-            case "task":
-            case "t":
-                getSessionController().startCreateTaskSession();
-                break;
-            case "update":
-            case "u":
-                getSessionController().startUpdateTaskStatusSession();
-                break;
-            case "plan":
-                getSessionController().startPlanTaskSession();
-                break;
-            case "simulation":
-                getSessionController().startRunSimulationSession();
-                break;
             case "clock":
             case "c":
                 getSessionController().startAdvanceTimeSession();
                 break;
-            case "":
-                break;
-            default:
-                System.out.println("Command not recognised.");
-                break;
+        }
+
+        if (user.isDeveloper()) {
+            switch (command) {
+                case "help":
+                case "h":
+                    System.out.println("quit    / q:   quit taskman");
+                    System.out.println("clock   / c:   update clock");
+                    System.out.println("user       :   select the current user");
+                    System.out.println("list    / l:   list all projects");
+                    System.out.println("update  / u:   update task");
+                    break;
+                case "update":
+                case "u":
+                    getSessionController().startUpdateTaskStatusSession();
+                    break;
+                default:
+                    System.out.println("Command not recognised.");
+                    break;
+
+            }
+
+        } else if (user.isManager()) {
+            switch (command) {
+                case "help":
+                case "h":
+                    System.out.println("quit    / q:   quit taskman");
+                    System.out.println("clock   / c:   update clock");
+                    System.out.println("user       :   select the current user");
+                    System.out.println("list    / l:   list all projects");
+                    System.out.println("project / p:   create project");
+                    System.out.println("task    / t:   create task");
+                    System.out.println("plan       :   plan task");
+                    System.out.println("simulation :   simulation");
+                    break;
+                case "project":
+                case "p":
+                    getSessionController().startCreateProjectSession();
+                    break;
+                case "task":
+                case "t":
+                    getSessionController().startCreateTaskSession();
+                    break;
+                case "plan":
+                    getSessionController().startPlanTaskSession();
+                    break;
+                case "simulation":
+                    getSessionController().startRunSimulationSession();
+                    break;
+                default:
+                    System.out.println("Command not recognised.");
+                    break;
+            }
+
+        } else {
+            System.out.println("You broke our type system. Congratz! Now call the smart IT people to have it fixed.");
         }
         return false;
     }
 
     // Data methods
-    
+
     @Override
     public SessionController getSessionController() {
         return this.sessionController;
@@ -138,12 +166,16 @@ public class CLI implements UserInterface {
     public Scanner getScanner() {
         return scanner;
     }
-    
+
     // Interface methods
-    
+
     @Override
     public UserWrapper selectUser(Set<UserWrapper> usersSet) {
-        return selectFromCollection(usersSet, "users", u -> u.getName());
+        UserWrapper user = null;
+        while (user == null) {
+            user = selectFromCollection(usersSet, "users", u -> u.getName());
+        }
+        return user;
     }
 
     @Override
@@ -164,28 +196,28 @@ public class CLI implements UserInterface {
         printProject(project);
         printDelimiter();
     }
-    
+
     private void printProject(ProjectWrapper project) {
         LocalDateTime currentTime = sessionController.getTaskMan().getSystemTime();
-        
-        System.out.println("" 
-                + "# " + project.getTitle() + "\n" 
-                + "# Desc:    " + project.getDescription() + "\n" 
-                + "# Created: " + formatDate(project.getCreationTime()) + "\n" 
+
+        System.out.println(""
+                + "# " + project.getTitle() + "\n"
+                + "# Desc:    " + project.getDescription() + "\n"
+                + "# Created: " + formatDate(project.getCreationTime()) + "\n"
                 + "# Due:     " + formatDate(project.getDueTime()) + "\n"
                 + "# ETA:     " + formatDate(project.estimatedFinishTime(currentTime))
-        );
-        
+                );
+
         if (project.isFinished()) {
             System.out.println("#   Is finished");
         }
     }
-    
+
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
         return selectFromCollection(projectSet, "projects", p -> p.getTitle());
     }
-    
+
     @Override
     public ProjectData getProjectData() {
         System.out.println("CREATING PROJECT\n########");
@@ -216,14 +248,14 @@ public class CLI implements UserInterface {
         printTask(task);
         printDelimiter();
     }
-    
+
     private void printTask(TaskWrapper task) {
         LocalDateTime currentTime = sessionController.getTaskMan().getSystemTime();
-        
+
         System.out.println(""
-                + "# " + task.getDescription() + "\n" 
-                + "#   Dependencies: " + task.getDependencySet().size() + "\n" 
-                + "#   Estimated Duration: " + formatDuration(task.getEstimatedDuration()) + "\n" 
+                + "# " + task.getDescription() + "\n"
+                + "#   Dependencies: " + task.getDependencySet().size() + "\n"
+                + "#   Estimated Duration: " + formatDuration(task.getEstimatedDuration()) + "\n"
                 + "#   Estimated finsih date: " + formatDate(task.getEstimatedOrRealFinishDate(currentTime)) + "\n"
                 + "#   Acceptable Deviation: " + formatPercentage(task.getAcceptableDeviation()));
 
@@ -234,12 +266,12 @@ public class CLI implements UserInterface {
             else timeString = "late";
 
             System.out.println(""
-                    + "#   Is Finished\n" 
-                    + "#   Performed During: " + formatPeriod(task.getPerformedDuring()) + "\n" 
+                    + "#   Is Finished\n"
+                    + "#   Performed During: " + formatPeriod(task.getPerformedDuring()) + "\n"
                     + "#   Was finished " + timeString + "\n");
         } else if (task.isFailed()) {
             System.out.println(""
-                    + "#   Has Failed\n" 
+                    + "#   Has Failed\n"
                     + "#   Performed During: " + formatPeriod(task.getPerformedDuring()) + "\n");
         } else {
             System.out.println("#   Still needs work");
@@ -249,17 +281,16 @@ public class CLI implements UserInterface {
     @Override
     public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
         return selectFromCollection(taskSet, "tasks", p -> {
-                String total = p.getDescription();
-                // FIXME check if available for current user
+            String total = p.getDescription();
+            // FIXME check if available for current user
                 total += ", it is " + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : "available");
-                
+
                 if (p.isFinished()) {
                     total += " and was finished " + (p.wasFinishedEarly() ? "early" : p.wasFinishedLate() ? "late" : "on time");
                 }
-                
+
                 return total;
-            }
-        );
+            });
     }
 
     @Override
@@ -271,21 +302,21 @@ public class CLI implements UserInterface {
 
         System.out.print("# Estimated Duration (minutes): ");
         long estimatedDuration = promptLong();
-        
+
         System.out.print("# Acceptable Deviation (%): ");
         double acceptableDeviation = promptPercentageAsDouble();
 
         Map<ResourceTypeWrapper, Integer> reqs = new HashMap<ResourceTypeWrapper, Integer>();
-        while(true){
-        	ResourceTypeWrapper selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
-        	if(selectedType == null){
-        		break;
-        	}
-        	int amount = promptPosInteger("Quantity required");
-        	reqs.put(selectedType, amount);
-        	types.remove(selectedType);
+        while (true) {
+            ResourceTypeWrapper selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
+            if (selectedType == null) {
+                break;
+            }
+            int amount = promptPosInteger("Quantity required");
+            reqs.put(selectedType, amount);
+            types.remove(selectedType);
         }
-        
+
         return new TaskData(description, estimatedDuration, acceptableDeviation, reqs);
 
     }
@@ -293,15 +324,17 @@ public class CLI implements UserInterface {
     @Override
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
         Map<ProjectWrapper, Set<TaskWrapper>> projectMap = new HashMap<>();
-        for(ProjectWrapper p: projectSet) {
+        for (ProjectWrapper p : projectSet) {
             projectMap.put(p, p.getTasks());
         }
         return selectTaskFromProjects(projectMap);
     }
-    
+
     /**
      * Select task from project, but shows only a selection of the tasks of each project.
-     * @param projectMap The selection of tasks for each project.
+     * 
+     * @param projectMap
+     *            The selection of tasks for each project.
      * @return The selected task.
      */
     @Override
@@ -317,7 +350,7 @@ public class CLI implements UserInterface {
             projectTasks.sort((t1, t2) -> t1.getDescription().compareTo(t2.getDescription()));
             allTasks.addAll(projectTasks);
         }
-        
+
         // print selection info
         System.out.println("SELECT TASK\n########");
         int taskId = 0;
@@ -338,59 +371,59 @@ public class CLI implements UserInterface {
             return allTasks.get(index - 1);
         }
     }
-    
+
     @Override
     public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-    	
-    	// Pretty damn ugly way to do it, feel free to refactor
-    	
+
+        // Pretty damn ugly way to do it, feel free to refactor
+
         System.out.println("UPDATE TASK STATUS\n########");
         boolean needsDates = false;
-        
+
         boolean executing = task.isExecuting();
         boolean successful = false;
         boolean start = false;
-        
+
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
-        
-        if(executing){
+
+        if (executing) {
             System.out.print("# Was the task successful (finish/fail): ");
             successful = promptBoolean("finish", "fail");
             needsDates = true;
 
-        }else{
+        } else {
             System.out.print("# execute or fail the task (execute/fail): ");
-        	start = promptBoolean("execute", "fail");
-        	if(!start){
-        		needsDates = true;
-        	}
-        }
-
-        if(needsDates){
-        System.out.print("# Start Date: ");
-        startTime = promptDate();
-
-        System.out.print("# End Date: ");
-        endTime = promptDate();
-        }
-        
-        if(executing){
-            if(successful){
-            	return new FinishedStatusData(startTime, endTime);
-            }else{
-            	return new FailedStatusData(startTime, endTime);
+            start = promptBoolean("execute", "fail");
+            if (!start) {
+                needsDates = true;
             }
-        }else{
-        	if(start){
-        		return new ExecutingStatusData();
-        	}else{
-        		return new FailedStatusData(startTime, endTime);
-        	}
+        }
+
+        if (needsDates) {
+            System.out.print("# Start Date: ");
+            startTime = promptDate();
+
+            System.out.print("# End Date: ");
+            endTime = promptDate();
+        }
+
+        if (executing) {
+            if (successful) {
+                return new FinishedStatusData(startTime, endTime);
+            } else {
+                return new FailedStatusData(startTime, endTime);
+            }
+        } else {
+            if (start) {
+                return new ExecutingStatusData();
+            } else {
+                return new FailedStatusData(startTime, endTime);
+            }
         }
 
     }
-    
+
     @Override
     public LocalDateTime getTimeStamp() {
         System.out.println("TIME STAMP\n########");
@@ -416,16 +449,16 @@ public class CLI implements UserInterface {
         for (Entry<ResourceTypeWrapper, List<ResourceWrapper>> e : tuples) {
             selected.add(selectResourceFor(e.getKey(), e.getValue()));
         }
-        
+
         return selected;
     }
-    
+
     private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
         if (resources.isEmpty()) {
             System.out.println("No resource to select.");
             return null;
         }
-        
+
         resources.sort((t1, t2) -> t1.getName().compareTo(t2.getName()));
         System.out.println("SELECT RESOURCE FOR " + type.getName() + "\n########");
         for (int i = 0; i < resources.size(); i++) {
@@ -446,14 +479,14 @@ public class CLI implements UserInterface {
         if (developerOptions == null || developerOptions.size() == 0) {
             System.out.println("No developers to select.");
         }
-        
+
         List<DeveloperWrapper> developers = new ArrayList<>(developerOptions);
         System.out.println("SELECT DEVELOPERS\n########");
         for (int i = 0; i < developers.size(); i++) {
             System.out.println("# " + (i + 1) + ") " + developers.get(i).getName());
         }
         printDelimiter();
-        
+
         Set<DeveloperWrapper> selectedDevelopers = new HashSet<>();
         do {
             int index = promptNumber(0, developers.size());
@@ -469,20 +502,20 @@ public class CLI implements UserInterface {
                 }
             }
         } while (true);
-        
+
         return null;
     }
-    
+
     @Override
     public void showError(String error) {
         System.out.println("ERROR\n########");
         System.out.println(error);
         printDelimiter();
     }
-    
+
     public SimulationStepData getSimulationStepData() {
         System.out.println("Continue the simulation? (\"continue\", \"realize\" or \"cancel\")");
-        
+
         do {
             String reply = this.getScanner().nextLine();
             if (reply.equalsIgnoreCase("continue")) {
@@ -496,28 +529,28 @@ public class CLI implements UserInterface {
             }
         } while (true);
     }
-    
+
     // Format methods
-    
-    private String formatDate(LocalDateTime date){
+
+    private String formatDate(LocalDateTime date) {
         return date.format(printFormat);
     }
 
-    private String formatPeriod(DateTimePeriod period){
+    private String formatPeriod(DateTimePeriod period) {
         return period.getStartTime().format(periodDateFormat) + " --> " + period.getStopTime().format(periodDateFormat);
     }
 
-    private String formatPercentage(double input){
+    private String formatPercentage(double input) {
         return (int) (input * 100) + "%";
     }
 
-    private String formatDuration(double input){
-        int hours = ((int) input)/60;
+    private String formatDuration(double input) {
+        int hours = ((int) input) / 60;
         int minutes = (int) (input % 60);
         String hoursString;
         String minutesString;
         String sep = ", ";
-        switch(hours){
+        switch (hours) {
             case 0:
                 hoursString = "";
                 sep = "";
@@ -529,7 +562,7 @@ public class CLI implements UserInterface {
                 hoursString = hours + " hours";
                 break;
         }
-        switch(minutes){
+        switch (minutes) {
             case 0:
                 minutesString = "";
                 sep = "";
@@ -572,8 +605,8 @@ public class CLI implements UserInterface {
         } while (!validInput);
         return inputIndex;
     }
-    
-    private int promptPosInteger(String question){
+
+    private int promptPosInteger(String question) {
         boolean validInput;
 
         int inputIndex = 0;
@@ -591,18 +624,18 @@ public class CLI implements UserInterface {
         } while (!validInput);
         return inputIndex;
     }
-    
+
     private String promptString() {
         return this.getScanner().nextLine();
     }
-    
+
     private LocalDateTime promptDate() {
         while (true) {
             try {
                 String inputText = this.getScanner().nextLine();
-                if("now".equals(inputText)){
+                if ("now".equals(inputText)) {
                     return LocalDateTime.now();
-                }else{
+                } else {
                     return LocalDateTime.parse(inputText, parseFormat);
                 }
             } catch (DateTimeParseException e) {
@@ -610,10 +643,10 @@ public class CLI implements UserInterface {
             }
         }
     }
-    
+
     private boolean promptBoolean(String trueString, String falseString) {
         boolean successful;
-        
+
         do {
             String success = this.getScanner().nextLine();
             if (success.equalsIgnoreCase(trueString)) {
@@ -626,19 +659,20 @@ public class CLI implements UserInterface {
                 System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\": ");
             }
         } while (true);
-        
+
         return successful;
     }
-    
+
     /**
      * Asks the user to give a number in percentage.
+     * 
      * @return A double representing this percentage (1 = 100%, 0 = 0%, 0.5 = 50%, ...)
      */
     private double promptPercentageAsDouble() {
         double percentage = promptDouble();
         return percentage / 100.0;
     }
-    
+
     private double promptDouble() {
         do {
             try {
@@ -648,7 +682,7 @@ public class CLI implements UserInterface {
             }
         } while (true);
     }
-    
+
     private long promptLong() {
         do {
             try {
@@ -658,7 +692,7 @@ public class CLI implements UserInterface {
             }
         } while (true);
     }
-    
+
     private <T> T selectFromCollection(Collection<T> collection, String heading, Function<T, String> toString) {
         if (collection.isEmpty()) {
             System.out.println("No " + heading.toLowerCase() + " to select.");
@@ -680,17 +714,17 @@ public class CLI implements UserInterface {
             return list.get(index - 1);
         }
     }
-    
+
     // Other helper functions
-    
+
     private void printDelimiter() {
         System.out.println("# ----------------------------------");
     }
-    
+
     // Constants
-    public static final DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final DateTimeFormatter printFormat = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
-    public static final DateTimeFormatter periodDateFormat = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
-    
-    private static String ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
+    public static final DateTimeFormatter parseFormat                      = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter printFormat                      = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
+    public static final DateTimeFormatter periodDateFormat                 = DateTimeFormatter.ofPattern("E dd/MM/yyyy HH:mm");
+
+    private static String                 ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 }
