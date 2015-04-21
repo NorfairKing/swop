@@ -1,0 +1,26 @@
+@startuml
+
+title "Create Task"
+
+actor Manager
+
+participant UI
+
+SessionController -> UI: "getTaskData(resourceTypeWrappers)"
+UI -> Manager: "Shows task creation form"
+Manager --> UI: "Fills in all required data"
+UI --> SessionController: "return: data"
+
+' if data == null stop here
+
+SessionController -> Facade: "createTaskFor(projectWrapper, data)"
+Facade -> Company: "createTaskFor(project, ...)"
+Company -> Project: "createTask(...)"
+Project -> Task: "new(...)"
+Task --> Project
+Project -> Project: "addTask(newTask)"
+Project --> Company: "return: newTask"
+Company --> Facade: "return: newTask"
+Facade --> SessionController: "return: newTaskWrapper"
+
+@enduml

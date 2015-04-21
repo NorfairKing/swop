@@ -2,9 +2,9 @@
 
 title "Create Task"
 
-actor User
+actor Manager
 
-User -> UI: "Create Task"
+Manager -> UI: "Create Task"
 
 UI -> SessionController: "startCreateTaskSession()"
 
@@ -14,6 +14,8 @@ ProjectManager --> Facade: "return: projects"
 Facade --> SessionController: "return: projectWrappers"
 
 SessionController -> UI: "selectProject(projectWrappers)"
+UI -> Manager: "Shows project list to select from"
+Manager --> UI: "Selects one of the projects"
 UI --> SessionController: "return: projectWrapper"
 
 ' if projectWrapper == null stop here
@@ -26,6 +28,8 @@ Company --> Facade: "return: resourceTypes"
 Facade --> SessionController: "return: resourceTypeWrappers"
 
 SessionController -> UI: "getTaskData(resourceTypeWrappers)"
+UI -> Manager: "Shows task creation form"
+Manager --> UI: "Fills in all required data"
 UI --> SessionController: "return: data"
 
 ' if data == null stop here

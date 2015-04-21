@@ -4,24 +4,6 @@ title "Update Task Status"
 
 actor Developer
 
-Developer -> UI: "Update Task Status"
-UI -> SessionController: "startUpdateTaskStatusSession()"
-
-SessionController -> Facade: "getProjects()"
-Facade -> Company: "getProjects()"
-Company -> ProjectManager: "getProjects()"
-ProjectManager --> Company: "return: projects"
-Company --> Facade: "return: projects"
-Facade --> SessionController: "return: projectWrappers"
-
-SessionController -> UI: "selectTaskFromProjects(projectWrappers)"
-UI -> Developer: "Shows task selection form"
-Developer --> UI: "Selects a task"
-UI --> SessionController: "return taskWrapper"
-
-' enventueel error als task al final is
-
-SessionController -> UI: "getUpdateStatusData(taskWrapper)"
 UI -> Developer: "Shows update status form"
 Developer --> UI: "Fills in the form"
 UI --> SessionController: "return: data"
