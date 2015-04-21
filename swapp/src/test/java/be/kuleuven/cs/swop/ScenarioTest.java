@@ -103,7 +103,7 @@ public class ScenarioTest {
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertTrue(t1.getAlternative() == null);
-        assertFalse(t1.canExecute(devX.getAsUser())); // False because it is not planned yet
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t1)); // False because it is not planned yet
 
         String d2 = "implement system in native code";
         long ed2 = 128;
@@ -117,7 +117,7 @@ public class ScenarioTest {
         assertFalse(t2.isFailed());
         assertFalse(t2.canFinish());
         assertTrue(t2.getAlternative() == null);
-        assertFalse(t2.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t2));
 
         String d3 = "test system";
         long ed3 = 480;
@@ -133,7 +133,7 @@ public class ScenarioTest {
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertTrue(t3.getAlternative() == null);
-        assertFalse(t3.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));
 
 
         String d4 = "write documentation";
@@ -147,7 +147,7 @@ public class ScenarioTest {
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertTrue(t4.getAlternative() == null);
-        assertFalse(t4.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         
         
         //FIXME: check if these worked?
@@ -177,10 +177,10 @@ public class ScenarioTest {
         taskMan.createPlanning(t4, LocalDateTime.of(2015, 2, 13, 12, 0), t4res, t4dev);
         
         
-        assertTrue(t1.canExecute(devX.getAsUser()));
-        assertFalse(t2.canExecute(devX.getAsUser()));
-        assertFalse(t3.canExecute(devX.getAsUser()));
-        assertFalse(t4.canExecute(devX.getAsUser()));
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t1));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t2));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
 
         
         taskMan.updateTaskStatusFor(t1, new ExecutingStatusData(devX.getAsUser()));
@@ -214,22 +214,22 @@ public class ScenarioTest {
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
-        assertFalse(t1.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t1));
         assertFalse(t2.isFinished());
         assertFalse(t2.isFailed());
         assertTrue(t2.canFinish());
         assertNull(t2.getAlternative());
-        assertFalse(t2.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t2));
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
-        assertFalse(t3.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
-        assertFalse(t4.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
 
 
         /*
@@ -251,9 +251,9 @@ public class ScenarioTest {
         taskMan.updateTaskStatusFor(t2, t2u);
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
-        assertFalse(t3.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));
         assertFalse(t3.canFinish());
-        assertFalse(t4.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         assertFalse(t4.canFinish());
         assertNull(t2.getAlternative());
 
@@ -271,7 +271,7 @@ public class ScenarioTest {
         assertFalse(t5.isFailed());
         assertFalse(t5.canFinish());
         assertNull(t5.getAlternative());
-        assertFalse(t5.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t5));
 
         assertTrue(p1.isOngoing());
         assertFalse(p1.isFinished());
@@ -292,28 +292,28 @@ public class ScenarioTest {
         assertFalse(t1.isFailed());
         assertFalse(t1.canFinish());
         assertNull(t1.getAlternative());
-        assertFalse(t1.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t1));
 
 
         assertFalse(t2.isFinished());
         assertTrue(t2.isFailed());
         assertFalse(t2.canFinish());
         assertNotNull(t2.getAlternative());
-        assertFalse(t2.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t2));
 
 
         assertFalse(t3.isFinished());
         assertFalse(t3.isFailed());
         assertFalse(t3.canFinish());
         assertNull(t3.getAlternative());
-        assertFalse(t3.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));
 
 
         assertFalse(t4.isFinished());
         assertFalse(t4.isFailed());
         assertFalse(t4.canFinish());
         assertNull(t4.getAlternative());
-        assertFalse(t4.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
 
 
 
@@ -321,7 +321,7 @@ public class ScenarioTest {
         assertFalse(t5.isFailed());
         assertFalse(t5.canFinish());
         assertNull(t5.getAlternative());
-        assertTrue(t5.canExecute(devX.getAsUser()));
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t5));
         
         
         taskMan.updateTaskStatusFor(t5, new ExecutingStatusData(devX.getAsUser()));
@@ -331,13 +331,13 @@ public class ScenarioTest {
         assertFalse(t5.isFailed());
         assertTrue(t5.canFinish());
         assertNull(t5.getAlternative());
-        assertFalse(t5.canExecute(devX.getAsUser()));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t5));
 
         
         /*
          * Day 4 - NOT IN ASSIGNMENT
          */
-        currentDate = LocalDateTime.parse("2015-02-12 8:00", dateTimeFormat);
+        currentDate = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
         taskMan.updateSystemTime(currentDate);
         
         LocalDateTime t5Start = LocalDateTime.parse("2015-02-11 08:00", dateTimeFormat);
@@ -346,8 +346,8 @@ public class ScenarioTest {
         taskMan.updateTaskStatusFor(t5, t5u); 
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
-        assertTrue(t3.canExecute(devX.getAsUser()));
-        assertTrue(t4.canExecute(devX.getAsUser()));
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t3));
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         assertTrue(t5.isFinished());
         
         taskMan.updateTaskStatusFor(t3, new ExecutingStatusData(devX.getAsUser()));
@@ -365,7 +365,7 @@ public class ScenarioTest {
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(t3.isFinished());
-        assertTrue(t4.canExecute(devX.getAsUser()));
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         assertTrue(t5.isFinished());
         
         /*

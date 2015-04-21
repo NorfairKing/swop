@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -37,11 +36,6 @@ public class ExecutingStatus extends IncompleteStatus {
     boolean canFail() {
         return true;
     }
-    
-    @Override
-    boolean canExecute(User user) {
-    	return false;
-    }
 
     @Override
     boolean isFinal() {
@@ -67,6 +61,11 @@ public class ExecutingStatus extends IncompleteStatus {
     Task getAlternative() {
         return null;
     }
+    
+	@Override
+	boolean canExecute() {
+		return false;
+	}
 
     private static String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
     private static String ERROR_EXECUTE = "Can't execute a task that's already being executed.";

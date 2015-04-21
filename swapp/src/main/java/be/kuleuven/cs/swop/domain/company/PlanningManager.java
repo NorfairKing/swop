@@ -108,7 +108,7 @@ public class PlanningManager implements Serializable {
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
-     * Alternativly could be called 'canMoveToExecuting'
+     * Alternatively could be called 'canMoveToExecuting'
      * 
      * @param time The time to check for
      * @param dev The developer for whom the task might be available

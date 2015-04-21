@@ -100,4 +100,5 @@ public class FailedStatus extends PerformedStatus {
     }
 
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal alternative for failed status.";
+
 }

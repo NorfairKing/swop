@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.user.User;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -47,7 +46,7 @@ abstract class TaskStatus implements Serializable {
      */
     abstract boolean canFail();
     
-    abstract boolean canExecute(User user);
+    abstract boolean canExecute();
 
     /**
      * Checks whether this status is final and therefore can't be changed.

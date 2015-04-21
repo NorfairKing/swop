@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.company.user.User;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -326,7 +324,7 @@ public class Task implements Serializable {
     }
     
     public boolean isTier1Available(){
-        return !hasUnfinishedDependencies();
+        return !hasUnfinishedDependencies() && status.canExecute();
     }
 
     boolean hasUnfinishedDependencies() {
@@ -419,10 +417,6 @@ public class Task implements Serializable {
             }
         }
         return false;
-    }
-    
-    public boolean canExecute(User user){
-    	return status.canExecute(user);
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";

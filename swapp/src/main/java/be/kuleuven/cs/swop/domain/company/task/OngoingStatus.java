@@ -2,8 +2,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -67,18 +65,6 @@ public class OngoingStatus extends IncompleteStatus {
     boolean canFail() {
         return true;
     }
-    
-    @Override
-    boolean canExecute(User user) {
-    	//TODO: Check if all the conditions are met, some are missing (resources, are developers assigned, etc)
-    	if(!(user instanceof Developer)){
-    		return false;
-    	}
-    	if(getTask().hasUnfinishedDependencies()){
-    		return false;
-    	}
-    	return true;
-    }
 
     @Override
     void finish(DateTimePeriod period) {
@@ -96,5 +82,10 @@ public class OngoingStatus extends IncompleteStatus {
     }
 
     private static String ERROR_FINISH = "Can't finish a task that has not been started.";
+
+	@Override
+	boolean canExecute() {
+		return true;
+	}
 
 }

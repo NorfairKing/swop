@@ -37,11 +37,6 @@ public abstract class PerformedStatus extends TaskStatus {
 	boolean canFail() {
 		return false;
 	}
-	
-    @Override
-    boolean canExecute(User user) {
-    	return false;
-    }
 
 	/**
 	 * Checks whether this status is final and therefore can't be changed.
@@ -112,6 +107,11 @@ public abstract class PerformedStatus extends TaskStatus {
 		return (double) TimeCalculator.getDurationMinutes(
 				getPerformedDuring().getStartTime(),
 				getPerformedDuring().getStopTime());
+	}
+	
+	@Override
+	boolean canExecute() {
+		return false;
 	}
 
 	private static String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
