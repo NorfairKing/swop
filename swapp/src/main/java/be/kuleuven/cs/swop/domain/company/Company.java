@@ -109,6 +109,20 @@ public class Company implements Serializable{
         return t;
     }
     
+    /**
+     * Check if the task is available.
+     * This is the 'available' described in the second iteration.
+     * Alternatively could be called 'canMoveToExecuting'
+     * 
+     * @param time The time to check for
+     * @param dev The developer for whom the task might be available
+     * @param task The task to check
+     * @return Whether or not it is available
+     */
+    public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task) {
+        return getPlanningManager().isTier2AvailableFor(time, dev, task);
+    }
+    
     public void setAlternativeFor(Task t, Task alt){
         t.addAlternative(alt);
     }

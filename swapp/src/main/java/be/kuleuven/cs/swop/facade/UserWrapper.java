@@ -37,6 +37,15 @@ public class UserWrapper {
     public boolean isManager(){
         return user instanceof Manager;
     }
+    
+    public DeveloperWrapper asDeveloper() {
+        if (isDeveloper()) {
+            return new DeveloperWrapper((Developer)user);
+        }
+        else {
+            return null;
+        }
+    }
 
     private static final String ERROR_ILLEGAL_USER = "Invalid user for user wrapper";
     

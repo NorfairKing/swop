@@ -270,6 +270,15 @@ public class CLI implements UserInterface {
         } else {
             System.out.println("#   Still needs work");
         }
+        
+        if (user.isDeveloper()) {
+            if (sessionController.getTaskMan().isTaskAvailableFor(currentTime, user.asDeveloper(), task)) {
+                System.out.println("#   You can execute this task");
+            }
+            else {
+                System.out.println("#   Cannot be executed by you at this point");
+            }
+        }
     }
 
     @Override

@@ -101,30 +101,38 @@ public class PlanningManager implements Serializable {
         return req.getAmount() <= ofTypeLeft;
     }
     
-    
-    // can move to executing
+    /**
+     * Check if the task is available.
+     * This is the 'available' described in the second iteration.
+     * Alternativly could be called 'canMoveToExecuting'
+     * 
+     * @param time The time to check for
+     * @param dev The developer for whom the task might be available
+     * @param task The task to check
+     * @return Whether or not it is available
+     */
     public boolean isTier2AvailableFor(LocalDateTime time, Developer dev,Task task){
         if (!task.isTier1Available()) {
-            System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
+            /*System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
             for (Task dep: task.getDependencySet()) {
                 System.out.println(dep.getDescription() + "; " + dep.isFinishedOrHasFinishedAlternative());
-            }
+            }*/
             return false;
         }
         
         TaskPlanning planning = getPlanningFor(task);
         if (planning == null){
-            System.out.println("2");
+            //System.out.println("2");
             return false;
         }
         Set<Developer> devs = planning.getDevelopers();
         if (!devs.contains(dev)){
-            System.out.println("3");
+            //System.out.println("3");
             return false;
         }
         for (Developer d : devs ){
             if (!isAvailableFor(d, task, time)){
-                System.out.println("4");
+                //System.out.println("4");
                 return false;
             }
         }
@@ -134,7 +142,7 @@ public class PlanningManager implements Serializable {
             for(Requirement req: task.getRecursiveRequirements()){//TODO does this have to be recursive or not?!
                 DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
                 if (!canBeSatisfiedDuring(req, startingNow)){
-                    System.out.println("5");
+                    //System.out.println("5");
                     return false;
                 }
             }

@@ -374,6 +374,20 @@ public class TaskMan implements Serializable {
         ResourceType type = data.getType().getType();
         return wrapResource(company.createResource(name, type));
     }
+    
+    /**
+     * Check if the task is available.
+     * This is the 'available' described in the second iteration.
+     * Alternatively could be called 'canMoveToExecuting'
+     * 
+     * @param time The time to check for
+     * @param dev The developer for whom the task might be available
+     * @param task The task to check
+     * @return Whether or not it is available
+     */
+    public boolean isTaskAvailableFor(LocalDateTime time, DeveloperWrapper dev,TaskWrapper task) {
+        return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask());
+    }
 
     // TODO: implement and document
     public DeveloperWrapper createDeveloper(DeveloperData data) {
