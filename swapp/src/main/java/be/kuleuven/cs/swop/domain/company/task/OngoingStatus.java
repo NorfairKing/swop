@@ -53,7 +53,7 @@ public class OngoingStatus extends IncompleteStatus {
      */
     @Override
     boolean canFinish() {
-        return !getTask().hasUnfinishedDependencies();
+        return false; //!getTask().hasUnfinishedDependencies();
     }
 
     /**
