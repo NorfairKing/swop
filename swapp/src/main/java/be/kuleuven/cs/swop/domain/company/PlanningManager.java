@@ -62,7 +62,7 @@ public class PlanningManager implements Serializable {
      */
     public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
         if (!dev.isAvailableDuring(time)) {
-            return true;
+            return false;
         }
         for (TaskPlanning plan: plannings) {
             if (plan.getDevelopers().contains(dev) &&
