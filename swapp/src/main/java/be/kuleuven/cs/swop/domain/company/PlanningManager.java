@@ -61,6 +61,9 @@ public class PlanningManager implements Serializable {
      * @return Whether the developer is available to do this task at the given time
      */
     public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
+        if (!dev.isAvailableDuring(time)) {
+            return true;
+        }
         for (TaskPlanning plan: plannings) {
             if (plan.getDevelopers().contains(dev) &&
                 plan.getEstimatedOrRealPeriod().isDuring(time) &&
@@ -194,7 +197,7 @@ public class PlanningManager implements Serializable {
         }
         Set<Resource> availableResources = new HashSet<Resource>(this.resources.stream().filter(r -> r.getType().isAvailableDuring(period)).collect(Collectors.toSet()));
         availableResources.removeAll(usedResources);
-        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
+        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers.stream().filter( d -> d.isAvailableDuring(period)).collect(Collectors.toSet()));
         availableDevelopers.removeAll(usedDevelopers);
         for (Requirement req : task.getRecursiveRequirements()) {
             if (!hasResourcesOfType(req.getType(), availableResources, req.getAmount()))
@@ -244,7 +247,7 @@ public class PlanningManager implements Serializable {
                 usedDevelopers.addAll(planning.getDevelopers());
             }
         }
-        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers);
+        Set<Developer> availableDevelopers = new HashSet<Developer>(this.developers.stream().filter( d -> d.isAvailableDuring(period)).collect(Collectors.toSet()));
         availableDevelopers.removeAll(usedDevelopers);
         return availableDevelopers;
     }
