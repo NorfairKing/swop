@@ -32,7 +32,7 @@ public class Resource implements Serializable{
     }
 
     protected boolean canHaveAsName(String name) {
-        return name != null;
+        return name != null && !name.isEmpty();
     }
 
     private void setName(String name) {
