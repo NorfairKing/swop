@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.company;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class ProjectManagerTest {
@@ -31,6 +33,16 @@ public class ProjectManagerTest {
     public void createProjectValidTest() {
         Project project = projectManager.createProject("test", "test desc", LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10));
         assertTrue(projectManager.getProjects().contains(project));
+    }
+    
+    @Test
+    public void getTaskForProjectTest() {
+        Project project = projectManager.createProject("test", "test desc", LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(10));
+        Task task = project.createTask("task", 10, 1);
+        
+        assertEquals(project, projectManager.getProjectFor(task));
+        assertEquals(null, projectManager.getProjectFor(new Task("non-existant task", 10, 1)));
+        assertEquals(null, projectManager.getProjectFor(null));
     }
 
     @Test(expected = IllegalArgumentException.class)
