@@ -216,6 +216,7 @@ public class TaskTest {
     public void finishTest(){
         assertFalse(task.isFinished());
         DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
+        task.execute();
         task.finish(period);
         assertTrue(task.isFinished());
     }
@@ -275,6 +276,7 @@ public class TaskTest {
         // Has to be 'executing first
         // Hi to whomever this is, if not me.
         // also to me, of course.
+        task.execute();
         task.finish(period);
         assertTrue(task.isFinishedOrHasFinishedAlternative());
 
@@ -283,6 +285,7 @@ public class TaskTest {
         task2.fail(period);
         task2.addAlternative(task3);
         assertFalse(task2.isFinishedOrHasFinishedAlternative());
+        task3.execute();
         task3.finish(period);
         assertTrue(task2.isFinishedOrHasFinishedAlternative());
     }
@@ -293,18 +296,22 @@ public class TaskTest {
 
         Task task2 = new Task("Hi",10,0);
         DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        task2.execute();
         task2.finish(period);
         assertTrue(task2.wasFinishedOnTime());
 
         Task task3 = new Task("Hi",5,1);
+        task3.execute();
         task3.finish(period);
         assertTrue(task3.wasFinishedOnTime());
 
         Task task4 = new Task("Hi",5,0.5);
+        task4.execute();
         task4.finish(period);
         assertFalse(task4.wasFinishedOnTime());
 
         Task task5 = new Task("Hi",20,0.1);
+        task5.execute();
         task5.finish(period);
         assertFalse(task5.wasFinishedOnTime());
     }
@@ -315,18 +322,22 @@ public class TaskTest {
 
         Task task2 = new Task("Hi",10,0);
         DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
+        task2.execute();
         task2.finish(period);
         assertFalse(task2.wasFinishedEarly());
 
         Task task3 = new Task("Hi",5,1);
+        task3.execute();
         task3.finish(period);
         assertFalse(task3.wasFinishedEarly());
 
         Task task4 = new Task("Hi",5,0.5);
+        task4.execute();
         task4.finish(period);
         assertFalse(task4.wasFinishedEarly());
 
         Task task5 = new Task("Hi",20,0.1);
+        task5.execute();
         task5.finish(period);
         assertTrue(task5.wasFinishedEarly());
     }
@@ -338,18 +349,22 @@ public class TaskTest {
         DateTimePeriod period = new DateTimePeriod(LocalDateTime.MIN.plusMinutes(1), LocalDateTime.MIN.plusMinutes(11));
 
         Task task2 = new Task("Hi",10,0);
+        task2.execute();
         task2.finish(period);
         assertFalse(task2.wasFinishedLate());
 
         Task task3 = new Task("Hi",5,1);
+        task3.execute();
         task3.finish(period);
         assertFalse(task3.wasFinishedLate());
 
         Task task4 = new Task("Hi",5,0.5);
+        task4.execute();
         task4.finish(period);
         assertTrue(task4.wasFinishedLate());
 
         Task task5 = new Task("Hi",20,0.1);
+        task5.execute();
         task5.finish(period);
         assertFalse(task5.wasFinishedLate());
     }
