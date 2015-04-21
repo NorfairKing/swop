@@ -1,6 +1,5 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 

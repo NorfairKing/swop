@@ -32,6 +32,7 @@ import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public class YAMLReader {
@@ -164,10 +165,8 @@ public class YAMLReader {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void processTasks(Map<String, List<Map<String, Object>>> parsedFile){
+	private void preProcessTasks(Map<String, List<Map<String, Object>>> parsedFile){
 		for (Map<String, Object> task : parsedFile.get("tasks")) {
-			
-			
 			// Get project of this task
 			int projectIndex = (int) task.get("project");
 			ProjectWrapper project = projects.get(projectIndex);
@@ -201,15 +200,25 @@ public class YAMLReader {
 					facade.addDependencyTo(t, prereq);
 				}
 			}
+			
+			// Keep track for planning
+            if(planning != null){
+                planningTasks.put(t, (Integer) planning);
+            }
 
-			// Add as alternative to other(s)
-			Object alter = task.get("alternativeFor");
-			if (alter != null) {
-				TaskWrapper other = tasks.get((int) alter);
-				facade.setAlternativeFor(other, t);
-			}
+            taskResources.put(t, new HashSet<ResourceWrapper>());
+			
+			// Add to tracking list
+            tasks.add(t);
+		}
+	}
 
-			// Finish/fail task if set
+	private void processTasks(Map<String, List<Map<String, Object>>> parsedFile) {
+	    for (int i = 0; i < tasks.size(); ++i) {
+	        Map<String, Object> task = parsedFile.get("tasks").get(i);
+	        TaskWrapper taskWrapper = tasks.get(i);
+		    
+		    // Finish/fail task if set
 			String status = (String) task.get("status");
 			if (status != null) {
 				boolean successful = false;
@@ -232,36 +241,36 @@ public class YAMLReader {
 				}
 				TaskStatusData statusData = null;
 				if(isFinal){
-					// Need to start executing the task before we can finish it
-					facade.updateTaskStatusFor(t, new ExecutingStatusData());   
-					LocalDateTime startTime = LocalDateTime.parse((String) task.get("startTime"), format);
+				    LocalDateTime startTime = LocalDateTime.parse((String) task.get("startTime"), format);
 					LocalDateTime endTime = LocalDateTime.parse((String) task.get("endTime"), format);
 					
 					if(successful){
+					    UserWrapper dev = planningDevelopers.get((int)task.get("planning")).stream().findAny().get().getAsUser();
+	                    // Need to start executing the task before we can finish it
+	                    facade.updateTaskStatusFor(taskWrapper, new ExecutingStatusData(dev));   
+	                    
 						statusData = new FinishedStatusData(startTime, endTime);
 					}else{
 						statusData = new FailedStatusData(startTime, endTime);
 					}
 				}else{
 					if(executing){
-						statusData = new ExecutingStatusData();
+					    UserWrapper dev = planningDevelopers.get((int)task.get("planning")).stream().findAny().get().getAsUser();
+                    	statusData = new ExecutingStatusData(dev);
 					}
 				}
-				facade.updateTaskStatusFor(t, statusData);   
-
+				
+				if (statusData != null) {
+				    facade.updateTaskStatusFor(taskWrapper, statusData);   
+				}
 			}
 
-			// Keep track for planning
-			if(planning != null){
-				planningTasks.put(t, (Integer) planning);
-			}
-
-			taskResources.put(t, new HashSet<ResourceWrapper>());
-
-
-			// Add to tracking list
-			tasks.add(t);
-
+			            // Add as alternative to other(s)
+            Object alter = task.get("alternativeFor");
+            if (alter != null) {
+                TaskWrapper other = tasks.get((int) alter);
+                facade.setAlternativeFor(other, taskWrapper);
+            }
 		}
 	}
 	
@@ -350,14 +359,17 @@ public class YAMLReader {
 			// Read and format developers and resources from plannings
 			preProcessPlannings(parsedFile);
 
-			// Read tasks
-			processTasks(parsedFile);
+			// Read initial tasks info
+			preProcessTasks(parsedFile);
 
 			// Add reservations
 			processReservations(parsedFile);
 
 			// Save all the plannings with the required information
 			processPlannings(parsedFile);
+			
+			// Read the rest of the tasks
+            processTasks(parsedFile);
 
 			System.out.println("Successfully imported file.");
 

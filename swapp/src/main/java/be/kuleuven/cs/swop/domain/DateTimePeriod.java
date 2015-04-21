@@ -92,6 +92,22 @@ public class DateTimePeriod implements Serializable {
     public boolean isDuring(DateTimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }
+    
+    public boolean overlaps(DateTimePeriod period) {
+        if (this.isDuring(period.startTime)) {
+            return true;
+        }
+        if (this.isDuring(period.stopTime)) {
+            return true;
+        }
+        if (period.isDuring(startTime)) {
+            return true;
+        }
+        if (period.isDuring(stopTime)) {
+            return true;
+        }
+        return false;
+    }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";

@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -119,15 +118,15 @@ public class Company implements Serializable{
     }
     
     public void finishTask(Task t, DateTimePeriod period){
-        t.finish(period);
+        getPlanningManager().finishTask(t, period);
     }
     
     public void failTask(Task t,DateTimePeriod period){
-        t.fail(period);
+        getPlanningManager().failTask(t, period);
     }
     
-    public void startExecutingTask(Task t){
-        t.execute();
+    public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
+        getPlanningManager().startExecutingTask(t, time, dev);
     }
     
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability){

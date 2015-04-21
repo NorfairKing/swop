@@ -28,6 +28,10 @@ public class DeveloperWrapper {
     public String getName() {
         return developer.getName();
     }
+    
+    public UserWrapper getAsUser() {
+        return new UserWrapper(developer);
+    }
 
     private static final String ERROR_ILLEGAL_DEVELOPER = "Invalid developer for developer wrapper";
 }

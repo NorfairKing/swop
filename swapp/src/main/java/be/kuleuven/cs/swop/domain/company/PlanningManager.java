@@ -20,7 +20,6 @@ import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.TimePeriod;
@@ -53,27 +52,79 @@ public class PlanningManager implements Serializable {
         return !this.isPlanned(task);
     }
     
-    public boolean isAvailableFor(Developer dev, Task task){
-        throw new UnsupportedOperationException("not implemented yet");
+    /**
+     * Is this developer available at this time
+     * @param dev
+     * @param task
+     * @param time
+     * @return
+     */
+    public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
+        for (TaskPlanning plan: plannings) {
+            if (plan.getDevelopers().contains(dev) &&
+                plan.getEstimatedOrRealPeriod().isDuring(time) &&
+                plan.getTask() != task
+                ) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
-    public boolean canBeSatisfiedDuring(Requirement req, DateTimePeriod period){
-        throw new UnsupportedOperationException("not implemented yet");
+    /**
+     * Can the requiredment be satiesfied during the period?
+     * Checks to see if no planning has reserved them
+     * 
+     * @param req The requirement to check
+     * @param period The period during which we want to use it
+     * @return Whether or not enough resources are available at the time
+     */
+    public boolean canBeSatisfiedDuring(Requirement req, DateTimePeriod period) {
+        ResourceType type = req.getType();
+        
+        Set<Resource> tempResources = new HashSet<>(resources);
+        
+        for (TaskPlanning plan: plannings) {
+            if (plan.getEstimatedOrRealPeriod().overlaps(period)) {
+                tempResources.removeAll(plan.getReservations());
+            }
+        }
+        
+        int ofTypeLeft = 0;
+        for (Resource res: tempResources) {
+            if (res.isOfType(type)) {
+                ofTypeLeft += 1;
+            }
+        }
+        
+        return req.getAmount() <= ofTypeLeft;
     }
     
     
     // can move to executing
     public boolean isTier2AvailableFor(LocalDateTime time, Developer dev,Task task){
+        if (!task.isTier1Available()) {
+            System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
+            for (Task dep: task.getDependencySet()) {
+                System.out.println(dep.getDescription() + "; " + dep.isFinishedOrHasFinishedAlternative());
+            }
+            return false;
+        }
+        
         TaskPlanning planning = getPlanningFor(task);
         if (planning == null){
+            System.out.println("2");
             return false;
         }
         Set<Developer> devs = planning.getDevelopers();
         if (!devs.contains(dev)){
+            System.out.println("3");
             return false;
         }
         for (Developer d : devs ){
-            if (!isAvailableFor(d, task)){
+            if (!isAvailableFor(d, task, time)){
+                System.out.println("4");
                 return false;
             }
         }
@@ -83,6 +134,7 @@ public class PlanningManager implements Serializable {
             for(Requirement req: task.getRecursiveRequirements()){//TODO does this have to be recursive or not?!
                 DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
                 if (!canBeSatisfiedDuring(req, startingNow)){
+                    System.out.println("5");
                     return false;
                 }
             }
@@ -217,6 +269,29 @@ public class PlanningManager implements Serializable {
     public ImmutableSet<ResourceType> getResourceTypes(){
     	return ImmutableSet.copyOf(resourceTypes);
     }
+    
+    
+    public void finishTask(Task t, DateTimePeriod period){
+        t.finish(period);
+    }
+    
+    public void failTask(Task t,DateTimePeriod period){
+        t.fail(period);
+    }
+    
+    public void startExecutingTask(Task t, LocalDateTime time, Developer dev){
+        if (isTier2AvailableFor(time, dev, t)) {
+            t.execute();
+            // TODO Indien unplanning execution tell the system they are in use
+            // this however isn't in the scope of part 2, so we'll leave it for a later date
+        }
+        else {
+            throw new IllegalStateException(ERROR_ILLEGAL_EXECUTING_STATE);
+        }
+    }
 
+    
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+    private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    
 }

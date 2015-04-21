@@ -76,7 +76,7 @@ public class CLI implements UserInterface {
             case "quit":
                 return true;
             case "user":
-                getSessionController().startSelectUserSession();
+                login();
                 break;
             case "list":
             case "l":
@@ -410,7 +410,7 @@ public class CLI implements UserInterface {
             }
         } else {
             if (start) {
-                return new ExecutingStatusData();
+                return new ExecutingStatusData(user);
             } else {
                 return new FailedStatusData(startTime, endTime);
             }

@@ -320,14 +320,13 @@ public class TaskMan implements Serializable {
                 company.failTask(task.getTask(), timePeriod);
             }
         } else {
-            IncompleteStatusData incompleteStatusData = (IncompleteStatusData) statusData;
-            if (incompleteStatusData.isExecuting()) {
-                company.startExecutingTask(task.getTask());
-            } else {
-                // Currently the domain doesn't support this, nor does the excercise ask for it
-                throw new IllegalArgumentException(UNSUPPORTED_TASK_STATUS_UPDATE);
+            ExecutingStatusData execStatusData = (ExecutingStatusData) statusData;
+            UserWrapper user = execStatusData.getDeveloper();
+            if (!(user.getUser() instanceof Developer)) {
+                throw new IllegalArgumentException("Given user is not developer.");
             }
-
+            Developer dev = (Developer)user.getUser();
+            company.startExecutingTask(task.getTask(), getTimekeeper().getTime(), dev);
         }
     }
 
@@ -429,5 +428,4 @@ public class TaskMan implements Serializable {
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
-    private static final String UNSUPPORTED_TASK_STATUS_UPDATE = "Unsupported task status update.";
 }

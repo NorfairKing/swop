@@ -95,7 +95,7 @@ plannings:
 tasks:
     # projects and tasks are incrementally numbered starting with the number 0
   - project            : 0
-    description        : "finished task description"
+    description        : "task description"
     estimatedDuration  : 500
     acceptableDeviation: 50
     alternativeFor     :
@@ -126,7 +126,7 @@ tasks:
     status             :
 
   - project            : 1
-    description        : "failed task description"
+    description        : "description"
     estimatedDuration  : 5000
     acceptableDeviation: 0
     alternativeFor     :
@@ -137,16 +137,16 @@ tasks:
     endTime            : "2014-03-25 18:00"
 
   - project            : 1
-    description        : "executing task description"
+    description        : "description"
     estimatedDuration  : 50000
     acceptableDeviation: 0
     alternativeFor     : 3
-    prerequisiteTasks  : [ 0 ]
+    prerequisiteTasks  : [ 1, 2 ]
     planning           : 2
     status             : executing
 
   - project            : 2
-    description        : "second to last description"
+    description        : "description"
     estimatedDuration  : 500
     acceptableDeviation: 50
     alternativeFor     :
@@ -155,7 +155,7 @@ tasks:
     status             :
 
   - project            : 2
-    description        : "last description"
+    description        : "description"
     estimatedDuration  : 500
     acceptableDeviation: 50
     alternativeFor     :
