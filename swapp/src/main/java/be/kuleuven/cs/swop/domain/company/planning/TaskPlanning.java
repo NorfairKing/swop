@@ -21,13 +21,17 @@ public class TaskPlanning implements Serializable {
     private Set<Developer> developers   = new HashSet<Developer>();
     private Task           task;
     private LocalDateTime  plannedStartTime;
-    private Set<Resource>  reservations = new HashSet<Resource>();
+    private Set<Resource>  resources = new HashSet<Resource>();
+    
+    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime){
+        this(developers,task,plannedStartTime,null);
+    }
 
-    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime, Set<Resource> reservations) {
+    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime, Set<Resource> resources) {
         setDevelopers(developers);
         setTask(task); //task has to be set before the reservations
         setPlannedStartTime(plannedStartTime);
-        setReservations(reservations);
+        setResources(resources);
     }
 
     public ImmutableSet<Developer> getDevelopers() {
@@ -35,15 +39,21 @@ public class TaskPlanning implements Serializable {
     }
 
     private void setDevelopers(Set<Developer> developers) {
-        if (!canHaveAsDevelopers(developers)) {
-            throw new InvalidParameterException(ERROR_INVALID_DEVELOPERS);
+        if(developers == null){
+            developers = new HashSet();
         }
-        this.developers.clear();
-        this.developers.addAll(developers);
+        developers.forEach(d -> addDeveloper(d));
     }
 
-    protected boolean canHaveAsDevelopers(Set<Developer> developers) {
-        return !developers.isEmpty();
+    protected boolean canHaveAsDeveloper(Developer developer) {
+        return developer != null;
+    }
+    
+    private void addDeveloper(Developer developer){
+        if (!canHaveAsDeveloper(developer)) {
+            throw new InvalidParameterException(ERROR_INVALID_DEVELOPER);
+        }
+        this.developers.add(developer);
     }
 
     public Task getTask() {
@@ -77,23 +87,40 @@ public class TaskPlanning implements Serializable {
     }
 
     public ImmutableSet<Resource> getReservations() {
-        return ImmutableSet.copyOf(reservations);
+        return ImmutableSet.copyOf(resources);
     }
-
-    private void setReservations(Set<Resource> reservations) {
-        if (!canHaveAsReservations(reservations)) {
-            throw new InvalidParameterException(ERROR_INVALID_RESERVATIONS);
-        }//FIXME correct resources and developers
-        this.reservations.clear();
-        this.reservations.addAll(reservations);
-    }
-
-    protected boolean canHaveAsReservations(Set<Resource> reservations) {
-        if (reservations == null) {
-            return false;
+    
+    private boolean satisfiedRequirements(Set<Resource> resources){
+        for(Requirement req : task.getRecursiveRequirements()){
+            if(!req.isSatisfiedWith(resources)){
+                return false;
+            }
         }
-        return this.getTask().getRequirements().stream().allMatch( req -> req.isSatisfiedWith(reservations));
+        return true;
     }
+
+    private void setResources(Set<Resource> resources) {
+        if (resources == null){
+            resources = new HashSet();
+        }
+        if (!satisfiedRequirements(resources)){
+            throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS);
+        }
+        this.resources.clear();
+        resources.forEach(r -> addResource(r));
+    }
+    
+    protected boolean canHaveAsResource(Resource resource){
+        return resource != null;
+    }
+    
+    private void addResource(Resource resource){
+        if(!canHaveAsResource(resource)){
+            throw new IllegalArgumentException(ERROR_INVALID_RESOURCE);
+        }
+        this.resources.add(resource);
+    }
+
 
     public DateTimePeriod getEstimatedOrRealPeriod() {
         if (getTask().isFailed() || getTask().isFinished()) {
@@ -105,8 +132,9 @@ public class TaskPlanning implements Serializable {
         }
     }
 
-    private static final String ERROR_INVALID_DEVELOPERS = "Invalid developers set for planning.";
-    private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations set for planning.";
+    private static final String ERROR_INVALID_DEVELOPER = "Invalid developer for planning.";
+    private static final String ERROR_INVALID_RESERVATIONS = "Invalid resource set for planning.";
+    private static final String ERROR_INVALID_RESOURCE = "Invalid resource  for planning.";
     private static final String ERROR_INVALID_STARTIME = "Invalid startime for this planning.";
     private static final String ERROR_INVALID_TASK = "Invalid task for this planning.";
 }
