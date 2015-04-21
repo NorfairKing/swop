@@ -5,10 +5,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.DeveloperData;
+import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -40,12 +45,23 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void test() {
+        ui.setRequestTask(task);
+        
+        DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
+        taskMan.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
+                new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
+
+        TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
+        ui.setRequestTaskStatusData(startData);
+        
+        controller.startUpdateTaskStatusSession();
+        
         LocalDateTime curTime = taskMan.getSystemTime();
         LocalDateTime finishDate = curTime.plusHours(1);
-        TaskStatusData data = new FinishedStatusData(curTime, finishDate);
+        TaskStatusData finishData = new FinishedStatusData(curTime, finishDate);
         
         ui.setRequestTask(task);
-        ui.setRequestTaskStatusData(data);
+        ui.setRequestTaskStatusData(finishData);
         
         controller.startUpdateTaskStatusSession();
 
@@ -56,11 +72,21 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void flowTest() {
+        ui.setRequestTask(task);
+        
+        DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
+        taskMan.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
+                new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
+
+        TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
+        ui.setRequestTaskStatusData(startData);
+        
+        controller.startUpdateTaskStatusSession();
+        
         LocalDateTime curTime = taskMan.getSystemTime();
         LocalDateTime finishDate = curTime.plusHours(1);
         TaskStatusData data = new FinishedStatusData(curTime, finishDate);
-            
-    
+        
         taskMan.updateTaskStatusFor(task, data);
     }
     
