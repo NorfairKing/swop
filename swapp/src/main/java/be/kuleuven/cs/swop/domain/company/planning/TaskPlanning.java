@@ -41,7 +41,7 @@ public class TaskPlanning implements Serializable {
 
     private void setDevelopers(Set<Developer> developers) {
         if(developers == null){
-            developers = new HashSet();
+            developers = new HashSet<Developer>();
         }
         developers.forEach(d -> addDeveloper(d));
     }
@@ -102,7 +102,7 @@ public class TaskPlanning implements Serializable {
 
     private void setResources(Set<Resource> resources) {
         if (resources == null){
-            resources = new HashSet();
+            resources = new HashSet<Resource>();
         }
         if (!satisfiedRequirements(resources)){
             throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS);

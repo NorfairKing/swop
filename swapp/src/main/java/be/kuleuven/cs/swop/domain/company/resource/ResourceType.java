@@ -15,8 +15,8 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 public class ResourceType implements Serializable {
 
 	private String            name;
-	private Set<ResourceType> dependencies = new HashSet();
-	private Set<ResourceType> conflictsWith = new HashSet();
+	private Set<ResourceType> dependencies = new HashSet<ResourceType>();
+	private Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
 
 	/**
 	 * 

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -36,6 +37,11 @@ public abstract class PerformedStatus extends TaskStatus {
 	boolean canFail() {
 		return false;
 	}
+	
+    @Override
+    boolean canExecute(User user) {
+    	return false;
+    }
 
 	/**
 	 * Checks whether this status is final and therefore can't be changed.
