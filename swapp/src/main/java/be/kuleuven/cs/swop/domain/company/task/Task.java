@@ -47,7 +47,7 @@ public class Task implements Serializable {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
-        setRequirements(requirements);
+        addRequirements(requirements);
     }
 
     /**
@@ -310,11 +310,11 @@ public class Task implements Serializable {
     	status.execute();
     }
 
-    protected long getRealDuration() {
+    /*protected long getRealDuration() {
         return TimeCalculator.getDurationMinutes(
                 getPerformedDuring().getStartTime(),
                 getPerformedDuring().getStopTime());
-    }
+    }*/
 
     protected long getBestDuration() {
         return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
@@ -340,8 +340,7 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(this.requirements);
     }
 
-    //TODO no two requirements of the same type! ask Syd why if not convinced, otherwise planning will fail.
-    private void setRequirements(Set<Requirement> requirements) {
+    private void addRequirements(Set<Requirement> requirements) {
         if(requirements == null){return;}
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);

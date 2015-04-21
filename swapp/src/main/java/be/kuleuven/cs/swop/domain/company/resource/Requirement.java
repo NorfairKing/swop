@@ -48,7 +48,7 @@ public class Requirement implements Serializable {
             if (resource.getType() == this.getType()) {
                 counter++;
             }
-            if (counter > this.getAmount()) {
+            if (counter >= this.getAmount()) {
                 return true;
             }
         }
