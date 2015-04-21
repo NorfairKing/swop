@@ -28,6 +28,7 @@ import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.domain.company.user.User;
 
 
@@ -123,8 +124,9 @@ public class TaskMan implements Serializable {
      * @return A set of all known users, currently only developers
      */
     public Set<UserWrapper> getUsers() {
-        // FIXME Also return manager
-        return map(company.getDevelopers(), u -> wrapUser(u));
+        Set<UserWrapper> users = map(company.getDevelopers(), u -> wrapUser(u));
+        users.add(wrapUser(new Manager("Manager")));
+        return users;
     }
 
     /**

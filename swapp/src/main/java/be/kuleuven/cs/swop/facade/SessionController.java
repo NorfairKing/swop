@@ -93,14 +93,10 @@ public class SessionController {
      * Starts a session to select the user.
      * This isn't specified in the exercise, but in the current design we need this.
      */
-    public void startSelectUserSession() {
+    public UserWrapper startSelectUserSession() {
         Set<UserWrapper> users = getTaskMan().getUsers();
-        
         UserWrapper user = getUi().selectUser(users);
-        
-        if (user == null) return;
-        // what do we do here?
-        //getTaskMan().setActiveUser(user);
+        return user;
     }
 
     /**

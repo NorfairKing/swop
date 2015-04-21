@@ -124,7 +124,7 @@ public class Project implements Serializable {
         if (getTasks().isEmpty()) return true;
 
         for (Task task : getTasks()) {
-            if (!task.isFinishedOrHasFinishedAlternative()) {
+            if (task.isTier1Available()) {
                 return true;
             }
         }

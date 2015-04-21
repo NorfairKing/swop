@@ -1,6 +1,8 @@
 package be.kuleuven.cs.swop.facade;
 
+import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.domain.company.user.User;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 public class UserWrapper {
@@ -26,6 +28,14 @@ public class UserWrapper {
     
     public String getName() {
         return user.getName();
+    }
+    
+    public boolean isDeveloper(){
+        return user instanceof Developer;
+    }
+    
+    public boolean isManager(){
+        return user instanceof Manager;
     }
 
     private static final String ERROR_ILLEGAL_USER = "Invalid user for user wrapper";

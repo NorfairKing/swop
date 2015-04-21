@@ -52,6 +52,44 @@ public class PlanningManager implements Serializable {
     public boolean isUnplanned(Task task) {
         return !this.isPlanned(task);
     }
+    
+    public boolean isAvailableFor(Developer dev, Task task){
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+    
+    public boolean canBeSatisfiedDuring(Requirement req, DateTimePeriod period){
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+    
+    
+    // can move to executing
+    public boolean isTier2AvailableFor(LocalDateTime time, Developer dev,Task task){
+        TaskPlanning planning = getPlanningFor(task);
+        if (planning == null){
+            return false;
+        }
+        Set<Developer> devs = planning.getDevelopers();
+        if (!devs.contains(dev)){
+            return false;
+        }
+        for (Developer d : devs ){
+            if (!isAvailableFor(d, task)){
+                return false;
+            }
+        }
+        if(planning.getEstimatedOrRealPeriod().isDuring(time)){
+            // No problem, the planning already makes sure these reservations are in order.
+        }else{
+            for(Requirement req: task.getRecursiveRequirements()){//TODO does this have to be recursive or not?!
+                DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
+                if (!canBeSatisfiedDuring(req, startingNow)){
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
 
     public TaskPlanning getPlanningFor(Task task) {
         for (TaskPlanning planning : this.plannings)
@@ -69,7 +107,7 @@ public class PlanningManager implements Serializable {
             return timeOptions;
         if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
             return timeOptions;
-        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty?
+        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty? YES, fix it! (or at least use a constant)
             if (this.isValidTimeForTask(currentTime,task))
                 timeOptions.add(currentTime);
             currentTime = TimeCalculator.addWorkingMinutes(currentTime,60);
@@ -153,12 +191,6 @@ public class PlanningManager implements Serializable {
         return ImmutableSet.copyOf(developers);
     }
     
-    public boolean canHaveAsActiveUser(User user) {
-        // this seems a bit silly but makes every consistent
-        // if we later decide to put restrictions on this refactoring will be easier.
-        return true;
-    }
-
     public Developer createDeveloper(String name){
         Developer dev = new Developer(name);
         developers.add(dev);
@@ -187,5 +219,4 @@ public class PlanningManager implements Serializable {
     }
 
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
-    private static String ERROR_ILLEGAL_ACTIVE_USER = "Illegal active user in Planning manager.";
 }

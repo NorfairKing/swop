@@ -69,6 +69,7 @@ public class Company {
         Set<Task> all = project.getTasks();
 
         Set<Task> unplannedTasks = new HashSet<Task>();
+        all.stream().filter(t -> planningManager.isUnplanned(t));
         for (Task t : all) {
             if (planningManager.isUnplanned(t)) {
                 unplannedTasks.add(t);

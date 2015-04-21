@@ -323,6 +323,10 @@ public class Task implements Serializable {
     protected long getWorstDuration() {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
+    
+    public boolean isTier1Available(){
+        return !hasUnfinishedDependencies();
+    }
 
     boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
@@ -380,7 +384,7 @@ public class Task implements Serializable {
         return this.getRecursiveRequirements(this.getRequirements());
     }
 
-    public ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
+    private ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
         Set<ResourceType> types = this.getRecursiveResourceTypes(reqs);
         Set<Requirement> response = new HashSet<Requirement>();
         for (ResourceType type : types) {
