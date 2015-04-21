@@ -102,9 +102,6 @@ public class CLI implements UserInterface {
                 case "u":
                     getSessionController().startUpdateTaskStatusSession();
                     break;
-                default:
-                    System.out.println("Command not recognised.");
-                    break;
 
             }
 
@@ -134,9 +131,6 @@ public class CLI implements UserInterface {
                     break;
                 case "simulation":
                     getSessionController().startRunSimulationSession();
-                    break;
-                default:
-                    System.out.println("Command not recognised.");
                     break;
             }
 

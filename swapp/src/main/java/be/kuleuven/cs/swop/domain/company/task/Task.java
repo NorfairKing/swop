@@ -323,6 +323,10 @@ public class Task implements Serializable {
     protected long getWorstDuration() {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
+    
+    public boolean isTier1Available(){
+        return !hasUnfinishedDependencies();
+    }
 
     boolean hasUnfinishedDependencies() {
         if (dependencies.isEmpty()) { return false; }
