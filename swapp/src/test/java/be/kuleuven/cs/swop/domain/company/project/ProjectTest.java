@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop.domain.project;
+package be.kuleuven.cs.swop.domain.company.project;
 
 
 import static org.junit.Assert.assertEquals;

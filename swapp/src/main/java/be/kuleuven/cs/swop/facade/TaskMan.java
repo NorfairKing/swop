@@ -45,10 +45,11 @@ public class TaskMan implements Serializable {
         this.timeKeeper = new Timekeeper();
         this.company = new Company();
     }
-    
-    private Timekeeper getTimekeeper(){
+
+    private Timekeeper getTimekeeper() {
         return this.timeKeeper;
     }
+
     private Company getCompany()
     {
         return this.company;
@@ -109,14 +110,14 @@ public class TaskMan implements Serializable {
         }
         return result;
     }
-    private <Type, ImageType, WrapperType> Set<WrapperType> map(Map<? extends Type, ImageType> presents, BiFunction<Type, ImageType, WrapperType > wrap) { 
+
+    private <Type, ImageType, WrapperType> Set<WrapperType> map(Map<? extends Type, ImageType> presents, BiFunction<Type, ImageType, WrapperType> wrap) {
         Set<WrapperType> result = new HashSet<>();
         for (Type present : presents.keySet()) {
             result.add(wrap.apply(present, presents.get(present)));
         }
         return result;
     }
-    
 
     /**
      * Retrieve all known users
@@ -138,9 +139,9 @@ public class TaskMan implements Serializable {
     public Set<ProjectWrapper> getProjects() {
         return map(company.getProjects(), p -> wrapProject(p));
     }
-    
+
     public Set<ResourceTypeWrapper> getResourceTypes() {
-        return map(company.getResourceTypes(),r -> wrapResourceType(r));
+        return map(company.getResourceTypes(), r -> wrapResourceType(r));
     }
 
     /**
@@ -197,7 +198,7 @@ public class TaskMan implements Serializable {
         String description = data.getDescription();
         LocalDateTime dueTime = data.getDueTime();
         LocalDateTime creationTime = data.getCreationTime();
-        if (data.getCreationTime() != null) {
+        if (data.getCreationTime() == null) {
             creationTime = timeKeeper.getTime();
         }
 
@@ -224,17 +225,17 @@ public class TaskMan implements Serializable {
         if (data == null) { throw new IllegalArgumentException("Null task data for task creation"); }
 
         if (data.getDescription() == null) { throw new IllegalArgumentException("Null description for task creation"); }
-        
+
         String descr = data.getDescription();
         long est = data.getEstimatedDuration();
         double dev = data.getAcceptableDeviation();
         Set<Task> deps = map(data.getDependencies(), t -> t.getTask());
         Set<Requirement> reqs = null;
-        if (data.getRequirements() != null){
-            reqs = map(data.getRequirements(),(t,i)-> new Requirement(i, t.getType()));
+        if (data.getRequirements() != null) {
+            reqs = map(data.getRequirements(), (t, i) -> new Requirement(i, t.getType()));
         }
-       
-        return wrapTask(company.createTaskFor(project.getProject(),descr,est,dev,deps,reqs));
+
+        return wrapTask(company.createTaskFor(project.getProject(), descr, est, dev, deps, reqs));
     }
 
     /**
@@ -273,7 +274,7 @@ public class TaskMan implements Serializable {
      *            The alternative for the task.
      */
     public void setAlternativeFor(TaskWrapper task, TaskWrapper alternative) {
-        company.setAlternativeFor(task.getTask(),alternative.getTask());
+        company.setAlternativeFor(task.getTask(), alternative.getTask());
     }
 
     /**
@@ -314,7 +315,7 @@ public class TaskMan implements Serializable {
             DateTimePeriod timePeriod = new DateTimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
 
             if (performedStatusData.isSuccessful()) {
-                company.finishTask(task.getTask(),timePeriod);
+                company.finishTask(task.getTask(), timePeriod);
             } else {
                 company.failTask(task.getTask(), timePeriod);
             }
@@ -357,22 +358,22 @@ public class TaskMan implements Serializable {
     // TODO: implement and document
     public ResourceTypeWrapper createResourceType(ResourceTypeData data) {
         String name = data.getName();
-        Set<ResourceType> requires = map(data.getRequires(),r -> r.getType());
+        Set<ResourceType> requires = map(data.getRequires(), r -> r.getType());
         Set<ResourceType> conflicts = map(data.getConflicts(), r -> r.getType());
         boolean selfConflicting = data.isSelfConflicting();
-        
+
         TimePeriod availability = null;
         if (data.getAvailibility().length == 2) {
             availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
         }
 
-        return wrapResourceType(company.createResourceType(name, requires, conflicts,selfConflicting,availability));
+        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
     }
 
     public ResourceWrapper createResource(ResourceData data) {
         String name = data.getName();
         ResourceType type = data.getType().getType();
-        return wrapResource(company.createResource(name,type));
+        return wrapResource(company.createResource(name, type));
     }
 
     // TODO: implement and document
@@ -381,14 +382,12 @@ public class TaskMan implements Serializable {
         return wrapDeveloper(company.createDeveloper(name));
     }
 
-
     // Memento pattern
     public Memento saveToMemento() {
         return new Memento(this);
     }
 
     public void restoreFromMemento(Memento memento) {
-        
         company = memento.getSavedState().getCompany();
         timeKeeper = memento.getSavedState().getTimekeeper();
     }

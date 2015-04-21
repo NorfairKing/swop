@@ -1,5 +1,9 @@
 package be.kuleuven.cs.swop.domain;
 
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDateTime;
 
 import org.junit.After;
@@ -20,63 +24,55 @@ public class TimePeriodTest {
         validTimePeriod1 = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {}
-
-    @Before
-    public void setUp() throws Exception {}
-
-    @After
-    public void tearDown() throws Exception {}
-
     @Test
-    public void constructorValidTest() {
+    public void constructorValidTest1() {
         new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
-        
+    }
+    @Test
+    public void constructorValidTest2() {
         new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
-        
+    }
+    @Test
+    public void constructorValidTest3() {
         new DateTimePeriod(LocalDateTime.now(), LocalDateTime.now().plusHours(1));
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorCreationBeforeEndTimeTest() {
+        new DateTimePeriod(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1));
+    }
 
-    @Test
-    public void constructorInvalidTest() {
-        try{
-            new DateTimePeriod(LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1)); 
-        }catch(IllegalArgumentException e){}
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorInvalidStartTimeTest() {
+        new DateTimePeriod(null, LocalDateTime.now());
+    }
 
-        try{
-            new DateTimePeriod(null, LocalDateTime.now());
-        }catch(IllegalArgumentException e){}
-
-        try{
-            new DateTimePeriod(LocalDateTime.now(), null);
-        }catch(IllegalArgumentException e){}
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorInvalidEndTimeTest() {
+        new DateTimePeriod(LocalDateTime.now(), null);
     }
 
     @Test
     public void canHaveAsStartTimeValidTest() {
-        validTimePeriod1.canHaveAsStartTime(LocalDateTime.now());
-        validTimePeriod1.canHaveAsStartTime(LocalDateTime.now().plusHours(5));
+        assertTrue(validTimePeriod1.canHaveAsStartTime(LocalDateTime.now()));
+        assertTrue(validTimePeriod1.canHaveAsStartTime(LocalDateTime.now().plusHours(5)));
     }
 
     @Test
     public void canHaveAsStartTimeInvalidTest() {
-        validTimePeriod1.canHaveAsStartTime(null);
+        assertFalse(validTimePeriod1.canHaveAsStartTime(null));
     }
 
     @Test
     public void canHaveAsStopTimeValidTest() {
-        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(1));
-        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(3));
+        assertTrue(validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(1)));
+        assertTrue(validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(3)));
     }
 
     @Test
     public void canHaveAsStopTimeInvalidTest() {
-        validTimePeriod1.canHaveAsStopTime(null);
-        validTimePeriod1.canHaveAsStopTime(LocalDateTime.now());
+        assertFalse(validTimePeriod1.canHaveAsStopTime(null));
+        assertFalse(validTimePeriod1.canHaveAsStopTime(LocalDateTime.now()));
     }
 
 }

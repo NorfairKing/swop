@@ -33,7 +33,7 @@ public class ButtonMashingTest {
     @After
     public void tearDown() throws Exception {}
 
-    @Test
+    //@Test
     public void test() {
         int amount = 100; // arbitrary number
         ui.performActions(amount);

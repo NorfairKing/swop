@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,8 +15,8 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 public class ResourceType implements Serializable {
 
 	private String            name;
-	private Set<ResourceType> dependencies;
-	private Set<ResourceType> conflictsWith;
+	private Set<ResourceType> dependencies = new HashSet();
+	private Set<ResourceType> conflictsWith = new HashSet();
 
 	/**
 	 * 
@@ -34,13 +35,20 @@ public class ResourceType implements Serializable {
 		return ImmutableSet.copyOf(this.dependencies);
 	}
 
-	private void setDependencies(Set<ResourceType> dependenciess) {
-		if (!canHaveAsDependencies(dependenciess)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
-		this.dependencies = dependenciess;
+	private void setDependencies(Set<ResourceType> dependencies) {
+	    if (dependencies == null){
+	        dependencies = new HashSet<>();
+	    }
+	    dependencies.forEach(d -> addDependency(d));
 	}
 
-	protected boolean canHaveAsDependencies(Set<ResourceType> dependencies) {
-		return dependencies != null;
+	protected boolean canHaveAsDependency(ResourceType dependency) {
+		return dependency != null;
+	}
+	
+	private void addDependency(ResourceType dependency){
+	    if (!canHaveAsDependency(dependency)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
+	    this.dependencies.add(dependency);
 	}
 
     public void addThisAndDependenciesRecursiveTo(Set<ResourceType> resourceSet) {
@@ -54,16 +62,24 @@ public class ResourceType implements Serializable {
 	}
 
 	private void setConflictsWith(Set<ResourceType> conflictsWith, boolean selfConflicting) {
-		if (!canHaveAsConflictsWith(conflictsWith)) throw new IllegalArgumentException(ERROR_ILLEGAL_CONFLICTS);
-		this.conflictsWith = conflictsWith;
+	    if (conflictsWith == null)
+	    {
+	        conflictsWith = new HashSet<>();
+	    }
+	    conflictsWith.forEach(c -> addConflict(c));
 		if(selfConflicting){
-			this.conflictsWith.add(this);
+			addConflict(this);
 		}
 	}
 
-	protected boolean canHaveAsConflictsWith(Set<ResourceType> conflictsWith) {
-		return conflictsWith != null;
+	protected boolean canHaveAsConflict(ResourceType conflict) {
+		return conflict != null;
 	}
+	private void addConflict(ResourceType conflict){
+		if (!canHaveAsConflict(conflict)) throw new IllegalArgumentException(ERROR_ILLEGAL_CONFLICTS);
+		this.conflictsWith.add(conflict);
+	}
+	
 
 	private void setName(String name) {
 		if (!canHaveAsName(name)) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);

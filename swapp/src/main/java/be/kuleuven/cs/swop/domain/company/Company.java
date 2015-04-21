@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.company;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 import com.google.common.collect.ImmutableSet;
 
 
-public class Company {
+public class Company implements Serializable{
 
     private ProjectManager  projectManager;
     private PlanningManager planningManager;

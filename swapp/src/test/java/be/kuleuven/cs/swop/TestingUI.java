@@ -138,7 +138,9 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public void showError(String error) {}
+    public void showError(String error) {
+        System.out.println(error);
+    }
 
     @Override
     public SessionController getSessionController() {
