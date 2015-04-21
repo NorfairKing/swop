@@ -86,7 +86,7 @@ public class TimePeriod implements Serializable {
     }
 
     public boolean isDuring(LocalTime time) {
-        return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
+        return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
 
     public boolean isDuring(TimePeriod period) {

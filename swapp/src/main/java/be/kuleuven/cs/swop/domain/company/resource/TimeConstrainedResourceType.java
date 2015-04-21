@@ -18,6 +18,7 @@ public class TimeConstrainedResourceType extends ResourceType {
 
 	private void setDailyAvailability(TimePeriod availability) {
 		if(!canHaveAsAvailability(availability)) throw new IllegalArgumentException(ERROR_ILLEGAL_AVAILABILITY);
+		dailyAvailability = availability;
 	}
 
 	protected boolean canHaveAsAvailability(TimePeriod availability) {
@@ -32,17 +33,12 @@ public class TimeConstrainedResourceType extends ResourceType {
         return this.getDailyAvailability().isDuring(time);
     }
 
-    //TODO remove useless isAvailableDuring methods
-    public boolean isAvailableDuring(TimePeriod period) {
-        return this.getDailyAvailability().isDuring(period);
-    }
-
     public boolean isAvailableDuring(DateTimePeriod period) {
         LocalTime start = LocalTime.from(period.getStartTime());
         LocalTime stop = LocalTime.from(period.getStopTime());
         if (start.isBefore(stop)) {
-            return this.getDailyAvailability().getStartTime().isBefore(start) &&
-                this.getDailyAvailability().getStopTime().isAfter(stop);
+            return !this.getDailyAvailability().getStartTime().isAfter(start) &&
+                !this.getDailyAvailability().getStopTime().isBefore(stop);
         } else {
             return false;
         }
