@@ -46,9 +46,11 @@ public class UpdateTaskStatusSessionTest {
     @Test
     public void test() {
         ui.setRequestTask(task);
+        LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
+        taskMan.updateSystemTime(time);
         
         DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
-        taskMan.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
+        taskMan.createPlanning(task, time,
                 new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
 
         TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
@@ -73,9 +75,11 @@ public class UpdateTaskStatusSessionTest {
     @Test
     public void flowTest() {
         ui.setRequestTask(task);
+        LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
+        taskMan.updateSystemTime(time);
         
         DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
-        taskMan.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
+        taskMan.createPlanning(task, time,
                 new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
 
         TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
