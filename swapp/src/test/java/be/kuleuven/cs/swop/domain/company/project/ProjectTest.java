@@ -84,6 +84,7 @@ public class ProjectTest {
         assertTrue(project.isOngoing());
         Task test = project.createTask("desc", 1, 0);
         assertTrue(project.isOngoing());
+        test.execute();
         test.finish(new DateTimePeriod(epoch, epoch.plusHours(1)));
         assertFalse(project.isOngoing());
 
@@ -94,9 +95,9 @@ public class ProjectTest {
         assertFalse(project.isFinished());
         Task test = project.createTask("desc", 1, 0);
         assertFalse(project.isFinished());
+        test.execute();
         test.finish(new DateTimePeriod(epoch, epoch.plusHours(1)));
         assertTrue(project.isFinished());
-
     }
 
     @Test
@@ -341,6 +342,7 @@ public class ProjectTest {
         assertFalse(p.isOverTime(epoch));
         
         LocalDateTime curTime = epoch.plusHours(12);
+        task4.execute();
         task4.finish(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
         
         assertFalse(p.isOnTime(curTime)); // 9+8+3+4 > 20
@@ -352,6 +354,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
         
         LocalDateTime curTime = epoch.plusHours(2);
+        task1.execute();
         task1.finish(new DateTimePeriod(epoch, epoch.plusHours(2)));
         
         assertTrue(timeProject.isOnTime(curTime));
@@ -368,6 +371,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
         
         LocalDateTime curTime = epoch.plusHours(15);
+        task1.execute();
         task1.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(14)));
         
         assertTrue(timeProject.isOnTime(curTime));
@@ -411,7 +415,9 @@ public class ProjectTest {
         task5.addDependency(task7);
         
         curTime = epoch.plusHours(16);
+        task7.execute(); // this should never be done in the domain, but is useful for testing
         task7.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
+        task2.execute();
         task2.finish(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(16)));
         
         assertTrue(p.isOnTime(curTime)); // 12 hours to go in 32 hours

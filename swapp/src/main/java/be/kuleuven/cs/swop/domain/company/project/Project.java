@@ -121,14 +121,7 @@ public class Project implements Serializable {
      *
      */
     public boolean isOngoing() {
-        if (getTasks().isEmpty()) return true;
-
-        for (Task task : getTasks()) {
-            if (task.isTier1Available()) {
-                return true;
-            }
-        }
-        return false;
+        return !isFinished();
     }
 
     /**
@@ -138,7 +131,14 @@ public class Project implements Serializable {
      *
      */
     public boolean isFinished() {
-        return !isOngoing();
+        if (getTasks().isEmpty()) return false;
+
+        for (Task task : getTasks()) {
+            if (!task.isFinishedOrHasFinishedAlternative()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
