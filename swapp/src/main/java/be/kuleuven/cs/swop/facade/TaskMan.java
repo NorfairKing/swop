@@ -321,7 +321,8 @@ public class TaskMan implements Serializable {
             if (incompleteStatusData.isExecuting()) {
                 company.startExecutingTask(task.getTask());
             } else {
-                // TODO: What behavior do we want when an OngoingStatusData object is received?
+                // Currently the domain doesn't support this, nor does the excercise ask for it
+                throw new IllegalArgumentException(UNSUPPORTED_TASK_STATUS_UPDATE);
             }
 
         }
@@ -427,5 +428,5 @@ public class TaskMan implements Serializable {
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
-
+    private static final String UNSUPPORTED_TASK_STATUS_UPDATE = "Unsupported task status update.";
 }
