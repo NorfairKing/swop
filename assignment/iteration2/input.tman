@@ -137,22 +137,13 @@ tasks:
     endTime            : "2014-03-25 18:00"
 
   - project            : 1
-    description        : "executing task description"
-    estimatedDuration  : 50000
-    acceptableDeviation: 0
-    alternativeFor     : 3
-    prerequisiteTasks  : [ 0 ]
-    planning           : 2
-    status             : executing
-
-  - project            : 1
     description        : "can be worked on task description"
     estimatedDuration  : 50000
     acceptableDeviation: 0
     alternativeFor     : 3
     prerequisiteTasks  : [ 0 ]
     planning           : 2
-    status             :
+    status             : executing
 
   - project            : 2
     description        : "second to last description"

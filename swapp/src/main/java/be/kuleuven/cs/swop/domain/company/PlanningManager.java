@@ -151,6 +151,12 @@ public class PlanningManager implements Serializable {
         return true;
     }
 
+    /**
+     * Returns the planning for a given task
+     * 
+     * @param task The task
+     * @return The planning
+     */
     public TaskPlanning getPlanningFor(Task task) {
         for (TaskPlanning planning : this.plannings)
         {
@@ -278,15 +284,34 @@ public class PlanningManager implements Serializable {
     	return ImmutableSet.copyOf(resourceTypes);
     }
     
-    
+    /**
+     * Set that the task was finished during the given period
+     * 
+     * @param t The task to finish
+     * @param period The period in which it was finished
+     */
     public void finishTask(Task t, DateTimePeriod period){
         t.finish(period);
     }
     
+    /**
+     * Set that the task was failed during the given period
+     * 
+     * @param t The task that failed
+     * @param period The period in which it failed
+     */
     public void failTask(Task t,DateTimePeriod period){
         t.fail(period);
     }
     
+    /**
+     * Start the execution of a task is possible
+     * 
+     * @param t The task to execute
+     * @param time The current time
+     * @param dev The developer which indicated that work started
+     * @throws IllegalStateException If the task can't start execution
+     */
     public void startExecutingTask(Task t, LocalDateTime time, Developer dev){
         if (isTier2AvailableFor(time, dev, t)) {
             t.execute();
