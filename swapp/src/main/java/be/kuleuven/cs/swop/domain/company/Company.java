@@ -60,6 +60,10 @@ public class Company implements Serializable{
     public ImmutableSet<Project> getProjects() {
         return getProjectManager().getProjects();
     }
+    
+    public Set<Resource> getResources() {		
+    	return getPlanningManager().getResources();		
+    }
 
     public ImmutableSet<ResourceType> getResourceTypes() {
         return getPlanningManager().getResourceTypes();
@@ -103,8 +107,12 @@ public class Company implements Serializable{
         return getPlanningManager().getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) {
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
         getPlanningManager().createPlanning(task, time, rss, devs);
+    }
+    
+    public void removePlanning(TaskPlanning planning){		
+	    	getPlanningManager().removePlanning(planning);		
     }
 
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {

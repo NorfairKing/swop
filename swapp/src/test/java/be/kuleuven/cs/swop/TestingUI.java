@@ -10,6 +10,7 @@ import be.kuleuven.cs.swop.UserInterface;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -55,6 +56,9 @@ public class TestingUI implements UserInterface {
 
     @Override
     public void showTask(TaskWrapper task) {}
+    
+	@Override
+	public void showTaskPlanningContext(TaskWrapper task) {}
 
     /**
      * Set the request project.
@@ -172,7 +176,7 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
         return requestResourcesSet;
     }
     
@@ -193,5 +197,6 @@ public class TestingUI implements UserInterface {
     public SimulationStepData getSimulationStepData() {
         return requestSimStepData;
     }
+
 
 }

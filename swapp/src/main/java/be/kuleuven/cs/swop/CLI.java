@@ -22,6 +22,7 @@ import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -90,6 +91,9 @@ public class CLI implements UserInterface {
             case "c":
                 getSessionController().startAdvanceTimeSession();
                 break;
+            case "break":
+            	System.out.println("Put a breakpoint here");
+            	break;
         }
 
         if (getUser().isDeveloper()) {
@@ -240,6 +244,13 @@ public class CLI implements UserInterface {
     public void showTask(TaskWrapper task) {
         System.out.println("TASK\n########\n");
         printTask(task);
+        printDelimiter();
+    }
+    
+    @Override
+    public void showTaskPlanningContext(TaskWrapper task){
+        System.out.println("PLANNING:");
+        System.out.println(task.getDescription());
         printDelimiter();
     }
 
@@ -452,17 +463,63 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
-        List<Entry<ResourceTypeWrapper, List<ResourceWrapper>>> tuples = new ArrayList<>(options.entrySet());
-        // sort tuples on project title
-        tuples.sort((p1, p2) -> p1.getKey().getName().compareTo(p2.getKey().getName()));
-
-        Set<ResourceWrapper> selected = new HashSet<>();
-        for (Entry<ResourceTypeWrapper, List<ResourceWrapper>> e : tuples) {
-            selected.add(selectResourceFor(e.getKey(), e.getValue()));
-        }
-
-        return selected;
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
+    	
+    	Map<ResourceTypeWrapper, String> typeSelectionMap = new HashMap<ResourceTypeWrapper, String>();
+    	Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
+    	
+    	while(true){
+    		
+        	for(ResourceTypeWrapper type : options.keySet()){
+        		int req = 0;
+        		int amountSelected = 0;
+        		String displayText;
+        		for(RequirementWrapper require: requirements){
+        			if(require.getType() == type){
+        				req = require.getAmount();
+        				break;
+        			}
+        		}
+        		for(ResourceWrapper selected: result){
+        			if(selected.getType().equals(type)){
+        				amountSelected++;
+        			}
+        		}
+        		
+    			displayText = type.getName() + " (" + options.get(type).size() + " options";
+        		if(req != 0){
+        			displayText += ", " + req + " required ";
+        		}
+        		if(amountSelected != 0){
+        			displayText += ", " + amountSelected + " selected ";
+        		}
+        		displayText += ")";
+        		typeSelectionMap.put(type, displayText);
+        	}
+    		
+    		
+    		
+    		Entry<ResourceTypeWrapper, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
+    		if(selectedEntry == null){
+    			return result;
+    		}
+    		
+    		ResourceTypeWrapper selectedType = selectedEntry.getKey();
+    		options.get(selectedType).sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+    		ResourceWrapper selectedResource = selectResourceFor(selectedType, options.get(selectedType));
+    		
+    		if(selectedResource == null){
+    			continue;
+    		}
+    		
+    		if( result.contains(selectedResource)){
+    			System.out.println("That resource was already selected");
+    			continue;
+    		}
+    		result.add(selectedResource);
+    		
+    	}
+    	
     }
 
     private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
@@ -514,6 +571,7 @@ public class CLI implements UserInterface {
                 }
             }
         } while (true);
+
 
         return selectedDevelopers;
     }

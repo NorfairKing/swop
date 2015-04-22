@@ -9,6 +9,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -60,6 +61,8 @@ public interface UserInterface {
      *            The TaskWrapper that contains the Task that will be shown.
      */
     public void showTask(TaskWrapper task);
+    
+    public void showTaskPlanningContext(TaskWrapper task);
 
     /**
      * Shows a list of Projects and makes the user select one.
@@ -94,7 +97,8 @@ public interface UserInterface {
     /**
      * 
      * Shows a list of Projects and makes the user select one.
-     * Use this instead of the other selectTaskFrom if not all tasks are applicable.
+     * 
+     * @note Use this instead of the other selectTaskFrom if not all tasks are applicable.
      *
      * @param projectMap
      *            A map of projects to tasks that belong to them that the user should select from.
@@ -111,14 +115,14 @@ public interface UserInterface {
      * @return Any time
      */
     public LocalDateTime selectTime(List<LocalDateTime> options);
-
-    /**
+    
+     /**
      * Shows a form in which, for each of the resource types, the user can select specific resources
      * 
      * @param options A map of each resource type to several options for the actual resources
      * @return A set of all selected resources, at least one for each type.
      */
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options);
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
 
     /**
      * Shows a list of developers for the user to select one or more from.
@@ -131,7 +135,6 @@ public interface UserInterface {
     /**
      * Requests data from the user for creating a task.
      *
-     * @param types The types of resources you can choose from for dependencies
      * @return Returns a TaskData object containing the data for creating a Task.
      */
     public TaskData getTaskData(Set<ResourceTypeWrapper> types);
@@ -139,7 +142,6 @@ public interface UserInterface {
     /**
      * Request data from the user for finishing or failing a Task,
      * 
-     * @param task The task that will be updated
      * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
      */
     public TaskStatusData getUpdateStatusData(TaskWrapper task);

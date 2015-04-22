@@ -1,13 +1,17 @@
 package be.kuleuven.cs.swop.facade;
 
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 
 public class SessionController {
@@ -183,7 +187,7 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until user gives proper data, or cancels.
-
+        
         // End session
         handleSimulationStep();
     }
@@ -222,7 +226,7 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until proper data is given, or the user cancels.
-
+        
         // End session
         handleSimulationStep();
     }
@@ -248,43 +252,81 @@ public class SessionController {
             handleSimulationStep();
             return;
         }
-
-        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
-
-        // The system shows the first three possible starting times.
-        // The user selects a proposed time
-        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-        if (chosenTime == null) {
-            handleSimulationStep();
-            return;
+        
+        while(true){
+	        try {
+	        	getUi().showTaskPlanningContext(selectedTask);
+	        	
+		        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
+		        
+		        // The system shows the first three possible starting times.
+		        // The user selects a proposed time
+		        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+		        if (chosenTime == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+	
+		        Map<ResourceTypeWrapper,List<ResourceWrapper>> resourceOptions = new HashMap<ResourceTypeWrapper,List<ResourceWrapper>>();
+		        for( ResourceWrapper res : taskMan.getResources()){
+		        	ResourceTypeWrapper type = res.getType();
+		        	boolean found = false;
+		        	for(ResourceTypeWrapper key: resourceOptions.keySet()){
+		        		if(key.hasSameWrappedObject(type)){
+		        			found = true;
+		        			type = key;
+		        			break;
+		        		}
+		        	}
+		        	if(!found){
+		        		resourceOptions.put(type, new ArrayList<ResourceWrapper>());
+		        	}
+		        	resourceOptions.get(type).add(res);
+		        }
+		        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions, selectedTask.getRecursiveRequirements());
+		        if (chosenResources == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+		
+		        Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
+		        Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
+		        if (chosenDevelopers == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+				taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+				break;
+			} catch (ConflictingPlanningWrapperException e) {
+				startResolveConflictSession(e.getPlanning());
+			}
         }
-
-        Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = taskMan.getPlanningResourceOptions(selectedTask, chosenTime);
-        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
-        if (chosenResources == null) {
-            handleSimulationStep();
-            return;
-        }
-
-        Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
-        Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
-        if (chosenDevelopers == null) {
-            handleSimulationStep();
-            return;
-        }
-
-        taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
-
+        
         // End session
         handleSimulationStep();
     }
 
-    public void startResolveConflictSession() {
+    public void startResolveConflictSession(TaskPlanningWrapper planning) {
         if (!isLoggedIn()) {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-
+    	taskMan.removePlanning(planning);
+        while(true){
+	        try {
+	        	getUi().showTaskPlanningContext(planning.getTask());
+		        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(planning.getTask());
+		
+		        // The system shows the first three possible starting times.
+		        // The user selects a proposed time
+		        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+				taskMan.createPlanning(planning.getTask(), chosenTime, planning.getReservations(), planning.getDevelopers());
+				break;
+			} catch (ConflictingPlanningWrapperException e) {
+				startResolveConflictSession(e.getPlanning());
+			}
+        }
+        
         // End session
         handleSimulationStep();
     }
@@ -317,11 +359,11 @@ public class SessionController {
             handleSimulationStep();
             return;
         }
-
-        if (task.isFinal()) {
+        
+        if(task.isFinal()){
             getUi().showError("Can't update task: this task is already final.");
-            handleSimulationStep();
-            return;
+        	handleSimulationStep();
+        	return;
         }
 
         do {
@@ -343,7 +385,7 @@ public class SessionController {
                 getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
             }
         } while (true); // loop until proper data was given or user canceled.
-
+        
         // End session
         handleSimulationStep();
     }

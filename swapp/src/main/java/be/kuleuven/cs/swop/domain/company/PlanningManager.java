@@ -119,6 +119,7 @@ public class PlanningManager implements Serializable {
         return req.getAmount() <= ofTypeLeft;
     }
     
+    
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
@@ -131,8 +132,8 @@ public class PlanningManager implements Serializable {
      */
     public boolean isTier2AvailableFor(LocalDateTime time, Developer dev,Task task){
         if (!task.isTier1Available()) {
-            //System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
-            /*for (Task dep: task.getDependencySet()) {
+            /*System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
+            for (Task dep: task.getDependencySet()) {
                 System.out.println(dep.getDescription() + "; " + dep.isFinishedOrHasFinishedAlternative());
             }*/
             return false;
@@ -325,6 +326,10 @@ public class PlanningManager implements Serializable {
         }
         return map;
     }
+    
+    public ImmutableSet<Resource> getResources() {
+        return ImmutableSet.copyOf(resources);
+    }
 
     /**
      * Retrieves a list of developers that can work on the task on a given time
@@ -346,12 +351,33 @@ public class PlanningManager implements Serializable {
         return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) {
+    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
         if (this.getPlanningFor(task) != null) {
             throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
         }
         TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
+        TaskPlanning conflict = getConflictIfExists(newplanning);
+        if(conflict != null){
+        	throw new ConflictingPlanningException(conflict);
+        }
         this.plannings.add(newplanning);
+    }
+    
+    public void removePlanning(TaskPlanning planning){
+    	this.plannings.remove(planning);
+    }
+    
+    private TaskPlanning getConflictIfExists(TaskPlanning newPlanning){
+    	for (TaskPlanning plan: plannings) {
+    		for(Resource res: newPlanning.getReservations()){
+    			if (plan.getEstimatedOrRealPeriod().overlaps(newPlanning.getEstimatedOrRealPeriod())) {
+    				if(plan.getReservations().contains(res)){
+    					return plan;
+    				}
+    			}
+    		}
+    	}
+    	return null;
     }
     
     public ImmutableSet<Developer> getDevelopers() {

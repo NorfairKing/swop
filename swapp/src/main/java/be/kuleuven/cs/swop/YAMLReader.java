@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
+import be.kuleuven.cs.swop.facade.ConflictingPlanningWrapperException;
 import be.kuleuven.cs.swop.facade.DeveloperData;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
@@ -328,7 +329,11 @@ public class YAMLReader {
 				Set<DeveloperWrapper> devs = planningDevelopers.get(planningId);
 				LocalDateTime startTime = planningStartDates.get(planningId);
 				Set<ResourceWrapper> resourceSet = taskResources.get(task);
-				facade.createPlanning(task, startTime, resourceSet, devs);
+				try {
+					facade.createPlanning(task, startTime, resourceSet, devs);
+				} catch (ConflictingPlanningWrapperException e) {
+					System.out.println("Task \"" + task.getDescription() + "\" could not be loaded due to a conflict with \"" + e.getPlanning().getTask().getDescription() +"\"");
+				}
 			}
 		}
 	}
