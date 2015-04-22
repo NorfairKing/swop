@@ -39,7 +39,7 @@ public class TaskTest {
         selfConflictingResourceType = new ResourceType("selfconflicting", true);
         regularResourceType = new ResourceType("regular");
 
-        Set<ResourceType> conflicts = new HashSet();
+        Set<ResourceType> conflicts = new HashSet<>();
         conflicts.add(regularResourceType);
         conflictingResourceType = new ResourceType("conclicting", null, conflicts, false);
     }
@@ -51,12 +51,12 @@ public class TaskTest {
 
     @Test
     public void constructorValidTest2() {
-        new Task("Desc", 100, 0.1, new HashSet());
+        new Task("Desc", 100, 0.1, new HashSet<>());
     }
 
     @Test
     public void constructorValidTest3() {
-        Set<Requirement> reqs = new HashSet();
+        Set<Requirement> reqs = new HashSet<>();
         // self conflicting requirement, but only one is needed so this should work.
         reqs.add(new Requirement(1, new ResourceType("type", null, null, true)));
         new Task("Desc", 100, 0.1, reqs);
@@ -99,7 +99,7 @@ public class TaskTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidRequirementConflictingTest11() {
-        Set<Requirement> reqs = new HashSet();
+        Set<Requirement> reqs = new HashSet<>();
         reqs.add(new Requirement(2, selfConflictingResourceType));// self conflicting requirement, but only one is needed so this should work.
         new Task("Desc", 100, 0.1, reqs);
     }
@@ -107,7 +107,7 @@ public class TaskTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidRequirementConflictingTest2() {
         // self conflicting requirement, but only one is needed so this should work.
-        Set<Requirement> reqs = new HashSet();
+        Set<Requirement> reqs = new HashSet<>();
         reqs.add(new Requirement(2, regularResourceType));
         reqs.add(new Requirement(1, conflictingResourceType));
         new Task("Desc", 100, 0.1, reqs);
@@ -115,7 +115,7 @@ public class TaskTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidRequirementsNonUniqueTypesTest() {
-        Set<Requirement> reqs = new HashSet();
+        Set<Requirement> reqs = new HashSet<>();
         reqs.add(new Requirement(2, regularResourceType));
         reqs.add(new Requirement(2, regularResourceType));
         new Task("Desc", 100, 0.1, reqs);

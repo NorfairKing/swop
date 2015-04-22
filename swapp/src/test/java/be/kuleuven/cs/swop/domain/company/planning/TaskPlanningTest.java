@@ -1,11 +1,8 @@
 package be.kuleuven.cs.swop.domain.company.planning;
 
-import static org.junit.Assert.*;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,9 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
-import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
@@ -34,10 +29,10 @@ public class TaskPlanningTest {
 
     @Before
     public void setUp() throws Exception {
-        devSet = new HashSet();
+        devSet = new HashSet<>();
         devSet.add(new Developer("Sean"));
         
-        resSet = new HashSet();
+        resSet = new HashSet<>();
         
         task = new Task("description", 50, .5);
     }

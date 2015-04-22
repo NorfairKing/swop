@@ -8,7 +8,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
-import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -354,14 +354,16 @@ public class Task implements Serializable {
 
     private void setRequirements(Set<Requirement> requirements) {
         if (requirements == null) {
-            requirements = new HashSet();
+            requirements = new HashSet<>();
         }
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null && !this.hasDoubleTypesRequirements(requirements) && !this.hasConflictingRequirements(requirements);
+        return requirements != null
+                && !RequirementsCalculator.hasDoubleTypesRequirements(requirements)
+                && !RequirementsCalculator.hasConflictingRequirements(requirements);
     }
 
     public DateTimePeriod getPerformedDuring() {
@@ -388,59 +390,13 @@ public class Task implements Serializable {
         return status.getAlternative();
     }
 
-    private static Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
-        Set<ResourceType> types = new HashSet<ResourceType>();
-        reqs.stream().map(req -> req.getType()).forEach(type -> type.addThisAndDependenciesRecursiveTo(types));
-        ;
-        return types;
-    }
-
+    /**
+     * Gets all requirements of this task recursively.
+     * So doesn't just return the direct requirements of the task, but also the requirements of requirements
+     * @return All requirements
+     */
     public ImmutableSet<Requirement> getRecursiveRequirements() {
-        return getRecursiveRequirements(this.getRequirements());
-    }
-
-    private static ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
-        Set<ResourceType> types = getRecursiveResourceTypes(reqs);
-        Set<Requirement> response = new HashSet<Requirement>();
-        for (ResourceType type : types) {
-            boolean found = false;
-            for (Requirement req : reqs) {
-                if (type == req.getType()) {
-                    response.add(req);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                response.add(new Requirement(1, type));
-            }
-        }
-        return ImmutableSet.copyOf(response);
-    }
-
-    public static boolean hasConflictingRequirements(Set<Requirement> reqs) {
-        Set<Requirement> recReqs = getRecursiveRequirements(reqs);
-        for (Requirement req : recReqs) {
-            for (ResourceType conflictType : req.getType().getConflictsWith()) {
-                if (conflictType == req.getType()) {
-                    if (req.getAmount() > 1) { return true; }
-                } else {
-                    for (Requirement req2 : recReqs) {
-                        if (conflictType == req2.getType()) { return true; }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasDoubleTypesRequirements(Set<Requirement> reqs) {
-        for (Requirement req1 : reqs) {
-            for (Requirement req2 : reqs) {
-                if (req1 != req2 && req1.getType() == req2.getType()) { return true; }
-            }
-        }
-        return false;
+        return RequirementsCalculator.getRecursiveRequirements(this.getRequirements());
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";

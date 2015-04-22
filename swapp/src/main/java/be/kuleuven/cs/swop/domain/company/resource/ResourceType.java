@@ -18,22 +18,34 @@ public class ResourceType implements Serializable {
 	private Set<ResourceType> dependencies = new HashSet<ResourceType>();
 	private Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
 
-	
+	/**
+	 * Simple constructor for a resource type that doesn't have dependencies and doesn't conflict with anything
+	 * @param name The name for this resource type
+	 */
 	public ResourceType(String name){
 	    this(name,false);
 	}
 
-    
-    public ResourceType(String name,boolean selfConflicting){
+    /**
+     * Simple constructor for a resource type that might conflict with itself, but nothing else.
+     * It also doesn't have any dependencies.
+     * 
+     * @param name The name for the resource type
+     * @param selfConflicting Whether it conflicts with itself
+     */
+	// Selfconlfiction is used because, as we say in Belgium,
+	//    "als ge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types he"
+    public ResourceType(String name, boolean selfConflicting){
         this(name,null,null,selfConflicting);
     }
     
 	/**
+	 * Constructor with all possible info
 	 * 
-	 * @param name
-	 * @param dependencies
-	 * @param conflicts
-	 * @param selfConflicting want alsge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types
+	 * @param name The resource's name
+	 * @param dependencies Dependencies
+	 * @param conflicts Conflicts
+	 * @param selfConflicting Whether it conflicts with itself
 	 */
 	public ResourceType(String name, Set<ResourceType> dependencies, Set<ResourceType> conflicts, boolean selfConflicting) {
 		this.setName(name);

@@ -39,7 +39,6 @@ public class CLI implements UserInterface {
 
     private Scanner           scanner;
     private SessionController sessionController;
-    private UserWrapper       user;
 
     public CLI() {
         this.scanner = new Scanner(System.in);

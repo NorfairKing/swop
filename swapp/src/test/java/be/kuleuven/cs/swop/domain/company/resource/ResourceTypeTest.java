@@ -1,8 +1,5 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
-
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,16 +39,16 @@ public class ResourceTypeTest {
         type3 = new ResourceType("type3", new HashSet<ResourceType>(), dep2, false);
         type4 = new ResourceType("type4", dep2, dep2, true);
 
-        set1 = new HashSet();
+        set1 = new HashSet<>();
         set1.add(type2);
-        set2 = new HashSet();
+        set2 = new HashSet<>();
         set2.add(type1);
         set2.add(type3);
-        set3 = new HashSet();
+        set3 = new HashSet<>();
         set3.add(type4);
         set3.add(type2);
         set3.add(type1);
-        setWithNullValue = new HashSet();
+        setWithNullValue = new HashSet<>();
         setWithNullValue.add(null);
         setWithNullValue.add(type1);
     }
@@ -61,16 +58,16 @@ public class ResourceTypeTest {
 
     @Test
     public void ConstructionValidTest() {
-        ArrayList<Set<ResourceType>> validDeps = new ArrayList();
+        ArrayList<Set<ResourceType>> validDeps = new ArrayList<>();
         validDeps.add(null);
-        validDeps.add(new HashSet());
+        validDeps.add(new HashSet<>());
         validDeps.add(set1);
         validDeps.add(set2);
         validDeps.add(set3);
 
         ArrayList<Set<ResourceType>> validConflicts = new ArrayList<>();
         validConflicts.add(null);
-        validConflicts.add(new HashSet());
+        validConflicts.add(new HashSet<>());
         validConflicts.add(set1);
         validConflicts.add(set2);
         validConflicts.add(set3);
