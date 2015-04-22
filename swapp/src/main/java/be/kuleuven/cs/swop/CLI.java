@@ -515,7 +515,7 @@ public class CLI implements UserInterface {
             }
         } while (true);
 
-        return null;
+        return selectedDevelopers;
     }
 
     @Override
