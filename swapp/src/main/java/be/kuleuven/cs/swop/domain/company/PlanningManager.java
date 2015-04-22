@@ -346,6 +346,9 @@ public class PlanningManager implements Serializable {
     }
 
     public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) {
+        if (this.getPlanningFor(task) != null) {
+            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
+        }
         TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
         this.plannings.add(newplanning);
     }
@@ -423,5 +426,6 @@ public class PlanningManager implements Serializable {
     
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
     
 }
