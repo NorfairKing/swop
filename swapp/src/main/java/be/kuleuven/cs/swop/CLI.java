@@ -439,7 +439,16 @@ public class CLI implements UserInterface {
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        return selectFromCollection(options, "time", o -> formatDate(o));
+        LocalDateTime time = selectFromCollection(options, "time", o -> formatDate(o));
+        if (time == null) {
+            System.out.println("Would you like to use a custom time? (y/n)");
+            boolean wantsToSelectCustom = promptBoolean("y", "n");
+            if (wantsToSelectCustom) {
+                System.out.print("Enter a time: ");
+                time = promptDate();
+            }
+        }
+        return time;
     }
 
     @Override

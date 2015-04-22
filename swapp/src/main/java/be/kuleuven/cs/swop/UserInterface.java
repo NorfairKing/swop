@@ -103,7 +103,14 @@ public interface UserInterface {
      * @return Returns a TaskWrapper containing the Task selected by the user.
      */
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap);
-
+    
+    /**
+     * Shows a list of suggested times and returns a time
+     * The returned time can be one of the suggestions, but doesn't have to be
+     * 
+     * @param options A list of selected times
+     * @return Any time
+     */
     public LocalDateTime selectTime(List<LocalDateTime> options);
 
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options);
