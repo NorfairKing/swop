@@ -162,6 +162,17 @@ public class TaskMan implements Serializable {
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
         return map(company.getUnplannedTasksOf(project.getProject()), t -> wrapTask(t));
     }
+    
+    /**
+     * Retrieves the assigned tasks of a developer from a single project
+     * 
+     * @param project The project to retrieve from
+     * @param dev The dev to retrieve for
+     * @return The assigned tasks
+     */
+    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project, DeveloperWrapper dev){
+        return map(company.getAssignedTasksOf(project.getProject(), dev.getDeveloper()), t -> wrapTask(t));
+    }
 
     /**
      * Retrieves the planning for a given task

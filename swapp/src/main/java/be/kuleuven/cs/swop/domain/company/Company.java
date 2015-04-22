@@ -69,13 +69,25 @@ public class Company implements Serializable{
         Set<Task> all = project.getTasks();
 
         Set<Task> unplannedTasks = new HashSet<Task>();
-        all.stream().filter(t -> planningManager.isUnplanned(t));
         for (Task t : all) {
             if (planningManager.isUnplanned(t)) {
                 unplannedTasks.add(t);
             }
         }
         return unplannedTasks;
+    }
+    
+    public Set<Task> getAssignedTasksOf(Project project, Developer dev){
+        Set<TaskPlanning> allPlannings = planningManager.getPlanningsFor(project);
+        
+        Set<Task> assignedTasks = new HashSet<Task>();
+        for(TaskPlanning p : allPlannings){
+            if(p.getDevelopers().contains(dev)){
+                assignedTasks.add(p.getTask());
+            }
+        }
+        
+        return assignedTasks;
     }
 
     public TaskPlanning getPlanningFor(Task task) {
