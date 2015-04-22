@@ -140,6 +140,7 @@ public interface UserInterface {
     /**
      * Request data from the user for finishing or failing a Task,
      * 
+     * @param task The task that will be updated
      * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
      */
     public TaskStatusData getUpdateStatusData(TaskWrapper task);

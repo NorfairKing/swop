@@ -151,7 +151,7 @@ public class ProjectWrapper {
     /**
      * Get the estimated finish time for this project
      * 
-     * @param currentDate The current system date
+     * @param currentTime The current system date
      * @return The estimated finish time.
      */
     public LocalDateTime estimatedFinishTime(LocalDateTime currentTime){
