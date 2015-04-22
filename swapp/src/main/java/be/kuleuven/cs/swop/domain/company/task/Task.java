@@ -38,7 +38,7 @@ public class Task implements Serializable {
      *            The acceptable deviation of time in which the task can be completed.
      */
     public Task(String description, long estimatedDuration, double acceptableDeviation) {
-        this(description,estimatedDuration,acceptableDeviation,null);
+        this(description, estimatedDuration, acceptableDeviation, null);
     }
 
     public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
@@ -261,13 +261,13 @@ public class Task implements Serializable {
     public boolean isFailed() {
         return status.isFailed();
     }
-    
-    public boolean isExecuting(){
-    	return status.isExecuting();
+
+    public boolean isExecuting() {
+        return status.isExecuting();
     }
-    
-    public boolean isFinal(){
-    	return status.isFinal();
+
+    public boolean isFinal() {
+        return status.isFinal();
     }
 
     /**
@@ -304,16 +304,14 @@ public class Task implements Serializable {
     public void fail(DateTimePeriod period) {
         status.fail(period);
     }
-    
-    public void execute(){
-    	status.execute();
+
+    public void execute() {
+        status.execute();
     }
 
-    /*protected long getRealDuration() {
-        return TimeCalculator.getDurationMinutes(
-                getPerformedDuring().getStartTime(),
-                getPerformedDuring().getStopTime());
-    }*/
+    /*
+     * protected long getRealDuration() { return TimeCalculator.getDurationMinutes( getPerformedDuring().getStartTime(), getPerformedDuring().getStopTime()); }
+     */
 
     protected long getBestDuration() {
         return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
@@ -322,8 +320,8 @@ public class Task implements Serializable {
     protected long getWorstDuration() {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
-    
-    public boolean isTier1Available(){
+
+    public boolean isTier1Available() {
         return !hasUnfinishedDependencies() && status.canExecute();
     }
 
@@ -340,7 +338,9 @@ public class Task implements Serializable {
     }
 
     private void setRequirements(Set<Requirement> requirements) {
-        if(requirements == null){requirements = new HashSet();}
+        if (requirements == null) {
+            requirements = new HashSet();
+        }
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }
@@ -375,7 +375,8 @@ public class Task implements Serializable {
 
     private Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
         Set<ResourceType> types = new HashSet<ResourceType>();
-        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndDependenciesRecursiveTo(types));;
+        reqs.stream().map(req -> req.getType()).forEach(type -> type.addThisAndDependenciesRecursiveTo(types));
+        ;
         return types;
     }
 
@@ -389,7 +390,7 @@ public class Task implements Serializable {
         for (ResourceType type : types) {
             boolean found = false;
             for (Requirement req : reqs) {
-                if ( type == req.getType() ) {
+                if (type == req.getType()) {
                     response.add(req);
                     found = true;
                     break;
@@ -406,25 +407,22 @@ public class Task implements Serializable {
         Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
         for (Requirement req : recReqs) {
             for (ResourceType conflictType : req.getType().getConflictsWith()) {
-                if (conflictType == req.getType() && req.getAmount() > 1) {
-                    return true;
-                }
-                for (Requirement req2 : recReqs) {
-                    if (conflictType == req2.getType()) {
-                        return true;
+                if (conflictType == req.getType()) {
+                    if (req.getAmount() > 1) { return true; }
+                } else {
+                    for (Requirement req2 : recReqs) {
+                        if (conflictType == req2.getType()) { return true; }
                     }
                 }
             }
         }
         return false;
     }
-    
-    private boolean hasDoubleTypesRequirements(Set<Requirement> reqs){
-        for(Requirement req1: reqs){
-            for(Requirement req2: reqs){
-                if(req1 != req2 && req1.getType() == req2.getType()){
-                    return true;
-                }
+
+    private boolean hasDoubleTypesRequirements(Set<Requirement> reqs) {
+        for (Requirement req1 : reqs) {
+            for (Requirement req2 : reqs) {
+                if (req1 != req2 && req1.getType() == req2.getType()) { return true; }
             }
         }
         return false;
