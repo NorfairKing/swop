@@ -94,8 +94,7 @@ public interface UserInterface {
     /**
      * 
      * Shows a list of Projects and makes the user select one.
-     * 
-     * @note Use this instead of the other selectTaskFrom if not all tasks are applicable.
+     * Use this instead of the other selectTaskFrom if not all tasks are applicable.
      *
      * @param projectMap
      *            A map of projects to tasks that belong to them that the user should select from.
