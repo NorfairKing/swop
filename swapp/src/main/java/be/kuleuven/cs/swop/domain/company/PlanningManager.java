@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
@@ -168,6 +169,17 @@ public class PlanningManager implements Serializable {
                 return planning;
         }
         return null;
+    }
+    
+    public Set<TaskPlanning> getPlanningsFor(Project project){
+        Set<TaskPlanning> plans =new HashSet<TaskPlanning>();
+        for(Task t : project.getTasks()){
+            TaskPlanning pl = getPlanningFor(t);
+            if(pl != null){
+            plans.add(pl);
+            }
+        }
+        return plans;
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {

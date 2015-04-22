@@ -49,8 +49,10 @@ public class CLI implements UserInterface {
     public boolean start() {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
-        String command;
+        
         login();
+        
+        String command;
         boolean stop = false;
         while (!stop) {
             command = this.selectCommand();

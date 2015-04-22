@@ -154,6 +154,10 @@ public class TaskMan implements Serializable {
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
         return map(company.getUnplannedTasksOf(project.getProject()), t -> wrapTask(t));
     }
+    
+    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project, DeveloperWrapper dev){
+        return map(company.getAssignedTasksOf(project.getProject(), dev.getDeveloper()), t -> wrapTask(t));
+    }
 
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
         return wrapPlanning(company.getPlanningFor(task.getTask()));

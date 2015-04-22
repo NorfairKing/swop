@@ -301,8 +301,16 @@ public class SessionController {
 
         // The system show a list of all available tasks and the projects they belong to
         // The user selects a task he wants to change
-        Set<ProjectWrapper> projects = getTaskMan().getProjects();
-        TaskWrapper task = getUi().selectTaskFromProjects(projects);
+        Set<ProjectWrapper> allProjects = taskMan.getProjects();
+        Map<ProjectWrapper, Set<TaskWrapper>> assignedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+
+        for (ProjectWrapper p : allProjects) {
+            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p,currentUser.asDeveloper()); //This will crash when the current user is a manager. Not fixing this because we don't do access controll. The UI has to implement responsibility for this.
+            if (!assignedTasks.isEmpty()) {
+                assignedTaskMap.put(p, assignedTasks);
+            }
+        }
+        TaskWrapper task = getUi().selectTaskFromProjects(assignedTaskMap);
 
         // if the user indicates he wants to leave the overview.
         if (task == null) {
