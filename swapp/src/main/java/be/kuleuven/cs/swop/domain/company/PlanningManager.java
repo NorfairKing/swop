@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
-import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
@@ -25,6 +24,9 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
+/**
+ * A class that handles all the planning of and working on tasks.
+ */
 @SuppressWarnings("serial")
 public class PlanningManager implements Serializable {
 
@@ -45,6 +47,12 @@ public class PlanningManager implements Serializable {
         plannings.add(planning);
     }
 
+    /**
+     * Checks to see if this task if planned
+     * 
+     * @param task The task to check
+     * @return Whether or not it is planned
+     */
     public boolean isPlanned(Task task) {
         return this.getPlanningFor(task) != null;
     }
@@ -171,9 +179,15 @@ public class PlanningManager implements Serializable {
         return null;
     }
     
-    public Set<TaskPlanning> getPlanningsFor(Project project){
-        Set<TaskPlanning> plans =new HashSet<TaskPlanning>();
-        for(Task t : project.getTasks()){
+    /**
+     * Retrieves the plannings for all the given tasks
+     * 
+     * @param tasks The list of tasks we want the plannings for
+     * @return A set of all the planning
+     */
+    public Set<TaskPlanning> getPlanningsFor(Set<Task> tasks){
+        Set<TaskPlanning> plans = new HashSet<TaskPlanning>();
+        for(Task t : tasks){
             TaskPlanning pl = getPlanningFor(t);
             if(pl != null){
             plans.add(pl);
@@ -181,22 +195,68 @@ public class PlanningManager implements Serializable {
         }
         return plans;
     }
+    
+    /**
+     * Selects all unplanned tasks from the given set
+     * @param tasks The set of tasks
+     * @return Only the unplanned tasks from the set
+     */
+    public Set<Task> getUnplannedTasksFrom(Set<Task> tasks){
+        Set<Task> unplannedTasks = new HashSet<Task>();
+        for (Task t : tasks) {
+            if (isUnplanned(t)) {
+                unplannedTasks.add(t);
+            }
+        }
+        return unplannedTasks;
+    }
+    
+    /**
+     * Selects all tasks that are assigned to the given dev
+     * @param tasks The tasks to check
+     * @param dev The dev to check
+     * @return The tasks to which the dev is assigned
+     */
+    public Set<Task> getAssignedTasksOf(Set<Task> tasks, Developer dev){
+        Set<TaskPlanning> allPlannings = getPlanningsFor(tasks);
+        
+        Set<Task> assignedTasks = new HashSet<Task>();
+        for(TaskPlanning p : allPlannings){
+            if(p.getDevelopers().contains(dev)){
+                assignedTasks.add(p.getTask());
+            }
+        }
+        
+        return assignedTasks;
+    }
 
-    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {
-        currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
+    /**
+     * Retrieves a number of times on which the given task could be planned
+     * The search starts at the given time
+     * 
+     * @param task The task
+     * @param n How many options you want
+     * @param theTime The time to start the search on
+     * @return A list of possible times
+     */
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime theTime) {
+        theTime = theTime.plusMinutes(60-theTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
         if (this.resources.isEmpty()) //safety checks
             return timeOptions;
         if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
             return timeOptions;
         for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty? YES, fix it! (or at least use a constant)
-            if (this.isValidTimeForTask(currentTime,task))
-                timeOptions.add(currentTime);
-            currentTime = TimeCalculator.addWorkingMinutes(currentTime,60);
+            if (this.isValidTimeForTask(theTime,task))
+                timeOptions.add(theTime);
+            theTime = TimeCalculator.addWorkingMinutes(theTime,60);
         }
         return timeOptions;
     }
 
+    /**
+     * Checks to see if the task could be planned to start on this time
+     */
     private boolean isValidTimeForTask(LocalDateTime time, Task task) {
         Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
@@ -220,6 +280,10 @@ public class PlanningManager implements Serializable {
         return true;
     }
 
+    /**
+     * Checks to see if the given set has enough resources of the given type
+     * Enough is 'n or more'
+     */
     private boolean hasResourcesOfType(ResourceType type, Set<Resource> resources, int number) {
         int counter = 0;
         for (Resource resource : resources) {
@@ -232,6 +296,13 @@ public class PlanningManager implements Serializable {
         return false;
     }
 
+    /**
+     * Retrieves a list of options for each resource type needed by a task.
+     * 
+     * @param task The task for which you want the options
+     * @param time The time on which you cant to use the resources
+     * @return The list with options
+     */
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         Set<Resource> usedResources = new HashSet<Resource>();
         DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
@@ -250,7 +321,13 @@ public class PlanningManager implements Serializable {
         return map;
     }
 
-
+    /**
+     * Retrieves a list of developers that can work on the task on a given time
+     * 
+     * @param task The task for which you need developers
+     * @param time The time on which you need developers
+     * @return The possible developers
+     */
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         Set<Developer> usedDevelopers = new HashSet<Developer>();
         DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));

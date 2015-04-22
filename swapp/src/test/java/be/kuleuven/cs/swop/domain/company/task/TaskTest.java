@@ -183,12 +183,12 @@ public class TaskTest {
         DateTimePeriod period = new DateTimePeriod(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2));
 
         try{
-            task.addAlternative(task2);
+            task.setAlternative(task2);
             fail();
         }catch(IllegalStateException e){}
 
         try{
-            task.addAlternative(null);
+            task.setAlternative(null);
             fail();
         }catch(IllegalStateException e){}
 
@@ -196,11 +196,11 @@ public class TaskTest {
 
 
         try{
-            task.addAlternative(task);
+            task.setAlternative(task);
             fail();
         }catch(IllegalArgumentException e){}
 
-        task.addAlternative(task2);
+        task.setAlternative(task2);
         assertTrue(task.getAlternative() == task2);
     }
 
@@ -285,7 +285,7 @@ public class TaskTest {
         Task task2 = new Task("Hi",1,0);
         Task task3 = new Task("Hi2",1,0);
         task2.fail(period);
-        task2.addAlternative(task3);
+        task2.setAlternative(task3);
         assertFalse(task2.isFinishedOrHasFinishedAlternative());
         task3.execute();
         task3.finish(period);

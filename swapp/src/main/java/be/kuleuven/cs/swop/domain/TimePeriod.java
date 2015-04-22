@@ -4,7 +4,9 @@ package be.kuleuven.cs.swop.domain;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-
+/**
+ * A period between two given hours in a single day
+ */
 @SuppressWarnings("serial")
 public class TimePeriod implements Serializable {
 
@@ -85,10 +87,23 @@ public class TimePeriod implements Serializable {
         this.stopTime = stopTime;
     }
 
+    /**
+     * Checks if the give times is during this period
+     * 
+     * @param time The time to check
+     * @return Whether it is or not
+     */
     public boolean isDuring(LocalTime time) {
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
 
+    /**
+     * Checks if the given period fall entirely inside this one
+     * If the given period fall (partly) outside this period, it'll return false.
+     * 
+     * @param period The period to check
+     * @return Whether is does or not
+     */
     public boolean isDuring(TimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }

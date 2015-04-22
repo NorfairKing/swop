@@ -72,6 +72,13 @@ public class ProjectManager implements Serializable {
         return project;
     }
 
+    /**
+     * Tries to find the project of the given task and returns it.
+     * Returns null if no project was found, or the given task was null.
+     * 
+     * @param task The task to find the project for
+     * @return The project to which the task belongs
+     */
     public Project getProjectFor(Task task) {
         for (Project project : getProjects()) {
             if (project.containsTask(task)) { return project; }

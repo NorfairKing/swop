@@ -313,7 +313,7 @@ public class TaskMan implements Serializable {
 
         TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
 
-        task.getTask().addAlternative(alternative.getTask());
+        task.getTask().setAlternative(alternative.getTask());
 
         return alternative;
     }

@@ -136,6 +136,12 @@ public class Task implements Serializable {
         this.estimatedDuration = estimatedDuration;
     }
 
+    /**
+     * Checks if this task depends on the given task
+     * 
+     * @param dependency The possible dependency
+     * @return Whether or not it actually is
+     */
     boolean containsDependency(Task dependency) {
         if (dependency == null) { return true; }
         for (Task subDep : this.getDependencySet()) {
@@ -215,7 +221,7 @@ public class Task implements Serializable {
      * @throws IllegalArgumentException
      *             If the Task can't have the given Task as alternative.
      */
-    public void addAlternative(Task alternative) {
+    public void setAlternative(Task alternative) {
         status.setAlternative(alternative);
     }
 
@@ -305,15 +311,17 @@ public class Task implements Serializable {
         status.fail(period);
     }
     
+    /**
+     * Set this task to executing.
+     * Only basic tests if it can are done here, the main testing is done by the planningManager.
+     * Because of this, this method should only be called by the planningManager.
+     * We can't enforce this in java, but that's a limitation we'll have to live with.
+     * Note: for convenience it is used in some tests directly, however there are also tests
+     * to see if the checking is done properly in the planningManager.
+     */
     public void execute(){
     	status.execute();
     }
-
-    /*protected long getRealDuration() {
-        return TimeCalculator.getDurationMinutes(
-                getPerformedDuring().getStartTime(),
-                getPerformedDuring().getStopTime());
-    }*/
 
     protected long getBestDuration() {
         return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
@@ -323,6 +331,11 @@ public class Task implements Serializable {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
     
+    /**
+     * The 'available' from the first iteration. This is just a basic check on the task level
+     * No deeper checks are done here.
+     * @return Whether it is Tier1Available.
+     */
     public boolean isTier1Available(){
         return !hasUnfinishedDependencies() && status.canExecute();
     }
@@ -373,18 +386,18 @@ public class Task implements Serializable {
         return status.getAlternative();
     }
 
-    private Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
+    private static Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
         Set<ResourceType> types = new HashSet<ResourceType>();
         reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndDependenciesRecursiveTo(types));;
         return types;
     }
 
     public ImmutableSet<Requirement> getRecursiveRequirements() {
-        return this.getRecursiveRequirements(this.getRequirements());
+        return getRecursiveRequirements(this.getRequirements());
     }
 
-    private ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
-        Set<ResourceType> types = this.getRecursiveResourceTypes(reqs);
+    private static ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
+        Set<ResourceType> types = getRecursiveResourceTypes(reqs);
         Set<Requirement> response = new HashSet<Requirement>();
         for (ResourceType type : types) {
             boolean found = false;
@@ -402,8 +415,8 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(response);
     }
 
-    public boolean hasConflictingRequirements(Set<Requirement> reqs) {
-        Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
+    public static boolean hasConflictingRequirements(Set<Requirement> reqs) {
+        Set<Requirement> recReqs = getRecursiveRequirements(reqs);
         for (Requirement req : recReqs) {
             for (ResourceType conflictType : req.getType().getConflictsWith()) {
                 if (conflictType == req.getType() && req.getAmount() > 1) {

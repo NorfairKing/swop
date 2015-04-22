@@ -253,6 +253,13 @@ public class Project implements Serializable {
         addTask(newTask);
         return newTask;
     }
+    
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
+        Task newTask = new Task(description, estimatedDuration, acceptableDeviation, requirements);
+        dependencies.forEach(d -> newTask.addDependency(d));
+        addTask(newTask);
+        return newTask;
+    }
 
     /**
      * Retrieves the a Set containing every Task belonging to this Project.

@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +19,10 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 import com.google.common.collect.ImmutableSet;
 
-
+/**
+ * A company.
+ * This is the main class that gives access to the rest of the domain.
+ */
 public class Company implements Serializable{
 
     private ProjectManager  projectManager;
@@ -49,6 +51,7 @@ public class Company implements Serializable{
         this.planningManager = planningManager;
     }
 
+    // Passthrough getters
     public ImmutableSet<Developer> getDevelopers() {
         return getPlanningManager().getDevelopers();
     }
@@ -66,28 +69,21 @@ public class Company implements Serializable{
     }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
-        Set<Task> all = project.getTasks();
-
-        Set<Task> unplannedTasks = new HashSet<Task>();
-        for (Task t : all) {
-            if (planningManager.isUnplanned(t)) {
-                unplannedTasks.add(t);
-            }
-        }
-        return unplannedTasks;
+        return planningManager.getUnplannedTasksFrom(project.getTasks());
+    }
+    
+    /**
+     * Retrieves all the plannings of a project
+     * 
+     * @param project The project for which to get all plannings
+     * @return A set of all the planning
+     */
+    public Set<TaskPlanning> getPlanningsFor(Project project){
+        return planningManager.getPlanningsFor(project.getTasks());
     }
     
     public Set<Task> getAssignedTasksOf(Project project, Developer dev){
-        Set<TaskPlanning> allPlannings = planningManager.getPlanningsFor(project);
-        
-        Set<Task> assignedTasks = new HashSet<Task>();
-        for(TaskPlanning p : allPlannings){
-            if(p.getDevelopers().contains(dev)){
-                assignedTasks.add(p.getTask());
-            }
-        }
-        
-        return assignedTasks;
+        return planningManager.getAssignedTasksOf(project.getTasks(), dev);
     }
 
     public TaskPlanning getPlanningFor(Task task) {
@@ -115,9 +111,7 @@ public class Company implements Serializable{
     }
 
     public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
-        Task t = project.createTask(description, estimatedDuration, acceptableDeviation);
-        dependencies.forEach(d -> t.addDependency(d));
-        return t;
+        return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
     }
     
     /**
@@ -135,13 +129,16 @@ public class Company implements Serializable{
     }
     
     public void setAlternativeFor(Task t, Task alt){
-        t.addAlternative(alt);
+        t.setAlternative(alt);
     }
     
     public void addDependencyTo(Task t,Task dep){
         t.addDependency(dep);
     }
     
+    // finish, fail and executing has to happen through the planningManager
+    // that's the class that can decide about this
+    // We can't enforce this in java, but we enforce it with mind-power
     public void finishTask(Task t, DateTimePeriod period){
         getPlanningManager().finishTask(t, period);
     }
