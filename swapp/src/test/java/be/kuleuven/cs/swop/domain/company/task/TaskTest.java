@@ -250,7 +250,7 @@ public class TaskTest {
         task.setAcceptableDeviation(Double.POSITIVE_INFINITY);
 
     }
-
+    
     @Test
     public void setAlternativeTest() {
         Task task2 = new Task("Hi", 1, 0);
