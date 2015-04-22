@@ -94,6 +94,17 @@ public class DateTimePeriod implements Serializable {
      * @return Yes or no
      */
     public boolean isDuring(LocalDateTime time) {
+        return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
+    }
+    
+    /**
+     * Checks if the given date time falls in this period
+     * This however ignores the extremes, ie the exact start and end time.
+     * 
+     * @param time The time to check
+     * @return Yes or no
+     */
+    public boolean isDuringExcludeExtremes(LocalDateTime time) {
         return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
     }
 
@@ -105,7 +116,7 @@ public class DateTimePeriod implements Serializable {
      * @return Whether it falls entirely inside this period
      */
     public boolean isDuring(DateTimePeriod period) {
-        return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
+        return !period.getStartTime().isBefore(this.getStartTime()) && !period.getStopTime().isAfter(this.getStopTime());
     }
     
     /**
@@ -115,16 +126,16 @@ public class DateTimePeriod implements Serializable {
      * @return Whether the two periods overlap
      */
     public boolean overlaps(DateTimePeriod period) {
-        if (this.isDuring(period.startTime)) {
+        if (this.isDuringExcludeExtremes(period.startTime)) {
             return true;
         }
-        if (this.isDuring(period.stopTime)) {
+        if (this.isDuringExcludeExtremes(period.stopTime)) {
             return true;
         }
-        if (period.isDuring(startTime)) {
+        if (period.isDuringExcludeExtremes(startTime)) {
             return true;
         }
-        if (period.isDuring(stopTime)) {
+        if (period.isDuringExcludeExtremes(stopTime)) {
             return true;
         }
         return false;

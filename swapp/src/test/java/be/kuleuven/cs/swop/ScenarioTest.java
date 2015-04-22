@@ -346,7 +346,7 @@ public class ScenarioTest {
         assertTrue(t1.isFinished());
         assertTrue(t2.isFailed());
         assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t3));
-        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t4));
+        assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         assertTrue(t5.isFinished());
         
         taskMan.updateTaskStatusFor(t3, new ExecutingStatusData(devX.getAsUser()));

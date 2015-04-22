@@ -75,7 +75,8 @@ public class PlanningManager implements Serializable {
         }
         for (TaskPlanning plan: plannings) {
             if (plan.getDevelopers().contains(dev) &&
-                plan.getEstimatedOrRealPeriod().isDuring(time) &&
+                //plan.getEstimatedOrRealPeriod().isDuring(time) &&
+                plan.getEstimatedOrRealPeriod().overlaps(new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()))) &&
                 plan.getTask() != task
                 ) {
                 return false;
@@ -194,7 +195,7 @@ public class PlanningManager implements Serializable {
         for(Task t : tasks){
             TaskPlanning pl = getPlanningFor(t);
             if(pl != null){
-            plans.add(pl);
+                plans.add(pl);
             }
         }
         return plans;
@@ -246,11 +247,11 @@ public class PlanningManager implements Serializable {
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime theTime) {
         theTime = theTime.plusMinutes(60-theTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
-        if (this.resources.isEmpty()) //safety checks
+        if (this.resources.isEmpty() && !task.getRequirements().isEmpty()) //safety checks
             return timeOptions;
         if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
             return timeOptions;
-        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty? YES, fix it! (or at least use a constant)
+        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety.
             if (this.isValidTimeForTask(theTime,task))
                 timeOptions.add(theTime);
             theTime = TimeCalculator.addWorkingMinutes(theTime,60);
