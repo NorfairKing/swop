@@ -90,27 +90,31 @@ public class PlanningManager implements Serializable {
      * Checks to see if no planning has reserved them
      * 
      * @param req The requirement to check
+     * @param t The task of which the requirement is
      * @param period The period during which we want to use it
      * @return Whether or not enough resources are available at the time
      */
-    public boolean canBeSatisfiedDuring(Requirement req, DateTimePeriod period) {
+    private boolean canRequirementOfBeSatisfiedDuring(Requirement req, Task t, DateTimePeriod period) {
         ResourceType type = req.getType();
         
         Set<Resource> tempResources = new HashSet<>(resources);
         
         for (TaskPlanning plan: plannings) {
-            if (plan.getEstimatedOrRealPeriod().overlaps(period)) {
+            if (plan.getEstimatedOrRealPeriod().overlaps(period) && plan.getTask() != t) {
+                System.out.println("overlap: " + plan.getEstimatedOrRealPeriod().toString() + " <-> " + period.toString());
                 tempResources.removeAll(plan.getReservations());
             }
         }
         
         int ofTypeLeft = 0;
         for (Resource res: tempResources) {
+            System.out.println("res: " + res.getName());
             if (res.isOfType(type)) {
                 ofTypeLeft += 1;
             }
         }
         
+        System.out.println("Amount left: " + ofTypeLeft);
         return req.getAmount() <= ofTypeLeft;
     }
     
@@ -126,8 +130,8 @@ public class PlanningManager implements Serializable {
      */
     public boolean isTier2AvailableFor(LocalDateTime time, Developer dev,Task task){
         if (!task.isTier1Available()) {
-            /*System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
-            for (Task dep: task.getDependencySet()) {
+            //System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size());
+            /*for (Task dep: task.getDependencySet()) {
                 System.out.println(dep.getDescription() + "; " + dep.isFinishedOrHasFinishedAlternative());
             }*/
             return false;
@@ -154,8 +158,8 @@ public class PlanningManager implements Serializable {
         }else{
             for(Requirement req: task.getRecursiveRequirements()){//TODO does this have to be recursive or not?!
                 DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-                if (!canBeSatisfiedDuring(req, startingNow)){
-                    //System.out.println("5");
+                if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)){
+                    //System.out.println("5: " + req.getType().getName());
                     return false;
                 }
             }

@@ -129,6 +129,11 @@ public class DateTimePeriod implements Serializable {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "DateTimePeriod [startTime=" + startTime + ", stopTime=" + stopTime + "]";
+    }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
