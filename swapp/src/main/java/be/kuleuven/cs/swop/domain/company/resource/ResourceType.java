@@ -30,11 +30,12 @@ public class ResourceType implements Serializable {
      * Simple constructor for a resource type that might conflict with itself, but nothing else.
      * It also doesn't have any dependencies.
      * 
+     * Selfconlfiction is used because, as we say in Belgium,
+     *     "als ge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types he"
+     * 
      * @param name The name for the resource type
      * @param selfConflicting Whether it conflicts with itself
      */
-	// Selfconlfiction is used because, as we say in Belgium,
-	//    "als ge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types he"
     public ResourceType(String name, boolean selfConflicting){
         this(name,null,null,selfConflicting);
     }

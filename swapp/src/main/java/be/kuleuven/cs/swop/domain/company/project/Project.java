@@ -288,6 +288,7 @@ public class Project implements Serializable {
      * or when all Tasks haven't finished yet, whether or not it probably will
      * finish on time.
      *
+     * @param currentDate The current system time
      * @return Returns true if this project is on time.
      *
      */
@@ -314,6 +315,7 @@ public class Project implements Serializable {
     /**
      * Check whether or not this Project isn't on time.
      *
+     * @param currentDate The current system time
      * @return Returns false when this Project is on time.
      *
      */

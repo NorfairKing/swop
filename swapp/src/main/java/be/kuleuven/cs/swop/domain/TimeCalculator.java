@@ -63,10 +63,8 @@ public final class TimeCalculator {
     /**
      * This method calculates the working hours between two given Dates in minutes.
      * 
-     * @param time1
-     *            The starting Date for this calculation.
-     * @param time2
-     *            The end Ddate for this calculation.
+     * @param start The starting Date for this calculation.
+     * @param stop The end Ddate for this calculation.
      * @return Returns an integer containing the working hours between the two Dates in minutes.
      */
     public static int workingMinutesBetween(LocalDateTime start, LocalDateTime stop) {

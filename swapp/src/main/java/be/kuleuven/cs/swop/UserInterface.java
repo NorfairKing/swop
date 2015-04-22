@@ -132,6 +132,7 @@ public interface UserInterface {
     /**
      * Requests data from the user for creating a task.
      *
+     * @param types The types of resources you can choose from for dependencies
      * @return Returns a TaskData object containing the data for creating a Task.
      */
     public TaskData getTaskData(Set<ResourceTypeWrapper> types);

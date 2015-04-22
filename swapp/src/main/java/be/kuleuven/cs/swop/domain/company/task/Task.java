@@ -105,6 +105,7 @@ public class Task implements Serializable {
     /**
      * Retrieves the best estimated finish time or, if this Task has finished, the real time when the Task finished.
      *
+     * @param currentDate The current system time
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
