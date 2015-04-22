@@ -1,8 +1,8 @@
 package be.kuleuven.cs.swop.facade;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -31,8 +31,12 @@ public class TaskPlanningWrapper {
         this.planning = planning;
     }
 
-    public Set<Developer> getDevelopers() {
-        return ImmutableSet.copyOf(planning.getDevelopers());
+    public Set<DeveloperWrapper> getDevelopers() {
+    	Set<DeveloperWrapper> result = new HashSet<DeveloperWrapper>();
+    	for (Developer realDev : planning.getDevelopers()) {
+    		result.add(new DeveloperWrapper(realDev));
+    	}
+    	return result;
     }
 
     public TaskWrapper getTask() {
@@ -43,9 +47,12 @@ public class TaskPlanningWrapper {
         return planning.getEstimatedOrRealPeriod();
     }
 
-    public Set<Resource> getReservations() {
-        return ImmutableSet.copyOf(planning.getReservations());
-    }
+    public Set<ResourceWrapper> getReservations() {
+    	Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
+    	for (Resource realRes : planning.getReservations()) {
+    		result.add(new ResourceWrapper(realRes));
+    	}
+    	return result;    }
 
     private static final String ERROR_ILLEGAL_PLANNING = "Illegal planning for planning wrapper.";
 

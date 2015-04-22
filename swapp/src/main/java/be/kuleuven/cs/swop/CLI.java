@@ -242,6 +242,13 @@ public class CLI implements UserInterface {
         printTask(task);
         printDelimiter();
     }
+    
+    @Override
+    public void showTaskPlanningContext(TaskWrapper task){
+        System.out.println("PLANNING:");
+        System.out.println(task.getDescription());
+        printDelimiter();
+    }
 
     private void printTask(TaskWrapper task) {
         LocalDateTime currentTime = sessionController.getTaskMan().getSystemTime();
@@ -443,7 +450,9 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
+    public Set<ResourceWrapper> selectResourcesFor(Set<ResourceWrapper> options) {
+    	
+    	/*
         List<Entry<ResourceTypeWrapper, List<ResourceWrapper>>> tuples = new ArrayList<>(options.entrySet());
         // sort tuples on project title
         tuples.sort((p1, p2) -> p1.getKey().getName().compareTo(p2.getKey().getName()));
@@ -454,6 +463,31 @@ public class CLI implements UserInterface {
         }
 
         return selected;
+        
+        */
+    	   List<ResourceWrapper> resources = new ArrayList<>(options);
+           System.out.println("SELECT RESOURCES\n########");
+           for (int i = 0; i < resources.size(); i++) {
+               System.out.println("# " + (i + 1) + ") " + resources.get(i).getName());
+           }
+           printDelimiter();
+
+           Set<ResourceWrapper> selectedResources = new HashSet<>();
+           do {
+               int index = promptNumber(0, resources.size());
+               if (index == 0) {
+            	   return selectedResources;
+               } else {
+            	   ResourceWrapper selected = resources.get(index - 1);
+                   if (selectedResources.contains(selected)) {
+                       System.out.println("That resource was already selected...");
+                   } else {
+                       System.out.println("Resource added, select another one? (0 to stop): ");
+                       selectedResources.add(selected);
+                   }
+               }
+           } while (true);
+    	
     }
 
     private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
@@ -494,7 +528,7 @@ public class CLI implements UserInterface {
         do {
             int index = promptNumber(0, developers.size());
             if (index == 0) {
-                break;
+                return selectedDevelopers;
             } else {
                 DeveloperWrapper selected = developers.get(index - 1);
                 if (selectedDevelopers.contains(selected)) {
@@ -506,7 +540,6 @@ public class CLI implements UserInterface {
             }
         } while (true);
 
-        return null;
     }
 
     @Override

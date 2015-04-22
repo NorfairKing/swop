@@ -60,6 +60,8 @@ public interface UserInterface {
      *            The TaskWrapper that contains the Task that will be shown.
      */
     public void showTask(TaskWrapper task);
+    
+    public void showTaskPlanningContext(TaskWrapper task);
 
     /**
      * Shows a list of Projects and makes the user select one.
@@ -106,7 +108,9 @@ public interface UserInterface {
 
     public LocalDateTime selectTime(List<LocalDateTime> options);
 
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options);
+    
+    //TODO: make this a Map<ResourceTypeWrapper, List<ResourceWrapper>> again
+    public Set<ResourceWrapper> selectResourcesFor(Set<ResourceWrapper> options);
 
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 

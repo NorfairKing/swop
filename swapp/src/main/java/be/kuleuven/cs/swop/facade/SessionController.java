@@ -214,39 +214,61 @@ public class SessionController {
             handleSimulationStep();
             return;
         }
-
-        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
-
-        // The system shows the first three possible starting times.
-        // The user selects a proposed time
-        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-        if (chosenTime == null) {
-            handleSimulationStep();
-            return;
+        
+        while(true){
+	        try {
+	        	getUi().showTaskPlanningContext(selectedTask);
+	        	
+		        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
+		        
+		        // The system shows the first three possible starting times.
+		        // The user selects a proposed time
+		        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+		        if (chosenTime == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+		
+		        Set<ResourceWrapper> resourceOptions = taskMan.getResources();
+		        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+		        if (chosenResources == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+		
+		        Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
+		        Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
+		        if (chosenDevelopers == null) {
+		            handleSimulationStep();
+		            return;
+		        }
+				taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+				break;
+			} catch (ConflictingPlanningWrapperException e) {
+				startResolveConflictSession(e.getPlanning());
+			}
         }
-
-        Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = taskMan.getPlanningResourceOptions(selectedTask, chosenTime);
-        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
-        if (chosenResources == null) {
-            handleSimulationStep();
-            return;
-        }
-
-        Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
-        Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
-        if (chosenDevelopers == null) {
-            handleSimulationStep();
-            return;
-        }
-
-        taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
         
         // End session
         handleSimulationStep();
     }
 
-    public void startResolveConflictSession() {
-
+    public void startResolveConflictSession(TaskPlanningWrapper planning) {
+    	taskMan.removePlanning(planning);
+        while(true){
+	        try {
+	        	getUi().showTaskPlanningContext(planning.getTask());
+		        List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(planning.getTask());
+		
+		        // The system shows the first three possible starting times.
+		        // The user selects a proposed time
+		        LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+				taskMan.createPlanning(planning.getTask(), chosenTime, planning.getReservations(), planning.getDevelopers());
+				break;
+			} catch (ConflictingPlanningWrapperException e) {
+				startResolveConflictSession(e.getPlanning());
+			}
+        }
         
         // End session
         handleSimulationStep();

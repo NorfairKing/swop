@@ -21,6 +21,7 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 import com.google.common.collect.ImmutableSet;
 
 
+@SuppressWarnings("serial")
 public class Company implements Serializable{
 
     private ProjectManager  projectManager;
@@ -90,13 +91,20 @@ public class Company implements Serializable{
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         return getPlanningManager().getPlanningResourceOptions(task, time);
     }
+    
+    public Set<Resource> getResources() {
+    	return getPlanningManager().getResources();
+    }
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         return getPlanningManager().getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) {
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
         getPlanningManager().createPlanning(task, time, rss, devs);
+    }
+    public void removePlanning(TaskPlanning planning){
+    	getPlanningManager().removePlanning(planning);
     }
 
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
@@ -104,9 +112,14 @@ public class Company implements Serializable{
     }
 
     public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
-        Task t = project.createTask(description, estimatedDuration, acceptableDeviation);
-        dependencies.forEach(d -> t.addDependency(d));
-        return t;
+    	Task t;
+    	if(requirements != null){
+    		t = project.createTask(description, estimatedDuration, acceptableDeviation, requirements);
+    	}else{
+    		t = project.createTask(description, estimatedDuration, acceptableDeviation);
+    	}
+    	dependencies.forEach(d -> t.addDependency(d));
+    	return t;
     }
     
     /**

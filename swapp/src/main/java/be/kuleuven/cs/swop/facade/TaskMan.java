@@ -21,6 +21,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.company.Company;
+import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
@@ -167,13 +168,25 @@ public class TaskMan implements Serializable {
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningResourceOptions(task.getTask(), time), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
     }
+    
+    public Set<ResourceWrapper> getResources(){
+    	return map(company.getResources(), t -> wrapResource(t));
+    }
 
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningDeveloperOptions(task.getTask(), time), d -> wrapDeveloper(d));
     }
 
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
-        company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
+        try {
+			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+		} catch (ConflictingPlanningException e) {
+			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+		}
+    }
+    
+    public void removePlanning(TaskPlanningWrapper planning){
+    	company.removePlanning(planning.getPlanning());
     }
 
     /**

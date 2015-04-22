@@ -105,6 +105,7 @@ public class PlanningManager implements Serializable {
         return req.getAmount() <= ofTypeLeft;
     }
     
+    
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
@@ -237,6 +238,10 @@ public class PlanningManager implements Serializable {
         }
         return map;
     }
+    
+    public ImmutableSet<Resource> getResources() {
+        return ImmutableSet.copyOf(resources);
+    }
 
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
@@ -252,9 +257,30 @@ public class PlanningManager implements Serializable {
         return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) {
+    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
         TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
+        TaskPlanning conflict = getConflictIfExists(newplanning);
+        if(conflict != null){
+        	throw new ConflictingPlanningException(conflict);
+        }
         this.plannings.add(newplanning);
+    }
+    
+    public void removePlanning(TaskPlanning planning){
+    	this.plannings.remove(planning);
+    }
+    
+    private TaskPlanning getConflictIfExists(TaskPlanning newPlanning){
+    	for (TaskPlanning plan: plannings) {
+    		for(Resource res: newPlanning.getReservations()){
+    			if (plan.getEstimatedOrRealPeriod().overlaps(newPlanning.getEstimatedOrRealPeriod())) {
+    				if(plan.getReservations().contains(res)){
+    					return plan;
+    				}
+    			}
+    		}
+    	}
+    	return null;
     }
     
     public ImmutableSet<Developer> getDevelopers() {
