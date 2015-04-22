@@ -38,7 +38,7 @@ public class Task implements Serializable {
      *            The acceptable deviation of time in which the task can be completed.
      */
     public Task(String description, long estimatedDuration, double acceptableDeviation) {
-        this(description,estimatedDuration,acceptableDeviation,null);
+        this(description, estimatedDuration, acceptableDeviation, null);
     }
 
     public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
@@ -46,7 +46,7 @@ public class Task implements Serializable {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
-        addRequirements(requirements);
+        setRequirements(requirements);
     }
 
     /**
@@ -138,7 +138,7 @@ public class Task implements Serializable {
 
     /**
      * Checks if this task depends on the given task
-     * 
+     *
      * @param dependency The possible dependency
      * @return Whether or not it actually is
      */
@@ -267,13 +267,13 @@ public class Task implements Serializable {
     public boolean isFailed() {
         return status.isFailed();
     }
-    
-    public boolean isExecuting(){
-    	return status.isExecuting();
+
+    public boolean isExecuting() {
+        return status.isExecuting();
     }
-    
-    public boolean isFinal(){
-    	return status.isFinal();
+
+    public boolean isFinal() {
+        return status.isFinal();
     }
 
     /**
@@ -310,7 +310,7 @@ public class Task implements Serializable {
     public void fail(DateTimePeriod period) {
         status.fail(period);
     }
-    
+
     /**
      * Set this task to executing.
      * Only basic tests if it can are done here, the main testing is done by the planningManager.
@@ -330,7 +330,7 @@ public class Task implements Serializable {
     protected long getWorstDuration() {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
-    
+
     /**
      * The 'available' from the first iteration. This is just a basic check on the task level
      * No deeper checks are done here.
@@ -352,14 +352,16 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(this.requirements);
     }
 
-    private void addRequirements(Set<Requirement> requirements) {
-        if(requirements == null){return;}
+    private void setRequirements(Set<Requirement> requirements) {
+        if (requirements == null) {
+            requirements = new HashSet();
+        }
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null && !this.hasConflictingRequirements(requirements);
+        return requirements != null && !this.hasDoubleTypesRequirements(requirements) && !this.hasConflictingRequirements(requirements);
     }
 
     public DateTimePeriod getPerformedDuring() {
@@ -388,7 +390,8 @@ public class Task implements Serializable {
 
     private static Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
         Set<ResourceType> types = new HashSet<ResourceType>();
-        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndDependenciesRecursiveTo(types));;
+        reqs.stream().map(req -> req.getType()).forEach(type -> type.addThisAndDependenciesRecursiveTo(types));
+        ;
         return types;
     }
 
@@ -402,7 +405,7 @@ public class Task implements Serializable {
         for (ResourceType type : types) {
             boolean found = false;
             for (Requirement req : reqs) {
-                if ( type == req.getType() ) {
+                if (type == req.getType()) {
                     response.add(req);
                     found = true;
                     break;
@@ -419,14 +422,22 @@ public class Task implements Serializable {
         Set<Requirement> recReqs = getRecursiveRequirements(reqs);
         for (Requirement req : recReqs) {
             for (ResourceType conflictType : req.getType().getConflictsWith()) {
-                if (conflictType == req.getType() && req.getAmount() > 1) {
-                    return true;
-                }
-                for (Requirement req2 : recReqs) {
-                    if (conflictType == req2.getType()) {
-                        return true;
+                if (conflictType == req.getType()) {
+                    if (req.getAmount() > 1) { return true; }
+                } else {
+                    for (Requirement req2 : recReqs) {
+                        if (conflictType == req2.getType()) { return true; }
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasDoubleTypesRequirements(Set<Requirement> reqs) {
+        for (Requirement req1 : reqs) {
+            for (Requirement req2 : reqs) {
+                if (req1 != req2 && req1.getType() == req2.getType()) { return true; }
             }
         }
         return false;

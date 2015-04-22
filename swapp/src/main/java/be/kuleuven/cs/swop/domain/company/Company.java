@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
  * A company.
  * This is the main class that gives access to the rest of the domain.
  */
+@SuppressWarnings("serial")
 public class Company implements Serializable{
 
     private ProjectManager  projectManager;
@@ -59,11 +60,11 @@ public class Company implements Serializable{
     public ImmutableSet<Project> getProjects() {
         return getProjectManager().getProjects();
     }
-    
+
     public ImmutableSet<ResourceType> getResourceTypes() {
         return getPlanningManager().getResourceTypes();
     }
-    
+
     public Project getProjectFor(Task task){
         return getProjectManager().getProjectFor(task);
     }
@@ -71,17 +72,17 @@ public class Company implements Serializable{
     public Set<Task> getUnplannedTasksOf(Project project) {
         return planningManager.getUnplannedTasksFrom(project.getTasks());
     }
-    
+
     /**
      * Retrieves all the plannings of a project
-     * 
+     *
      * @param project The project for which to get all plannings
      * @return A set of all the planning
      */
     public Set<TaskPlanning> getPlanningsFor(Project project){
         return planningManager.getPlanningsFor(project.getTasks());
     }
-    
+
     public Set<Task> getAssignedTasksOf(Project project, Developer dev){
         return planningManager.getAssignedTasksOf(project.getTasks(), dev);
     }
@@ -113,12 +114,12 @@ public class Company implements Serializable{
     public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
         return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
     }
-    
+
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
      * Alternatively could be called 'canMoveToExecuting'
-     * 
+     *
      * @param time The time to check for
      * @param dev The developer for whom the task might be available
      * @param task The task to check
@@ -127,34 +128,34 @@ public class Company implements Serializable{
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task) {
         return getPlanningManager().isTier2AvailableFor(time, dev, task);
     }
-    
+
     public void setAlternativeFor(Task t, Task alt){
         t.setAlternative(alt);
     }
-    
+
     public void addDependencyTo(Task t,Task dep){
         t.addDependency(dep);
     }
-    
+
     // finish, fail and executing has to happen through the planningManager
     // that's the class that can decide about this
     // We can't enforce this in java, but we enforce it with mind-power
     public void finishTask(Task t, DateTimePeriod period){
         getPlanningManager().finishTask(t, period);
     }
-    
+
     public void failTask(Task t,DateTimePeriod period){
         getPlanningManager().failTask(t, period);
     }
-    
+
     public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
         getPlanningManager().startExecutingTask(t, time, dev);
     }
-    
+
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability){
         return getPlanningManager().createResourceType(name, requires, conflicts, selfConflicting, availability);
     }
-    
+
     public Resource createResource(String name, ResourceType type){
         return getPlanningManager().createResource(name, type);
     }

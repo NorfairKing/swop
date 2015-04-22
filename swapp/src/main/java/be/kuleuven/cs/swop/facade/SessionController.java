@@ -40,7 +40,7 @@ public class SessionController {
         return user != null;
     }
 
-    private void setCurrentUser(UserWrapper user) {
+    protected void setCurrentUser(UserWrapper user) {
         if (!canHaveAsCurrentUser(user)) { throw new IllegalArgumentException(ERROR_ILLEGAL_USER); }
         this.currentUser = user;
     }

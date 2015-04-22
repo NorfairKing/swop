@@ -1,4 +1,4 @@
-package be.kuleuven.cs.swop;
+package be.kuleuven.cs.swop.facade;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,6 +11,8 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.TestingUI;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.facade.DeveloperData;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
@@ -37,6 +39,7 @@ public class UpdateTaskStatusSessionTest {
         ui = new TestingUI();
         taskMan = new TaskMan();
         controller = new SessionController(ui, taskMan);
+        controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
         ui.start();
         
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
