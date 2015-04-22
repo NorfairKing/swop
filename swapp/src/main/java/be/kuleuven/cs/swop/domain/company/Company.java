@@ -96,7 +96,6 @@ public class Company implements Serializable{
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time) {
-        // FIXME Infinite loop it seems.
         return getPlanningManager().getPlanningTimeOptions(task, amount, time);
     }
 

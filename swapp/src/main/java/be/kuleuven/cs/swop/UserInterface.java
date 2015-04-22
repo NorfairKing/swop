@@ -113,8 +113,20 @@ public interface UserInterface {
      */
     public LocalDateTime selectTime(List<LocalDateTime> options);
 
+    /**
+     * Shows a form in which, for each of the resource types, the user can select specific resources
+     * 
+     * @param options A map of each resource type to several options for the actual resources
+     * @return A set of all selected resources, at least one for each type.
+     */
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options);
 
+    /**
+     * Shows a list of developers for the user to select one or more from.
+     * 
+     * @param developerOptions The developers to select from
+     * @return A subset of the given developers
+     */
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
     /**
