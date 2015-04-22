@@ -340,7 +340,7 @@ public class Task implements Serializable {
     }
 
     private void addRequirements(Set<Requirement> requirements) {
-        if(requirements == null){return;}
+        if(requirements == null){requirements = new HashSet();}
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }

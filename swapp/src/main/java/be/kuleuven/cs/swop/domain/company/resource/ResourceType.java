@@ -18,6 +18,16 @@ public class ResourceType implements Serializable {
 	private Set<ResourceType> dependencies = new HashSet<ResourceType>();
 	private Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
 
+	
+	public ResourceType(String name){
+	    this(name,false);
+	}
+
+    
+    public ResourceType(String name,boolean selfConflicting){
+        this(name,null,null,selfConflicting);
+    }
+    
 	/**
 	 * 
 	 * @param name
