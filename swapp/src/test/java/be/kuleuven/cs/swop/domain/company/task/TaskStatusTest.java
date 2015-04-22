@@ -16,6 +16,7 @@ import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.Company;
+import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
@@ -63,7 +64,7 @@ public class TaskStatusTest {
 	}
 	
 	@Test
-	public void testExecuteThenFinish() {
+	public void testExecuteThenFinish() throws ConflictingPlanningException {
 	    DateTimePeriod period = new DateTimePeriod(
                 LocalDateTime.of(2015, 1, 1, 8, 0),
                 LocalDateTime.of(2015, 1, 1, 9, 0)
@@ -129,7 +130,7 @@ public class TaskStatusTest {
 	}
 	
 	@Test
-	public void testExecuteFinished() {
+	public void testExecuteFinished() throws ConflictingPlanningException {
 	    company.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
                 new HashSet<>(), new HashSet<>(Arrays.asList(developer)));
         company.startExecutingTask(task, LocalDateTime.of(2015, 1, 1, 8, 0), developer);
@@ -149,7 +150,7 @@ public class TaskStatusTest {
 	}
 	
 	@Test
-	public void testFinishSetAlternative() {
+	public void testFinishSetAlternative() throws ConflictingPlanningException {
 	    company.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
                 new HashSet<>(), new HashSet<>(Arrays.asList(developer)));
         company.startExecutingTask(task, LocalDateTime.of(2015, 1, 1, 8, 0), developer);
@@ -238,7 +239,7 @@ public class TaskStatusTest {
     }
 	
 	@Test
-	public void testViaPlanMan() {
+	public void testViaPlanMan() throws ConflictingPlanningException {
 	    // can't start executing yet, because it isn't planned yet
 	    try {
 	        company.startExecutingTask(task, LocalDateTime.of(2015, 1, 1, 8, 0), developer);
@@ -256,7 +257,7 @@ public class TaskStatusTest {
 	}
 	
 	@Test
-    public void testViaPlanManFinish() {
+    public void testViaPlanManFinish() throws ConflictingPlanningException {
         assertFalse(task.canFinish());
         assertFalse(task.isFinal());
         assertFalse(task.isFinished());
@@ -277,7 +278,7 @@ public class TaskStatusTest {
     }
 	
 	@Test
-    public void testViaPlanManFail() {
+    public void testViaPlanManFail() throws ConflictingPlanningException {
         company.createPlanning(task, LocalDateTime.of(2015, 1, 1, 8, 0),
                 new HashSet<>(),
                 new HashSet<>(Arrays.asList(developer)));
@@ -294,7 +295,7 @@ public class TaskStatusTest {
 
     
     @Test
-    public void testViaPlanManOngoing() {
+    public void testViaPlanManOngoing() throws ConflictingPlanningException {
         assertFalse(task.isExecuting());
         assertFalse(task.isFailed());
         assertFalse(task.isFinished());

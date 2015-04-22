@@ -13,6 +13,7 @@ import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -241,12 +242,6 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
         // TODO Auto-generated method stub
         return null;
@@ -256,5 +251,19 @@ public class ButtonMashingUI implements UserInterface {
     public SimulationStepData getSimulationStepData() {
         return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
     }
+
+	@Override
+	public void showTaskPlanningContext(TaskWrapper task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<ResourceWrapper> selectResourcesFor(
+			Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
+			Set<RequirementWrapper> requirements) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

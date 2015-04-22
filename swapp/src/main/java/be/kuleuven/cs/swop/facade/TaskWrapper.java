@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
@@ -118,6 +119,22 @@ public class TaskWrapper {
             result.add(new TaskWrapper(realTask));
         }
         return result;
+    }
+    
+    public Set<RequirementWrapper> getRequirements(){
+        Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
+        for (Requirement realReq : getTask().getRequirements()) {
+            result.add(new RequirementWrapper(realReq));
+        }
+        return result;
+    }
+    
+    public Set<RequirementWrapper> getRecursiveRequirements(){
+    	Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
+    	for (Requirement realReq : getTask().getRecursiveRequirements()) {
+    		result.add(new RequirementWrapper(realReq));
+    	}
+    	return result;
     }
 
     /**

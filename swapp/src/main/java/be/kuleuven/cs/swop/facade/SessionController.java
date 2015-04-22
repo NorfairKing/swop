@@ -3,11 +3,15 @@ package be.kuleuven.cs.swop.facade;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 
 public class SessionController {
@@ -228,9 +232,24 @@ public class SessionController {
 		            handleSimulationStep();
 		            return;
 		        }
-		
-		        Set<ResourceWrapper> resourceOptions = taskMan.getResources();
-		        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions);
+	
+		        Map<ResourceTypeWrapper,List<ResourceWrapper>> resourceOptions = new HashMap<ResourceTypeWrapper,List<ResourceWrapper>>();
+		        for( ResourceWrapper res : taskMan.getResources()){
+		        	ResourceTypeWrapper type = res.getType();
+		        	boolean found = false;
+		        	for(ResourceTypeWrapper key: resourceOptions.keySet()){
+		        		if(key.hasSameWrappedObject(type)){
+		        			found = true;
+		        			type = key;
+		        			break;
+		        		}
+		        	}
+		        	if(!found){
+		        		resourceOptions.put(type, new ArrayList<ResourceWrapper>());
+		        	}
+		        	resourceOptions.get(type).add(res);
+		        }
+		        Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions, selectedTask.getRecursiveRequirements());
 		        if (chosenResources == null) {
 		            handleSimulationStep();
 		            return;

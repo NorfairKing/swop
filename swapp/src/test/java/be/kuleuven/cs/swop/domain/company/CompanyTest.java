@@ -26,7 +26,7 @@ public class CompanyTest {
     }
     
     @Test
-    public void getUnplannedTasksOfTest() {
+    public void getUnplannedTasksOfTest() throws ConflictingPlanningException {
         assertEquals(0, company.getUnplannedTasksOf(project).size());
         
         Task task = project.createTask("task", 10, 1);

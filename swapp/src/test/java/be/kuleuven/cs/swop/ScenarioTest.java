@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.facade.ConflictingPlanningWrapperException;
 import be.kuleuven.cs.swop.facade.DeveloperData;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
@@ -54,7 +55,7 @@ public class ScenarioTest {
     public void tearDown() throws Exception {}
 
     @Test
-    public void scenario1Test() throws ParseException {
+    public void scenario1Test() throws ParseException, ConflictingPlanningWrapperException {
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime currentDate = null;
 

@@ -9,6 +9,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
 import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
 import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -107,10 +108,8 @@ public interface UserInterface {
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap);
 
     public LocalDateTime selectTime(List<LocalDateTime> options);
-
     
-    //TODO: make this a Map<ResourceTypeWrapper, List<ResourceWrapper>> again
-    public Set<ResourceWrapper> selectResourcesFor(Set<ResourceWrapper> options);
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
 
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
