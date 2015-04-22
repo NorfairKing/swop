@@ -46,7 +46,7 @@ public class Task implements Serializable {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
-        addRequirements(requirements);
+        setRequirements(requirements);
     }
 
     /**
@@ -339,14 +339,14 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(this.requirements);
     }
 
-    private void addRequirements(Set<Requirement> requirements) {
+    private void setRequirements(Set<Requirement> requirements) {
         if(requirements == null){requirements = new HashSet();}
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null && !this.hasConflictingRequirements(requirements);
+        return requirements != null && !this.hasDoubleTypesRequirements(requirements) && !this.hasConflictingRequirements(requirements);
     }
 
     public DateTimePeriod getPerformedDuring() {
@@ -402,7 +402,7 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(response);
     }
 
-    public boolean hasConflictingRequirements(Set<Requirement> reqs) {
+    private boolean hasConflictingRequirements(Set<Requirement> reqs) {
         Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
         for (Requirement req : recReqs) {
             for (ResourceType conflictType : req.getType().getConflictsWith()) {
@@ -413,6 +413,17 @@ public class Task implements Serializable {
                     if (conflictType == req2.getType()) {
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean hasDoubleTypesRequirements(Set<Requirement> reqs){
+        for(Requirement req1: reqs){
+            for(Requirement req2: reqs){
+                if(req1 != req2 && req1.getType() == req2.getType()){
+                    return true;
                 }
             }
         }
