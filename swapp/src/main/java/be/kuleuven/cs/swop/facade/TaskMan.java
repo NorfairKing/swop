@@ -45,7 +45,8 @@ public class TaskMan implements Serializable {
         this.timeKeeper = new Timekeeper();
         this.company = new Company();
     }
-
+    
+    // Getters
     private Timekeeper getTimekeeper() {
         return this.timeKeeper;
     }
@@ -55,6 +56,7 @@ public class TaskMan implements Serializable {
         return this.company;
     }
 
+    // Wrapping functions
     private UserWrapper wrapUser(User u) {
         return new UserWrapper(u);
     }
@@ -101,7 +103,8 @@ public class TaskMan implements Serializable {
         return result;
     }
 
-    // Sorry, I just hate Java
+    // Sorry, I just hate Java (Syd)
+    // Nah, generics are fun! You go girl! (Pablo)
     private <Type, WrapperType, ImageType, ImageTypeWrapper> Map<WrapperType, ImageTypeWrapper> map(Map<? extends Type, ImageType> presents, Function<Type, WrapperType> wrap,
             Function<ImageType, ImageTypeWrapper> wrapImage) {
         Map<WrapperType, ImageTypeWrapper> result = new HashMap<>();
@@ -140,6 +143,11 @@ public class TaskMan implements Serializable {
         return map(company.getProjects(), p -> wrapProject(p));
     }
 
+    /**
+     * Retrieve all resource types of the company
+     * 
+     * @return A set of the resources types
+     */
     public Set<ResourceTypeWrapper> getResourceTypes() {
         return map(company.getResourceTypes(), r -> wrapResourceType(r));
     }
@@ -155,23 +163,57 @@ public class TaskMan implements Serializable {
         return map(company.getUnplannedTasksOf(project.getProject()), t -> wrapTask(t));
     }
 
+    /**
+     * Retrieves the planning for a given task
+     * 
+     * @param task The task of which you want the planning
+     * @return The planning of the given task
+     */
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
         return wrapPlanning(company.getPlanningFor(task.getTask()));
     }
 
+    /**
+     * Retrieves some suggestions for possible planning times of a task
+     * Currently gives you the first 3 starting at the current system time
+     * 
+     * @param task The task for which you want a possible time
+     * @return A list of suggested time options
+     */
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
-        // FIXME Infinite loop it seems.
         return company.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, timeKeeper.getTime());
     }
 
+    /**
+     * Retrieves a list of options for each resource type needed by a task.
+     * 
+     * @param task The task for which you want the options
+     * @param time The time on which you cant to use the resources
+     * @return The list with options
+     */
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningResourceOptions(task.getTask(), time), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
     }
 
+    /**
+     * Retrieves a list of developers that can work on the task on a given time
+     * 
+     * @param task The task for which you need developers
+     * @param time The time on which you need developers
+     * @return The possible developers
+     */
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningDeveloperOptions(task.getTask(), time), d -> wrapDeveloper(d));
     }
 
+    /**
+     * Create a planning for a task
+     * 
+     * @param task The task to plan
+     * @param time The time on which it is planned for the task to start
+     * @param resources The resources to reserve for this task
+     * @param developers The developers that have to work on the task
+     */
     public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) {
         company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
     }
@@ -354,7 +396,12 @@ public class TaskMan implements Serializable {
         return timeKeeper.getTime();
     }
 
-    // TODO: implement and document
+    /**
+     * Creates a new resource type in the system
+     * 
+     * @param data The data needed to create the type
+     * @return The created type
+     */
     public ResourceTypeWrapper createResourceType(ResourceTypeData data) {
         String name = data.getName();
         Set<ResourceType> requires = map(data.getRequires(), r -> r.getType());
@@ -369,6 +416,12 @@ public class TaskMan implements Serializable {
         return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
     }
 
+    /**
+     * Creates a new resource in the system
+     * 
+     * @param data The data needed to create the resource
+     * @return The created resource
+     */
     public ResourceWrapper createResource(ResourceData data) {
         String name = data.getName();
         ResourceType type = data.getType().getType();
@@ -389,17 +442,31 @@ public class TaskMan implements Serializable {
         return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask());
     }
 
-    // TODO: implement and document
+    /**
+     * Create a new developer in the system
+     * 
+     * @param data The data needed to create a developer
+     * @return The newly created developer
+     */
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
         return wrapDeveloper(company.createDeveloper(name));
     }
 
-    // Memento pattern
+    /**
+     * Creates a memento of the system
+     * 
+     * @return The created memento
+     */
     public Memento saveToMemento() {
         return new Memento(this);
     }
 
+    /**
+     * Restore the system from a memento
+     * 
+     * @param memento The memento to restore from
+     */
     public void restoreFromMemento(Memento memento) {
         company = memento.getSavedState().getCompany();
         timeKeeper = memento.getSavedState().getTimekeeper();
@@ -418,6 +485,17 @@ public class TaskMan implements Serializable {
         }
     }
 
+    /**
+     * Creates a deep copy of TaskMan
+     * This is done by writing it to a bytestream, using the build-in java serializer
+     * and then reading it out again.
+     * This gives a very clean way to prevent duplication by multiple references, or 
+     * problems with looping references.
+     * It does however take a bit more memory because value classes will also be copied
+     * where they aren't strictly needed.
+     * 
+     * @return A deep copy of this class.
+     */
     private TaskMan getDeepCopy() {
         TaskMan orig = this;
         TaskMan obj = null;
