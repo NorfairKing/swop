@@ -13,7 +13,8 @@ RESULT_JAR  = $(RESULT_DIR)/system.jar
 DOC_DIR 	= $(RESULT_DIR)/doc
 DIAGRAM_DIR = $(RESULT_DIR)/diagrams
 
-all: package javadoc diagrams
+
+all: package doc diagrams
 	mkdir -p $(RESULT_DIR) $(DOC_DIR) $(DIAGRAM_DIR)
 	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)
 	cp -r swapp/src $(RESULT_DIR)
@@ -21,11 +22,14 @@ all: package javadoc diagrams
 	cp -r diagrams/*.eps $(DIAGRAM_DIR)
 	zip -r $(FINAL_ZIP) $(RESULT_DIR)
 
+
 package:
 	mvn package -f $(POM_FILE)
 
-javadoc:
+
+doc:
 	mvn javadoc:javadoc -f $(POM_FILE)
+
 
 .PHONY: diagrams
 diagrams:
