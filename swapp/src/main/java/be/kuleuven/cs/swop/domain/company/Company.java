@@ -21,6 +21,7 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 import com.google.common.collect.ImmutableSet;
 
 
+@SuppressWarnings("serial")
 public class Company implements Serializable{
 
     private ProjectManager  projectManager;
