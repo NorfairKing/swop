@@ -102,20 +102,20 @@ public class PlanningManager implements Serializable {
         
         for (TaskPlanning plan: plannings) {
             if (plan.getEstimatedOrRealPeriod().overlaps(period) && plan.getTask() != t) {
-                System.out.println("overlap: " + plan.getEstimatedOrRealPeriod().toString() + " <-> " + period.toString());
+                //System.out.println("overlap: " + plan.getEstimatedOrRealPeriod().toString() + " <-> " + period.toString());
                 tempResources.removeAll(plan.getReservations());
             }
         }
         
         int ofTypeLeft = 0;
         for (Resource res: tempResources) {
-            System.out.println("res: " + res.getName());
+            //System.out.println("res: " + res.getName());
             if (res.isOfType(type)) {
                 ofTypeLeft += 1;
             }
         }
         
-        System.out.println("Amount left: " + ofTypeLeft);
+        //System.out.println("Amount left: " + ofTypeLeft);
         return req.getAmount() <= ofTypeLeft;
     }
     
