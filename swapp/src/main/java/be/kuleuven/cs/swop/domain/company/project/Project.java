@@ -253,6 +253,13 @@ public class Project implements Serializable {
         addTask(newTask);
         return newTask;
     }
+    
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
+        Task newTask = new Task(description, estimatedDuration, acceptableDeviation, requirements);
+        dependencies.forEach(d -> newTask.addDependency(d));
+        addTask(newTask);
+        return newTask;
+    }
 
     /**
      * Retrieves the a Set containing every Task belonging to this Project.
@@ -281,6 +288,7 @@ public class Project implements Serializable {
      * or when all Tasks haven't finished yet, whether or not it probably will
      * finish on time.
      *
+     * @param currentDate The current system time
      * @return Returns true if this project is on time.
      *
      */
@@ -307,6 +315,7 @@ public class Project implements Serializable {
     /**
      * Check whether or not this Project isn't on time.
      *
+     * @param currentDate The current system time
      * @return Returns false when this Project is on time.
      *
      */

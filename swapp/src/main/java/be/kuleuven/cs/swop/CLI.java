@@ -40,7 +40,6 @@ public class CLI implements UserInterface {
 
     private Scanner           scanner;
     private SessionController sessionController;
-    private UserWrapper       user;
 
     public CLI() {
         this.scanner = new Scanner(System.in);
@@ -50,7 +49,9 @@ public class CLI implements UserInterface {
     public boolean start() {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
+        
         login();
+        
         String command;
         boolean stop = false;
         while (!stop) {
@@ -61,7 +62,10 @@ public class CLI implements UserInterface {
     }
 
     private void login() {
-        user = sessionController.startSelectUserSession();
+        System.out.println("\nLOGIN:");
+        do {
+            getSessionController().startSelectUserSession();
+        } while (getUser() == null);
     }
 
     private String selectCommand() {
@@ -77,7 +81,7 @@ public class CLI implements UserInterface {
             case "quit":
                 return true;
             case "user":
-                login();
+                getSessionController().startSelectUserSession();
                 break;
             case "list":
             case "l":
@@ -92,7 +96,7 @@ public class CLI implements UserInterface {
             	break;
         }
 
-        if (user.isDeveloper()) {
+        if (getUser().isDeveloper()) {
             switch (command) {
                 case "help":
                 case "h":
@@ -109,7 +113,7 @@ public class CLI implements UserInterface {
 
             }
 
-        } else if (user.isManager()) {
+        } else if (getUser().isManager()) {
             switch (command) {
                 case "help":
                 case "h":
@@ -169,11 +173,7 @@ public class CLI implements UserInterface {
 
     @Override
     public UserWrapper selectUser(Set<UserWrapper> usersSet) {
-        UserWrapper user = null;
-        while (user == null) {
-            user = selectFromCollection(usersSet, "users", u -> u.getName());
-        }
-        return user;
+        return selectFromCollection(usersSet, "users", u -> u.getName());
     }
 
     @Override
@@ -281,9 +281,9 @@ public class CLI implements UserInterface {
         } else {
             System.out.println("#   Still needs work");
         }
-        
-        if (user.isDeveloper()) {
-            if (sessionController.getTaskMan().isTaskAvailableFor(currentTime, user.asDeveloper(), task)) {
+
+        if (getUser().isDeveloper()) {
+            if (sessionController.getTaskMan().isTaskAvailableFor(currentTime, getUser().asDeveloper(), task)) {
                 System.out.println("#   You can execute this task");
             }
             else {
@@ -430,7 +430,7 @@ public class CLI implements UserInterface {
             }
         } else {
             if (start) {
-                return new ExecutingStatusData(user);
+                return new ExecutingStatusData(getUser());
             } else {
                 return new FailedStatusData(startTime, endTime);
             }
@@ -450,7 +450,16 @@ public class CLI implements UserInterface {
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        return selectFromCollection(options, "time", o -> formatDate(o));
+        LocalDateTime time = selectFromCollection(options, "time", o -> formatDate(o));
+        if (time == null) {
+            System.out.println("Would you like to use a custom time? (y/n)");
+            boolean wantsToSelectCustom = promptBoolean("y", "n");
+            if (wantsToSelectCustom) {
+                System.out.print("Enter a time: ");
+                time = promptDate();
+            }
+        }
+        return time;
     }
 
     @Override
@@ -551,7 +560,7 @@ public class CLI implements UserInterface {
         do {
             int index = promptNumber(0, developers.size());
             if (index == 0) {
-                return selectedDevelopers;
+                break;
             } else {
                 DeveloperWrapper selected = developers.get(index - 1);
                 if (selectedDevelopers.contains(selected)) {
@@ -563,6 +572,8 @@ public class CLI implements UserInterface {
             }
         } while (true);
 
+
+        return selectedDevelopers;
     }
 
     @Override
@@ -778,6 +789,10 @@ public class CLI implements UserInterface {
 
     private void printDelimiter() {
         System.out.println("# ----------------------------------");
+    }
+
+    private UserWrapper getUser() {
+        return getSessionController().getCurrentUser();
     }
 
     // Constants

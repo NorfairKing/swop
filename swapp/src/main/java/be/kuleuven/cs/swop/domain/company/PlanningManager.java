@@ -24,6 +24,9 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 
+/**
+ * A class that handles all the planning of and working on tasks.
+ */
 @SuppressWarnings("serial")
 public class PlanningManager implements Serializable {
 
@@ -44,6 +47,12 @@ public class PlanningManager implements Serializable {
         plannings.add(planning);
     }
 
+    /**
+     * Checks to see if this task if planned
+     * 
+     * @param task The task to check
+     * @return Whether or not it is planned
+     */
     public boolean isPlanned(Task task) {
         return this.getPlanningFor(task) != null;
     }
@@ -81,27 +90,31 @@ public class PlanningManager implements Serializable {
      * Checks to see if no planning has reserved them
      * 
      * @param req The requirement to check
+     * @param t The task of which the requirement is
      * @param period The period during which we want to use it
      * @return Whether or not enough resources are available at the time
      */
-    public boolean canBeSatisfiedDuring(Requirement req, DateTimePeriod period) {
+    private boolean canRequirementOfBeSatisfiedDuring(Requirement req, Task t, DateTimePeriod period) {
         ResourceType type = req.getType();
         
         Set<Resource> tempResources = new HashSet<>(resources);
         
         for (TaskPlanning plan: plannings) {
-            if (plan.getEstimatedOrRealPeriod().overlaps(period)) {
+            if (plan.getEstimatedOrRealPeriod().overlaps(period) && plan.getTask() != t) {
+                System.out.println("overlap: " + plan.getEstimatedOrRealPeriod().toString() + " <-> " + period.toString());
                 tempResources.removeAll(plan.getReservations());
             }
         }
         
         int ofTypeLeft = 0;
         for (Resource res: tempResources) {
+            System.out.println("res: " + res.getName());
             if (res.isOfType(type)) {
                 ofTypeLeft += 1;
             }
         }
         
+        System.out.println("Amount left: " + ofTypeLeft);
         return req.getAmount() <= ofTypeLeft;
     }
     
@@ -146,8 +159,8 @@ public class PlanningManager implements Serializable {
         }else{
             for(Requirement req: task.getRecursiveRequirements()){//TODO does this have to be recursive or not?!
                 DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-                if (!canBeSatisfiedDuring(req, startingNow)){
-                    //System.out.println("5");
+                if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)){
+                    //System.out.println("5: " + req.getType().getName());
                     return false;
                 }
             }
@@ -170,22 +183,85 @@ public class PlanningManager implements Serializable {
         }
         return null;
     }
+    
+    /**
+     * Retrieves the plannings for all the given tasks
+     * 
+     * @param tasks The list of tasks we want the plannings for
+     * @return A set of all the planning
+     */
+    public Set<TaskPlanning> getPlanningsFor(Set<Task> tasks){
+        Set<TaskPlanning> plans = new HashSet<TaskPlanning>();
+        for(Task t : tasks){
+            TaskPlanning pl = getPlanningFor(t);
+            if(pl != null){
+            plans.add(pl);
+            }
+        }
+        return plans;
+    }
+    
+    /**
+     * Selects all unplanned tasks from the given set
+     * @param tasks The set of tasks
+     * @return Only the unplanned tasks from the set
+     */
+    public Set<Task> getUnplannedTasksFrom(Set<Task> tasks){
+        Set<Task> unplannedTasks = new HashSet<Task>();
+        for (Task t : tasks) {
+            if (isUnplanned(t)) {
+                unplannedTasks.add(t);
+            }
+        }
+        return unplannedTasks;
+    }
+    
+    /**
+     * Selects all tasks that are assigned to the given dev
+     * @param tasks The tasks to check
+     * @param dev The dev to check
+     * @return The tasks to which the dev is assigned
+     */
+    public Set<Task> getAssignedTasksOf(Set<Task> tasks, Developer dev){
+        Set<TaskPlanning> allPlannings = getPlanningsFor(tasks);
+        
+        Set<Task> assignedTasks = new HashSet<Task>();
+        for(TaskPlanning p : allPlannings){
+            if(p.getDevelopers().contains(dev)){
+                assignedTasks.add(p.getTask());
+            }
+        }
+        
+        return assignedTasks;
+    }
 
-    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime currentTime) {
-        currentTime = currentTime.plusMinutes(60-currentTime.getMinute());
+    /**
+     * Retrieves a number of times on which the given task could be planned
+     * The search starts at the given time
+     * 
+     * @param task The task
+     * @param n How many options you want
+     * @param theTime The time to start the search on
+     * @return A list of possible times
+     */
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime theTime) {
+        theTime = theTime.plusMinutes(60-theTime.getMinute());
         List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
         if (this.resources.isEmpty()) //safety checks
             return timeOptions;
         if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),this.resources, p.getAmount())))
             return timeOptions;
         for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety, is this dirty? YES, fix it! (or at least use a constant)
-            if (this.isValidTimeForTask(currentTime,task))
-                timeOptions.add(currentTime);
-            currentTime = TimeCalculator.addWorkingMinutes(currentTime,60);
+            if (this.isValidTimeForTask(theTime,task))
+                timeOptions.add(theTime);
+            theTime = TimeCalculator.addWorkingMinutes(theTime,60);
         }
         return timeOptions;
     }
 
+    /**
+     * Checks to see if the task could be planned to start on this time
+     */
     private boolean isValidTimeForTask(LocalDateTime time, Task task) {
         Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
@@ -209,6 +285,10 @@ public class PlanningManager implements Serializable {
         return true;
     }
 
+    /**
+     * Checks to see if the given set has enough resources of the given type
+     * Enough is 'n or more'
+     */
     private boolean hasResourcesOfType(ResourceType type, Set<Resource> resources, int number) {
         int counter = 0;
         for (Resource resource : resources) {
@@ -221,6 +301,13 @@ public class PlanningManager implements Serializable {
         return false;
     }
 
+    /**
+     * Retrieves a list of options for each resource type needed by a task.
+     * 
+     * @param task The task for which you want the options
+     * @param time The time on which you cant to use the resources
+     * @return The list with options
+     */
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         Set<Resource> usedResources = new HashSet<Resource>();
         DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
@@ -243,7 +330,13 @@ public class PlanningManager implements Serializable {
         return ImmutableSet.copyOf(resources);
     }
 
-
+    /**
+     * Retrieves a list of developers that can work on the task on a given time
+     * 
+     * @param task The task for which you need developers
+     * @param time The time on which you need developers
+     * @return The possible developers
+     */
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         Set<Developer> usedDevelopers = new HashSet<Developer>();
         DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
@@ -258,6 +351,9 @@ public class PlanningManager implements Serializable {
     }
 
     public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
+        if (this.getPlanningFor(task) != null) {
+            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
+        }
         TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
         TaskPlanning conflict = getConflictIfExists(newplanning);
         if(conflict != null){
@@ -356,5 +452,6 @@ public class PlanningManager implements Serializable {
     
     private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
     
 }

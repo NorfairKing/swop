@@ -15,7 +15,12 @@ import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
-
+/**
+ * A class that represents the reservation of a task.
+ * It also includes the reservation of all needed resources and the developers assigned to do it.
+ * It of course also includes a planned starting time.
+ * 
+ */
 @SuppressWarnings("serial")
 public class TaskPlanning implements Serializable {
 
@@ -29,7 +34,7 @@ public class TaskPlanning implements Serializable {
     }
 
     public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime, Set<Resource> resources) {
-        setDevelopers(developers);
+        addDevelopers(developers);
         setTask(task); //task has to be set before the reservations
         setPlannedStartTime(plannedStartTime);
         setResources(resources);
@@ -39,11 +44,11 @@ public class TaskPlanning implements Serializable {
         return ImmutableSet.copyOf(developers);
     }
 
-    private void setDevelopers(Set<Developer> developers) {
+    private void addDevelopers(Set<Developer> developers) {
         if(developers == null){
             developers = new HashSet<Developer>();
         }
-        developers.forEach(d -> addDeveloper(d));
+        developers.forEach(d -> this.addDeveloper(d));
     }
 
     protected boolean canHaveAsDeveloper(Developer developer) {
@@ -122,7 +127,13 @@ public class TaskPlanning implements Serializable {
         this.resources.add(resource);
     }
 
-
+    /**
+     * Gives an indication of when this planning has taken, or should take place.
+     * If the task is already finished, the planning knows when it was, and returns that as the period it was done.
+     * If the task isn't finished the planning will estimate a period based on the planned starting time and how long the task needs.
+     * 
+     * @return An estimated period in which the task should be done, or the real period in which it was done.
+     */
     public DateTimePeriod getEstimatedOrRealPeriod() {
         if (getTask().isFailed() || getTask().isFinished()) {
             return getTask().getPerformedDuring();

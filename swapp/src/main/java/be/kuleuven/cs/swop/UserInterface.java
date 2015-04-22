@@ -106,11 +106,30 @@ public interface UserInterface {
      * @return Returns a TaskWrapper containing the Task selected by the user.
      */
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap);
-
+    
+    /**
+     * Shows a list of suggested times and returns a time
+     * The returned time can be one of the suggestions, but doesn't have to be
+     * 
+     * @param options A list of selected times
+     * @return Any time
+     */
     public LocalDateTime selectTime(List<LocalDateTime> options);
     
+     /**
+     * Shows a form in which, for each of the resource types, the user can select specific resources
+     * 
+     * @param options A map of each resource type to several options for the actual resources
+     * @return A set of all selected resources, at least one for each type.
+     */
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
 
+    /**
+     * Shows a list of developers for the user to select one or more from.
+     * 
+     * @param developerOptions The developers to select from
+     * @return A subset of the given developers
+     */
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
     /**

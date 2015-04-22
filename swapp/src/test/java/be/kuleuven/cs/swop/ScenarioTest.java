@@ -177,7 +177,6 @@ public class ScenarioTest {
         t4dev.add(devX);
         taskMan.createPlanning(t4, LocalDateTime.of(2015, 2, 13, 12, 0), t4res, t4dev);
         
-        
         assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t1));
         assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t2));
         assertFalse(taskMan.isTaskAvailableFor(currentDate, devX, t3));

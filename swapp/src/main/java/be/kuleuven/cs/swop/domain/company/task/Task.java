@@ -8,7 +8,7 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
-import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -38,7 +38,7 @@ public class Task implements Serializable {
      *            The acceptable deviation of time in which the task can be completed.
      */
     public Task(String description, long estimatedDuration, double acceptableDeviation) {
-        this(description,estimatedDuration,acceptableDeviation,null);
+        this(description, estimatedDuration, acceptableDeviation, null);
     }
 
     public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
@@ -46,7 +46,7 @@ public class Task implements Serializable {
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
         setStatus(new OngoingStatus(this));
-        addRequirements(requirements);
+        setRequirements(requirements);
     }
 
     /**
@@ -105,6 +105,7 @@ public class Task implements Serializable {
     /**
      * Retrieves the best estimated finish time or, if this Task has finished, the real time when the Task finished.
      *
+     * @param currentDate The current system time
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
@@ -136,6 +137,12 @@ public class Task implements Serializable {
         this.estimatedDuration = estimatedDuration;
     }
 
+    /**
+     * Checks if this task depends on the given task
+     *
+     * @param dependency The possible dependency
+     * @return Whether or not it actually is
+     */
     boolean containsDependency(Task dependency) {
         if (dependency == null) { return true; }
         for (Task subDep : this.getDependencySet()) {
@@ -215,7 +222,7 @@ public class Task implements Serializable {
      * @throws IllegalArgumentException
      *             If the Task can't have the given Task as alternative.
      */
-    public void addAlternative(Task alternative) {
+    public void setAlternative(Task alternative) {
         status.setAlternative(alternative);
     }
 
@@ -261,13 +268,13 @@ public class Task implements Serializable {
     public boolean isFailed() {
         return status.isFailed();
     }
-    
-    public boolean isExecuting(){
-    	return status.isExecuting();
+
+    public boolean isExecuting() {
+        return status.isExecuting();
     }
-    
-    public boolean isFinal(){
-    	return status.isFinal();
+
+    public boolean isFinal() {
+        return status.isFinal();
     }
 
     /**
@@ -304,16 +311,18 @@ public class Task implements Serializable {
     public void fail(DateTimePeriod period) {
         status.fail(period);
     }
-    
+
+    /**
+     * Set this task to executing.
+     * Only basic tests if it can are done here, the main testing is done by the planningManager.
+     * Because of this, this method should only be called by the planningManager.
+     * We can't enforce this in java, but that's a limitation we'll have to live with.
+     * Note: for convenience it is used in some tests directly, however there are also tests
+     * to see if the checking is done properly in the planningManager.
+     */
     public void execute(){
     	status.execute();
     }
-
-    /*protected long getRealDuration() {
-        return TimeCalculator.getDurationMinutes(
-                getPerformedDuring().getStartTime(),
-                getPerformedDuring().getStopTime());
-    }*/
 
     protected long getBestDuration() {
         return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
@@ -322,7 +331,12 @@ public class Task implements Serializable {
     protected long getWorstDuration() {
         return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
     }
-    
+
+    /**
+     * The 'available' from the first iteration. This is just a basic check on the task level
+     * No deeper checks are done here.
+     * @return Whether it is Tier1Available.
+     */
     public boolean isTier1Available(){
         return !hasUnfinishedDependencies() && status.canExecute();
     }
@@ -339,14 +353,18 @@ public class Task implements Serializable {
         return ImmutableSet.copyOf(this.requirements);
     }
 
-    private void addRequirements(Set<Requirement> requirements) {
-        if(requirements == null){return;}
+    private void setRequirements(Set<Requirement> requirements) {
+        if (requirements == null) {
+            requirements = new HashSet<>();
+        }
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements.addAll(requirements);
     }
 
     protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null && !this.hasConflictingRequirements(requirements);
+        return requirements != null
+                && !RequirementsCalculator.hasDoubleTypesRequirements(requirements)
+                && !RequirementsCalculator.hasConflictingRequirements(requirements);
     }
 
     public DateTimePeriod getPerformedDuring() {
@@ -373,50 +391,13 @@ public class Task implements Serializable {
         return status.getAlternative();
     }
 
-    private Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
-        Set<ResourceType> types = new HashSet<ResourceType>();
-        reqs.stream().map( req -> req.getType()).forEach( type -> type.addThisAndDependenciesRecursiveTo(types));;
-        return types;
-    }
-
+    /**
+     * Gets all requirements of this task recursively.
+     * So doesn't just return the direct requirements of the task, but also the requirements of requirements
+     * @return All requirements
+     */
     public ImmutableSet<Requirement> getRecursiveRequirements() {
-        return this.getRecursiveRequirements(this.getRequirements());
-    }
-
-    private ImmutableSet<Requirement> getRecursiveRequirements(Set<Requirement> reqs) {
-        Set<ResourceType> types = this.getRecursiveResourceTypes(reqs);
-        Set<Requirement> response = new HashSet<Requirement>();
-        for (ResourceType type : types) {
-            boolean found = false;
-            for (Requirement req : reqs) {
-                if ( type == req.getType() ) {
-                    response.add(req);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                response.add(new Requirement(1, type));
-            }
-        }
-        return ImmutableSet.copyOf(response);
-    }
-
-    public boolean hasConflictingRequirements(Set<Requirement> reqs) {
-        Set<Requirement> recReqs = this.getRecursiveRequirements(reqs);
-        for (Requirement req : recReqs) {
-            for (ResourceType conflictType : req.getType().getConflictsWith()) {
-                if (conflictType == req.getType() && req.getAmount() > 1) {
-                    return true;
-                }
-                for (Requirement req2 : recReqs) {
-                    if (conflictType == req2.getType()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return RequirementsCalculator.getRecursiveRequirements(this.getRequirements());
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";

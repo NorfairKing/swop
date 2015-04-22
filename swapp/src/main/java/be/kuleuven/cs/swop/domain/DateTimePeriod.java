@@ -4,7 +4,9 @@ package be.kuleuven.cs.swop.domain;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
+/**
+ * A period between two dates
+ */
 @SuppressWarnings("serial")
 public class DateTimePeriod implements Serializable {
 
@@ -85,14 +87,33 @@ public class DateTimePeriod implements Serializable {
         this.stopTime = stopTime;
     }
 
+    /**
+     * Checks if the given date time falls in this period
+     * 
+     * @param time The time to check
+     * @return Yes or no
+     */
     public boolean isDuring(LocalDateTime time) {
         return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
     }
 
+    /**
+     * Check if the given period fall entirely inside this one
+     * This is not the same as overlapping, the given one has to fall entirely in this one.
+     * 
+     * @param period The period to check
+     * @return Whether it falls entirely inside this period
+     */
     public boolean isDuring(DateTimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }
     
+    /**
+     * Checks to see if the given period overlaps with this one.
+     * 
+     * @param period The period to check
+     * @return Whether the two periods overlap
+     */
     public boolean overlaps(DateTimePeriod period) {
         if (this.isDuring(period.startTime)) {
             return true;
@@ -107,6 +128,11 @@ public class DateTimePeriod implements Serializable {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        return "DateTimePeriod [startTime=" + startTime + ", stopTime=" + stopTime + "]";
     }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";

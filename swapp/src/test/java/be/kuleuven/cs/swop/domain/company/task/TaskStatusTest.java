@@ -162,7 +162,7 @@ public class TaskStatusTest {
                 );
         
         try {
-            task.addAlternative(new Task("", 10, 10));
+            task.setAlternative(new Task("", 10, 10));
         }
         catch (IllegalStateException e) { }
 	}
@@ -173,7 +173,7 @@ public class TaskStatusTest {
         
         // can't set alternative if it hasn't failed yet
         try {
-            task.addAlternative(alternative);
+            task.setAlternative(alternative);
             fail();
         }
         catch (IllegalStateException e) { }
@@ -188,14 +188,14 @@ public class TaskStatusTest {
         
         // can't set null as alternative
         try {
-            task.addAlternative(null);
+            task.setAlternative(null);
             fail();
         }
         catch (IllegalArgumentException e) { }
         
         // can't add itself as alterantive
         try {
-            task.addAlternative(task);
+            task.setAlternative(task);
             fail();
         }
         catch (IllegalArgumentException e) { }
@@ -204,7 +204,7 @@ public class TaskStatusTest {
         try {
             Task temp = new Task("random", 12, 1);
             temp.addDependency(task);
-            task.addAlternative(temp);
+            task.setAlternative(temp);
             fail();
         }
         catch (IllegalArgumentException e) { }
@@ -218,7 +218,7 @@ public class TaskStatusTest {
                 LocalDateTime.of(2015, 1, 1, 9, 0)
                 );
         
-        task.addAlternative(alternative);
+        task.setAlternative(alternative);
         
         assertTrue(task.isFailed());
         assertFalse(task.isFinished());
@@ -232,7 +232,7 @@ public class TaskStatusTest {
         
         // can't set alternative twice
         try {
-            task.addAlternative(new Task("alt", 12, 3));
+            task.setAlternative(new Task("alt", 12, 3));
             fail();
         }
         catch (IllegalArgumentException e) { }
