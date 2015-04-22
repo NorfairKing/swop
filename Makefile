@@ -1,21 +1,38 @@
-.PHONY: diagrams
+NAME 		= swop
 
-all:
-	mkdir -p pkg/
-	mvn package -f swapp/pom.xml
-	cp swapp/target/*jar-with-dependencies.jar pkg/system.jar
-	cp -r swapp/src pkg/
-	mvn javadoc:javadoc -f swapp/pom.xml
-	mkdir -p pkg/doc
-	cp -r swapp/target/site/apidocs/* pkg/doc
-	mkdir -p pkg/diagrams
+GROUP_NR 	= 02
+GROUP 	 	= group$(GROUP_NR)
+
+FINAL_ZIP 	= $(NAME).zip
+
+APP 		= swapp
+POM_FILE 	= $(APP)/pom.xml
+
+RESULT_DIR 	= $(GROUP)
+RESULT_JAR  = $(RESULT_DIR)/system.jar
+DOC_DIR 	= $(RESULT_DIR)/doc
+DIAGRAM_DIR = $(RESULT_DIR)/diagrams
+
+all: package javadoc diagrams
+	mkdir -p $(RESULT_DIR) $(DOC_DIR) $(DIAGRAM_DIR)
+	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)
+	cp -r swapp/src $(RESULT_DIR)
+	cp -r swapp/target/site/apidocs/* $(DOC_DIR)
+	cp -r diagrams/*.eps $(DIAGRAM_DIR)
+	zip -r $(FINAL_ZIP) $(RESULT_DIR)
+
+package:
+	mvn package -f $(POM_FILE)
+
+javadoc:
+	mvn javadoc:javadoc -f $(POM_FILE)
+
+.PHONY: diagrams
+diagrams:
 	$(MAKE) -C diagrams
-	cp diagrams/*.eps pkg/diagrams/
-	ln -s pkg group02
-	zip -r swop.zip group02/
-	rm group02
+
+
 clean:
-	mvn clean -f swapp/pom.xml
-	rm pkg -rf
-	rm -f diagrams/*.eps
-	rm -f swop.zip
+	mvn clean -f $(POM_FILE)
+	rm -rf $(RESULT_DIR) 
+	rm -f $(FINAL_ZIP)
