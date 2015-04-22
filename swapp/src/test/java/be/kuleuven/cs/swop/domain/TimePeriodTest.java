@@ -60,7 +60,6 @@ public class TimePeriodTest {
 
     @Test
     public void canHaveAsStopTimeValidTest() {
-        assertTrue(validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(1)));
         assertTrue(validTimePeriod1.canHaveAsStopTime(LocalDateTime.now().plusHours(3)));
     }
 
