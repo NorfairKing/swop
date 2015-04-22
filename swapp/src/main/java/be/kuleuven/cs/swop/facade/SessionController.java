@@ -7,11 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.UserInterface;
-import be.kuleuven.cs.swop.domain.company.resource.Resource;
-import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 
 public class SessionController {
@@ -299,6 +296,8 @@ public class SessionController {
 				break;
 			} catch (ConflictingPlanningWrapperException e) {
 				startResolveConflictSession(e.getPlanning());
+			} catch( Exception e){
+				getUi().showError("Failed to plan task: " + e.getMessage());
 			}
         }
         
