@@ -1,9 +1,9 @@
 package be.kuleuven.cs.swop.facade;
 
 
-import java.util.List;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,9 +12,10 @@ import be.kuleuven.cs.swop.UserInterface;
 
 public class SessionController {
 
-    private UserInterface ui;
-    private TaskMan       taskMan;
+    private UserInterface   ui;
+    private TaskMan         taskMan;
     private TaskMan.Memento taskManBackup;
+    private UserWrapper     currentUser;
 
     /**
      * Full constructor
@@ -29,6 +30,23 @@ public class SessionController {
     public SessionController(UserInterface ui, TaskMan facade) {
         setUi(ui);
         setFacade(facade);
+    }
+
+    public UserWrapper getCurrentUser() {
+        return this.currentUser;
+    }
+
+    protected boolean canHaveAsCurrentUser(UserWrapper user) {
+        return user != null;
+    }
+
+    private void setCurrentUser(UserWrapper user) {
+        if (!canHaveAsCurrentUser(user)) { throw new IllegalArgumentException(ERROR_ILLEGAL_USER); }
+        this.currentUser = user;
+    }
+
+    public boolean isLoggedIn() {
+        return this.currentUser != null;
     }
 
     /**
@@ -88,21 +106,25 @@ public class SessionController {
         if (!canHaveAsFacade(facade)) throw new IllegalArgumentException(ERROR_ILLEGAL_FACADE);
         this.taskMan = facade;
     }
-    
+
     /**
-     * Starts a session to select the user.
-     * This isn't specified in the exercise, but in the current design we need this.
+     * Starts a session to select the user. This isn't specified in the exercise, but in the current design we need this.
      */
-    public UserWrapper startSelectUserSession() {
+    public void startSelectUserSession() {
         Set<UserWrapper> users = getTaskMan().getUsers();
         UserWrapper user = getUi().selectUser(users);
-        return user;
+        if (user == null) { return; }
+        setCurrentUser(user);
     }
 
     /**
      * Starts the "show projects" use case and lets the user interface show a list all the projects.
      */
     public void startShowProjectsSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
         Set<ProjectWrapper> projects = getTaskMan().getProjects();
@@ -131,7 +153,7 @@ public class SessionController {
 
         // The system presents an overview of the task details
         getUi().showTask(task);
-        
+
         // End session
         handleSimulationStep();
     }
@@ -140,6 +162,10 @@ public class SessionController {
      * Starts the "create project" use case which lets the user interface request the information necessary for creating a new project from the user.
      */
     public void startCreateProjectSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         do {
             // The user indicates he wants to create a project
             // The system asks for the required data
@@ -157,7 +183,7 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until user gives proper data, or cancels.
-        
+
         // End session
         handleSimulationStep();
     }
@@ -166,6 +192,10 @@ public class SessionController {
      * Starts the "create task" use case which lets the user interface request the information necessary for creating a new task from the user.
      */
     public void startCreateTaskSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // The user indicates he wants to create a new task
         do {
             // the system asks for which project to create a task
@@ -181,8 +211,8 @@ public class SessionController {
             TaskData data = getUi().getTaskData(resourceTypes);
 
             // if the user indicates he wants to leave the overview.
-            if (data == null) break;            
-            
+            if (data == null) break;
+
             // The system creates the task
             try {
                 getTaskMan().createTaskFor(project, data);
@@ -192,12 +222,16 @@ public class SessionController {
                 getUi().showError("Failed to create task: " + e.getMessage());
             }
         } while (true); // loop until proper data is given, or the user cancels.
-        
+
         // End session
         handleSimulationStep();
     }
 
     public void startPlanTaskSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // The system shows a list of all currently unplanned tasks and the project they belong to.
         Set<ProjectWrapper> allProjects = taskMan.getProjects();
         Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
@@ -240,14 +274,17 @@ public class SessionController {
         }
 
         taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
-        
+
         // End session
         handleSimulationStep();
     }
 
     public void startResolveConflictSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
 
-        
         // End session
         handleSimulationStep();
     }
@@ -256,6 +293,10 @@ public class SessionController {
      * Starts the "update task status" use case which lets the user interface request the information necessary for updating the task status from the user.
      */
     public void startUpdateTaskStatusSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // User indicates he wants to update the status of a task
 
         // The system show a list of all available tasks and the projects they belong to
@@ -268,11 +309,11 @@ public class SessionController {
             handleSimulationStep();
             return;
         }
-        
-        if(task.isFinal()){
+
+        if (task.isFinal()) {
             getUi().showError("Can't update task: this task is already final.");
-        	handleSimulationStep();
-        	return;
+            handleSimulationStep();
+            return;
         }
 
         do {
@@ -294,7 +335,7 @@ public class SessionController {
                 getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
             }
         } while (true); // loop until proper data was given or user canceled.
-        
+
         // End session
         handleSimulationStep();
     }
@@ -303,6 +344,10 @@ public class SessionController {
      * Starts the "advance time" use case which lets the user interface request a new time for the system from the user.
      */
     public void startAdvanceTimeSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // The user indicates he wants to modify the system time
         // The system allows the user to choose a new time
         LocalDateTime time = getUi().getTimeStamp();
@@ -315,16 +360,20 @@ public class SessionController {
 
         // the system updates the system time.
         getTaskMan().updateSystemTime(time);
-        
+
         // End session
         handleSimulationStep();
     }
 
     public void startRunSimulationSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
         // The user indicates he wants to start a simulation
         taskManBackup = getTaskMan().saveToMemento();
     }
-    
+
     private void handleSimulationStep() {
         if (taskManBackup != null) {
             SimulationStepData simData = getUi().getSimulationStepData();
@@ -338,19 +387,21 @@ public class SessionController {
             }
         }
     }
-    
+
     private void realizeSimulation() {
         // The user indicates he wants to realize the simulation
         // Nothing has to be done. Just throw away the backup.
         taskManBackup = null;
     }
-    
+
     private void cancelSimulation() {
         // The user indicates he wants to cancel the simulation.
         getTaskMan().restoreFromMemento(taskManBackup);
         taskManBackup = null;
     }
 
+    private static final String ERROR_NO_LOGIN       = "No user has logged in, please log in first.";
+    private static final String ERROR_ILLEGAL_USER   = "Invalid user for session controller.";
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";
     private static final String ERROR_ILLEGAL_FACADE = "Invalid facade controller for session controller.";
 }

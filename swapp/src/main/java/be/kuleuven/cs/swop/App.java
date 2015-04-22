@@ -1,7 +1,8 @@
 package be.kuleuven.cs.swop;
 
-import be.kuleuven.cs.swop.facade.TaskMan;
+
 import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 
 
 public class App {
