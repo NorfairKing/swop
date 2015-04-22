@@ -142,10 +142,8 @@ public class TaskTest {
     @Test
     public void canHaveAsEstimatedDurationTest() {
         assertTrue(task.canHaveAsEstimatedDuration(10));
+        assertFalse(task.canHaveAsEstimatedDuration(0));
         assertFalse(task.canHaveAsEstimatedDuration(-1));
-        assertFalse(task.canHaveAsEstimatedDuration(Double.NaN));
-        assertFalse(task.canHaveAsEstimatedDuration(Double.POSITIVE_INFINITY));
-
     }
 
     @Test
@@ -192,10 +190,6 @@ public class TaskTest {
         t3.addDependency(t5);
         t4.addDependency(t5);
 
-        /*
-         * Tree at this point: t1 / \ v v t4 <-- t2 | \ \ v \ t3 \ / v v t5
-         */
-
         // Tests for dependency loops
         assertFalse(t2.canHaveAsDependency(t1));
 
@@ -231,27 +225,29 @@ public class TaskTest {
     }
 
     @Test
-    public void setAcceptableDeviation() {
+    public void setAcceptableDeviationValidTest1() {
         task.setAcceptableDeviation(0.5);
         assertEquals(0.5, task.getAcceptableDeviation(), delta);
+    }
 
+    public void setAcceptableDeviationValidTest2() {
         task.setAcceptableDeviation(0);
         assertEquals(0, task.getAcceptableDeviation(), delta);
+    }
 
-        try {
-            task.setAcceptableDeviation(-0.5);
-            fail();
-        } catch (IllegalArgumentException e) {}
+    @Test(expected = IllegalArgumentException.class)
+    public void setAcceptableDeviationInvalidTest1() {
+        task.setAcceptableDeviation(-0.5);
+    }
 
-        try {
-            task.setAcceptableDeviation(Double.NaN);
-            fail();
-        } catch (IllegalArgumentException e) {}
+    @Test(expected = IllegalArgumentException.class)
+    public void setAcceptableDeviationInvalidTest2() {
+        task.setAcceptableDeviation(Double.NaN);
+    }
 
-        try {
-            task.setAcceptableDeviation(Double.POSITIVE_INFINITY);
-            fail();
-        } catch (IllegalArgumentException e) {}
+    @Test(expected = IllegalArgumentException.class)
+    public void setAcceptableDeviationInvalidTest3() {
+        task.setAcceptableDeviation(Double.POSITIVE_INFINITY);
 
     }
 
