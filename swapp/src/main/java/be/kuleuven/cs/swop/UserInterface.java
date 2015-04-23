@@ -132,6 +132,12 @@ public interface UserInterface {
      */
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
+    /**
+     * Asks the user when planning a task if the user wants to include a break in the
+     * planning.
+     *
+     * @return True if the user chose "yes".
+     */
     public boolean askToAddBreak();
 
     /**

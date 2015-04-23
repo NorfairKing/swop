@@ -15,6 +15,8 @@ PLANT       = 	facade_uml.eps \
 				sequence_createTask_simple_uml.eps \
 				sequence_update_task_status_uml.eps \
 				sequence_update_task_status_simple_uml.eps \
+				sequence_planTask_uml.eps \
+				sequence_planTask_simple_uml.eps \
 				domain_uml.eps
 GRAPHVIZ    = task_dfs.eps \
               project_dfs.eps

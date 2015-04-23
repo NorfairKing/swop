@@ -50,7 +50,7 @@ public class PlanningManager implements Serializable {
 
     /**
      * Checks to see if this task if planned
-     * 
+     *
      * @param task The task to check
      * @return Whether or not it is planned
      */
@@ -61,10 +61,10 @@ public class PlanningManager implements Serializable {
     public boolean isUnplanned(Task task) {
         return !this.isPlanned(task);
     }
-    
+
     /**
      * Is this developer available at this time
-     * 
+     *
      * @param dev The developer for whom we are checking
      * @param task The task that you want to do
      * @param time The time on which you want to do it
@@ -83,14 +83,14 @@ public class PlanningManager implements Serializable {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Can the requiredment be satiesfied during the period?
      * Checks to see if no planning has reserved them
-     * 
+     *
      * @param req The requirement to check
      * @param t The task of which the requirement is
      * @param period The period during which we want to use it
@@ -98,16 +98,16 @@ public class PlanningManager implements Serializable {
      */
     private boolean canRequirementOfBeSatisfiedDuring(Requirement req, Task t, DateTimePeriod period) {
         ResourceType type = req.getType();
-        
+
         Set<Resource> tempResources = new HashSet<>(resources);
-        
+
         for (TaskPlanning plan: plannings) {
             if (plan.getEstimatedOrRealPeriod().overlaps(period) && plan.getTask() != t) {
                 //System.out.println("overlap: " + plan.getEstimatedOrRealPeriod().toString() + " <-> " + period.toString());
                 tempResources.removeAll(plan.getReservations());
             }
         }
-        
+
         int ofTypeLeft = 0;
         for (Resource res: tempResources) {
             //System.out.println("res: " + res.getName());
@@ -115,17 +115,17 @@ public class PlanningManager implements Serializable {
                 ofTypeLeft += 1;
             }
         }
-        
+
         //System.out.println("Amount left: " + ofTypeLeft);
         return req.getAmount() <= ofTypeLeft;
     }
-    
-    
+
+
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
      * Alternatively could be called 'canMoveToExecuting'
-     * 
+     *
      * @param time The time to check for
      * @param dev The developer for whom the task might be available
      * @param task The task to check
@@ -139,7 +139,7 @@ public class PlanningManager implements Serializable {
             }*/
             return false;
         }
-        
+
         TaskPlanning planning = getPlanningFor(task);
         if (planning == null){
             //System.out.println("2");
@@ -167,13 +167,13 @@ public class PlanningManager implements Serializable {
                 }
             }
         }
-        
+
         return true;
     }
 
     /**
      * Returns the planning for a given task
-     * 
+     *
      * @param task The task
      * @return The planning
      */
@@ -185,10 +185,10 @@ public class PlanningManager implements Serializable {
         }
         return null;
     }
-    
+
     /**
      * Retrieves the plannings for all the given tasks
-     * 
+     *
      * @param tasks The list of tasks we want the plannings for
      * @return A set of all the planning
      */
@@ -202,7 +202,7 @@ public class PlanningManager implements Serializable {
         }
         return plans;
     }
-    
+
     /**
      * Selects all unplanned tasks from the given set
      * @param tasks The set of tasks
@@ -217,7 +217,7 @@ public class PlanningManager implements Serializable {
         }
         return unplannedTasks;
     }
-    
+
     /**
      * Selects all tasks that are assigned to the given dev
      * @param tasks The tasks to check
@@ -226,21 +226,21 @@ public class PlanningManager implements Serializable {
      */
     public Set<Task> getAssignedTasksOf(Set<Task> tasks, Developer dev){
         Set<TaskPlanning> allPlannings = getPlanningsFor(tasks);
-        
+
         Set<Task> assignedTasks = new HashSet<Task>();
         for(TaskPlanning p : allPlannings){
             if(p.getDevelopers().contains(dev)){
                 assignedTasks.add(p.getTask());
             }
         }
-        
+
         return assignedTasks;
     }
 
     /**
      * Retrieves a number of times on which the given task could be planned
      * The search starts at the given time
-     * 
+     *
      * @param task The task
      * @param n How many options you want
      * @param theTime The time to start the search on
@@ -305,7 +305,7 @@ public class PlanningManager implements Serializable {
 
     /**
      * Retrieves a list of options for each resource type needed by a task.
-     * 
+     *
      * @param task The task for which you want the options
      * @param time The time on which you cant to use the resources
      * @return The list with options
@@ -327,14 +327,14 @@ public class PlanningManager implements Serializable {
         }
         return map;
     }
-    
+
     public ImmutableSet<Resource> getResources() {
         return ImmutableSet.copyOf(resources);
     }
 
     /**
      * Retrieves a list of developers that can work on the task on a given time
-     * 
+     *
      * @param task The task for which you need developers
      * @param time The time on which you need developers
      * @return The possible developers
@@ -352,11 +352,21 @@ public class PlanningManager implements Serializable {
         return availableDevelopers;
     }
 
-    public void createPlanning(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
+    /**
+     * Creates a planning and keeps track of it.
+     *
+     * @param task The task this new planning will be for
+     * @param startTime The planned time this task will start
+     * @param resources The resources that have been reserved for the task
+     * @param devs The developers that will be working on this task.
+     * @throws ConflictingPlanningException If the created planning will result in a
+     * conflict.
+     */
+    public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
         if (this.getPlanningFor(task) != null) {
             throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
         }
-        TaskPlanning newplanning = new TaskPlanning(devs, task, estimatedStartTime, resources);
+        TaskPlanning newplanning = new TaskPlanning(devs, task, startTime, resources);
         TaskPlanning conflict = getConflictIfExists(newplanning);
         if(conflict != null){
         	throw new ConflictingPlanningException(conflict);
@@ -364,22 +374,38 @@ public class PlanningManager implements Serializable {
         this.plannings.add(newplanning);
     }
 
-    public void createPlanningWithBreak(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
+    /**
+     * Creates a planning and keeps track of it, the created planning will include a break
+     * for the developers.
+     *
+     * @param task The task this new planning will be for
+     * @param startTime The planned time this task will start
+     * @param resources The resources that have been reserved for the task
+     * @param devs The developers that will be working on this task.
+     * @throws ConflictingPlanningException If the created planning will result in a
+     * conflict.
+     */
+    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
         if (this.getPlanningFor(task) != null) {
             throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
         }
-        TaskPlanning newplanning = new TaskPlanningWithBreak(devs, task, estimatedStartTime, resources);
+        TaskPlanning newplanning = new TaskPlanningWithBreak(devs, task, startTime, resources);
         TaskPlanning conflict = getConflictIfExists(newplanning);
         if(conflict != null){
         	throw new ConflictingPlanningException(conflict);
         }
         this.plannings.add(newplanning);
     }
-    
+
+    /**
+     * Removes a planning, freeing everything that it reserved.
+     *
+     * @param planning The planning that will be removed
+     */
     public void removePlanning(TaskPlanning planning){
     	this.plannings.remove(planning);
     }
-    
+
     private TaskPlanning getConflictIfExists(TaskPlanning newPlanning){
     	for (TaskPlanning plan: plannings) {
     		for(Resource res: newPlanning.getReservations()){
@@ -392,23 +418,54 @@ public class PlanningManager implements Serializable {
     	}
     	return null;
     }
-    
+
+    /**
+     * Get all the developers of the company.
+     *
+     * @return Every developer contained by a ImmutableSet
+     */
     public ImmutableSet<Developer> getDevelopers() {
         return ImmutableSet.copyOf(developers);
     }
-    
+
+    /**
+     * Creates a new developer and keeps track of it.
+     *
+     * @param name The name for the new developer
+     * @return Returns the newly created developer
+     */
     public Developer createDeveloper(String name){
         Developer dev = new Developer(name);
         developers.add(dev);
         return dev;
     }
 
+    /**
+     * Creates a new resource and keeps track of it.
+     *
+     * @param name The name of the new resource
+     * @param type The ResourceType of the new resource
+     * @return Returns the newly created resource
+     */
     public Resource createResource(String name, ResourceType type){
         Resource resource = new Resource(type,name);
         resources.add(resource);
         return resource;
     }
-    
+
+    /**
+     * Creates a new ResourceType.
+     *
+     * @param name The name of the new ResourceType
+     * @param requires The Set containing the dependencies of this type of resource
+     * @param conflicts The Set containing the conflicting types of resources, if a task
+     * requires a resource of this type, then it cannot require one of the conflicting
+     * types
+     * @param selfConflicting A boolean that, when true, a task requiring a resource of
+     * this type, can only reserve one of this type
+     * @param TimePeriod The period for when a resource of this type is available during
+     * the day
+     */
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
     	ResourceType type;
     	if(availability != null){
@@ -419,34 +476,39 @@ public class PlanningManager implements Serializable {
         resourceTypes.add(type);
         return type;
     }
-    
+
+    /**
+     * Returns all ResourceTypes this company has.
+     *
+     * @return Returns a ImmutableSet containing all the types of resources
+     */
     public ImmutableSet<ResourceType> getResourceTypes(){
     	return ImmutableSet.copyOf(resourceTypes);
     }
-    
+
     /**
      * Set that the task was finished during the given period
-     * 
+     *
      * @param t The task to finish
      * @param period The period in which it was finished
      */
     public void finishTask(Task t, DateTimePeriod period){
         t.finish(period);
     }
-    
+
     /**
      * Set that the task was failed during the given period
-     * 
+     *
      * @param t The task that failed
      * @param period The period in which it failed
      */
     public void failTask(Task t,DateTimePeriod period){
         t.fail(period);
     }
-    
+
     /**
      * Start the execution of a task is possible
-     * 
+     *
      * @param t The task to execute
      * @param time The current time
      * @param dev The developer which indicated that work started
@@ -463,9 +525,9 @@ public class PlanningManager implements Serializable {
         }
     }
 
-    
+
     private static final String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
     private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
-    
+
 }

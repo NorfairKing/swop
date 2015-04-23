@@ -12,29 +12,21 @@ Company --* PlanningManager
 
 ProjectManager --> "manages" Project
 PlanningManager --> "makes" Planning
+PlanningManager --> "manages" User
 
 Project --> "manages" Task
-Planning --> "is planning for" Task
+Planning --> "plans" Task
+Planning --> "reserves" Resource
+Planning --> "work for" Developer
 
 Task --* TaskStatus
+User <|-- Developer
+User <|-- Manager
+
+Task --> "requires" ResourceType
+Resource --* ResourceType
 
 
 Interface UI
-
-class SessionController
-
-class TaskMan
-
-class Company
-class TimeKeeper
-
-class ProjectManager
-class PlanningManager
-
-class Project
-class Planning
-
-class Task
-class TaskStatus
 
 @enduml
