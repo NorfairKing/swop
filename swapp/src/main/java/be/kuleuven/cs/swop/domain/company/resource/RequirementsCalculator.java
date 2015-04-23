@@ -11,9 +11,6 @@ import com.google.common.collect.ImmutableSet;
  */
 public final class RequirementsCalculator {
     
-    private RequirementsCalculator() {}
-
-    
     /**
      * Gets a set of all requirements recursively. So including the requirements of requirements.
      * @param reqs The initial requirements

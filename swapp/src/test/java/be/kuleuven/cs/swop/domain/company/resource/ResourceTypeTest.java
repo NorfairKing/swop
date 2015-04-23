@@ -1,5 +1,9 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
+import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 
@@ -80,6 +86,11 @@ public class ResourceTypeTest {
         }
 
     }
+    
+    @Test
+    public void nameTest(){
+    	assertTrue("type1".equals(type1.getName()));
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void ConstructionInvalidNameTest() {
@@ -95,5 +106,85 @@ public class ResourceTypeTest {
     public void ConstructionInvalidConflictsTest() {
         new ResourceType("Valid", set2, setWithNullValue, false);
     }
+    
+    @Test
+    public void availableDuringTimeTest(){
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(7, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(12, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(17, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(0, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(6, 59)));
+    	assertTrue(type1.isAvailableDuring(LocalTime.of(17, 1)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void availableDuringTimeInvalidTest() {
+    	LocalTime time = null;
+    	type1.isAvailableDuring(time);
+    }
+    
+    @Test
+    public void availableDuringDateTimeTest(){
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2015, 12, 31, 7, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2014, 1, 10, 12, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2015, 6, 8, 17, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2015, 8, 12, 0, 0)));
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2015, 7, 31, 6, 59)));
+    	assertTrue(type1.isAvailableDuring(LocalDateTime.of(2015, 12, 31, 17, 1)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void availableDuringDateTimeInvalidTest() {
+    	LocalDateTime time = null;
+    	type1.isAvailableDuring(time);
+    }
+    
+    @Test
+    public void availableDuringTimePeriodTest(){
+    	LocalTime time1 = LocalTime.of(4, 0); 
+    	LocalTime time2 = LocalTime.of(6, 59); 
+    	LocalTime time3 = LocalTime.of(7, 0); 
+    	LocalTime time4 = LocalTime.of(12, 0); 
+    	LocalTime time5 = LocalTime.of(17, 0); 
+    	LocalTime time6 = LocalTime.of(17, 1); 
+    	LocalTime time7 = LocalTime.of(22, 0); 
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time3, time5)));
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time4, time5)));
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time1, time4)));
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time2, time4)));
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time4, time6)));
+    	assertTrue(type1.isAvailableDuring(new TimePeriod(time4, time7)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void availableDuringTimePeriodInvalidTest() {
+    	TimePeriod period = null;
+    	type1.isAvailableDuring(period);
+    }    
+    @Test
+    public void availableDuringDateTimePeriodTest(){
+    	LocalDateTime time1 = LocalDateTime.of(2015, 4, 10, 4, 0); 
+    	LocalDateTime time2 = LocalDateTime.of(2015, 4, 10, 6, 59); 
+    	LocalDateTime time3 = LocalDateTime.of(2015, 4, 10, 7, 0); 
+    	LocalDateTime time4 = LocalDateTime.of(2015, 4, 10, 12, 0); 
+    	LocalDateTime time5 = LocalDateTime.of(2015, 4, 10, 17, 0); 
+    	LocalDateTime time6 = LocalDateTime.of(2015, 4, 10, 17, 1); 
+    	LocalDateTime time7 = LocalDateTime.of(2015, 4, 10, 22, 0); 
+    	LocalDateTime time8 = LocalDateTime.of(2015, 4, 11, 12, 0); 
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time3, time5)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time4, time5)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time1, time4)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time2, time4)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time4, time6)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time4, time7)));
+    	assertTrue(type1.isAvailableDuring(new  DateTimePeriod(time4, time8)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void availableDuringDateTimePeriodInvalidTest() {
+    	DateTimePeriod period = null;
+    	type1.isAvailableDuring(period);
+    }
+    
 
 }

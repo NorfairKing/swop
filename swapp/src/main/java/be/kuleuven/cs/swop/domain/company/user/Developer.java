@@ -26,6 +26,9 @@ public class Developer extends User {
     }
 
     public boolean isAvailableDuring(LocalDateTime time) {
+    	if(time == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
+    	}
         return workday.isDuring(LocalTime.from(time));
     }
 
@@ -41,4 +44,7 @@ public class Developer extends User {
     private static final int BREAK_PERIOD_START = 11;
     private static final int BREAK_PERIOD_END   = 14;
     private static final int WORKDAY_END        = 17;
+    
+    private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
+
 }

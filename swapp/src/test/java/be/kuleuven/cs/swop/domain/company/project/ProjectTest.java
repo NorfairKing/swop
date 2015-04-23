@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,6 +21,8 @@ import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
@@ -142,6 +146,35 @@ public class ProjectTest {
         Task test = project.createTask("desc", 10, 0);
         assertTrue(project.getTasks().contains(test));
 
+    }
+    
+    @Test
+    public void createTaskWithReqsTest() {
+    	Set<Requirement> reqs = new HashSet<Requirement>();
+    	Task test = project.createTask("desc", 10, 0, reqs);
+    	assertTrue(project.getTasks().contains(test));
+    	
+    	reqs.add(new Requirement(1,new ResourceType("testtype")));
+    	Task test2 = project.createTask("desc", 10, 0, reqs);
+    	assertTrue(project.getTasks().contains(test2));
+    	
+    }
+    
+    @Test
+    public void createTaskWithReqsAndDepsTest() {
+    	Set<Requirement> reqs = new HashSet<Requirement>();
+    	Set<Task> deps = new HashSet<Task>();
+    	Task test = project.createTask("desc", 10, 0, deps, reqs);
+    	assertTrue(project.getTasks().contains(test));
+    	
+    	reqs.add(new Requirement(1,new ResourceType("testtype")));
+    	Task test2 = project.createTask("desc", 10, 0, deps, reqs);
+    	assertTrue(project.getTasks().contains(test2));
+    	
+    	deps.add(test);
+		Task test3 = project.createTask("desc", 10, 0, deps, reqs);
+    	assertTrue(project.getTasks().contains(test3));
+    	
     }
 
     @Test

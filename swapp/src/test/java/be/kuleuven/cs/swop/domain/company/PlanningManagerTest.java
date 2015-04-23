@@ -112,7 +112,6 @@ public class PlanningManagerTest {
     @Test
     public void planningResourceOptionsTest() {
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 8, 0);
-        Developer dev = manager.createDeveloper("grootva");
         ResourceType machine = new ResourceType("schup");
         Requirement req = new Requirement(1, machine);
         Task task = new Task("wortels planten", 120, 1,

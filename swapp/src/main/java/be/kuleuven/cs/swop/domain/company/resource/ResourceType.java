@@ -119,21 +119,38 @@ public class ResourceType implements Serializable {
 
 	
 	public boolean isAvailableDuring(LocalTime time) {
+    	if(time == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
+    	}
         return true;
 	}
 	
     public boolean isAvailableDuring(LocalDateTime date){
+    	if(date == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
+    	}
 		return isAvailableDuring(LocalTime.from(date));
     }
 	public boolean isAvailableDuring(TimePeriod period) {
+    	if(period == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
+    	}
 	    return true;
 	}
 
 	public boolean isAvailableDuring(DateTimePeriod period){
+    	if(period == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
+    	}
         return true;
 	}
 
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
 	private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";
 	private static final String ERROR_ILLEGAL_NAME         = "Illegal name for resource type.";
+	
+    private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
+    private static final String ERROR_NULL_DURING_PERIOD  = "The period to check may not be null.";
+
+
 }

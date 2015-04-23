@@ -144,7 +144,7 @@ public class Task implements Serializable {
      * @return Whether or not it actually is
      */
     boolean containsDependency(Task dependency) {
-        if (dependency == null) { return true; }
+        if (dependency == null) { return false; }
         for (Task subDep : this.getDependencySet()) {
             if (subDep == dependency) { return true; }
             if (subDep.containsDependency(dependency)) { return true; }

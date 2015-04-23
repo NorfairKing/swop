@@ -95,6 +95,9 @@ public class TimePeriod implements Serializable {
      * @return Whether it is or not
      */
     public boolean isDuring(LocalTime time) {
+    	if(time == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
+    	}
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
 
@@ -106,11 +109,17 @@ public class TimePeriod implements Serializable {
      * @return Whether is does or not
      */
     public boolean isDuring(TimePeriod period) {
+    	if(period == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
+    	}
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }
 
     public boolean isDuring(DateTimePeriod period) {
-        LocalTime start = LocalTime.from(period.getStartTime());
+    	if(period == null){
+    		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
+    	}
+    	LocalTime start = LocalTime.from(period.getStartTime());
         LocalTime stop = LocalTime.from(period.getStopTime());
         if (start.isBefore(stop) && ChronoUnit.DAYS.between(period.getStartTime(),period.getStopTime()) == 0) {
             return !this.getStartTime().isAfter(start) &&
@@ -122,4 +131,6 @@ public class TimePeriod implements Serializable {
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
+    private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
+    private static final String ERROR_NULL_DURING_PERIOD  = "The period to check may not be null.";
 }

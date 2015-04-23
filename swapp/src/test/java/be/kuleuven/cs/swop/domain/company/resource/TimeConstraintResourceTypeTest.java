@@ -49,4 +49,10 @@ public class TimeConstraintResourceTypeTest {
         assertFalse(type.isAvailableDuring(LocalTime.of(7, 30)));
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void ConstructionInvalidTest() {
+    	 new TimeConstrainedResourceType(
+                 "type", new HashSet<>(), new HashSet<>(), false, null);
+    }
+    
 }

@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories.ExcludeCategory;
 import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
@@ -61,6 +62,76 @@ public class TaskStatusTest {
                 LocalDateTime.of(2015, 1, 1, 8, 0).plusMinutes(100),
                 task.getEstimatedOrRealFinishDate(LocalDateTime.of(2015, 1, 1, 8, 0))
             );
+	}
+	
+	@Test
+	public void ongoingBooleansTest(){
+		TaskStatus status1 = new OngoingStatus(task);
+		assertTrue(status1.canFail());
+		assertTrue(status1.canExecute());
+		assertFalse(status1.canFinish());
+		
+		assertFalse(status1.isExecuting());
+		assertFalse(status1.isFailed());
+		assertFalse(status1.isFinished());
+		assertFalse(status1.isFinal());
+	}
+	
+	@Test
+	public void executingBooleansTest(){
+		TaskStatus status1 = new ExecutingStatus(task);
+		assertTrue(status1.canFail());
+		assertFalse(status1.canExecute());
+		assertTrue(status1.canFinish());
+		
+		assertTrue(status1.isExecuting());
+		assertFalse(status1.isFailed());
+		assertFalse(status1.isFinished());
+		assertFalse(status1.isFinal());
+	}
+	
+	@Test
+	public void finishedBooleansTest(){
+		TaskStatus status1 = new FinishedStatus(task, new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now()));
+		assertFalse(status1.canFail());
+		assertFalse(status1.canExecute());
+		assertFalse(status1.canFinish());
+		
+		assertFalse(status1.isExecuting());
+		assertFalse(status1.isFailed());
+		assertTrue(status1.isFinished());
+		assertTrue(status1.isFinal());
+	}
+	
+	@Test
+	public void failedBooleansTest(){
+		TaskStatus status1 = new FailedStatus(task, new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now()));
+		assertFalse(status1.canFail());
+		assertFalse(status1.canExecute());
+		assertFalse(status1.canFinish());
+		
+		assertFalse(status1.isExecuting());
+		assertTrue(status1.isFailed());
+		assertFalse(status1.isFinished());
+		assertTrue(status1.isFinal());
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void executeExecutingStatusTest(){
+		TaskStatus status1 = new ExecutingStatus(task);
+		status1.execute();
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void executeFinishedStatusTest(){
+		TaskStatus status1 = new FinishedStatus(task, new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now()));
+		status1.execute();
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void executeFailedStatusTest(){
+		TaskStatus status1 = new FailedStatus(task, new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now()));
+		status1.execute();
 	}
 	
 	@Test
@@ -127,6 +198,15 @@ public class TaskStatusTest {
         catch (IllegalStateException e) { }
         
         assertEquals(task.getEstimatedOrRealFinishDate(LocalDateTime.of(2016, 1, 1, 9, 0)), LocalDateTime.of(2015, 1, 1, 9, 0));
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void finishInvalidTest(){
+		Task task2 = new Task("desc", 120, 0);
+		task.addDependency(task2);
+		TaskStatus status1 = new ExecutingStatus(task);
+		task.setStatus(status1);
+		status1.finish(new DateTimePeriod(LocalDateTime.now().minusHours(1), LocalDateTime.now()));
 	}
 	
 	@Test
@@ -307,6 +387,12 @@ public class TaskStatusTest {
         assertFalse(task.isExecuting());
         assertFalse(task.isFailed());
         assertFalse(task.isFinished());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void setTaskInvalidTest(){
+    	TaskStatus status1 = new OngoingStatus(task);
+    	status1.setTask(null);
     }
 
 

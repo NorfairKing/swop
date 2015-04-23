@@ -24,6 +24,12 @@ public class ResourceTest {
         new Resource(type1,"valid1");
     }
     
+    @Test
+    public void nameTest(){
+    	assertTrue("valid".equals(resource1.getName()));
+
+    }
+    
     @Test(expected=IllegalArgumentException.class)
     public void constructorInvalidNameEmptyTest(){
         new Resource(type1, "");

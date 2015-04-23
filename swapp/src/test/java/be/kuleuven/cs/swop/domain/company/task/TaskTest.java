@@ -133,6 +133,25 @@ public class TaskTest {
         task.setDescription(desc);
         assertEquals(desc, task.getDescription());
     }
+    
+    @Test
+    public void setStatusTest() {
+    	TaskStatus testStatus = new ExecutingStatus(task);
+    	task.setStatus(testStatus);
+    	assertTrue(task.isExecuting());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void setStatusWrongTaskTest() {
+    	Task testTask = new Task("Desc", 100, 0.1);
+    	TaskStatus testStatus = new ExecutingStatus(testTask);
+    	task.setStatus(testStatus);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void setStatusNullTest() {
+    	task.setStatus(null);
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void setDescriptionNullTest() {
@@ -212,6 +231,13 @@ public class TaskTest {
         // Limited testing here because canHaveAsDependencyTest goes in depth
         exception.expect(IllegalArgumentException.class);
         task.addDependency(null);
+    }
+    @Test
+    public void containsDependencyTest(){
+        Task task2 = new Task("Hi", 1, 0);
+        task.addDependency(task2);
+    	assertFalse(task.containsDependency(null));
+    	assertTrue(task.containsDependency(task2));
     }
 
     @Test
