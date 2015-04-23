@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class SessionController {
@@ -292,6 +293,11 @@ public class SessionController {
 		            handleSimulationStep();
 		            return;
 		        }
+                if (!chosenDevelopers.isEmpty() && chosenDevelopers.stream().anyMatch( d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
+                    if(getUi().askToAddBreak()) {
+                        taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+                    }
+                }
 				taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
 				break;
 			} catch (ConflictingPlanningWrapperException e) {

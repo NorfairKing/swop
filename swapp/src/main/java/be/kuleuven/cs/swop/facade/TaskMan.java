@@ -237,6 +237,14 @@ public class TaskMan implements Serializable {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
+
+    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
+        try {
+			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+		} catch (ConflictingPlanningException e) {
+			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+		}
+    }
     
     public void removePlanning(TaskPlanningWrapper planning){
     	company.removePlanning(planning.getPlanning());

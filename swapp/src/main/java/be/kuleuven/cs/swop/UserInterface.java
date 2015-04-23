@@ -132,6 +132,8 @@ public interface UserInterface {
      */
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
+    public boolean askToAddBreak();
+
     /**
      * Requests data from the user for creating a task.
      *

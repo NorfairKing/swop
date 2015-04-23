@@ -110,6 +110,10 @@ public class Company implements Serializable{
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
         getPlanningManager().createPlanning(task, time, rss, devs);
     }
+
+    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
+        getPlanningManager().createPlanningWithBreak(task, time, rss, devs);
+    }
     
     public void removePlanning(TaskPlanning planning){		
 	    	getPlanningManager().removePlanning(planning);		

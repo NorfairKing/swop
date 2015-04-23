@@ -144,6 +144,10 @@ public class TaskPlanning implements Serializable {
         }
     }
 
+    public boolean includesBreak() {
+        return false;
+    }
+
     private static final String ERROR_INVALID_DEVELOPER = "Invalid developer for planning.";
     private static final String ERROR_INVALID_RESERVATIONS = "Invalid resource set for planning.";
     private static final String ERROR_INVALID_RESOURCE = "Invalid resource  for planning.";

@@ -463,6 +463,17 @@ public class CLI implements UserInterface {
     }
 
     @Override
+    public boolean askToAddBreak() {
+        System.out.println("The developer(s) could take a break during this Task.");
+        System.out.println("Would you like for the planning to add a break? (y/n)");
+        boolean wantsToAddBreak = promptBoolean("y", "n");
+        if (wantsToAddBreak) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
     	
     	Map<ResourceTypeWrapper, String> typeSelectionMap = new HashMap<ResourceTypeWrapper, String>();

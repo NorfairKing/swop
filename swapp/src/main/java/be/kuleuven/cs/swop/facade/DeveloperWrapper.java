@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.facade;
 
 
 import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 
 public class DeveloperWrapper {
@@ -31,6 +32,10 @@ public class DeveloperWrapper {
     
     public UserWrapper getAsUser() {
         return new UserWrapper(developer);
+    }
+
+    public boolean canTakeBreakDuring(DateTimePeriod period) {
+        return this.developer.canTakeBreakDuring(period);
     }
 
     private static final String ERROR_ILLEGAL_DEVELOPER = "Invalid developer for developer wrapper";

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanningWithBreak;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
@@ -362,6 +363,18 @@ public class PlanningManager implements Serializable {
         }
         this.plannings.add(newplanning);
     }
+
+    public void createPlanningWithBreak(Task task, LocalDateTime estimatedStartTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
+        if (this.getPlanningFor(task) != null) {
+            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
+        }
+        TaskPlanning newplanning = new TaskPlanningWithBreak(devs, task, estimatedStartTime, resources);
+        TaskPlanning conflict = getConflictIfExists(newplanning);
+        if(conflict != null){
+        	throw new ConflictingPlanningException(conflict);
+        }
+        this.plannings.add(newplanning);
+    }
     
     public void removePlanning(TaskPlanning planning){
     	this.plannings.remove(planning);
@@ -451,7 +464,7 @@ public class PlanningManager implements Serializable {
     }
 
     
-    private static String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+    private static final String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
     private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
     
