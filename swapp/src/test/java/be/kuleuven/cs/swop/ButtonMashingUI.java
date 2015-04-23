@@ -114,6 +114,36 @@ public class ButtonMashingUI implements UserInterface {
         }
         return selectFromCollection(tasks);
     }
+    
+    @Override
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        return null;
+    }
+
+    @Override
+    public LocalDateTime selectTime(List<LocalDateTime> options) {
+        return null;
+    }
+
+    @Override
+    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        return null;
+    }
+    
+    @Override
+    public SimulationStepData getSimulationStepData() {
+        return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
+    }
+
+    @Override
+    public void showTaskPlanningContext(TaskWrapper task) { }
+
+    @Override
+    public Set<ResourceWrapper> selectResourcesFor(
+            Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
+            Set<RequirementWrapper> requirements) {
+        return null;
+    }
 
     @Override
     public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
@@ -228,42 +258,10 @@ public class ButtonMashingUI implements UserInterface {
                 throw new RuntimeException("Java should never get here");
         }
     }
-
+	
     @Override
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean askToAddBreak() {
+        return random.nextBoolean();
     }
-
-    @Override
-    public LocalDateTime selectTime(List<LocalDateTime> options) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public SimulationStepData getSimulationStepData() {
-        return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
-    }
-
-	@Override
-	public void showTaskPlanningContext(TaskWrapper task) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Set<ResourceWrapper> selectResourcesFor(
-			Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
-			Set<RequirementWrapper> requirements) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -35,6 +35,7 @@ public class TestingUI implements UserInterface {
     private Set<ResourceWrapper> requestResourcesSet;
     private Set<DeveloperWrapper> requestDevelopersSet;
     private SimulationStepData requestSimStepData;
+    private boolean           shouldAddBreak;
     
     public void setSelectUser(UserWrapper user) {
         selectUser = user;
@@ -196,6 +197,15 @@ public class TestingUI implements UserInterface {
     @Override
     public SimulationStepData getSimulationStepData() {
         return requestSimStepData;
+    }
+    
+    public void setShouldAddBreak(boolean addBreak) {
+        this.shouldAddBreak = addBreak;
+    }
+
+    @Override
+    public boolean askToAddBreak() {
+        return shouldAddBreak;
     }
 
 
