@@ -18,8 +18,8 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 /**
  * A class that represents the reservation of a task.
  * It also includes the reservation of all needed resources and the developers assigned to do it.
- * It of course also includes a planned starting time.
- * 
+ * It ofcourse also includes a planned starting time.
+ *
  */
 @SuppressWarnings("serial")
 public class TaskPlanning implements Serializable {
@@ -28,7 +28,7 @@ public class TaskPlanning implements Serializable {
     private Task           task;
     private LocalDateTime  plannedStartTime;
     private Set<Resource>  resources = new HashSet<Resource>();
-    
+
     public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime){
         this(developers,task,plannedStartTime,null);
     }
@@ -54,7 +54,7 @@ public class TaskPlanning implements Serializable {
     protected boolean canHaveAsDeveloper(Developer developer) {
         return developer != null;
     }
-    
+
     private void addDeveloper(Developer developer){
         if (!canHaveAsDeveloper(developer)) {
             throw new InvalidParameterException(ERROR_INVALID_DEVELOPER);
@@ -95,7 +95,7 @@ public class TaskPlanning implements Serializable {
     public ImmutableSet<Resource> getReservations() {
         return ImmutableSet.copyOf(resources);
     }
-    
+
     private boolean satisfiedRequirements(Set<Resource> resources){
         for(Requirement req : task.getRecursiveRequirements()){
             if(!req.isSatisfiedWith(resources)){
@@ -115,11 +115,11 @@ public class TaskPlanning implements Serializable {
         this.resources.clear();
         resources.forEach(r -> addResource(r));
     }
-    
+
     protected boolean canHaveAsResource(Resource resource){
         return resource != null;
     }
-    
+
     private void addResource(Resource resource){
         if(!canHaveAsResource(resource)){
             throw new IllegalArgumentException(ERROR_INVALID_RESOURCE);
@@ -131,7 +131,7 @@ public class TaskPlanning implements Serializable {
      * Gives an indication of when this planning has taken, or should take place.
      * If the task is already finished, the planning knows when it was, and returns that as the period it was done.
      * If the task isn't finished the planning will estimate a period based on the planned starting time and how long the task needs.
-     * 
+     *
      * @return An estimated period in which the task should be done, or the real period in which it was done.
      */
     public DateTimePeriod getEstimatedOrRealPeriod() {
