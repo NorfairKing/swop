@@ -267,7 +267,7 @@ public class PlanningManager implements Serializable {
     private boolean isValidTimeForTask(LocalDateTime time, Task task) {
         Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
-        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         for (TaskPlanning planning : this.plannings) {
             if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedResources.addAll(planning.getReservations());
@@ -312,7 +312,7 @@ public class PlanningManager implements Serializable {
      */
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
         Set<Resource> usedResources = new HashSet<Resource>();
-        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         for (TaskPlanning planning : this.plannings) {
             if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedResources.addAll(planning.getReservations());
@@ -341,7 +341,7 @@ public class PlanningManager implements Serializable {
      */
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
         Set<Developer> usedDevelopers = new HashSet<Developer>();
-        DateTimePeriod period = new DateTimePeriod(time, task.getEstimatedOrRealFinishDate(time));
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         for (TaskPlanning planning : this.plannings) {
             if (planning.getEstimatedOrRealPeriod().isDuring(period)) {
                 usedDevelopers.addAll(planning.getDevelopers());
