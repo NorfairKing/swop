@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * A period between two given hours in a single day
@@ -106,6 +107,17 @@ public class TimePeriod implements Serializable {
      */
     public boolean isDuring(TimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
+    }
+
+    public boolean isDuring(DateTimePeriod period) {
+        LocalTime start = LocalTime.from(period.getStartTime());
+        LocalTime stop = LocalTime.from(period.getStopTime());
+        if (start.isBefore(stop) && ChronoUnit.DAYS.between(period.getStartTime(),period.getStopTime()) == 0) {
+            return !this.getStartTime().isAfter(start) &&
+                !this.getStopTime().isBefore(stop);
+        } else {
+            return false;
+        }
     }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";

@@ -18,14 +18,7 @@ public class Developer extends User {
     }
 
     public boolean isAvailableDuring(DateTimePeriod period) {
-        LocalTime start = LocalTime.from(period.getStartTime());
-        LocalTime stop = LocalTime.from(period.getStopTime());
-        if (start.isBefore(stop)) {
-            return !workday.getStartTime().isAfter(start) &&
-                !workday.getStopTime().isBefore(stop);
-        } else {
-            return false;
-        }
+        return this.workday.isDuring(period);
     }
 
     public boolean isAvailableDuring(LocalTime time) {
@@ -37,16 +30,7 @@ public class Developer extends User {
     }
 
     public boolean canTakeBreakDuring(DateTimePeriod period) {
-        LocalTime start = LocalTime.from(period.getStartTime());
-        LocalTime stop = LocalTime.from(period.getStopTime());
-        if (start.isBefore(stop)) {
-            return !breakPeriod.getStartTime().isAfter(start) &&
-                !breakPeriod.getStopTime().isBefore(stop);
-        } else {
-            return false;
-            // FIXME should be ok in this context but might change when we add devs that
-            // work nightly
-        }
+        return this.breakPeriod.isDuring(period);
     }
 
     // FIXME, use better values when you figure out how to use them.

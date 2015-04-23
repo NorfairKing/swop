@@ -34,14 +34,7 @@ public class TimeConstrainedResourceType extends ResourceType {
     }
 
     public boolean isAvailableDuring(DateTimePeriod period) {
-        LocalTime start = LocalTime.from(period.getStartTime());
-        LocalTime stop = LocalTime.from(period.getStopTime());
-        if (start.isBefore(stop)) {
-            return !this.getDailyAvailability().getStartTime().isAfter(start) &&
-                !this.getDailyAvailability().getStopTime().isBefore(stop);
-        } else {
-            return false;
-        }
+        return this.getDailyAvailability().isDuring(period);
     }
 
     private static final String ERROR_ILLEGAL_AVAILABILITY = "Illegal daily availability TimePeriod for resource type.";
