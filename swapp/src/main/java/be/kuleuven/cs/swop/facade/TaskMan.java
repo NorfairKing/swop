@@ -46,7 +46,7 @@ public class TaskMan implements Serializable {
         this.timeKeeper = new Timekeeper();
         this.company = new Company();
     }
-    
+
     // Getters
     private Timekeeper getTimekeeper() {
         return this.timeKeeper;
@@ -125,7 +125,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Retrieve all known users
-     * 
+     *
      * @return A set of all known users, currently only developers
      */
     public Set<UserWrapper> getUsers() {
@@ -146,7 +146,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Retrieve all resource types of the company
-     * 
+     *
      * @return A set of the resources types
      */
     public Set<ResourceTypeWrapper> getResourceTypes() {
@@ -155,7 +155,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Retrieve every unplanned task of a given Project
-     * 
+     *
      * @param project
      *            The projectwrapper containing the project from which the unplanned Tasks will be returned.
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
@@ -163,10 +163,10 @@ public class TaskMan implements Serializable {
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
         return map(company.getUnplannedTasksOf(project.getProject()), t -> wrapTask(t));
     }
-    
+
     /**
      * Retrieves the assigned tasks of a developer from a single project
-     * 
+     *
      * @param project The project to retrieve from
      * @param dev The dev to retrieve for
      * @return The assigned tasks
@@ -177,7 +177,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Retrieves the planning for a given task
-     * 
+     *
      * @param task The task of which you want the planning
      * @return The planning of the given task
      */
@@ -188,7 +188,7 @@ public class TaskMan implements Serializable {
     /**
      * Retrieves some suggestions for possible planning times of a task
      * Currently gives you the first 3 starting at the current system time
-     * 
+     *
      * @param task The task for which you want a possible time
      * @return A list of suggested time options
      */
@@ -198,7 +198,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Retrieves a list of options for each resource type needed by a task.
-     * 
+     *
      * @param task The task for which you want the options
      * @param time The time on which you cant to use the resources
      * @return The list with options
@@ -206,14 +206,14 @@ public class TaskMan implements Serializable {
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningResourceOptions(task.getTask(), time), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
     }
-    
+
     public Set<ResourceWrapper> getResources(){
     	return map(company.getResources(), t -> wrapResource(t));
     }
 
     /**
      * Retrieves a list of developers that can work on the task on a given time
-     * 
+     *
      * @param task The task for which you need developers
      * @param time The time on which you need developers
      * @return The possible developers
@@ -224,7 +224,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Create a planning for a task
-     * 
+     *
      * @param task The task to plan
      * @param time The time on which it is planned for the task to start
      * @param resources The resources to reserve for this task
@@ -238,6 +238,15 @@ public class TaskMan implements Serializable {
 		}
     }
 
+    /**
+     * Create a planning for a task, this planning will include a break for the
+     * developers.
+     *
+     * @param task The task to plan
+     * @param time The time on which it is planned for the task to start
+     * @param resources The resources to reserve for this task
+     * @param developers The developers that have to work on the task
+     */
     public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
         try {
 			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
@@ -245,7 +254,7 @@ public class TaskMan implements Serializable {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
-    
+
     public void removePlanning(TaskPlanningWrapper planning){
     	company.removePlanning(planning.getPlanning());
     }
@@ -341,7 +350,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Set the alternative of a task.
-     * 
+     *
      * @param task
      *            The task for which to set an alternative.
      * @param alternative
@@ -353,7 +362,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Add an existing task as dependency for another.
-     * 
+     *
      * @param task
      *            The task to add a dependency to.
      * @param dependency
@@ -421,7 +430,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Returns the current system time
-     * 
+     *
      * @return The current system time
      */
     public LocalDateTime getSystemTime() {
@@ -430,7 +439,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Creates a new resource type in the system
-     * 
+     *
      * @param data The data needed to create the type
      * @return The created type
      */
@@ -450,7 +459,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Creates a new resource in the system
-     * 
+     *
      * @param data The data needed to create the resource
      * @return The created resource
      */
@@ -459,12 +468,12 @@ public class TaskMan implements Serializable {
         ResourceType type = data.getType().getType();
         return wrapResource(company.createResource(name, type));
     }
-    
+
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
      * Alternatively could be called 'canMoveToExecuting'
-     * 
+     *
      * @param time The time to check for
      * @param dev The developer for whom the task might be available
      * @param task The task to check
@@ -476,7 +485,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Create a new developer in the system
-     * 
+     *
      * @param data The data needed to create a developer
      * @return The newly created developer
      */
@@ -487,7 +496,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Creates a memento of the system
-     * 
+     *
      * @return The created memento
      */
     public Memento saveToMemento() {
@@ -496,7 +505,7 @@ public class TaskMan implements Serializable {
 
     /**
      * Restore the system from a memento
-     * 
+     *
      * @param memento The memento to restore from
      */
     public void restoreFromMemento(Memento memento) {
@@ -521,11 +530,11 @@ public class TaskMan implements Serializable {
      * Creates a deep copy of TaskMan
      * This is done by writing it to a bytestream, using the build-in java serializer
      * and then reading it out again.
-     * This gives a very clean way to prevent duplication by multiple references, or 
+     * This gives a very clean way to prevent duplication by multiple references, or
      * problems with looping references.
      * It does however take a bit more memory because value classes will also be copied
      * where they aren't strictly needed.
-     * 
+     *
      * @return A deep copy of this class.
      */
     private TaskMan getDeepCopy() {

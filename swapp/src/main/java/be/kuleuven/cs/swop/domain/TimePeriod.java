@@ -99,16 +99,22 @@ public class TimePeriod implements Serializable {
     }
 
     /**
-     * Checks if the given period fall entirely inside this one
-     * If the given period fall (partly) outside this period, it'll return false.
+     * Checks if the given period falls entirely inside this one
+     * If the given period falls (partly) outside this period, it'll return false.
      * 
      * @param period The period to check
-     * @return Whether is does or not
+     * @return Whether it does or not
      */
     public boolean isDuring(TimePeriod period) {
         return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
     }
 
+    /**
+     * Checks if the given period is during this one.
+     *
+     * @param period The period to check
+     * @return Whether of it does or not
+     */
     public boolean isDuring(DateTimePeriod period) {
         LocalTime start = LocalTime.from(period.getStartTime());
         LocalTime stop = LocalTime.from(period.getStopTime());

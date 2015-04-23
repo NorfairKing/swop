@@ -9,6 +9,13 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
+/**
+ * A class that represents the reservation of a task.
+ * It also includes the reservation of all needed resources and the developers assigned to do it.
+ * It ofcourse also includes a planned starting time.
+ * This special type of planning also includes a break for the developers.
+ * 
+ */
 @SuppressWarnings("serial")
 public class TaskPlanningWithBreak extends TaskPlanning {
 
