@@ -1,0 +1,44 @@
+@startuml
+
+title "Create Task"
+
+actor Manager
+
+Manager -> UI: "Plan Task
+
+UI -> SessionController: "startPlanTaskSession()"
+
+SessionController -> Facade: "getProjects()"
+Facade --> SessionController: "return: projectWrappers"
+
+SessionController -> Facade: "getUnplannedTasksOf(...)"
+Facade -> Company: "..."
+Company -> PlanningManager: "..."
+PlanningManager --> SessionController: "return: tasks"
+
+SessionController -> UI: "selectTaskFromProjects(...)"
+UI --> SessionController: "return task"
+
+
+SessionController -> UI: "showTaskPlanningContext(task)"
+
+
+SessionController -> Facade: "getPlanningTimeOptions(task);\ngetResources();\ngetPlanningDeveloperOptions(task);"
+Facade -> Company: "..."
+Company -> PlanningManager: "..."
+PlanningManager --> SessionController: "return options"
+
+SessionController -> UI: "selectTime(options);\nselectResources(options);\nselectDevelopers(options)"
+UI --> SessionController: "return: selected"
+
+SessionController -> Facade: "createPlanning(...)"
+Facade -> Company: "..."
+Company -> PlanningManager: "createPlanning(...)"
+
+alt conflicting task
+    PlanningManager --> SessionController: "throw ConflictingPlanningWrapperException(conflictingTask)"
+
+    SessionController -> SessionController: "startResolveConflictSession()"
+end
+
+@enduml
