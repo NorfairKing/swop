@@ -62,9 +62,54 @@ public final class RequirementsCalculator {
         }
         return false;
     }
+    
+    public static boolean isPossibleResourceSet(Set<Resource> resources){
+    	
+    	Set<ResourceType> stillRequired = new HashSet<ResourceType>();
+    	Set<ResourceType> conflicts = new HashSet<ResourceType>();    	
+    	Set<ResourceType> typesInSet = new HashSet<ResourceType>();
+    	for(Resource res : resources){
+    		ResourceType type = res.getType();
+    		
+    		// Check if it conflicts with a previous resource
+    		if(conflicts.contains(type)){
+    			return false;
+    		}
+    		
+    		// Check if one of the previous resources conflicts with this one (except self-conflicting resources)
+    		for(ResourceType con : type.getConflictsWith()){
+    			if(typesInSet.contains(con)){
+    				if(con == type){
+    					continue;
+    				}
+    				return false;
+    			}
+    		}
+    		
+    		// Add conflicts for this resource
+    		conflicts.addAll(type.getConflictsWith());
+    		
+    		// Add requirements for this resource that aren't fulfilled yet
+    		for(ResourceType req : type.getRequirements()){
+    			if(!typesInSet.contains(req)){
+    				stillRequired.add(req);
+    			}
+    		}
+    		
+    		// Remove this from the still required resources
+    		stillRequired.remove(type);
+    		
+    		// Add to the current set of resources
+    		typesInSet.add(type);
+    		    		
+    	}
+    	
+		// Are all the requirements met?
+    	return stillRequired.isEmpty();
+    }
 
     /**
-     * Checks to see if in this set of rquirements there are two or more with the same type
+     * Checks to see if in this set of requirements there are two or more with the same type
      * 
      * @param reqs Requirements to check
      * @return Whether there are doubles

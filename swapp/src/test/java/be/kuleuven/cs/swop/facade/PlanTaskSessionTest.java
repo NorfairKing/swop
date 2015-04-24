@@ -1,7 +1,5 @@
 package be.kuleuven.cs.swop.facade;
 
-import static org.junit.Assert.assertEquals;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -31,6 +29,7 @@ public class PlanTaskSessionTest {
     
     private int typeCount = 6;
     private int resourcesPerType = 2;
+    private DeveloperWrapper dev;
     
     // type 0: no requirements, No conflicts, no self-conflict, no daily availability
     // type 1: no requirements, conflicts with type0, no self-conflict, no daily availability
@@ -48,6 +47,7 @@ public class PlanTaskSessionTest {
         taskMan = new TaskMan();
         controller = new SessionController(ui, taskMan);
         controller.setCurrentUser(new UserWrapper(new Manager("Jake")));
+        dev = taskMan.createDeveloper(new DeveloperData("Jane"));
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
         types[0] = taskMan.createResourceType(new ResourceTypeData("type0",
         		new HashSet<ResourceTypeWrapper>(),
@@ -109,13 +109,107 @@ public class PlanTaskSessionTest {
     
     @Test
     public void noRequirementsTest() throws ConflictingPlanningWrapperException{
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
         TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
         
         Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
         Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+        
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked
+    }
+    
+    @Test
+    public void onlyDevTest() throws ConflictingPlanningWrapperException{
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	dev1.add(dev);
+    	
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession(); //TODO: check if this worked
+    }
+    
+    @Test
+    public void noDevelopersTest() throws ConflictingPlanningWrapperException{
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession(); //TODO: check if this worked
+    }
+    
+    @Test
+    public void withBreakTest() throws ConflictingPlanningWrapperException{
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	dev1.add(dev);
+    	
+    	
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime());
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(true);
+    	controller.startPlanTaskSession(); //TODO: check if this worked
+    }
+    
+    @Test
+    public void withBreakNoDevelopersTest() throws ConflictingPlanningWrapperException{
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();    	
+    	
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime());
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(true);
+    	controller.startPlanTaskSession(); //TODO: check if this worked
+    }
+    
+    @Test
+    public void withBreakWrongTimeTest() throws ConflictingPlanningWrapperException{
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 14, 0));
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();    	
+    	dev1.add(dev);
 
-        taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1); //TODO: check if this worked
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime());
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(true);
+    	controller.startPlanTaskSession(); //TODO: check if this worked
     }
     
     @Test
@@ -129,8 +223,13 @@ public class PlanTaskSessionTest {
     	res1.add(resources[0][1]);
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1); //TODO: check if this worked
-    }
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked    
+        }
     
     @Test
     public void requirementsSatisfiedWithExtraTest() throws ConflictingPlanningWrapperException{
@@ -141,11 +240,16 @@ public class PlanTaskSessionTest {
     	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
     	res1.add(resources[0][0]);
     	res1.add(resources[0][1]);
-    	res1.add(resources[1][0]);
+    	res1.add(resources[3][0]);
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1); //TODO: check if this worked
-    }
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked    
+        }
     
     @Test
     public void RecursiverequirementsSatisfiedTest() throws ConflictingPlanningWrapperException{
@@ -158,8 +262,13 @@ public class PlanTaskSessionTest {
     	res1.add(resources[2][0]);
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1); //TODO: check if this worked
-    }
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked    
+        }
     
     @Test
     public void dailyAvailibilityValidTest() throws ConflictingPlanningWrapperException{
@@ -171,8 +280,13 @@ public class PlanTaskSessionTest {
     	res1.add(resources[5][0]);
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime(), res1, dev1); //TODO: check if this worked
-    }
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime());
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked    
+        }
     
     
     
@@ -187,12 +301,20 @@ public class PlanTaskSessionTest {
         
         TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
 
-        taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), new HashSet<ResourceWrapper>(), new HashSet<DeveloperWrapper>());
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+        
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession(); //TODO: check if this worked
         
         
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void notEnoughResourcesTest() throws ConflictingPlanningWrapperException{
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
         req1.put(types[0], 2);
@@ -203,12 +325,16 @@ public class PlanTaskSessionTest {
         
         Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
 
-        taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1);
-        
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();      
     	
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void conflictingResourcesTest() throws ConflictingPlanningWrapperException{
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -219,12 +345,16 @@ public class PlanTaskSessionTest {
     	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1);
-    	
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();   	
     	
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void selfConflictingResourcesTest() throws ConflictingPlanningWrapperException{
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -235,12 +365,16 @@ public class PlanTaskSessionTest {
     	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1);
-    	
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();     	
     	
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void resourceDependencyNotMetTest() throws ConflictingPlanningWrapperException{
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -250,14 +384,18 @@ public class PlanTaskSessionTest {
     	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1);
-    	
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();   	
     	
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void dailyAvailibilityInvalidTest() throws ConflictingPlanningWrapperException{
-    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 8, 0));
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 7, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -265,21 +403,129 @@ public class PlanTaskSessionTest {
     	res1.add(resources[5][0]);
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime(), res1, dev1); //TODO: check if this worked
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime());
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();    
+        }
+    
+    @Test
+    public void nullTaskTest() throws ConflictingPlanningWrapperException{
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	
+    	ui.addRequestTask(null);
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession();   	
+    	
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void nullResourceTest() throws ConflictingPlanningWrapperException{
+    
+    @Test
+    public void nullstartTimeTest() throws ConflictingPlanningWrapperException{
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
     	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();
-    	res1.add(null);
     	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
-    	taskMan.createPlanning(task1, taskMan.getSystemTime().plusHours(1), res1, dev1);
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(null);
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession();   	
     	
+    }
+    
+    @Test
+    public void nullResourceTest() throws ConflictingPlanningWrapperException{
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(null);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();   	
+    	
+    }
+    
+    @Test
+    public void nullDeveloperTest() throws ConflictingPlanningWrapperException{
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
+
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(null);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession();   	
+    	
+    }
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void nullTaskinWrapperTest() throws ConflictingPlanningWrapperException{
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	
+    	ui.addRequestTask(new TaskWrapper(null));
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession();   	
+    	
+    }
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void nullResourceInWrapperTest() throws ConflictingPlanningWrapperException{
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();
+    	res1.add(new ResourceWrapper(null));
+    	
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	
+        ui.addRequestTask(task1);
+        ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        controller.startPlanTaskSession();   	
+    	
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void nullDeveloperinWrapperTest() throws ConflictingPlanningWrapperException{
+    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	
+    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
+    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+    	dev1.add(new DeveloperWrapper(null));
+
+    	ui.addRequestTask(task1);
+    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
+    	ui.addSelectResourcesFor(res1);
+    	ui.addSelectDevelopers(dev1);
+    	ui.addShouldAddBreak(false);
+    	controller.startPlanTaskSession();   	
     	
     }
     

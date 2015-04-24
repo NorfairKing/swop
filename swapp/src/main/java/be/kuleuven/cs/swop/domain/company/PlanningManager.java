@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanningWithBreak;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
@@ -363,14 +364,8 @@ public class PlanningManager implements Serializable {
      * conflict.
      */
     public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
-        if (this.getPlanningFor(task) != null) {
-            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
-        }
+    	checkPlanningParameters(task, startTime, resources, devs);
         TaskPlanning newplanning = new TaskPlanning(devs, task, startTime, resources);
-        TaskPlanning conflict = getConflictIfExists(newplanning);
-        if(conflict != null){
-        	throw new ConflictingPlanningException(conflict);
-        }
         this.plannings.add(newplanning);
     }
 
@@ -386,15 +381,52 @@ public class PlanningManager implements Serializable {
      * conflict.
      */
     public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
-        if (this.getPlanningFor(task) != null) {
+    	checkPlanningParameters(task, startTime, resources, devs);
+        TaskPlanning newplanning = new TaskPlanningWithBreak(devs, task, startTime, resources);
+        this.plannings.add(newplanning);
+    }
+    
+    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs) throws ConflictingPlanningException{
+        if(task == null){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
+        }
+
+        if(startTime == null){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME);
+        }
+        
+        for( Resource res : resources){
+        	if(res == null){
+        		throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE);
+        	}
+        }
+             
+        for( Developer dev : devs){
+        	if(dev == null){
+        		throw new IllegalArgumentException(ERROR_ILLEGAL_DEVELOPER);
+        	}
+        }
+    	
+    	// Check if the task is already planned
+    	if (this.getPlanningFor(task) != null) {
             throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
         }
-        TaskPlanning newplanning = new TaskPlanningWithBreak(devs, task, startTime, resources);
-        TaskPlanning conflict = getConflictIfExists(newplanning);
+        
+    	// Check if the set of resources is consistent
+        if (!RequirementsCalculator.isPossibleResourceSet(resources)){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET);
+        }
+        
+        // Check if the resources are available during the planning
+        if (!areResourcesAvailableDuring(resources, new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))){
+        	throw new IllegalArgumentException(ERROR_RESOURCE_NOT_AVAILABLE);
+        }
+        
+        // Check if the resources aren't already planned for another task
+        TaskPlanning conflict = getConflictIfExists(task, startTime, resources, devs);
         if(conflict != null){
         	throw new ConflictingPlanningException(conflict);
         }
-        this.plannings.add(newplanning);
     }
 
     /**
@@ -406,10 +438,10 @@ public class PlanningManager implements Serializable {
     	this.plannings.remove(planning);
     }
 
-    private TaskPlanning getConflictIfExists(TaskPlanning newPlanning){
+    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Resource> resources, Set<Developer> devs){
     	for (TaskPlanning plan: plannings) {
-    		for(Resource res: newPlanning.getReservations()){
-    			if (plan.getEstimatedOrRealPeriod().overlaps(newPlanning.getEstimatedOrRealPeriod())) {
+    		for(Resource res: resources){
+    			if (plan.getEstimatedOrRealPeriod().overlaps(new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))) {
     				if(plan.getReservations().contains(res)){
     					return plan;
     				}
@@ -417,6 +449,15 @@ public class PlanningManager implements Serializable {
     		}
     	}
     	return null;
+    }
+    
+    private boolean areResourcesAvailableDuring(Set<Resource> resources, DateTimePeriod period){
+    	for(Resource res : resources){
+    		if(!res.getType().isAvailableDuring(period)){
+    			return false;
+    		}
+    	}
+    	return true;
     }
 
     /**
@@ -528,6 +569,12 @@ public class PlanningManager implements Serializable {
 
     private static final String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    private static final String ERROR_ILLEGAL_TASK         = "Illegal task provided.";
+    private static final String ERROR_ILLEGAL_DATETIME         = "Illegal date provided.";
+    private static final String ERROR_ILLEGAL_RESOURCE         = "Illegal resource provided.";
+    private static final String ERROR_ILLEGAL_DEVELOPER         = "Illegal developer provided.";
+    private static final String ERROR_ILLEGAL_RESOURCE_SET = "The given set of resources is not possible.";
+    private static final String ERROR_RESOURCE_NOT_AVAILABLE = "A resource is not available at that time.";
     private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
 
 }

@@ -296,6 +296,7 @@ public class SessionController {
                 if (!chosenDevelopers.isEmpty() && chosenDevelopers.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
                     if (getUi().askToAddBreak()) {
                         taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+                        break;
                     }
                 }
                 taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);

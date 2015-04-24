@@ -88,7 +88,7 @@ plannings:
   - plannedStartTime : "2014-01-02 17:00"
     developers       : [1]
     resources        : []
-  - plannedStartTime : "2014-03-01 09:00"
+  - plannedStartTime : "2014-03-01 12:00"
     developers       : [2]
     resources        : [{type: 5,  quantity: 1}]
 
@@ -96,7 +96,7 @@ tasks:
     # projects and tasks are incrementally numbered starting with the number 0
   - project            : 0
     description        : "task description"
-    estimatedDuration  : 500
+    estimatedDuration  : 480
     acceptableDeviation: 50
     alternativeFor     :
     prerequisiteTasks  :
@@ -109,7 +109,7 @@ tasks:
 
   - project            : 1
     description        : "another task description"
-    estimatedDuration  : 50000
+    estimatedDuration  : 480
     acceptableDeviation: 50
     alternativeFor     :
     prerequisiteTasks  :
@@ -118,7 +118,7 @@ tasks:
 
   - project            : 1
     description        : "yet another task description"
-    estimatedDuration  : 10000
+    estimatedDuration  : 100
     acceptableDeviation: 10
     alternativeFor     :
     prerequisiteTasks  :
@@ -127,7 +127,7 @@ tasks:
 
   - project            : 1
     description        : "description"
-    estimatedDuration  : 5000
+    estimatedDuration  : 480
     acceptableDeviation: 0
     alternativeFor     :
     prerequisiteTasks  : [ 1, 2 ]
@@ -138,16 +138,16 @@ tasks:
 
   - project            : 1
     description        : "description"
-    estimatedDuration  : 50000
+    estimatedDuration  : 300
     acceptableDeviation: 0
     alternativeFor     : 3
-    prerequisiteTasks  : [ 1, 2 ]
+    prerequisiteTasks  : [ 0 ]
     planning           : 2
     status             : executing
 
   - project            : 2
     description        : "description"
-    estimatedDuration  : 500
+    estimatedDuration  : 480
     acceptableDeviation: 50
     alternativeFor     :
     prerequisiteTasks  :
@@ -156,7 +156,7 @@ tasks:
 
   - project            : 2
     description        : "description"
-    estimatedDuration  : 500
+    estimatedDuration  : 480
     acceptableDeviation: 50
     alternativeFor     :
     prerequisiteTasks  :
@@ -178,5 +178,5 @@ reservations:
     endTime:    "2014-01-02 17:00"
   - resource:   11
     task:       4
-    startTime:  "2014-03-01 09:00"
-    endTime:    "2014-05-01 09:00"
+    startTime:  "2014-03-01 12:00"
+    endTime:    "2014-03-01 17:00"
