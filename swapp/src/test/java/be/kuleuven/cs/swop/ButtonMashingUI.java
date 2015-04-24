@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -26,11 +27,12 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 
 public class ButtonMashingUI implements UserInterface {
 
-    private static String     VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
-    private SessionController sessionController;
-    private Random            random;
+    private static String         VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
+    private SessionController     sessionController;
+    private Random                random;
+    private Set<DeveloperWrapper> devs;
 
-    private static String     ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
+    private static String         ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
     public ButtonMashingUI() {
         random = new Random(8008135);
@@ -50,7 +52,7 @@ public class ButtonMashingUI implements UserInterface {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
     }
-    
+
     @Override
     public UserWrapper selectUser(Set<UserWrapper> users) {
         return selectFromCollection(users);
@@ -76,8 +78,9 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public void showTasks(Set<TaskWrapper> tasks) {
-        for (TaskWrapper t : tasks){
-            showTask(t);}
+        for (TaskWrapper t : tasks) {
+            showTask(t);
+        }
     }
 
     @Override
@@ -86,8 +89,8 @@ public class ButtonMashingUI implements UserInterface {
         task.getDependencySet().size();
         task.getEstimatedDuration();
         task.getAcceptableDeviation();
-        
-        if (task.isFinished()){
+
+        if (task.isFinished()) {
             task.wasFinishedEarly();
             task.wasFinishedLate();
             task.wasFinishedOnTime();
@@ -114,35 +117,68 @@ public class ButtonMashingUI implements UserInterface {
         }
         return selectFromCollection(tasks);
     }
-    
+
     @Override
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        return null;
+        ProjectWrapper p = selectFromCollection(projectMap.keySet());
+        if (p == null) {
+            return null;
+        } else {
+            return selectFromCollection(p.getTasks());
+        }
     }
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        return null;
+        return selectFromCollection(options);
     }
 
     @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        return null;
+        int n = random.nextInt(developerOptions.size() + 1);
+        devs = developerOptions;
+        Set<DeveloperWrapper> result = new HashSet<>();
+        for (int i = 0; i < n; i++)
+            result.add(selectFromCollection(developerOptions));
+        return result;
     }
-    
+
     @Override
     public SimulationStepData getSimulationStepData() {
         return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
     }
 
     @Override
-    public void showTaskPlanningContext(TaskWrapper task) { }
+    public void showTaskPlanningContext(TaskWrapper task) {
+        task.canFinish();
+        task.getAcceptableDeviation();
+        task.getAlternative();
+        task.getDependencySet();
+        task.getDescription();
+        task.getEstimatedDuration();
+        task.getPerformedDuring();
+        task.getRequirements();
+        task.getRecursiveRequirements();
+        task.isExecuting();
+        task.isFailed();
+        task.isFinal();
+        task.isFinished();
+        task.wasFinishedEarly();
+        task.wasFinishedLate();
+        task.wasFinishedOnTime();
+    }
 
     @Override
     public Set<ResourceWrapper> selectResourcesFor(
             Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
             Set<RequirementWrapper> requirements) {
-        return null;
+        int n = random.nextInt(options.size() + 1);
+        Set<ResourceWrapper> result = new HashSet();
+        for (int i = 0; i < n; i++) {
+            ResourceTypeWrapper t = selectFromCollection(options.keySet());
+            result.add(selectFromCollection(options.get(t)));
+        }
+        return result;
     }
 
     @Override
@@ -150,8 +186,8 @@ public class ButtonMashingUI implements UserInterface {
         if (random.nextBoolean()) return null;
         String description = randomString();
         boolean negative1 = random.nextBoolean();
-        long duration = negative1 ? random.nextLong() * 50 : random.nextLong() * -50;           // arbitrary
-                                                                                                // constant
+        long duration = negative1 ? random.nextLong() * 50 : random.nextLong() * -50; // arbitrary
+                                                                                      // constant
         boolean negative2 = random.nextBoolean();
         double deviation = negative2 ? random.nextDouble() * 2.0 : random.nextDouble() * -2.0; // arbitrary
                                                                                                // constant
@@ -163,14 +199,22 @@ public class ButtonMashingUI implements UserInterface {
         if (random.nextBoolean()) return null;
         LocalDateTime date1 = getTimeStamp();
         LocalDateTime date2 = getTimeStamp();
-        boolean success = random.nextBoolean();
-        
-        //TODO: this needs to be reviewed and properly updated for the new status system
-        
-        if(success){
-        	return new FinishedStatusData(date1, date2);
-        }else{
-        	return new FailedStatusData(date1, date2);
+        int kind = random.nextInt(4);
+        switch (kind) {
+            case 0:
+                return new FinishedStatusData(date1, date2);
+            case 1:
+                return new FailedStatusData(date1, date2);
+            case 2:
+                if (devs == null) {
+                    return null;
+                }
+                else {
+                    UserWrapper u = selectFromCollection(devs).getAsUser();
+                    return new ExecutingStatusData(u);
+                }
+            default:
+                return null;
         }
     }
 
@@ -237,7 +281,7 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     public void performAction() {
-        int useCases = 5;
+        int useCases = 9;
         switch (random.nextInt(useCases)) {
             case 0:
                 getSessionController().startAdvanceTimeSession();
@@ -254,11 +298,23 @@ public class ButtonMashingUI implements UserInterface {
             case 4:
                 getSessionController().startUpdateTaskStatusSession();
                 break;
+            case 5:
+                getSessionController().startPlanTaskSession();
+                break;
+            case 6:
+                getSessionController().startRunSimulationSession();
+                break;
+            case 7:
+                getSessionController().startSelectUserSession();
+                break;
+            case 8:
+                getSessionController().startUpdateTaskStatusSession();
+                break;
             default:
                 throw new RuntimeException("Java should never get here");
         }
     }
-	
+
     @Override
     public boolean askToAddBreak() {
         return random.nextBoolean();

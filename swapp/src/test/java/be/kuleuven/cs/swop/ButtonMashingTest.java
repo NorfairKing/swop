@@ -5,9 +5,10 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.TaskMan;
 
 
 public class ButtonMashingTest {
@@ -32,9 +33,9 @@ public class ButtonMashingTest {
     @After
     public void tearDown() throws Exception {}
 
-    //@Test
+    @Test
     public void test() {
-        int amount = 100; // arbitrary number
+        int amount = 1000; // arbitrary number
         ui.performActions(amount);
     }
 
