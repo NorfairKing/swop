@@ -108,7 +108,7 @@ public class PlanTaskSessionTest {
     
     
     @Test
-    public void noRequirementsTest() throws ConflictingPlanningWrapperException{
+    public void noRequirementsTest(){
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
         TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -125,7 +125,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void onlyDevTest() throws ConflictingPlanningWrapperException{
+    public void onlyDevTest(){
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -143,7 +143,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void noDevelopersTest() throws ConflictingPlanningWrapperException{
+    public void noDevelopersTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -159,7 +159,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void withBreakTest() throws ConflictingPlanningWrapperException{
+    public void withBreakTest() {
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
@@ -178,7 +178,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void withBreakNoDevelopersTest() throws ConflictingPlanningWrapperException{
+    public void withBreakNoDevelopersTest() {
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
@@ -195,7 +195,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void withBreakWrongTimeTest() throws ConflictingPlanningWrapperException{
+    public void withBreakWrongTimeTest() {
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 14, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",180,0, req1));
@@ -213,7 +213,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void requirementsSatisfiedTest() throws ConflictingPlanningWrapperException{
+    public void requirementsSatisfiedTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[0],2);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -232,7 +232,7 @@ public class PlanTaskSessionTest {
         }
     
     @Test
-    public void requirementsSatisfiedWithExtraTest() throws ConflictingPlanningWrapperException{
+    public void requirementsSatisfiedWithExtraTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[0],2);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -252,7 +252,7 @@ public class PlanTaskSessionTest {
         }
     
     @Test
-    public void RecursiverequirementsSatisfiedTest() throws ConflictingPlanningWrapperException{
+    public void RecursiverequirementsSatisfiedTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[2],1);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -271,7 +271,7 @@ public class PlanTaskSessionTest {
         }
     
     @Test
-    public void dailyAvailibilityValidTest() throws ConflictingPlanningWrapperException{
+    public void dailyAvailibilityValidTest() {
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 9, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -294,7 +294,7 @@ public class PlanTaskSessionTest {
     
     //TODO: Is this intended behavior?
     @Test
-    public void notAManagerTest() throws ConflictingPlanningWrapperException{
+    public void notAManagerTest() {
         controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
         
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
@@ -315,7 +315,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void notEnoughResourcesTest() throws ConflictingPlanningWrapperException{
+    public void notEnoughResourcesTest() {
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
         req1.put(types[0], 2);
         TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -335,7 +335,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void conflictingResourcesTest() throws ConflictingPlanningWrapperException{
+    public void conflictingResourcesTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -355,7 +355,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void selfConflictingResourcesTest() throws ConflictingPlanningWrapperException{
+    public void selfConflictingResourcesTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -375,7 +375,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void resourceDependencyNotMetTest() throws ConflictingPlanningWrapperException{
+    public void resourceDependencyNotMetTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -394,7 +394,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void dailyAvailibilityInvalidTest() throws ConflictingPlanningWrapperException{
+    public void dailyAvailibilityInvalidTest() {
     	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 7, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -412,7 +412,7 @@ public class PlanTaskSessionTest {
         }
     
     @Test
-    public void nullTaskTest() throws ConflictingPlanningWrapperException{
+    public void nullTaskTest() {
     	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
@@ -427,7 +427,7 @@ public class PlanTaskSessionTest {
     
     
     @Test
-    public void nullstartTimeTest() throws ConflictingPlanningWrapperException{
+    public void nullstartTimeTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -445,7 +445,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void nullResourceTest() throws ConflictingPlanningWrapperException{
+    public void nullResourceTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -461,7 +461,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test
-    public void nullDeveloperTest() throws ConflictingPlanningWrapperException{
+    public void nullDeveloperTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -478,7 +478,7 @@ public class PlanTaskSessionTest {
     
     
     @Test(expected = RuntimeException.class)
-    public void nullTaskinWrapperTest() throws ConflictingPlanningWrapperException{
+    public void nullTaskinWrapperTest() {
     	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();    	
     	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
     	
@@ -493,7 +493,7 @@ public class PlanTaskSessionTest {
     
     
     @Test(expected = RuntimeException.class)
-    public void nullResourceInWrapperTest() throws ConflictingPlanningWrapperException{
+    public void nullResourceInWrapperTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	
@@ -512,7 +512,7 @@ public class PlanTaskSessionTest {
     }
     
     @Test(expected = RuntimeException.class)
-    public void nullDeveloperinWrapperTest() throws ConflictingPlanningWrapperException{
+    public void nullDeveloperinWrapperTest() {
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
     	

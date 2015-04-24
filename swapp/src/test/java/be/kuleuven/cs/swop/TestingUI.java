@@ -201,7 +201,7 @@ public class TestingUI implements UserInterface {
 
     @Override
     public void showError(String error) {
-        System.out.println(error);
+        //System.out.println(error);
         throw new RuntimeException(error);
     }
 

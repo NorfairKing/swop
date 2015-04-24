@@ -338,7 +338,7 @@ public class YAMLReader {
 		}
 	}
 
-	public void read(String initFile) {
+	public boolean read(String initFile) {
 		try {
 			// Setup
 			Map<String, List<Map<String, Object>>> parsedFile = readFile(initFile);
@@ -376,7 +376,7 @@ public class YAMLReader {
 			// Read the rest of the tasks
             processTasks(parsedFile);
 
-			System.out.println("Successfully imported file.");
+            return true;
 
 		} catch (FileNotFoundException e) {
 			System.out.println("Couldn't import data from file: Not found.");
@@ -389,5 +389,6 @@ public class YAMLReader {
 			System.out.println("Couldn't import data from file: An error occured.");
 			e.printStackTrace();
 		}
+		return false;
 	}
 }

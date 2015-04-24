@@ -18,7 +18,9 @@ public class App {
         if (args.length == 1) {
             String filePath = args[0];
             YAMLReader reader = new YAMLReader(taskMan);
-            reader.read(filePath);
+            if(reader.read(filePath)){
+    			System.out.println("Successfully imported file.");
+            }
         }
         new SessionController(ui, taskMan);
         ui.start();

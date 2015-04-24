@@ -138,6 +138,9 @@ public class DateTimePeriod implements Serializable {
         if (period.isDuringExcludeExtremes(stopTime)) {
             return true;
         }
+        if(period.startTime.equals(startTime) && period.stopTime.equals(stopTime)){
+        	return true;
+        }
         return false;
     }
     

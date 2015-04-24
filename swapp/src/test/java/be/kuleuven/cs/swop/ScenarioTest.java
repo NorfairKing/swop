@@ -358,6 +358,9 @@ public class ScenarioTest {
          * End of Day 4 - NOT IN ASSIGNMENT
          */
         
+        currentDate = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
+        taskMan.updateSystemTime(currentDate);
+
         LocalDateTime t3Start = LocalDateTime.parse("2015-02-12 08:00", dateTimeFormat);
         LocalDateTime t3Stop = LocalDateTime.parse("2015-02-12 16:00", dateTimeFormat);
         TaskStatusData t3u = new FinishedStatusData(t3Start, t3Stop);
@@ -372,7 +375,10 @@ public class ScenarioTest {
          * Day 5 - Morning - NOT IN ASSIGNMENT
          */
         
-        
+        currentDate = LocalDateTime.parse("2015-02-13 08:00", dateTimeFormat);
+        taskMan.updateSystemTime(currentDate);
+
+        assertTrue(taskMan.isTaskAvailableFor(currentDate, devX, t4));
         taskMan.updateTaskStatusFor(t4, new ExecutingStatusData(devX.getAsUser()));
         assertTrue(t4.canFinish());
         
