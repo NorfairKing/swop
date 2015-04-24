@@ -34,10 +34,10 @@ public class CreateTaskSessionTest {
     @Test
     public void test() {
         ProjectWrapper project = taskMan.getProjects().stream().findFirst().get();
-        ui.setRequestProject(project);
+        ui.addRequestProject(project);
         
         TaskData data = new TaskData("Descr", 50, .5);
-        ui.setRequestTaskData(data);
+        ui.addRequestTaskData(data);
         
         int taskCountBefore = project.getTasks().size();
         

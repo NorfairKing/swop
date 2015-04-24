@@ -49,7 +49,7 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void test() throws ConflictingPlanningWrapperException {
-        ui.setRequestTask(task);
+        ui.addRequestTask(task);
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
         
@@ -58,7 +58,7 @@ public class UpdateTaskStatusSessionTest {
                 new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
 
         TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
-        ui.setRequestTaskStatusData(startData);
+        ui.addRequestTaskStatusData(startData);
         
         controller.startUpdateTaskStatusSession();
         
@@ -66,8 +66,8 @@ public class UpdateTaskStatusSessionTest {
         LocalDateTime finishDate = curTime.plusHours(1);
         TaskStatusData finishData = new FinishedStatusData(curTime, finishDate);
         
-        ui.setRequestTask(task);
-        ui.setRequestTaskStatusData(finishData);
+        ui.addRequestTask(task);
+        ui.addRequestTaskStatusData(finishData);
         
         controller.startUpdateTaskStatusSession();
 
@@ -78,7 +78,7 @@ public class UpdateTaskStatusSessionTest {
     
     @Test
     public void flowTest() throws ConflictingPlanningWrapperException {
-        ui.setRequestTask(task);
+        ui.addRequestTask(task);
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
         
@@ -87,7 +87,7 @@ public class UpdateTaskStatusSessionTest {
                 new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
 
         TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
-        ui.setRequestTaskStatusData(startData);
+        ui.addRequestTaskStatusData(startData);
         
         controller.startUpdateTaskStatusSession();
         

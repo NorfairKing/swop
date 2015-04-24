@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,26 +25,40 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 public class TestingUI implements UserInterface {
 
     private SessionController sessionController;
-    private UserWrapper       selectUser;
-    private LocalDateTime     requestTime;
-    private ProjectData       requestProjectData;
-    private ProjectWrapper    requestProject;
-    private TaskData          requestTaskData;
-    private TaskWrapper       requestTask;
-    private TaskStatusData    requestTaskStatusData;
-    private LocalDateTime     requestSelectTime;
-    private Set<ResourceWrapper> requestResourcesSet;
-    private Set<DeveloperWrapper> requestDevelopersSet;
-    private SimulationStepData requestSimStepData;
-    private boolean           shouldAddBreak;
+    private List<UserWrapper>       selectUser = new ArrayList<>();
+    private List<LocalDateTime>     requestTime = new ArrayList<>();
+    private List<ProjectData>       requestProjectData = new ArrayList<>();
+    private List<ProjectWrapper>    requestProject = new ArrayList<>();
+    private List<TaskData>          requestTaskData = new ArrayList<>();
+    private List<TaskWrapper>       requestTask = new ArrayList<>();
+    private List<TaskStatusData>    requestTaskStatusData = new ArrayList<>();
+    private List<LocalDateTime>     requestSelectTime = new ArrayList<>();
+    private List<Set<ResourceWrapper>> requestResourcesSet = new ArrayList<>();
+    private List<Set<DeveloperWrapper>> requestDevelopersSet = new ArrayList<>();
+    private List<SimulationStepData> requestSimStepData = new ArrayList<>();
+    private List<Boolean>           shouldAddBreak = new ArrayList<>();
     
-    public void setSelectUser(UserWrapper user) {
-        selectUser = user;
+    private <T> T getNext(List<T> list){
+    	if(list.isEmpty()){
+    		return null;
+    	}
+    	
+    	T result = list.get(0);
+    	
+    	if(list.size() > 1){
+    		list.remove(0);
+    	}
+    	
+    	return result;
+    }
+    
+    public void addSelectUser(UserWrapper user) {
+        selectUser.add(user);
     }
     
     @Override
     public UserWrapper selectUser(Set<UserWrapper> users) {
-        return selectUser;
+        return getNext(selectUser);
     }
 
     @Override
@@ -67,8 +82,8 @@ public class TestingUI implements UserInterface {
      * @param proj
      *            The project that should be returned when calling selectProject
      */
-    public void setRequestProject(ProjectWrapper proj) {
-        requestProject = proj;
+    public void addRequestProject(ProjectWrapper proj) {
+        requestProject.add(proj);
     }
 
     /**
@@ -76,7 +91,7 @@ public class TestingUI implements UserInterface {
      */
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projects) {
-        return requestProject;
+        return getNext(requestProject);
     }
 
     @Override
@@ -89,8 +104,8 @@ public class TestingUI implements UserInterface {
         }
     }
 
-    public void setRequestTask(TaskWrapper task) {
-        requestTask = task;
+    public void addRequestTask(TaskWrapper task) {
+        requestTask.add(task);
     }
 
     /**
@@ -98,48 +113,48 @@ public class TestingUI implements UserInterface {
      */
     @Override
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) {
-        return requestTask;
+        return getNext(requestTask);
     }
 
     @Override
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
-        return requestTask;
+        return getNext(requestTask);
     }
     
-    public void setRequestTaskData(TaskData data) {
-        requestTaskData = data;
+    public void addRequestTaskData(TaskData data) {
+        requestTaskData.add(data);
     }
 
     @Override
     public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
-        return requestTaskData;
+        return getNext(requestTaskData);
     }
 
-    public void setRequestTaskStatusData(TaskStatusData data) {
-        requestTaskStatusData = data;
+    public void addRequestTaskStatusData(TaskStatusData data) {
+        requestTaskStatusData.add(data);
     }
 
     @Override
     public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-        return requestTaskStatusData;
+        return getNext(requestTaskStatusData);
     }
 
-    public void setRequestProjectDate(ProjectData data) {
-        requestProjectData = data;
+    public void addRequestProjectDate(ProjectData data) {
+        requestProjectData.add(data);
     }
 
     @Override
     public ProjectData getProjectData() {
-        return requestProjectData;
+        return getNext(requestProjectData);
     }
 
-    public void setRequestTime(LocalDateTime time) {
-        requestTime = time;
+    public void addRequestTime(LocalDateTime time) {
+        requestTime.add(time);
     }
 
     @Override
     public LocalDateTime getTimeStamp() {
-        return requestTime;
+        return getNext(requestTime);
     }
 
     @Override
@@ -163,49 +178,49 @@ public class TestingUI implements UserInterface {
         return true;
     }
 
-    public void setSelectTime(LocalDateTime time) {
-        requestSelectTime = time;
+    public void addSelectTime(LocalDateTime time) {
+        requestSelectTime.add(time);
     }
 
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) {
-        return requestSelectTime;
+        return getNext(requestSelectTime);
     }
     
-    public void setSelectResourcesFor(Set<ResourceWrapper> set) {
-        requestResourcesSet = set;
+    public void addSelectResourcesFor(Set<ResourceWrapper> set) {
+        requestResourcesSet.add(set);
     }
 
     @Override
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
-        return requestResourcesSet;
+        return getNext(requestResourcesSet);
     }
     
-    public void setSelectDevelopers(Set<DeveloperWrapper> set) {
-        requestDevelopersSet = set;
+    public void addSelectDevelopers(Set<DeveloperWrapper> set) {
+        requestDevelopersSet.add(set);
     }
 
     @Override
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        return requestDevelopersSet;
+        return getNext(requestDevelopersSet);
     }
     
-    public void setSimulationStepData(SimulationStepData data) {
-        requestSimStepData = data;
+    public void addSimulationStepData(SimulationStepData data) {
+        requestSimStepData.add(data);
     }
     
     @Override
     public SimulationStepData getSimulationStepData() {
-        return requestSimStepData;
+        return getNext(requestSimStepData);
     }
     
-    public void setShouldAddBreak(boolean addBreak) {
-        this.shouldAddBreak = addBreak;
+    public void addShouldAddBreak(boolean addBreak) {
+        this.shouldAddBreak.add(addBreak);
     }
 
     @Override
     public boolean askToAddBreak() {
-        return shouldAddBreak;
+        return getNext(shouldAddBreak);
     }
 
 

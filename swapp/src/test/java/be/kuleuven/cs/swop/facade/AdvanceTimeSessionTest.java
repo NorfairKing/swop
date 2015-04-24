@@ -30,7 +30,7 @@ public class AdvanceTimeSessionTest {
     @Test
     public void test() {
         LocalDateTime time = LocalDateTime.now();
-        ui.setRequestTime(time);
+        ui.addRequestTime(time);
         
         controller.startAdvanceTimeSession();
         
@@ -41,7 +41,7 @@ public class AdvanceTimeSessionTest {
     public void flowTest() {
         // The user indicates he wants to modify the system time
         // The system allows the user to choose a new time
-        ui.setRequestTime(LocalDateTime.now());
+        ui.addRequestTime(LocalDateTime.now());
         
         LocalDateTime time = ui.getTimeStamp();
 
@@ -58,7 +58,7 @@ public class AdvanceTimeSessionTest {
     public void flowTestNull() {
         // The user indicates he wants to modify the system time
         // The system allows the user to choose a new time
-        ui.setRequestTime(null);
+        ui.addRequestTime(null);
         
         LocalDateTime time = ui.getTimeStamp();
 

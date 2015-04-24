@@ -38,15 +38,15 @@ public class SimulationSessionTest {
         controller.startRunSimulationSession();
         
         // add project
-        ui.setSimulationStepData(new SimulationStepData(true, false));
-        ui.setRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
+        ui.addSimulationStepData(new SimulationStepData(true, false));
+        ui.addRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
         controller.startCreateProjectSession();
         
         assertEquals(taskMan.getProjects().size(), 1);
         
         // start and cancel it, so nothing changes and we can cancel the simulation
-        ui.setSimulationStepData(new SimulationStepData(false, false));
-        ui.setRequestProject(null);
+        ui.addSimulationStepData(new SimulationStepData(false, false));
+        ui.addRequestProject(null);
         controller.startShowProjectsSession();
         
         // project should be gone now
@@ -61,15 +61,15 @@ public class SimulationSessionTest {
         controller.startRunSimulationSession();
         
         // add project
-        ui.setSimulationStepData(new SimulationStepData(true, false));
-        ui.setRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
+        ui.addSimulationStepData(new SimulationStepData(true, false));
+        ui.addRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
         controller.startCreateProjectSession();
         
         assertEquals(taskMan.getProjects().size(), 1);
         
         // start and cancel it, so nothing changes and we can cancel the simulation
-        ui.setSimulationStepData(new SimulationStepData(false, true));
-        ui.setRequestProject(null);
+        ui.addSimulationStepData(new SimulationStepData(false, true));
+        ui.addRequestProject(null);
         controller.startShowProjectsSession();
         
         // nothing should have changed

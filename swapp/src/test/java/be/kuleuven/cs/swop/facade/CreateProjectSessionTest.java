@@ -34,7 +34,7 @@ public class CreateProjectSessionTest {
         String descr = "And this a description";
         LocalDateTime time = taskMan.getSystemTime().plusHours(1);
         ProjectData data = new ProjectData(title, descr, time);
-        ui.setRequestProjectDate(data);
+        ui.addRequestProjectDate(data);
         
         int beforeProjectCount = taskMan.getProjects().size();
         
