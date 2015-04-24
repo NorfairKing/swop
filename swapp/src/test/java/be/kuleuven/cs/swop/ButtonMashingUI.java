@@ -187,7 +187,7 @@ public class ButtonMashingUI implements UserInterface {
         if (random.nextBoolean()) return null;
         String description = randomString();
         boolean negative1 = random.nextBoolean();
-        long duration = negative1 ? random.nextLong() * 50 : random.nextLong() * -50; // arbitrary
+        long duration = (long)random.nextInt(480); // arbitrary
                                                                                       // constant
         boolean negative2 = random.nextBoolean();
         double deviation = negative2 ? random.nextDouble() * 2.0 : random.nextDouble() * -2.0; // arbitrary
