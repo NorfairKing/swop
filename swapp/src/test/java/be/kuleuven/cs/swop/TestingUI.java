@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +38,31 @@ public class TestingUI implements UserInterface {
     private List<Set<DeveloperWrapper>> requestDevelopersSet = new ArrayList<>();
     private List<SimulationStepData> requestSimStepData = new ArrayList<>();
     private List<Boolean>           shouldAddBreak = new ArrayList<>();
+    private Map<Object, Boolean> replaceOnAdd = new HashMap<>();
     
+    public TestingUI(){
+    	super();
+    	replaceOnAdd.put(selectUser, false);
+    	replaceOnAdd.put(requestTime, false);
+    	replaceOnAdd.put(requestProjectData, false);
+    	replaceOnAdd.put(requestProject, false);
+    	replaceOnAdd.put(requestTaskData, false);
+    	replaceOnAdd.put(requestTask, false);
+    	replaceOnAdd.put(requestTaskStatusData, false);
+    	replaceOnAdd.put(requestSelectTime, false);
+    	replaceOnAdd.put(requestResourcesSet, false);
+    	replaceOnAdd.put(requestDevelopersSet, false);
+    	replaceOnAdd.put(requestSimStepData, false);
+    	replaceOnAdd.put(shouldAddBreak, false);
+    }
+    
+    
+    /**
+     * Return the items in the list in the order they were added, keep returning the last added item if the list gets exhausted
+     * and track if this has occurred
+     * @param list
+     * @return
+     */
     private <T> T getNext(List<T> list){
     	if(list.isEmpty()){
     		return null;
@@ -47,13 +72,30 @@ public class TestingUI implements UserInterface {
     	
     	if(list.size() > 1){
     		list.remove(0);
+    	}else{
+    		replaceOnAdd.put(list, true);
     	}
     	
     	return result;
     }
     
+    /**
+     * Legacy support for older TestingUI. If the list was exhausted before adding a new item, replace the previous item.
+     * This mimics the behavior of doing a single set, get and setting again in the old TestingUI
+     * @param list
+     * @param input
+     */
+    private <T> void addNext(List<T> list, T input){
+    	if(replaceOnAdd.get(list)){
+    		list.remove(0);
+    	}
+    	
+    	list.add(input);
+    	replaceOnAdd.put(list, false);
+    }
+    
     public void addSelectUser(UserWrapper user) {
-        selectUser.add(user);
+        addNext(selectUser, user);
     }
     
     @Override
@@ -83,7 +125,7 @@ public class TestingUI implements UserInterface {
      *            The project that should be returned when calling selectProject
      */
     public void addRequestProject(ProjectWrapper proj) {
-        requestProject.add(proj);
+    	addNext(requestProject, proj);
     }
 
     /**
@@ -105,7 +147,7 @@ public class TestingUI implements UserInterface {
     }
 
     public void addRequestTask(TaskWrapper task) {
-        requestTask.add(task);
+    	addNext(requestTask, task);
     }
 
     /**
@@ -122,7 +164,7 @@ public class TestingUI implements UserInterface {
     }
     
     public void addRequestTaskData(TaskData data) {
-        requestTaskData.add(data);
+    	addNext(requestTaskData, data);
     }
 
     @Override
@@ -131,7 +173,7 @@ public class TestingUI implements UserInterface {
     }
 
     public void addRequestTaskStatusData(TaskStatusData data) {
-        requestTaskStatusData.add(data);
+    	addNext(requestTaskStatusData, data);
     }
 
     @Override
@@ -140,7 +182,7 @@ public class TestingUI implements UserInterface {
     }
 
     public void addRequestProjectDate(ProjectData data) {
-        requestProjectData.add(data);
+    	addNext(requestProjectData, data);
     }
 
     @Override
@@ -149,7 +191,7 @@ public class TestingUI implements UserInterface {
     }
 
     public void addRequestTime(LocalDateTime time) {
-        requestTime.add(time);
+    	addNext(requestTime, time);
     }
 
     @Override
@@ -170,7 +212,7 @@ public class TestingUI implements UserInterface {
 
     @Override
     public void setSessionController(SessionController session) {
-        sessionController = session;
+    	sessionController = session;
     }
 
     @Override
@@ -179,7 +221,7 @@ public class TestingUI implements UserInterface {
     }
 
     public void addSelectTime(LocalDateTime time) {
-        requestSelectTime.add(time);
+    	addNext(requestSelectTime, time);
     }
 
     @Override
@@ -188,7 +230,7 @@ public class TestingUI implements UserInterface {
     }
     
     public void addSelectResourcesFor(Set<ResourceWrapper> set) {
-        requestResourcesSet.add(set);
+    	addNext(requestResourcesSet, set);
     }
 
     @Override
@@ -197,7 +239,7 @@ public class TestingUI implements UserInterface {
     }
     
     public void addSelectDevelopers(Set<DeveloperWrapper> set) {
-        requestDevelopersSet.add(set);
+    	addNext(requestDevelopersSet, set);
     }
 
     @Override
@@ -206,7 +248,7 @@ public class TestingUI implements UserInterface {
     }
     
     public void addSimulationStepData(SimulationStepData data) {
-        requestSimStepData.add(data);
+    	addNext(requestSimStepData, data);
     }
     
     @Override
@@ -215,7 +257,7 @@ public class TestingUI implements UserInterface {
     }
     
     public void addShouldAddBreak(boolean addBreak) {
-        this.shouldAddBreak.add(addBreak);
+        addNext(shouldAddBreak, addBreak);
     }
 
     @Override
