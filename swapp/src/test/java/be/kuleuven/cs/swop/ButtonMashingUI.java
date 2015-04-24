@@ -138,8 +138,9 @@ public class ButtonMashingUI implements UserInterface {
         int n = random.nextInt(developerOptions.size() + 1);
         devs = developerOptions;
         Set<DeveloperWrapper> result = new HashSet<>();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             result.add(selectFromCollection(developerOptions));
+        }
         return result;
     }
 
