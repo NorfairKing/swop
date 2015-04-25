@@ -157,6 +157,20 @@ public class ProjectWrapper {
     public LocalDateTime estimatedFinishTime(LocalDateTime currentTime){
         return project.estimatedFinishTime(currentTime);
     }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof ProjectWrapper)){
+    		return false;
+    	}
+    	return this.getProject().equals(((ProjectWrapper) o).getProject());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.project.hashCode() + "wrapper".hashCode();
+    	
+    }
 
     private final String ERROR_ILLEGAL_PROJECT = "Illegal project for project wrapper";
 }

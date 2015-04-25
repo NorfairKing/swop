@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+
+
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
@@ -53,6 +55,20 @@ public class TaskPlanningWrapper {
     		result.add(new ResourceWrapper(realRes));
     	}
     	return result;    }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof TaskPlanningWrapper)){
+    		return false;
+    	}
+    	return this.getPlanning().equals(((TaskPlanningWrapper) o).getPlanning());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.planning.hashCode() + "wrapper".hashCode();
+    	
+    }
 
     private static final String ERROR_ILLEGAL_PLANNING = "Illegal planning for planning wrapper.";
 

@@ -270,7 +270,7 @@ public class SessionController {
                     ResourceTypeWrapper type = res.getType();
                     boolean found = false;
                     for (ResourceTypeWrapper key : resourceOptions.keySet()) {
-                        if (key.hasSameWrappedObject(type)) {
+                        if (key.equals(type)) {
                             found = true;
                             type = key;
                             break;

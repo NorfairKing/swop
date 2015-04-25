@@ -37,6 +37,21 @@ public class DeveloperWrapper {
     public boolean canTakeBreakDuring(DateTimePeriod period) {
         return this.developer.canTakeBreakDuring(period);
     }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof DeveloperWrapper)){
+    		return false;
+    	}
+    	return this.getDeveloper().equals(((DeveloperWrapper) o).getDeveloper());
+    	
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.developer.hashCode() + "wrapper".hashCode();
+    	
+    }
 
     private static final String ERROR_ILLEGAL_DEVELOPER = "Invalid developer for developer wrapper";
 }

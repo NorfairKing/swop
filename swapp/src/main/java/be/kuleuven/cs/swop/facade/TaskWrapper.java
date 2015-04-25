@@ -205,6 +205,21 @@ public class TaskWrapper {
         return getTask().wasFinishedLate();
     }
     
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof TaskWrapper)){
+    		return false;
+    	}
+    	return this.getTask().equals(((TaskWrapper) o).getTask());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.task.hashCode() + "wrapper".hashCode();
+    	
+    }
+
+    
     
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentTime) {
         return getTask().getEstimatedOrRealFinishDate(currentTime);

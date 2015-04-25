@@ -148,6 +148,14 @@ public class DateTimePeriod implements Serializable {
     public String toString() {
         return "DateTimePeriod [startTime=" + startTime + ", stopTime=" + stopTime + "]";
     }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof DateTimePeriod)){
+    		return false;
+    	}
+    	return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
+    }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";

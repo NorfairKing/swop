@@ -1,5 +1,7 @@
 package be.kuleuven.cs.swop.facade;
 
+import static org.junit.Assert.*;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.TestingUI;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.facade.TaskMan;
@@ -121,7 +124,13 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked
+        controller.startPlanTaskSession();
+        
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().isEmpty());
+        assertTrue(plan.getDevelopers().isEmpty());
     }
     
     @Test
@@ -139,23 +148,14 @@ public class PlanTaskSessionTest {
     	ui.addSelectResourcesFor(res1);
     	ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(false);
-    	controller.startPlanTaskSession(); //TODO: check if this worked
-    }
-    
-    @Test
-    public void noDevelopersTest() {
-    	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
-    	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
+    	controller.startPlanTaskSession();
     	
-    	Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();        
-    	Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
-    	
-    	ui.addRequestTask(task1);
-    	ui.addSelectTime(taskMan.getSystemTime().plusHours(1));
-    	ui.addSelectResourcesFor(res1);
-    	ui.addSelectDevelopers(dev1);
-    	ui.addShouldAddBreak(false);
-    	controller.startPlanTaskSession(); //TODO: check if this worked
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().isEmpty());
+        assertTrue(plan.getDevelopers().size() == 1);
+        assertTrue(plan.getDevelopers().contains(dev));
     }
     
     @Test
@@ -174,7 +174,14 @@ public class PlanTaskSessionTest {
     	ui.addSelectResourcesFor(res1);
     	ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(true);
-    	controller.startPlanTaskSession(); //TODO: check if this worked
+    	controller.startPlanTaskSession();
+    	
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 11, 0), LocalDateTime.of(2016, 1, 1, 15, 0))));
+        assertTrue(plan.getReservations().isEmpty());
+        assertTrue(plan.getDevelopers().size() == 1);
+        assertTrue(plan.getDevelopers().contains(dev));
     }
     
     @Test
@@ -191,7 +198,13 @@ public class PlanTaskSessionTest {
     	ui.addSelectResourcesFor(res1);
     	ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(true);
-    	controller.startPlanTaskSession(); //TODO: check if this worked
+    	controller.startPlanTaskSession(); 
+    	
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 11, 0), LocalDateTime.of(2016, 1, 1, 14, 0))));
+        assertTrue(plan.getReservations().isEmpty());
+        assertTrue(plan.getDevelopers().isEmpty());
     }
     
     @Test
@@ -209,11 +222,19 @@ public class PlanTaskSessionTest {
     	ui.addSelectResourcesFor(res1);
     	ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(true);
-    	controller.startPlanTaskSession(); //TODO: check if this worked
+    	controller.startPlanTaskSession();
+    	
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 14, 0), LocalDateTime.of(2016, 1, 1, 17, 0))));
+        assertTrue(plan.getReservations().isEmpty());
+        assertTrue(plan.getDevelopers().size() == 1);
+        assertTrue(plan.getDevelopers().contains(dev));
     }
     
     @Test
     public void requirementsSatisfiedTest() {
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[0],2);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -228,11 +249,20 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked    
+        controller.startPlanTaskSession();
+        
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().size() == 2);
+        assertTrue(plan.getReservations().contains(resources[0][0]));
+        assertTrue(plan.getReservations().contains(resources[0][1]));
+        assertTrue(plan.getDevelopers().isEmpty());
         }
     
     @Test
     public void requirementsSatisfiedWithExtraTest() {
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[0],2);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -248,11 +278,22 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
         ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked    
+        controller.startPlanTaskSession();
+        
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().size() == 3);
+        assertTrue(plan.getReservations().contains(resources[0][0]));
+        assertTrue(plan.getReservations().contains(resources[0][1]));
+        assertTrue(plan.getReservations().contains(resources[3][0]));
+        assertTrue(plan.getDevelopers().isEmpty());
+        
         }
     
     @Test
     public void RecursiverequirementsSatisfiedTest() {
+    	taskMan.updateSystemTime(LocalDateTime.of(2016, 1, 1, 11, 0));
     	Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
     	req1.put(types[2],1);
     	TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("desc",60,0, req1));
@@ -267,7 +308,16 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
         ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked    
+        controller.startPlanTaskSession();
+        
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().size() == 2);
+        assertTrue(plan.getReservations().contains(resources[0][0]));
+        assertTrue(plan.getReservations().contains(resources[2][0]));
+        assertTrue(plan.getDevelopers().isEmpty());
+        
         }
     
     @Test
@@ -285,14 +335,21 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
         ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked    
+        controller.startPlanTaskSession();
+        
+        TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
+        assertEquals(plan.getTask(),task1);
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getReservations().size() == 1);
+        assertTrue(plan.getReservations().contains(resources[5][0]));
+        assertTrue(plan.getDevelopers().isEmpty());
         }
     
     
     
     
     
-    //TODO: Is this intended behavior?
+    //TODO: Is this intended behavior? -> A non-manager can plan a task.
     @Test
     public void notAManagerTest() {
         controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
@@ -309,7 +366,7 @@ public class PlanTaskSessionTest {
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
         ui.addShouldAddBreak(false);
-        controller.startPlanTaskSession(); //TODO: check if this worked
+        controller.startPlanTaskSession();
         
         
     }

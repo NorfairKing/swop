@@ -486,13 +486,13 @@ public class CLI implements UserInterface {
         		int amountSelected = 0;
         		String displayText;
         		for(RequirementWrapper require: requirements){
-        			if(require.getType().hasSameWrappedObject(type)){
+        			if(require.getType().equals(type)){
         				req = require.getAmount();
         				break;
         			}
         		}
         		for(ResourceWrapper selected: result){
-        			if(selected.getType().hasSameWrappedObject(type)){
+        			if(selected.getType().equals(type)){
         				amountSelected++;
         			}
         		}

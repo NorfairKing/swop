@@ -25,5 +25,19 @@ public class RequirementWrapper {
 		return new ResourceTypeWrapper(requirement.getType());
 	}
 	
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof RequirementWrapper)){
+    		return false;
+    	}
+    	return this.getRequirement().equals(((RequirementWrapper) o).getRequirement());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.requirement.hashCode() + "wrapper".hashCode();
+    	
+    }
+	
 
 }

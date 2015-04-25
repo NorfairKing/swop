@@ -27,12 +27,18 @@ public class ResourceTypeWrapper {
         return type.getName();
     }
     
-    
-    public boolean hasSameWrappedObject(Object o){
+    @Override
+    public boolean equals(Object o){
     	if(!(o instanceof ResourceTypeWrapper)){
     		return false;
     	}
-    	return ((ResourceTypeWrapper) o).getType().equals(getType());
+    	return this.getType().equals(((ResourceTypeWrapper) o).getType());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.type.hashCode() + "wrapper".hashCode();
+    	
     }
 
     private static final String ERROR_ILLEGAL_TYPE = "Invalid resource type for resource type wrapper.";

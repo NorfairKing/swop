@@ -134,6 +134,14 @@ public class TimePeriod implements Serializable {
             return false;
         }
     }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof TimePeriod)){
+    		return false;
+    	}
+    	return this.startTime.equals(((TimePeriod) o).getStartTime()) && this.stopTime.equals(((TimePeriod) o).getStopTime());
+    }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
     private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";

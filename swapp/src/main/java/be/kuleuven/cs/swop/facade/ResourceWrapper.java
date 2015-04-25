@@ -31,6 +31,20 @@ public class ResourceWrapper {
         return resource.getName();
     }
     
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof ResourceWrapper)){
+    		return false;
+    	}
+    	return this.getResource().equals(((ResourceWrapper) o).getResource());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.resource.hashCode() + "wrapper".hashCode();
+    	
+    }
+    
     private static final String ERROR_ILLEGAL_RESOURCE = "Invalid resource for resource wrapper.";
 
 }

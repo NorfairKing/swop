@@ -46,6 +46,20 @@ public class UserWrapper {
             return null;
         }
     }
+    
+    @Override
+    public boolean equals(Object o){
+    	if(!(o instanceof UserWrapper)){
+    		return false;
+    	}
+    	return this.getUser().equals(((UserWrapper) o).getUser());
+    }
+    
+    @Override
+    public int hashCode(){
+    	return this.user.hashCode() + "wrapper".hashCode();
+    	
+    }
 
     private static final String ERROR_ILLEGAL_USER = "Invalid user for user wrapper";
     
