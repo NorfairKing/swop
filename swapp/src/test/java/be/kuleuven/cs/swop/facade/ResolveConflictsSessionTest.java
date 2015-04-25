@@ -1,5 +1,7 @@
 package be.kuleuven.cs.swop.facade;
 
+import static org.junit.Assert.*;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.TestingUI;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -84,7 +86,13 @@ public class ResolveConflictsSessionTest {
         controller.startPlanTaskSession(); 
         
         
-        //TODO: check if this worked
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 0), LocalDateTime.of(2016, 1, 1, 9, 0))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 9, 0), LocalDateTime.of(2016, 1, 1, 10, 0))));
 
     }
 
@@ -117,7 +125,13 @@ public class ResolveConflictsSessionTest {
     	
         controller.startPlanTaskSession(); 
         
-        //TODO: check if this worked
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 0), LocalDateTime.of(2016, 1, 1, 9, 0))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 2, 8, 0), LocalDateTime.of(2016, 1, 2, 9, 0))));
     }
 
     @Test
@@ -154,13 +168,20 @@ public class ResolveConflictsSessionTest {
 
         // provide info for second task again
         
-        ui.addSelectTime(LocalDateTime.of(2016, 1, 2, 8, 0));
+        ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 8, 0));
         ui.addSelectResourcesFor(res1);
         ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(false);
     	
         controller.startPlanTaskSession(); 
-        //TODO: check if this worked
+        
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 9, 0), LocalDateTime.of(2016, 1, 1, 10, 0))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 0), LocalDateTime.of(2016, 1, 1, 9, 0))));
 
     }
     
@@ -226,7 +247,22 @@ public class ResolveConflictsSessionTest {
     	
         controller.startPlanTaskSession();         
         
-        //TODO: check if this worked
+        DateTimePeriod firstPeriod = new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0));
+        DateTimePeriod secondPeriod = new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 13, 0), LocalDateTime.of(2016, 1, 1, 14, 0));
+        
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(firstPeriod) || plan1.getPeriod().equals(secondPeriod));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(firstPeriod) || plan2.getPeriod().equals(secondPeriod));
+        
+        assertFalse(plan1.getPeriod().equals(plan2.getPeriod()));
+        
+        TaskPlanningWrapper plan3 = taskMan.getPlanningFor(task3);
+        assertEquals(plan3.getTask(),task3);
+        assertTrue(plan3.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 30), LocalDateTime.of(2016, 1, 1, 9, 30))));
     	
     }
     
@@ -268,7 +304,7 @@ public class ResolveConflictsSessionTest {
         ui.addSelectDevelopers(dev1);
     	ui.addShouldAddBreak(false);
     	
-    	// conflict! either first task needs to be moved
+    	// conflict! first task needs to be moved
     	
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 10, 30));
         
@@ -289,7 +325,19 @@ public class ResolveConflictsSessionTest {
     	
         controller.startPlanTaskSession();
         
-        //TODO: check if this worked
+        
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 10, 30), LocalDateTime.of(2016, 1, 1, 11, 30))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 11, 30), LocalDateTime.of(2016, 1, 1, 12, 30))));
+        
+        
+        TaskPlanningWrapper plan3 = taskMan.getPlanningFor(task3);
+        assertEquals(plan3.getTask(),task3);
+        assertTrue(plan3.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 30), LocalDateTime.of(2016, 1, 1, 9, 30))));
     }
     
     @Test
@@ -370,7 +418,26 @@ public class ResolveConflictsSessionTest {
     	
         controller.startPlanTaskSession();
         
-        //TODO: check if this worked
+        DateTimePeriod firstPeriod = new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0));
+        DateTimePeriod secondPeriod = new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 13, 0), LocalDateTime.of(2016, 1, 1, 14, 0));
+        
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 10, 30), LocalDateTime.of(2016, 1, 1, 11, 30))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(firstPeriod) || plan2.getPeriod().equals(secondPeriod));
+                
+        TaskPlanningWrapper plan3 = taskMan.getPlanningFor(task3);
+        assertEquals(plan3.getTask(),task3);
+        assertTrue(plan3.getPeriod().equals(firstPeriod) || plan3.getPeriod().equals(secondPeriod));
+        
+        assertFalse(plan2.getPeriod().equals(plan3.getPeriod()));
+        
+        TaskPlanningWrapper plan4 = taskMan.getPlanningFor(task4);
+        assertEquals(plan4.getTask(),task4);
+        assertTrue(plan4.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 30), LocalDateTime.of(2016, 1, 1, 9, 30))));
     }
 
     

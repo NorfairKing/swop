@@ -339,7 +339,7 @@ public class PlanTaskSessionTest {
         
         TaskPlanningWrapper plan = taskMan.getPlanningFor(task1);
         assertEquals(plan.getTask(),task1);
-        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 12, 0), LocalDateTime.of(2016, 1, 1, 13, 0))));
+        assertTrue(plan.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 9, 0), LocalDateTime.of(2016, 1, 1, 10, 0))));
         assertTrue(plan.getReservations().size() == 1);
         assertTrue(plan.getReservations().contains(resources[5][0]));
         assertTrue(plan.getDevelopers().isEmpty());
