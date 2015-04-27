@@ -229,6 +229,8 @@ public class TaskMan implements Serializable {
      * @param time The time on which it is planned for the task to start
      * @param resources The resources to reserve for this task
      * @param developers The developers that have to work on the task
+     * @throws ConflictingPlanningWrapperException If the created planning would cause a
+     * conflict
      */
     public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {
@@ -246,6 +248,8 @@ public class TaskMan implements Serializable {
      * @param time The time on which it is planned for the task to start
      * @param resources The resources to reserve for this task
      * @param developers The developers that have to work on the task
+     * @throws ConflictingPlanningWrapperException IF the created planning would cause a
+     * conflict
      */
     public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {

@@ -512,8 +512,9 @@ public class PlanningManager implements Serializable {
      * types
      * @param selfConflicting A boolean that, when true, a task requiring a resource of
      * this type, can only reserve one of this type
-     * @param TimePeriod The period for when a resource of this type is available during
+     * @param availability The period for when a resource of this type is available during
      * the day
+     * @return The new ResourceType
      */
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
     	ResourceType type;

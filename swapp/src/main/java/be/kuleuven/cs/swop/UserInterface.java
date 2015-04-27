@@ -98,8 +98,6 @@ public interface UserInterface {
      * 
      * Shows a list of Projects and makes the user select one.
      * 
-     * @note Use this instead of the other selectTaskFrom if not all tasks are applicable.
-     *
      * @param projectMap
      *            A map of projects to tasks that belong to them that the user should select from.
      *
@@ -144,13 +142,15 @@ public interface UserInterface {
     /**
      * Requests data from the user for creating a task.
      *
-     * @return Returns a TaskData object containing the data for creating a Task.
+     * @param types The types of resources to choose from to add as resource
+     * @return Returns a TaskData object containing the data for creating a Task
      */
     public TaskData getTaskData(Set<ResourceTypeWrapper> types);
 
     /**
      * Request data from the user for finishing or failing a Task,
-     * 
+     *
+     * @param task The task for which the status will be updated
      * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
      */
     public TaskStatusData getUpdateStatusData(TaskWrapper task);
