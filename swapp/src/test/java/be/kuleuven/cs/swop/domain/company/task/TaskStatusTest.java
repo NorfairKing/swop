@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Categories.ExcludeCategory;
 import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;

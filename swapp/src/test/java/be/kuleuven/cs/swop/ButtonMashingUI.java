@@ -174,7 +174,7 @@ public class ButtonMashingUI implements UserInterface {
             Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
             Set<RequirementWrapper> requirements) {
         int n = random.nextInt(options.size() + 1);
-        Set<ResourceWrapper> result = new HashSet();
+        Set<ResourceWrapper> result = new HashSet<>();
         for (int i = 0; i < n; i++) {
             ResourceTypeWrapper t = selectFromCollection(options.keySet());
             result.add(selectFromCollection(options.get(t)));
@@ -184,9 +184,8 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
-        if (random.nextBoolean()) return null;
+        if (random.nextDouble() < 0.1) return null;
         String description = randomString();
-        boolean negative1 = random.nextBoolean();
         long duration = (long)random.nextInt(480); // arbitrary
                                                                                       // constant
         boolean negative2 = random.nextBoolean();
@@ -197,7 +196,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-        if (random.nextBoolean()) return null;
+        if (random.nextDouble() < 0.1) return null;
         LocalDateTime date1 = getTimeStamp();
         LocalDateTime date2 = getTimeStamp();
         int kind = random.nextInt(4);
@@ -221,7 +220,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public ProjectData getProjectData() {
-        if (random.nextBoolean()) return null;
+        if (random.nextDouble() < 0.1) return null;
         String title = randomString();
         String description = randomString();
         LocalDateTime due = getTimeStamp();
@@ -230,7 +229,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public LocalDateTime getTimeStamp() {
-        if (random.nextBoolean()) return null;
+        if (random.nextDouble() < 0.1) return null;
         return LocalDateTime.of(
                 random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1,
                 random.nextInt(24), random.nextInt(60), random.nextInt(60));
@@ -272,7 +271,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public boolean start() {
-        return random.nextDouble() < 0.5;
+        return random.nextBoolean();
     }
 
     public void performActions(int amount) {

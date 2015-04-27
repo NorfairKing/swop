@@ -225,3 +225,8 @@ Als een task langer duurt dan verwacht, dan worden zijn resources ook langer geb
 - BEVEL van assistent:
   task moet planning bijhouden want availability hangt ervan af
 
+** Vierde sessie
+
+Taak status en taak planning zijn beide staat van taak.
+Dit kan mooier.
+Stateless task + state
