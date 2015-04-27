@@ -174,7 +174,7 @@ public class ButtonMashingUI implements UserInterface {
             Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
             Set<RequirementWrapper> requirements) {
         int n = random.nextInt(options.size() + 1);
-        Set<ResourceWrapper> result = new HashSet();
+        Set<ResourceWrapper> result = new HashSet<>();
         for (int i = 0; i < n; i++) {
             ResourceTypeWrapper t = selectFromCollection(options.keySet());
             result.add(selectFromCollection(options.get(t)));
@@ -186,7 +186,6 @@ public class ButtonMashingUI implements UserInterface {
     public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
         if (random.nextBoolean()) return null;
         String description = randomString();
-        boolean negative1 = random.nextBoolean();
         long duration = (long)random.nextInt(480); // arbitrary
                                                                                       // constant
         boolean negative2 = random.nextBoolean();

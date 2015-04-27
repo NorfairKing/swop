@@ -29,8 +29,6 @@ public class ResolveConflictsSessionTest {
     
     private ProjectWrapper project;
     
-    private DeveloperWrapper dev;
-    
     private ResourceTypeWrapper type;
     
     private ResourceWrapper res;
@@ -41,7 +39,6 @@ public class ResolveConflictsSessionTest {
         taskMan = new TaskMan();
         controller = new SessionController(ui, taskMan);
         controller.setCurrentUser(new UserWrapper(new Manager("Jake")));
-        dev = taskMan.createDeveloper(new DeveloperData("Jane"));
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
         type = taskMan.createResourceType(new ResourceTypeData("type0",
         		new HashSet<ResourceTypeWrapper>(),
