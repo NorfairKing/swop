@@ -120,9 +120,10 @@ public interface UserInterface {
      * Shows a form in which, for each of the resource types, the user can select specific resources
      * 
      * @param options A map of each resource type to several options for the actual resources
+     * @param requirements The Set of requirements that need to be satisfied.
      * @return A set of all selected resources, at least one for each type.
      */
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper,List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
 
     /**
      * Shows a list of developers for the user to select one or more from.
