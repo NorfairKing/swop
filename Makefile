@@ -9,9 +9,9 @@ APP 		= swapp
 POM_FILE 	= $(APP)/pom.xml
 
 RESULT_DIR 	= $(GROUP)
-RESULT_JAR  = $(RESULT_DIR)/system.jar
+RESULT_JAR	= $(RESULT_DIR)/system.jar
 DOC_DIR 	= $(RESULT_DIR)/doc
-DIAGRAM_DIR = $(RESULT_DIR)/diagrams
+DIAGRAM_DIR	= $(RESULT_DIR)/diagrams
 
 
 all: package doc diagrams
