@@ -447,6 +447,14 @@ public class PlanningManager implements Serializable {
     				}
     			}
     		}
+    		
+            for(Developer dev: devs){
+                if (plan.getEstimatedOrRealPeriod().overlaps(new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))) {
+                    if(plan.getDevelopers().contains(dev)){
+                        return plan;
+                    }
+                }
+            }
     	}
     	return null;
     }

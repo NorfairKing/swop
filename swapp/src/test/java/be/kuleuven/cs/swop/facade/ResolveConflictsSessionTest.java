@@ -186,6 +186,56 @@ public class ResolveConflictsSessionTest {
     }
     
     @Test
+    public void devConflictTest(){
+        Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
+        TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("task1",60,0, req1));
+        TaskWrapper task2 = taskMan.createTaskFor(project, new TaskData("task2",60,0, req1));
+        
+        Set<ResourceWrapper> res1 = new HashSet<ResourceWrapper>();
+        Set<DeveloperWrapper> dev1 = new HashSet<DeveloperWrapper>();
+        dev1.add(dev);
+        
+        // plan first task
+        ui.addRequestTask(task1);
+        ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 8, 0));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        
+        controller.startPlanTaskSession(); 
+        
+        // plan second task
+        
+        ui.addRequestTask(task2);
+        ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 8, 0));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        
+        // conflict! move first task
+        
+        ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 9, 0));
+
+        // provide info for second task again
+        
+        ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 8, 0));
+        ui.addSelectResourcesFor(res1);
+        ui.addSelectDevelopers(dev1);
+        ui.addShouldAddBreak(false);
+        
+        controller.startPlanTaskSession(); 
+        
+        TaskPlanningWrapper plan1 = taskMan.getPlanningFor(task1);
+        assertEquals(plan1.getTask(),task1);
+        assertTrue(plan1.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 9, 0), LocalDateTime.of(2016, 1, 1, 10, 0))));
+        
+        TaskPlanningWrapper plan2 = taskMan.getPlanningFor(task2);
+        assertEquals(plan2.getTask(),task2);
+        assertTrue(plan2.getPeriod().equals(new DateTimePeriod(LocalDateTime.of(2016, 1, 1, 8, 0), LocalDateTime.of(2016, 1, 1, 9, 0))));
+
+    }
+    
+    @Test
     public void multipleConflictTest(){
         Map<ResourceTypeWrapper, Integer> req1 = new HashMap<>();
         TaskWrapper task1 = taskMan.createTaskFor(project, new TaskData("task1",60,0, req1));
@@ -389,23 +439,18 @@ public class ResolveConflictsSessionTest {
     	ui.addShouldAddBreak(false);
     	
     	// conflict! first task needs to be moved
-    	
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 10, 30));
         
         // can't move first task due to conflict! either task2 or task3 needs to be moved
-
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 12, 0));
     	
     	// provide info for first task again
-    	
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 10, 30));
         
         // can't move first task due to conflict! the other task needs to be moved
-
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 13, 0));
     	
-    	// provide info for first task again
-    	
+    	// provide info for first task again    	
         ui.addSelectTime(LocalDateTime.of(2016, 1, 1, 10, 30));
     	
         
