@@ -16,17 +16,15 @@ PLANT       = 	facade_uml.eps \
 				sequence_update_task_status_uml.eps \
 				sequence_update_task_status_simple_uml.eps \
 				sequence_planTask_uml.eps \
-				sequence_planTask_simple_uml.eps \
-GRAPHVIZ    = task_dfs.eps \
-              project_dfs.eps
+				sequence_planTask_simple_uml.eps
+GRAPHVIZ    = 	task_dfs.eps \
+				project_dfs.eps
 
 all: plantuml_illustrations graphviz_illustrations
 
 plantuml_illustrations: $(PLANT)
-graphviz_illustrations: $(GRAPHVIZ)
 
-%_dfs.eps: %.dot
-	dot -Teps %< -o $@
+graphviz_illustrations: $(GRAPHVIZ)
 
 %_$(DFS_SUFFIX).$(OUT_EXT): %_$(DFS_SUFFIX).$(DOT_EXT)
 	$(GRAPHVIZCC) -T$(OUT_FORMAT) $< -o $@
