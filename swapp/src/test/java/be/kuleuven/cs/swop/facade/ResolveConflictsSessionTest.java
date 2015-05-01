@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import be.kuleuven.cs.swop.TestingUI;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
@@ -33,12 +34,15 @@ public class ResolveConflictsSessionTest {
     
     private ResourceWrapper res;
     
+    private static DeveloperWrapper dev;
+    
     @Before
     public void setUp() throws Exception {
         ui = new TestingUI();
         taskMan = new TaskMan();
         controller = new SessionController(ui, taskMan);
         controller.setCurrentUser(new UserWrapper(new Manager("Jake")));
+        dev = new DeveloperWrapper(new Developer("Dave"));
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
         type = taskMan.createResourceType(new ResourceTypeData("type0",
         		new HashSet<ResourceTypeWrapper>(),
