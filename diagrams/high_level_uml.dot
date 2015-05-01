@@ -1,19 +1,32 @@
 @startuml
 
-Interface UI {
-}
+UI *--* SessionController
 
-class CLI {
-}
+SessionController --> TaskMan
 
-CLI -|> UI
+TaskMan --* Company
+TaskMan --* TimeKeeper
 
-UI *-- SessionController
+Company --* ProjectManager
+Company --* PlanningManager
 
-SessionController *-- FacadeController
+ProjectManager --> "manages" Project
+PlanningManager --> "makes" Planning
+PlanningManager --> "manages" User
 
-class SessionController
+Project --> "manages" Task
+Planning --> "plans" Task
+Planning --> "reserves" Resource
+Planning --> "work for" Developer
 
-class FacadeController
+Task --* TaskStatus
+User <|-- Developer
+User <|-- Manager
+
+Task --> "requires" ResourceType
+Resource --* ResourceType
+
+
+Interface UI
 
 @enduml

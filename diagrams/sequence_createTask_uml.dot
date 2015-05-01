@@ -2,25 +2,46 @@
 
 title "Create Task"
 
-actor User
-User -> UI: "Create Task"
-UI -> SessionController: "startCreateTaskSession()"
-SessionController -> UI: "selectProject(projectWrapper)"
-UI -> User: "project selection form"
-User -> UI: "user selects project"
-UI --> SessionController: "return projectWrapper"
-loop "until valid data"
-    SessionController -> UI: "getTaskData()"
-    UI -> User: "task creation form"
-    User -> UI: "user enters data"
-    UI --> SessionController: "return taskData"
-    SessionController -> FacadeController: "createTaskFor(projectWrapper, taskData)"
-    alt "valid data"
-        FacadeController --> SessionController: "return"
-        SessionController --> UI: "return"
-    else "invalid data"
-        FacadeController --> SessionController: "error: illegal data"
-    end
-end
-@enduml
+actor Manager
 
+Manager -> UI: "Create Task"
+
+UI -> SessionController: "startCreateTaskSession()"
+
+SessionController -> Facade: "getProjects()"
+Facade -> ProjectManager: "getProjects()"
+ProjectManager --> Facade: "return: projects"
+Facade --> SessionController: "return: projectWrappers"
+
+SessionController -> UI: "selectProject(projectWrappers)"
+UI -> Manager: "Shows project list to select from"
+Manager --> UI: "Selects one of the projects"
+UI --> SessionController: "return: projectWrapper"
+
+' if projectWrapper == null stop here
+
+SessionController -> Facade: "getResourceTypes()"
+Facade -> Company: "getResourceTypes()"
+Company -> PlanningManager: "getResourceTypes()"
+PlanningManager --> Company: "return: resourceTypes"
+Company --> Facade: "return: resourceTypes"
+Facade --> SessionController: "return: resourceTypeWrappers"
+
+SessionController -> UI: "getTaskData(resourceTypeWrappers)"
+UI -> Manager: "Shows task creation form"
+Manager --> UI: "Fills in all required data"
+UI --> SessionController: "return: data"
+
+' if data == null stop here
+
+SessionController -> Facade: "createTaskFor(projectWrapper, data)"
+Facade -> Company: "createTaskFor(project, ...)"
+Company -> Project: "createTask(...)"
+Project -> Task: "new(...)"
+Task --> Project
+Project -> Project: "addTask(newTask)"
+Project --> Company: "return: newTask"
+Company --> Facade: "return: newTask"
+Facade --> SessionController: "return: newTaskWrapper"
+
+@enduml

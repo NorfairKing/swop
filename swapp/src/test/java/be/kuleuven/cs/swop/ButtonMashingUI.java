@@ -1,23 +1,38 @@
 package be.kuleuven.cs.swop;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.data.ProjectData;
-import be.kuleuven.cs.swop.data.TaskData;
-import be.kuleuven.cs.swop.data.TaskStatusData;
+import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.facade.ExecutingStatusData;
+import be.kuleuven.cs.swop.facade.FailedStatusData;
+import be.kuleuven.cs.swop.facade.FinishedStatusData;
+import be.kuleuven.cs.swop.facade.ProjectData;
+import be.kuleuven.cs.swop.facade.ProjectWrapper;
+import be.kuleuven.cs.swop.facade.RequirementWrapper;
+import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
+import be.kuleuven.cs.swop.facade.ResourceWrapper;
+import be.kuleuven.cs.swop.facade.SessionController;
+import be.kuleuven.cs.swop.facade.SimulationStepData;
+import be.kuleuven.cs.swop.facade.TaskData;
+import be.kuleuven.cs.swop.facade.TaskStatusData;
+import be.kuleuven.cs.swop.facade.TaskWrapper;
+import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public class ButtonMashingUI implements UserInterface {
 
-    private static String     VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
-    private SessionController sessionController;
-    private Random            random;
+    private static String         VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
+    private SessionController     sessionController;
+    private Random                random;
+    private Set<DeveloperWrapper> devs;
 
-    private static String     ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
+    private static String         ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
     public ButtonMashingUI() {
         random = new Random(8008135);
@@ -36,6 +51,11 @@ public class ButtonMashingUI implements UserInterface {
     public void setSessionController(SessionController session) {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
+    }
+
+    @Override
+    public UserWrapper selectUser(Set<UserWrapper> users) {
+        return selectFromCollection(users);
     }
 
     @Override
@@ -58,8 +78,9 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public void showTasks(Set<TaskWrapper> tasks) {
-        for (TaskWrapper t : tasks){
-            showTask(t);}
+        for (TaskWrapper t : tasks) {
+            showTask(t);
+        }
     }
 
     @Override
@@ -68,8 +89,8 @@ public class ButtonMashingUI implements UserInterface {
         task.getDependencySet().size();
         task.getEstimatedDuration();
         task.getAcceptableDeviation();
-        
-        if (task.isFinished()){
+
+        if (task.isFinished()) {
             task.wasFinishedEarly();
             task.wasFinishedLate();
             task.wasFinishedOnTime();
@@ -98,12 +119,75 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData() {
-        if (random.nextBoolean()) return null;
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+        ProjectWrapper p = selectFromCollection(projectMap.keySet());
+        if (p == null) {
+            return null;
+        } else {
+            return selectFromCollection(p.getTasks());
+        }
+    }
+
+    @Override
+    public LocalDateTime selectTime(List<LocalDateTime> options) {
+        return selectFromCollection(options);
+    }
+
+    @Override
+    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
+        int n = random.nextInt(developerOptions.size() + 1);
+        devs = developerOptions;
+        Set<DeveloperWrapper> result = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            result.add(selectFromCollection(developerOptions));
+        }
+        return result;
+    }
+
+    @Override
+    public SimulationStepData getSimulationStepData() {
+        return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
+    }
+
+    @Override
+    public void showTaskPlanningContext(TaskWrapper task) {
+        task.canFinish();
+        task.getAcceptableDeviation();
+        task.getAlternative();
+        task.getDependencySet();
+        task.getDescription();
+        task.getEstimatedDuration();
+        task.getPerformedDuring();
+        task.getRequirements();
+        task.getRecursiveRequirements();
+        task.isExecuting();
+        task.isFailed();
+        task.isFinal();
+        task.isFinished();
+        task.wasFinishedEarly();
+        task.wasFinishedLate();
+        task.wasFinishedOnTime();
+    }
+
+    @Override
+    public Set<ResourceWrapper> selectResourcesFor(
+            Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
+            Set<RequirementWrapper> requirements) {
+        int n = random.nextInt(options.size() + 1);
+        Set<ResourceWrapper> result = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            ResourceTypeWrapper t = selectFromCollection(options.keySet());
+            result.add(selectFromCollection(options.get(t)));
+        }
+        return result;
+    }
+
+    @Override
+    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
+        if (random.nextDouble() < 0.1) return null;
         String description = randomString();
-        boolean negative1 = random.nextBoolean();
-        double duration = negative1 ? random.nextDouble() * 50.0 : random.nextDouble() * -50.0; // arbitrary
-                                                                                                // constant
+        long duration = (long)random.nextInt(480); // arbitrary
+                                                                                      // constant
         boolean negative2 = random.nextBoolean();
         double deviation = negative2 ? random.nextDouble() * 2.0 : random.nextDouble() * -2.0; // arbitrary
                                                                                                // constant
@@ -111,27 +195,44 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public TaskStatusData getUpdateStatusData() {
-        if (random.nextBoolean()) return null;
-        Date date1 = getTimeStamp();
-        Date date2 = getTimeStamp();
-        boolean success = random.nextBoolean();
-        return new TaskStatusData(date1, date2, success);
+    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
+        if (random.nextDouble() < 0.1) return null;
+        LocalDateTime date1 = getTimeStamp();
+        LocalDateTime date2 = getTimeStamp();
+        int kind = random.nextInt(4);
+        switch (kind) {
+            case 0:
+                return new FinishedStatusData(date1, date2);
+            case 1:
+                return new FailedStatusData(date1, date2);
+            case 2:
+                if (devs == null) {
+                    return null;
+                }
+                else {
+                    UserWrapper u = selectFromCollection(devs).getAsUser();
+                    return new ExecutingStatusData(u);
+                }
+            default:
+                return null;
+        }
     }
 
     @Override
     public ProjectData getProjectData() {
-        if (random.nextBoolean()) return null;
+        if (random.nextDouble() < 0.1) return null;
         String title = randomString();
         String description = randomString();
-        Date due = getTimeStamp();
+        LocalDateTime due = getTimeStamp();
         return new ProjectData(title, description, due);
     }
 
     @Override
-    public Date getTimeStamp() {
-        if (random.nextBoolean()) return null;
-        return new Date(random.nextLong());
+    public LocalDateTime getTimeStamp() {
+        if (random.nextDouble() < 0.1) return null;
+        return LocalDateTime.of(
+                random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1,
+                random.nextInt(24), random.nextInt(60), random.nextInt(60));
     }
 
     @Override
@@ -169,7 +270,9 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public void start() {}
+    public boolean start() {
+        return random.nextBoolean();
+    }
 
     public void performActions(int amount) {
         for (int i = 0; i < amount; i++) {
@@ -178,7 +281,7 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     public void performAction() {
-        int useCases = 5;
+        int useCases = 9;
         switch (random.nextInt(useCases)) {
             case 0:
                 getSessionController().startAdvanceTimeSession();
@@ -195,9 +298,26 @@ public class ButtonMashingUI implements UserInterface {
             case 4:
                 getSessionController().startUpdateTaskStatusSession();
                 break;
+            case 5:
+                getSessionController().startPlanTaskSession();
+                break;
+            case 6:
+                getSessionController().startRunSimulationSession();
+                break;
+            case 7:
+                getSessionController().startSelectUserSession();
+                break;
+            case 8:
+                getSessionController().startUpdateTaskStatusSession();
+                break;
             default:
                 throw new RuntimeException("Java should never get here");
         }
+    }
+
+    @Override
+    public boolean askToAddBreak() {
+        return random.nextBoolean();
     }
 
 }

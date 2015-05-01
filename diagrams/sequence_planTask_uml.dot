@@ -1,0 +1,83 @@
+@startuml
+
+title "Create Task"
+
+actor Manager
+
+Manager -> UI: "Plan Task
+
+UI -> SessionController: "startPlanTaskSession()"
+
+SessionController -> Facade: "getProjects()"
+Facade -> Company: "getProjects()"
+Company -> ProjectManager: "getProjects()"
+ProjectManager --> Company: "return: projects"
+Company --> Facade: "return: projects"
+Facade --> SessionController: "return: projectWrappers"
+
+SessionController -> Facade: "foreach projectWrapper getUnplannedTasksOf(...)"
+Facade -> Company: "getUnplannedTasksOf(project)"
+Company -> PlanningManager: "getUnplannedTasksFrom(project.getTasks())"
+PlanningManager --> Company: "return: tasks"
+Company --> Facade: "return tasks"
+Facade --> SessionController: "return taskWrappers"
+
+SessionController -> UI: "selectTaskFromProjects(...)"
+UI -> Manager: "Shows selection form"
+Manager --> UI: "Selects a task"
+UI --> SessionController: "return task"
+
+
+SessionController -> UI: "showTaskPlanningContext(task)"
+
+
+SessionController -> Facade: "getPlanningTimeOptions(task)"
+Facade -> Company: "getPlanningTimeOptions(...)"
+Company -> PlanningManager: "getPlanningTimeOptions(...)"
+PlanningManager --> Company: "return options"
+Company --> Facade: "return options"
+Facade --> SessionController: "return options"
+
+SessionController -> UI: "selectTime(options)"
+UI -> Manager: "Shows time selection form"
+Manager --> UI: "Selects a time"
+UI --> SessionController: "return: time"
+
+
+SessionController -> Facade: "getResources()"
+Facade -> Company: "getResources()"
+Company -> PlanningManager: "getResources()"
+PlanningManager --> Company: "return: resources"
+Company --> Facade: "return: resources"
+Facade --> SessionController: "return: resourceWrappers"
+
+SessionController -> UI: "selectResourcesFor(...)"
+UI -> Manager: "Shows resource selection form"
+Manager --> UI: "Selects a resource"
+UI --> SessionController: "return: resource"
+
+
+SessionController -> Facade: "getPlanningDeveloperOptions(task)"
+Facade -> Company: "getPlanningDeveloperOptions(...)"
+Company -> PlanningManager: "getPlanningDeveloperOptions(...)"
+PlanningManager --> Company: "return options"
+Company --> Facade: "return options"
+Facade --> SessionController: "return options"
+
+SessionController -> UI: "selectDevelopers(options)"
+UI -> Manager: "Shows developer selection form"
+Manager --> UI: "Selects a developer"
+UI --> SessionController: "return: developer"
+
+
+SessionController -> Facade: "createPlanning(...)"
+Facade -> Company: "createPlanning(...)"
+Company -> PlanningManager: "createPlanning(...)"
+
+alt conflicting task
+    PlanningManager --> SessionController: "throw ConflictingPlanningWrapperException(conflictingTask)"
+
+    SessionController -> SessionController: "startResolveConflictSession()"
+end
+
+@enduml

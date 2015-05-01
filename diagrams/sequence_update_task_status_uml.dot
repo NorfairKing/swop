@@ -2,26 +2,50 @@
 
 title "Update Task Status"
 
-actor User
-User -> UI: "Update Task Status"
+actor Developer
+
+Developer -> UI: "Update Task Status"
 UI -> SessionController: "startUpdateTaskStatusSession()"
-SessionController -> UI: "selectTask(taskWrappers)"
-UI -> User: "task selection form"
-User --> UI: "user selects task"
+
+SessionController -> Facade: "getProjects()"
+Facade -> Company: "getProjects()"
+Company -> ProjectManager: "getProjects()"
+ProjectManager --> Company: "return: projects"
+Company --> Facade: "return: projects"
+Facade --> SessionController: "return: projectWrappers"
+
+SessionController -> UI: "selectTaskFromProjects(projectWrappers)"
+UI -> Developer: "Shows task selection form"
+Developer --> UI: "Selects a task"
 UI --> SessionController: "return taskWrapper"
-loop "until valid data"
-    SessionController -> UI: "getTaskUpdateStatusData()"
-    UI -> User: "task update form"
-    User --> UI: "user enters task update data"
-    UI --> SessionController: "return taskUpdateStatusData"
-    SessionController -> FacadeController: "updateTask(taskWrapper, taskUpdateStatusData)"
-    alt "valid data"
-        FacadeController --> SessionController: "return"
-        SessionController --> UI: "return"
-    else "invalid data"
-        FacadeController --> SessionController: "error: illegal data"
+
+' enventueel error als task al final is
+
+SessionController -> UI: "getUpdateStatusData(taskWrapper)"
+UI -> Developer: "Shows update status form"
+Developer --> UI: "Fills in the form"
+UI --> SessionController: "return: data"
+
+' indien data == null stop hier
+
+SessionController -> Facade: "updateTaskStatusFor(taskWrapper, data)"
+
+alt data.isFinal()
+    alt data.isSuccessful()
+        Facade -> Company: "finishTask(task, ...)"
+        Company -> PlanningManager: "finishTask(task, ...)"
+        PlanningManager -> Task: "finish(...)"
+    else
+        Facade -> Company: "failTask(task, ...)"
+        Company -> PlanningManager: "failTask(task, ...)"
+        PlanningManager -> Task: "fail(...)"
     end
+else
+    Facade -> Company: "startExecutingTask(task)"
+    Company -> PlanningManager: "startExecutingTask(task)"
+    PlanningManager -> Task: "execute()"
 end
 
-@enduml
+' indien een throw loop
 
+@enduml

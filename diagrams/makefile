@@ -11,16 +11,12 @@ DOT_EXT     = dot
 
 PLANT       = 	facade_uml.eps \
 				high_level_uml.eps \
-				sequence_createProject_uml.eps \
-				sequence_createProject_cancel_uml.eps \
 				sequence_createTask_uml.eps \
-				sequence_createTask_cancel_uml.eps \
+				sequence_createTask_simple_uml.eps \
 				sequence_update_task_status_uml.eps \
-				sequence_update_task_status_cancel_1_uml.eps \
-				sequence_update_task_status_cancel_2_uml.eps \
-				sequence_advance_time_uml.eps \
-				sequence_advance_time_cancel_uml.eps \
-				domain_uml.eps
+				sequence_update_task_status_simple_uml.eps \
+				sequence_planTask_uml.eps \
+				sequence_planTask_simple_uml.eps \
 GRAPHVIZ    = task_dfs.eps \
               project_dfs.eps
 

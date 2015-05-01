@@ -1,0 +1,33 @@
+@startuml
+
+title "Update Task Status"
+
+actor Developer
+
+UI -> Developer: "Shows update status form"
+Developer --> UI: "Fills in the form"
+UI --> SessionController: "return: data"
+
+' indien data == null stop hier
+
+SessionController -> Facade: "updateTaskStatusFor(taskWrapper, data)"
+
+alt data.isFinal()
+    alt data.isSuccessful()
+        Facade -> Company: "finishTask(task, ...)"
+        Company -> PlanningManager: "finishTask(task, ...)"
+        PlanningManager -> Task: "finish(...)"
+    else
+        Facade -> Company: "failTask(task, ...)"
+        Company -> PlanningManager: "failTask(task, ...)"
+        PlanningManager -> Task: "fail(...)"
+    end
+else
+    Facade -> Company: "startExecutingTask(task)"
+    Company -> PlanningManager: "startExecutingTask(task)"
+    PlanningManager -> Task: "execute()"
+end
+
+' indien een throw loop
+
+@enduml

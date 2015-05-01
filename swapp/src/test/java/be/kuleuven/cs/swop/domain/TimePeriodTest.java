@@ -2,98 +2,73 @@ package be.kuleuven.cs.swop.domain;
 
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 
 public class TimePeriodTest {
 
-    private static TimePeriod validTimePeriod1;
+    private static DateTimePeriod validTimePeriod1;
+    private static LocalDateTime now = LocalDateTime.now();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        validTimePeriod1 = new TimePeriod(new Date(1), new Date(2));
+        validTimePeriod1 = new DateTimePeriod(now.plusHours(1), now.plusHours(2));
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {}
-
-    @Before
-    public void setUp() throws Exception {}
-
-    @After
-    public void tearDown() throws Exception {}
-
     @Test
-    public void constructorValidTest() {
-        new TimePeriod(new Date(1), new Date(2));
-        new TimePeriod(new Date(3), new Date(4));
-        new TimePeriod(new Date(5), new Date(6));
+    public void constructorValidTest1() {
+        new DateTimePeriod(now.plusHours(1), now.plusHours(2));
+    }
+    @Test
+    public void constructorValidTest2() {
+        new DateTimePeriod(now.minusHours(1), now.plusHours(1));
+    }
+    @Test
+    public void constructorValidTest3() {
+        new DateTimePeriod(now, now.plusHours(1));
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorCreationBeforeEndTimeTest() {
+        new DateTimePeriod(now.plusHours(2), now.plusHours(1));
+    }
 
-    @Test
-    public void constructorInvalidTest() {
-        try{
-            new TimePeriod(new Date(1), new Date(0)); 
-        }catch(IllegalArgumentException e){}
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorInvalidStartTimeTest() {
+        new DateTimePeriod(null, now);
+    }
 
-        try{
-            new TimePeriod(null, new Date(0));
-        }catch(IllegalArgumentException e){}
-
-        try{
-            new TimePeriod(new Date(1), null);
-        }catch(IllegalArgumentException e){}
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorInvalidEndTimeTest() {
+        new DateTimePeriod(now, null);
     }
 
     @Test
     public void canHaveAsStartTimeValidTest() {
-        validTimePeriod1.canHaveAsStartTime(new Date(0));
-        validTimePeriod1.canHaveAsStartTime(new Date(5));
+        assertTrue(validTimePeriod1.canHaveAsStartTime(now));
+        assertTrue(validTimePeriod1.canHaveAsStartTime(now.plusHours(5)));
     }
 
     @Test
-    public void canHaveAsStartTimeInalidTest() {
-        validTimePeriod1.canHaveAsStartTime(null);
+    public void canHaveAsStartTimeInvalidTest() {
+        assertFalse(validTimePeriod1.canHaveAsStartTime(null));
     }
 
     @Test
     public void canHaveAsStopTimeValidTest() {
-        validTimePeriod1.canHaveAsStopTime(new Date(3));
-        validTimePeriod1.canHaveAsStopTime(new Date(4));
+        assertFalse(validTimePeriod1.canHaveAsStopTime(now.plusHours(1)));
+        assertTrue(validTimePeriod1.canHaveAsStopTime(now.plusHours(3)));
     }
 
     @Test
     public void canHaveAsStopTimeInvalidTest() {
-        validTimePeriod1.canHaveAsStopTime(null);
-        validTimePeriod1.canHaveAsStopTime(new Date(0));
-        validTimePeriod1.canHaveAsStopTime(new Date(3));
-        validTimePeriod1.canHaveAsStopTime(new Date(2));
-    }
-
-    @Test
-    public void getStartTimeTest() {
-        Date startTime = new Date(1);
-        TimePeriod t = new TimePeriod(startTime, new Date(2));
-        assertFalse(t.getStartTime() == startTime);
-    }
-
-    @Test
-    public void getStopTimeTest() {
-        Date stopTime = new Date(2);
-        TimePeriod t = new TimePeriod(new Date(1), stopTime);
-        assertFalse(t.getStopTime() == stopTime);
+        assertFalse(validTimePeriod1.canHaveAsStopTime(null));
+        assertFalse(validTimePeriod1.canHaveAsStopTime(now));
     }
 
 }

@@ -4,24 +4,34 @@ digraph finite_state_machine {
     start           [label="start", shape=none];
     available       [label="available"];
     unavailable     [label="unavailable"];
+    executing       [label="executing"];
     finished        [label="finished", peripheries=2];
     failed          [label="failed",peripheries=2];
 
     start -> available[label="create"];
 
-    available -> unavailable [label="add unfinished dependency"];
-    available -> finished    [label="finish"];
+    available -> unavailable [label="add dependency"];
+    available -> executing   [label="start task"];
+    // available -> finished not possible
     available -> failed      [label="fail"];
 
+    // executing -> available not possible
+    // executing -> unavailable not possible
+    executing -> finished    [label="finished"];
+    executing -> failed      [label="fail"];
+
+    // unavailable -> executing not possible
     unavailable -> available [label="all dependencies finished"];
     unavailable -> failed    [label="fail"];
     // unavailable -> finished not possible
 
     // finished -> available not possible
+    // finished -> executing not possible
     // finished -> unavailable not possible
     // finished -> failed not possible
 
     // failed -> available not possible
+    // failed -> executing not possible
     // failed -> unavailable not possible
     // failed -> finished not possible
 

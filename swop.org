@@ -1,4 +1,5 @@
-* Eerste sessie
+* Eerste iteratie
+** Eerste sessie
 - mogen we libraries gebruiken?
     Ja
     Zeker:
@@ -28,7 +29,7 @@
 - Moeten we nog iets doen met dat domain model?
     Nee, dat is gegeven voor deze iteratie
 
-* Tweede sessie
+** Tweede sessie
 - Vragen
   - Recursief falen?
     Nee
@@ -47,7 +48,7 @@
   - session controller
   - UI interface
 
-* Derde sessie
+** Derde sessie
 
 - Wanneer moeten lijsten 'immutable' worden?
   - Overal, ook intern
@@ -85,3 +86,147 @@
   - Oplossing: (misschien?)
     - Laat gewoon de task altijd beslissen over de status.
     - Als op task 'finish' aangeroepen wordt vraagt die aan de status 'bool canFinish()' en dan kiest de task naar welke nieuwe status er veranderd moet worden.
+** Feedback (3.5/4)
+   - leesbaarheid van diagramma's
+   - sequence diagrams: enkel BINNEN domain.
+   - taak status objecten kunnen simpeler!
+   - task status dependent behaviour moet ECHT in status
+   - apparte klassen voor berekeneningen van tijd. (niet in task)
+   - alles kunnen uitleggen als het afhankelijk is van Java (technologisch probleem)
+   - null checks in facade op een betere plaats!
+   - exceptions maken met juiste semantiek
+   - meer op modifiers letten: zo weinig mogelijk visible
+* Tweede iteratie
+** Eerste sessie
+*** Nieuwe dingen
+**** Nieuw in domein
+    - User (abstract)
+      - Developer
+      - Project manager
+    - Resources
+    - ResourceType
+    - Reservation
+    - Requirement
+
+Beslissingen over domein:
+  - Developers en Project managers zijn disjunct
+  - Resources kunnen niet opgebruikt worden, enkel gereserveerd.
+**** Nieuw in task
+     - developers
+     - plannes start time
+     - duration in MINUTES
+     - berekenen: timespan in which to be executed
+**** Nieuw in task status
+     - executing
+     - available VOOR EEN DEVELOPER
+**** Al de rest
+*** Design problemen
+**** Resource reservations
+   - Oplossing Syd:
+     - Elke task houdt een lijst bij van nodige resourceTYPES
+     - Elke resourceTYPE kent al zijn instantiaties
+     - Elke een resource houdt al zijn reservaties bij
+   - Oplossing Pablo:
+     - Reservation Manager die alle reservations bijhoudt.
+     - Taak moet daaraan kunnen?
+Er zijn twee niveaus van 'available':
+- dependencies door taak zelf
+- resources (reservations) door reservationmanager
+
+**** Verschillende soorten data nodig voor de statussen. Bv finished/failed hebben een time-period, terwijl de nieuwe executing een developer nodig heeft.
+     - Oplossing Pablo: Voeg die specifieke data velden toe aan de statussen zelf.
+     - Bv finished heeft een veldje time-period dat aangeeft wanneer er aan de taak gewerkt is. Op de zelfde manier heeft executing een veldje 'developers'.
+Ik zou dan in task een variabele Status bij houden, bij het opvragen, als die null is, wordt er gekeken naar de dependencies en dan gekozen tussen avail/unavail.
+Maar als die niet null is wordt de huidige gewoon terug gegeven.
+Dus weg met de 'isFinal' check, gwn als die toegekend is blijft die.
+Zo kunnen we goed de voordelen van het status pattern gebruiken (namelijk specifieke nodige data voor een bepaalde status bij houden, zelfs al verschilt die vans
+tatus), en tegelijk de flexibiliteit hebben van het automatisch status bepalen gebaseerd op dependencies.
+
+Status is 'available' voor specifieke user, dus misschien een Login-manager die statisch bijhoudt welke user er ingelogd is.8
+
+**** Rechten van users
+ Een Manager mag taken plannen maar een developer niet etc.
+ We moeten daar dus ook rekening mee houden in de UI.
+
+ Hier is mijn voorstel:
+ Bij het begin van een sessie vraagt de UI aan de sessioncontroller een
+ selectUserSession aan. De user selecteert dan een User (via
+ UserWrappers). Van daaruit kan de UI sessions aanvragen, en daaraan moet
+ hij dan die userWrapper meegeven zodat de sessioncontroller de
+ permissions kan checken.
+
+ Wat ook kan is dat we de sessionController de user(Wrapper) laten
+ bijhouden en de UI gewoon toelaten die te zetten (lijkt me eigenlijk
+ veiliger omdat de UI anders gewoon alle users kan impersoneren).
+ In dit scenario moet de UI echt van user veranderen voor die iets anders
+ kan doen.
+
+**** Waar zetten we de time keeper, waar houden we time bij zodat het binnen het domein blijft
+**** Input file als interface
+**** Task kent momenteel alle statussen, is dat nodig? goede argumentatie guys!
+     We checken die dependencies nu toch at runtime, dus waarom nog die objecten?
+*** Domain vragen:
+- Time availability per type of per instance van resource?
+  Momenteel per type - OK
+** Tweede sessie
+*** Planning idee:
+    - Pablo
+      Undo, redo system
+    - Syd
+      nieuwe instantiatie van Facade en sessioncontroller met apparte simulation UI
+
+      DIT DOEN
+*** Task status idee
+    - task status pattern: performedDuring in pattern? want da's status-afhankelijke data
+
+      OK, MAAR geen state pattern want state pattern is stateless
+      (idem voor alternative)
+      DIT DOEN
+*** Session controller idee:
+    - Syd:
+      Session controller houdt een lijst van sessions bij die overerver van een abstracte klasse session
+      UI kan aan die lijst en roept gewoon execute aan op zo'n object.
+      gevolg: UI losgekoppeld van individuele sessions.
+
+    - Pablo:
+      typ hier
+
+      GEEN VAN BEIDE
+
+*** Reservations
+Als een task langer duurt dan verwacht, dan worden zijn resources ook langer gebruikt. Een TaskPlanning zijn period gaat dan ook aangeven dat deze langer geduurd heeft.
+
+** Derde sessie
+20 april 2015
+- Kunnen er meerdere managers zijn, of is er gewoon een 'manager mode' waarin planning gedaan kan worden?
+  kies: een manager of DIE developer
+  Houdt current user uit domein en doe isavailable met argument: user
+- User access control? User heeft hoop methodes "canDo..." voor elke functionaliteit? Meerdere facade-controllers (per user-soort één)?
+  instanceof IN UI
+- Moet een task-planning wie dat hem gepland heeft?
+  nee!
+- Moet de UI geresctricteerd worden gebaseerd op de user?
+  hoeft niet, gewoon met instanceof
+- Parallelle classe-structuren (data objecten), kan dat beter?
+  look at builder
+- Planning, specifieke resource vs type.
+  moet ook nog 'fuck dees ik kies zelf' kunnen zeggen
+- TimeCalculator = singleton?
+  Nee! GEEN ENKELE instantie
+- Geneste simulaties?
+  Niet nodig, wel cool!
+- hij gaat navragen of serialisation oke is.
+- IDEE van assistent:
+  nog een facade om wrappen en bijhouden te splitsen
+  klinkt als een goed idee! zeker bekijken
+  domainfacade of wrappercontroller of wrappingstation of 
+- vraag van assistent:
+  2 planning van één taak checken
+- BEVEL van assistent:
+  task moet planning bijhouden want availability hangt ervan af
+
+** Vierde sessie
+
+Taak status en taak planning zijn beide staat van taak.
+Dit kan mooier.
+Stateless task + state
