@@ -219,7 +219,7 @@ Als een task langer duurt dan verwacht, dan worden zijn resources ook langer geb
 - IDEE van assistent:
   nog een facade om wrappen en bijhouden te splitsen
   klinkt als een goed idee! zeker bekijken
-  domainfacade of wrappercontroller of wrappingstation of 
+  domainfacade of wrappercontroller of wrappingstation of
 - vraag van assistent:
   2 planning van één taak checken
 - BEVEL van assistent:
@@ -230,3 +230,12 @@ Als een task langer duurt dan verwacht, dan worden zijn resources ook langer geb
 Taak status en taak planning zijn beide staat van taak.
 Dit kan mooier.
 Stateless task + state
+
+** Vijfde sessie
+- Heeft elke branchoffice zijn eigen tijd? Ja denk ik.
+- Delegate = task hier verwijderen en elder toevoegen?
+  Worden resource-types gedeeld in heel de company? (resource instances niet)
+  Task rechtstreeks doorgeven?
+- System Initialisation = een eigen tman file basically?
+  Moet het human-readable zijn? -> Gewoon java serializer gebruiken? (eventueel naar xml voor human-readable?)
+- Nu wel access control? (User login)
