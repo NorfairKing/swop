@@ -1,6 +1,6 @@
 @startuml
 
-title "Create Task"
+title "Plan Task"
 
 actor Manager
 
