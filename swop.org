@@ -236,6 +236,8 @@ Stateless task + state
 - Delegate = task hier verwijderen en elder toevoegen?
   Worden resource-types gedeeld in heel de company? (resource instances niet)
   Task rechtstreeks doorgeven?
+  Een delegated task, wordt die dan deel van een project in een andere office?
+  Of is een delegated task eigenlijk een tweede soort planned task, maar die dan gebruik maakt van resources en developers van een andere office?
 - System Initialisation = een eigen tman file basically?
   Moet het human-readable zijn? -> Gewoon java serializer gebruiken? (eventueel naar xml voor human-readable?)
 - Nu wel access control? (User login)
