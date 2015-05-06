@@ -16,7 +16,7 @@ DIAGRAM_DIR	= $(RESULT_DIR)/diagrams
 
 all: package doc diagrams
 	mkdir -p $(RESULT_DIR) $(DOC_DIR) $(DIAGRAM_DIR)
-	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)
+	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)/system.jar
 	cp -r swapp/src $(RESULT_DIR)
 	cp -r swapp/target/site/apidocs/* $(DOC_DIR)
 	cp -r diagrams/*.eps $(DIAGRAM_DIR)

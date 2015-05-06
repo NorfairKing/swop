@@ -231,13 +231,48 @@ Taak status en taak planning zijn beide staat van taak.
 Dit kan mooier.
 Stateless task + state
 
-** Vijfde sessie
+* Derde iteratie
+** eerste sessie:
+*** vragen
 - Heeft elke branchoffice zijn eigen tijd? Ja denk ik.
+  nee, één time per company
 - Delegate = task hier verwijderen en elder toevoegen?
   Worden resource-types gedeeld in heel de company? (resource instances niet)
+   nee per office
   Task rechtstreeks doorgeven?
   Een delegated task, wordt die dan deel van een project in een andere office?
+   geen project bij nieuw office
   Of is een delegated task eigenlijk een tweede soort planned task, maar die dan gebruik maakt van resources en developers van een andere office?
 - System Initialisation = een eigen tman file basically?
   Moet het human-readable zijn? -> Gewoon java serializer gebruiken? (eventueel naar xml voor human-readable?)
+  hoeft niet human-readable zijn, maar liefst wel mooi
 - Nu wel access control? (User login)
+  JA maar zonder authentication (hoeft niet uitgewerkt wat hij kan, wel mooi!)
+- pas op met tijdzones
+*** feedback:
+    - High level mag nog kleiner
+    - UML diagrammen MOETEN leesbaar zijn
+    - formeel tijdens de presentatie, is GEEN gewoon gesprek met assistent
+    - geen engels en nederlands door elkaar
+    - GEEN PABLO EN CO
+    - er mogen packages in de high level uml
+    - Presentatie aanpak:
+      - Wat willen de assistenten horen:
+        - Hoe hebben we een goed design gemaakt
+        - Hoe hebben we dat aangepakt
+      - Opgave meer herhalen in presentatie
+      - Doe alsof de assistenen klanten zijn.
+      - sommige design problemen aanhalen en volledig bespreken, inclusief alternatieven
+      - Sequence diagrammen moeten INTERESSANT zijn
+      - bereid een kleine demo voor
+      - focus voor volgende keer op delegeren van task
+      - motivatie= klassediagram + sequence diagram
+      - als je een detail implementeert, toon het dan met diagrammen in presentatie
+*** todo
+    - make clean voor diagrammen
+    - alle oude diagrammen weggooien
+    - domein model uitbreiden: employee
+
+
+
+
