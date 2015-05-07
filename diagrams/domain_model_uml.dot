@@ -1,6 +1,29 @@
 @startuml
 
-object HIER HET DOMEIN DIAGRAM
-object Task
+object "Task" as t
+object "Time Period" as tp
+object "Reservation" as rv
+object "Resource" as rs
+object "ResourceType" as rt
+object "Project" as p
+object "Company" as c
+object "Branch Office" as bo
+object "Clock" as cl
+object "User" as u
+object "Developer" as d
+object "Manager" as m
+
+
+cl "1" -- "1" c
+c "1" -- "*" bo
+bo "1" -- "*" p: manages
+bo "1" -- "*" u
+bo "1" -- "*" rs: manages
+bo "1" -- "*" rv
+m "1" -- "*" t: plans/delegates
+
+
+
+
 
 @enduml
