@@ -1,26 +1,75 @@
 @startuml
 
-object "Task" as t
-object "Time Period" as tp
+' New objects
+object "Company" as c {
+    name
+}
+object "Branch Office" as bo {
+    name
+    location
+}
+object "Clock" as cl
+
+' old objects
+object "Task" as t {
+    description
+    plannedStartTime
+    estimatedDuration
+    acceptableDeviation
+}
+object "Time Period" as tp {
+    startTime
+    endTime
+}
 object "Reservation" as rv
 object "Resource" as rs
 object "ResourceType" as rt
-object "Project" as p
-object "Company" as c
-object "Branch Office" as bo
-object "Clock" as cl
-object "User" as u
+object "Requirement" as rq {
+    quantity
+}
+object "Project" as p {
+    name
+    description
+    creationTime
+    dueTime
+}
+object "Employee" as e {
+    name
+}
 object "Developer" as d
 object "Manager" as m
 
+' New associations
 
 cl "1" -- "1" c
 c "1" -- "*" bo
 bo "1" -- "*" p: manages
-bo "1" -- "*" u
+bo "1" -- "*" e: employs
 bo "1" -- "*" rs: manages
 bo "1" -- "*" rv
 m "1" -- "*" t: plans/delegates
+t "1" -- "*" d: requires
+
+' Old associations
+
+' Why not "1" -- "*" ?
+rt "*" -- "*" rt: requires/conflicts with
+rt "1" -- "*" rs: < is of type
+rs "1" -- "*" rv: < reservation
+tp "1" -- "*" rv: < valid during
+t "1" -- "*" rv: < owned by
+tp "0..1" -- "1" t: < was performed during
+t "*" -- "*" d: < performs
+t "*" -- "1" p: < consists of
+t "0..1" -- "0..1" t: alternative for
+' Why not "1" -- "*" ?
+t "*" -- "*" t: < depends on
+rt "*" -- "*" t: < requires resource of
+(rt,t) .. rq
+
+e <|-- d
+e <|-- m
+
 
 
 
