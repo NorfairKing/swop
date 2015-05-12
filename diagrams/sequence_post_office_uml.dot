@@ -1,0 +1,12 @@
+@startuml
+
+title "Delegate Post"
+
+actor Manager
+
+participant UI
+
+Company -> PostOffice: "delegate(from,to,task)"
+PostOffice -> BranchOfficeFrom: "setDelegated(task)"
+PostOffice -> BranchOfficeTo: "createDelegatedTask(task)"
+@enduml

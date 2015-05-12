@@ -12,6 +12,8 @@ DOT_EXT     = dot
 PLANT       = 	facade_uml.eps \
 				domain_model_uml.eps \
 				high_level_uml.eps \
+				post_office_uml.eps \
+				sequence_post_office_uml.eps \
 				sequence_createTask_uml.eps \
 				sequence_createTask_simple_uml.eps \
 				sequence_update_task_status_uml.eps \

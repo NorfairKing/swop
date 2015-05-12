@@ -276,3 +276,22 @@ Stateless task + state
 
 
 
+** tweede sessie:
+*** Feedback (4.5/6)
+    - Casts teveel
+    - Tests zijn niet statisch
+    - value klassen: geen setters en FINAL variabelen
+    - zoveel mogelijk value klasses
+      - Planning
+    - Steek planning in state, dan wordt planning een value class
+    - doe die includesbreak boolean methode weg
+    - let goed op final variabelen
+    - keep documentation serious
+    - timekeeper mag weg.
+    - util class voor functional programming stuff
+    - wrapUser moet in userwrapper, zelfde met de rest in taskman
+    - equals <=> hashcode
+    - betere plaats voor code van status data en maak er taskstatusupdater van
+    - nullcheck in CLI
+    - pass op met teveel wrapper
+    - postbus is oke: postoffice is caretaker van memento van branchoffice

@@ -1,0 +1,30 @@
+@startuml
+
+title "Post office"
+
+class PostOffice {
+    delegations: Set<Delegation>
+}
+
+class Delegation {
+    fromOffice: BranchOffice
+    toOffice: BranchOffice
+    original: Task
+    delegated: DelegatedTask
+}
+
+class Task {
+}
+
+class DelegatedTask {
+}
+
+Task <|-- DelegatedTask
+
+Delegation "1" -- "1" Task
+Delegation "1" -- "1" DelegatedTask
+Delegation "1" -- "2" BranchOffice
+
+PostOffice "1" -- "*" Delegation
+
+@enduml
