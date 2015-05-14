@@ -12,7 +12,7 @@ po -> po: createDelegationTask(task)
 po -> po: createDelegation(from,to,task,delegationTask)
 po -> bof: setDelegated(task)
 alt inSimulation
-    po -> bot: addTask(delegationTask)
+    po -> bot: addDelegated(delegationTask)
     po -> po: addDelegation(delegation)
 else
     po -> po: addToDelegationBuffer(delegation)

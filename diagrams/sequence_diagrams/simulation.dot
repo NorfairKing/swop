@@ -3,7 +3,7 @@
 participant TaskMan as tm
 participant Company as c
 participant BranchOffice as bo
-participant PostOffice as po
+participant DelegationOffice as po
 participant BranchOfficeMemento as bom
 
 tm -> c: "startSimulationFor(branchOffice)"
@@ -18,6 +18,10 @@ bo --> c: "branchOfficeMemento"
 tm -> c: "stopSimulationFor(branchOffice, success)"
 alt success
     c -> po: "realiseSimulationFor(branchOffice)"
+    loop bufferedDelegations
+        po -> bo: "addDelegated(delegationTask)"
+        po -> po: "addDelegation(delegation)"
+    end
 else
     c -> bo: "setMemento(branchOfficeMemento)"
     c -> po: "cancelSimulationFor(branchOffice)"
