@@ -30,10 +30,10 @@ class TaskMan
 class TaskStatus
 class TimePeriod
 class User
-interface Requireable
+interface Reservable
 
-Requireable <|-- Developer
-Requireable <|-- ResourceType
+Reservable <|-- Developer
+Reservable <|-- Resource
 TaskStatus <|-- DelegatedStatus
 TaskStatus <|-- ExecutingStatus
 TaskStatus <|-- FailedStatus
