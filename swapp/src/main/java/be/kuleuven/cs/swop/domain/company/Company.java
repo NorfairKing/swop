@@ -24,7 +24,7 @@ public class Company {
 
     private final Timekeeper timeKeeper = new Timekeeper();
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
-    
+    private final DelegationOffice delegationOffice = new DelegationOffice();
     public Company() {
         
     }
@@ -47,6 +47,10 @@ public class Company {
     
     public Set<Task> getUnplannedTasksOf(Project project, AuthenticationToken at) {
         return at.getOffice().getUnplannedTasksOf(project);
+    }
+
+    private DelegationOffice getDelegationOffice() {
+        return delegationOffice;
     }
     
     public Set<Task> getAssignedTasksOf(Project project, AuthenticationToken at){

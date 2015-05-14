@@ -1,0 +1,8 @@
+!include company.cl
+!include branchoffice.cl
+!include resourcetype.cl
+!include delegationoffice.cl
+
+Company --> "*" BranchOffice
+Company --> "*" ResourceType
+Company --> "1" DelegationOffice
