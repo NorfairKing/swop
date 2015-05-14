@@ -18,15 +18,12 @@ public class App {
     public static void main(String[] args) throws FileNotFoundException {
         UserInterface ui = new CLI();
         TaskMan taskMan = new TaskMan();
-        taskMan.readCompantFromDisk();
         
         if (args.length == 1) {
             String filePath = args[0];
-            YAMLReader reader = new YAMLReader(taskMan);
-            if(reader.read(filePath)){
-    			System.out.println("Successfully imported file.");
-            }
+            taskMan.loadEverythingFromFile(filePath);
         }
+        
         new SessionController(ui, taskMan);
         ui.start();
     }

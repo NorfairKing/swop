@@ -3,10 +3,7 @@ package be.kuleuven.cs.swop.facade;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,9 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
@@ -45,39 +39,15 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 public class TaskMan implements Serializable {
 
     private Company company;
-    private Authenticator authenticator;
+    private JSONReader<Company> companyReader = new JSONReader<>();
+    private Authenticator authenticator = new Authenticator();
     private AuthenticationToken authenticationToken;
-    
-    // TEMP
-    public void writeCompanyToDisk() throws FileNotFoundException {
-        File file = new File("company.json");
-        System.out.println("Saved to: " + file.getAbsolutePath());
-        
-        FileOutputStream fop = new FileOutputStream(file);
-        
-        Map<String, Object> args = new HashMap<>();
-        args.put(JsonWriter.PRETTY_PRINT, true);
-        JsonWriter jw = new JsonWriter(fop, args);
-        jw.write(company);
-        jw.close();
-    }
-    
-    public void readCompantFromDisk() throws FileNotFoundException {
-        File file = new File("company.json");
-        FileInputStream fop = new FileInputStream(file);
-        
-        JsonReader jr = new JsonReader(fop);
-        company = (Company)jr.readObject();
-        jr.close();
-    }
-    // TEMP
 
     /**
      * Full constructor
      */
     public TaskMan() {
         this.company = new Company();
-        this.authenticator = new Authenticator();
     }
 
     // Getters
@@ -536,6 +506,26 @@ public class TaskMan implements Serializable {
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
         return wrapDeveloper(company.createDeveloper(name, authenticationToken));
+    }
+    
+    /**
+     * Saves the company to disk.
+     * 
+     * @param path Where to save it.
+     * @throws FileNotFoundException If you can't save there.
+     */
+    public void saveEverythingToFile(String path) throws FileNotFoundException {
+        companyReader.writeToDisk(path, company);
+    }
+    
+    /**
+     * Loads the company from disk.
+     * 
+     * @param path Where to load from.
+     * @throws FileNotFoundException If there is no file found.
+     */
+    public void loadEverythingFromFile(String path) throws FileNotFoundException {
+        company = companyReader.readFromDisk(path);
     }
 
     /**
