@@ -25,6 +25,9 @@ public class App {
         }
         
         new SessionController(ui, taskMan);
+        
+        //taskMan.saveEverythingToFile("/Users/Pablo/Documents/Projects/SWOP/assignment/iteration3/output.json");
+        
         ui.start();
     }
 }

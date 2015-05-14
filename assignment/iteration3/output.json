@@ -8,7 +8,6 @@
         "day":1
       },
       "time":{
-        "@id":2,
         "hour":0,
         "minute":0,
         "second":0,
@@ -21,60 +20,10 @@
     "@items":[
       {
         "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
-        "location":"Mijn LOKAAATIIIIEEEEEE",
+        "location":"Test Office",
         "projectManager":{
           "projects":{
-            "@type":"java.util.HashSet",
-            "@items":[
-              {
-                "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-                "title":"Projectje",
-                "description":"Een project voor te testen",
-                "creationTime":{
-                  "date":{
-                    "year":2000,
-                    "month":3,
-                    "day":14
-                  },
-                  "time":{
-                    "hour":15,
-                    "minute":0,
-                    "second":0,
-                    "nano":0
-                  }
-                },
-                "dueTime":{
-                  "date":{
-                    "year":2000,
-                    "month":3,
-                    "day":15
-                  },
-                  "time":{"@ref":2}
-                },
-                "tasks":{
-                  "@type":"java.util.HashSet",
-                  "@items":[
-                    {
-                      "@id":1,
-                      "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
-                      "description":"Small Task",
-                      "estimatedDuration":10,
-                      "acceptableDeviation":0.5,
-                      "dependencies":{
-                        "@type":"java.util.HashSet"
-                      },
-                      "status":{
-                        "@type":"be.kuleuven.cs.swop.domain.company.task.OngoingStatus",
-                        "task":{"@ref":1}
-                      },
-                      "requirements":{
-                        "@type":"java.util.HashSet"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "@type":"java.util.HashSet"
           }
         },
         "planningManager":{
@@ -87,7 +36,7 @@
               {
                 "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
                 "type":{
-                  "@id":20,
+                  "@id":2,
                   "name":"Test type",
                   "dependencies":{
                     "@type":"java.util.HashSet"
@@ -103,21 +52,21 @@
           "resourceTypes":{
             "@type":"java.util.HashSet",
             "@items":[
-              {"@ref":20},
+              {"@ref":2},
               {
                 "@type":"be.kuleuven.cs.swop.domain.company.resource.ResourceType",
                 "name":"Test type advanced",
                 "dependencies":{
                   "@type":"java.util.HashSet",
                   "@items":[
-                    {"@ref":20}
+                    {"@ref":2}
                   ]
                 },
                 "conflictsWith":{
                   "@type":"java.util.HashSet",
                   "@items":[
                     {
-                      "@id":10,
+                      "@id":1,
                       "@type":"be.kuleuven.cs.swop.domain.company.resource.ResourceType",
                       "name":"Test type self conflicting",
                       "dependencies":{
@@ -126,14 +75,14 @@
                       "conflictsWith":{
                         "@type":"java.util.HashSet",
                         "@items":[
-                          {"@ref":10}
+                          {"@ref":1}
                         ]
                       }
                     }
                   ]
                 }
               },
-              {"@ref":10},
+              {"@ref":1},
               {
                 "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
                 "dailyAvailability":{

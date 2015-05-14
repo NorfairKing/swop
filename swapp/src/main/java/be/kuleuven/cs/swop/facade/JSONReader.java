@@ -11,9 +11,11 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
 
-public class JSONReader<T> {
+public final class JSONReader {
     
-    public void writeToDisk(String path, T obj) throws FileNotFoundException {
+    private JSONReader() {}
+    
+    public static void writeToDisk(String path, Object obj) throws FileNotFoundException {
         File file = new File(path);
         System.out.println("Saved to: " + file.getAbsolutePath());
         FileOutputStream fop = new FileOutputStream(file);
@@ -25,8 +27,7 @@ public class JSONReader<T> {
         jw.close();
     }
     
-    @SuppressWarnings("unchecked")
-    public T readFromDisk(String path) throws FileNotFoundException {
+    public static Object readFromDisk(String path) throws FileNotFoundException {
         File file = new File(path);
         FileInputStream fop = new FileInputStream(file);
         
@@ -34,7 +35,7 @@ public class JSONReader<T> {
         Object obj = jr.readObject();
         jr.close();
         
-        return (T)obj;
+        return obj;
     }
     
 }

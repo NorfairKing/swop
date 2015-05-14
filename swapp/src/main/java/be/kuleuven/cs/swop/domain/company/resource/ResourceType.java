@@ -18,6 +18,7 @@ public class ResourceType implements Serializable {
 	private Set<ResourceType> dependencies = new HashSet<ResourceType>();
 	private Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
 
+    protected ResourceType() { }
 	/**
 	 * Simple constructor for a resource type that doesn't have dependencies and doesn't conflict with anything
 	 * @param name The name for this resource type

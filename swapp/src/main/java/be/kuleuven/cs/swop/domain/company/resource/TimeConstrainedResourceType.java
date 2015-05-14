@@ -11,6 +11,10 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 public class TimeConstrainedResourceType extends ResourceType {
 
     private TimePeriod        dailyAvailability;
+    
+    @SuppressWarnings("unused")
+    private TimeConstrainedResourceType() { super(); }
+    
     public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod dailyAvailability) {
         super(name, requirements, conflicts, selfConflicting);
         setDailyAvailability(dailyAvailability);

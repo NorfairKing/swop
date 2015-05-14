@@ -9,6 +9,9 @@ public class Resource implements Serializable{
     private ResourceType type;
     private String       name;
 
+    @SuppressWarnings("unused")
+    private Resource() { }
+    
     public Resource(ResourceType type, String name) {
         setType(type);
         setName(name);

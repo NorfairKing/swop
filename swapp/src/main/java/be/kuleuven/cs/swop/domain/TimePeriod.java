@@ -11,9 +11,13 @@ import java.time.temporal.ChronoUnit;
 @SuppressWarnings("serial")
 public class TimePeriod implements Serializable {
 
-    private LocalTime startTime;
-    private LocalTime stopTime;
+    private final LocalTime startTime;
+    private final LocalTime stopTime;
 
+    @SuppressWarnings("unused")
+    private TimePeriod() {
+        this.startTime = this.stopTime = null;
+    }
     /**
      * Full Constructor
      *
@@ -24,9 +28,12 @@ public class TimePeriod implements Serializable {
      *            The Time containing the end of this period.
      *
      */
-    public TimePeriod(LocalTime start, LocalTime stop) {
-        setStartTime(start);
-        setStopTime(stop);
+    public TimePeriod(LocalTime startTime, LocalTime stopTime) {
+        if (startTime == null) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
+        if (stopTime == null) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
+        
+        this.startTime = startTime;
+        this.stopTime = stopTime;
     }
 
     /**
@@ -40,24 +47,6 @@ public class TimePeriod implements Serializable {
     }
 
     /**
-     * Checks whether or not the given time is a valid beginning for this period, it's valid when the Date isn't null.
-     *
-     * @param startTime
-     *            The Time containing the time to be checked if it is a valid beginning for this period.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStartTime(LocalTime startTime) {
-        return startTime != null;
-    }
-
-    private void setStartTime(LocalTime startTime) {
-        if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
-        this.startTime = startTime;
-    }
-
-    /**
      * Retries the time on which this period ends.
      *
      * @return The Time containing the end of this period.
@@ -65,27 +54,6 @@ public class TimePeriod implements Serializable {
      */
     public LocalTime getStopTime() {
         return (LocalTime) stopTime;
-    }
-
-    /**
-     * Checks whether or not the given time is a valid ending for this period, it's valid when the Date isn't null.
-     *
-     * @param stopTime
-     *            The Time containing the time to be checked if it is a valid ending for this perdiod.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStopTime(LocalTime stopTime) {
-        return stopTime != null && startTime != null && startTime.isBefore(stopTime);
-    }
-
-    /**
-     * Has to be used AFTER setStartTime().
-     */
-    private void setStopTime(LocalTime stopTime) {
-        if (!canHaveAsStopTime(stopTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
-        this.stopTime = stopTime;
     }
 
     /**

@@ -39,7 +39,6 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 public class TaskMan implements Serializable {
 
     private Company company;
-    private JSONReader<Company> companyReader = new JSONReader<>();
     private Authenticator authenticator = new Authenticator();
     private AuthenticationToken authenticationToken;
 
@@ -515,7 +514,7 @@ public class TaskMan implements Serializable {
      * @throws FileNotFoundException If you can't save there.
      */
     public void saveEverythingToFile(String path) throws FileNotFoundException {
-        companyReader.writeToDisk(path, company);
+        JSONReader.writeToDisk(path, company);
     }
     
     /**
@@ -525,7 +524,7 @@ public class TaskMan implements Serializable {
      * @throws FileNotFoundException If there is no file found.
      */
     public void loadEverythingFromFile(String path) throws FileNotFoundException {
-        company = companyReader.readFromDisk(path);
+        company = (Company)JSONReader.readFromDisk(path);
     }
 
     /**
