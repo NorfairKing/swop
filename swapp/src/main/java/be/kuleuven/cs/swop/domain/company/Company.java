@@ -28,12 +28,15 @@ public class Company implements Serializable{
 
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
+    private DelegationOffice delegationOffice;
 
     public Company() {
         setProjectManager(new ProjectManager());
         setPlanningManager(new PlanningManager());
-
+        setDelegationOffice(delegationOffice);
     }
+
+
 
     // Getters and setters of internal state
     private ProjectManager getProjectManager() {
@@ -52,6 +55,13 @@ public class Company implements Serializable{
         this.planningManager = planningManager;
     }
 
+    private DelegationOffice getDelegationOffice() {
+        return delegationOffice;
+    }
+    private void setDelegationOffice(DelegationOffice delegationOffice) {
+        this.delegationOffice = delegationOffice;
+    }
+    
     // Passthrough getters
     public ImmutableSet<Developer> getDevelopers() {
         return getPlanningManager().getDevelopers();
