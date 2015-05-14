@@ -13,6 +13,11 @@ alt delegatedTask
     os -> p: bool
 else
     os -> d: isFinished()
+    note left
+        The task status
+        will be a
+        DelegatedStatus here.
+    end note
     d -> dt: isFinished()
     dt -> ds: isFinished()
     ds -> p: bool
