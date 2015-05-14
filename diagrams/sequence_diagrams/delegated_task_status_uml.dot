@@ -1,0 +1,22 @@
+@startuml
+
+participant Project as p
+participant OriginalTask as ot
+participant OriginalStatus as os
+participant Delegation as d
+participant DelegationTask as dt
+participant DelegationStatus as ds
+
+p -> ot: isFinished()
+alt delegatedTask
+    ot -> os: isFinished()
+    os -> p: bool
+else
+    os -> d: isFinished()
+    d -> dt: isFinished()
+    dt -> ds: isFinished()
+    ds -> p: bool
+end
+
+
+@enduml

@@ -5,7 +5,8 @@ UML_SUFFIX  = uml
 DOT_EXT     = dot
 
 
-SEQUENCE_DIAGRAMS =	delegate_task_uml.eps
+SEQUENCE_DIAGRAMS =	delegate_task_uml.eps \
+					delegated_task_status_uml.eps
 
 sequence_diagrams: $(SEQUENCE_DIAGRAMS)
 
