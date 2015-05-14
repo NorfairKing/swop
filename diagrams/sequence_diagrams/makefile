@@ -6,7 +6,8 @@ DOT_EXT     = dot
 
 SEQUENCE_DIAGRAMS =	delegate_task.eps \
 					delegated_task_status.eps \
-					office_login.eps
+					office_login.eps \
+					simulation.eps
 
 sequence_diagrams: $(SEQUENCE_DIAGRAMS)
 
