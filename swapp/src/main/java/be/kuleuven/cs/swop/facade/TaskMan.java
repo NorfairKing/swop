@@ -19,7 +19,6 @@ import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
 import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
@@ -159,14 +158,13 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieves the assigned tasks of a developer from a single project
+     * Retrieves the assigned tasks from a single project for current authenticated user
      *
      * @param project The project to retrieve from
-     * @param dev The dev to retrieve for
      * @return The assigned tasks
      */
-    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project, DeveloperWrapper dev){
-        return map(company.getAssignedTasksOf(project.getProject(), dev.getDeveloper()), t -> wrapTask(t));
+    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project) {
+        return map(company.getAssignedTasksOf(project.getProject(), authenticationToken), t -> wrapTask(t));
     }
 
     /**
@@ -176,7 +174,7 @@ public class TaskMan implements Serializable {
      * @return The planning of the given task
      */
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
-        return wrapPlanning(company.getPlanningFor(task.getTask()));
+        return wrapPlanning(company.getPlanningFor(task.getTask(), authenticationToken));
     }
 
     /**
@@ -187,7 +185,11 @@ public class TaskMan implements Serializable {
      * @return A list of suggested time options
      */
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
-        return company.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, timeKeeper.getTime());
+        return company.getPlanningTimeOptions(
+                task.getTask(), 
+                AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, 
+                company.getSystemTime(),
+                authenticationToken);
     }
 
     /**
@@ -198,11 +200,11 @@ public class TaskMan implements Serializable {
      * @return The list with options
      */
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningResourceOptions(task.getTask(), time), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
+        return map(company.getPlanningResourceOptions(task.getTask(), time, authenticationToken), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
     }
 
     public Set<ResourceWrapper> getResources(){
-    	return map(company.getResources(), t -> wrapResource(t));
+    	return map(company.getResources(authenticationToken), t -> wrapResource(t));
     }
 
     /**
@@ -213,7 +215,7 @@ public class TaskMan implements Serializable {
      * @return The possible developers
      */
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningDeveloperOptions(task.getTask(), time), d -> wrapDeveloper(d));
+        return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> wrapDeveloper(d));
     }
 
     /**
@@ -228,7 +230,7 @@ public class TaskMan implements Serializable {
      */
     public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {
-			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
 		} catch (ConflictingPlanningException e) {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
@@ -247,14 +249,14 @@ public class TaskMan implements Serializable {
      */
     public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {
-			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
 		} catch (ConflictingPlanningException e) {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
 
     public void removePlanning(TaskPlanningWrapper planning){
-    	company.removePlanning(planning.getPlanning());
+    	company.removePlanning(planning.getPlanning(), authenticationToken);
     }
 
     /**
@@ -280,10 +282,10 @@ public class TaskMan implements Serializable {
         LocalDateTime dueTime = data.getDueTime();
         LocalDateTime creationTime = data.getCreationTime();
         if (data.getCreationTime() == null) {
-            creationTime = timeKeeper.getTime();
+            creationTime = company.getSystemTime();
         }
 
-        return wrapProject(company.createProject(title, description, creationTime, dueTime));
+        return wrapProject(company.createProject(title, description, creationTime, dueTime, authenticationToken));
     }
 
     /**
@@ -337,7 +339,7 @@ public class TaskMan implements Serializable {
     public TaskWrapper createAlternativeFor(TaskWrapper task, TaskData data) {
         if (task == null) { throw new IllegalArgumentException("Trying to create alternative for null task"); }
 
-        Project project = company.getProjectFor(task.getTask());
+        Project project = company.getProjectFor(task.getTask(), authenticationToken);
 
         TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
 
@@ -396,9 +398,9 @@ public class TaskMan implements Serializable {
             DateTimePeriod timePeriod = new DateTimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
 
             if (performedStatusData.isSuccessful()) {
-                company.finishTask(task.getTask(), timePeriod);
+                company.finishTask(task.getTask(), timePeriod, authenticationToken);
             } else {
-                company.failTask(task.getTask(), timePeriod);
+                company.failTask(task.getTask(), timePeriod, authenticationToken);
             }
         } else {
             ExecutingStatusData execStatusData = (ExecutingStatusData) statusData;
@@ -407,7 +409,7 @@ public class TaskMan implements Serializable {
                 throw new IllegalArgumentException("Given user is not developer.");
             }
             Developer dev = (Developer)user.getUser();
-            company.startExecutingTask(task.getTask(), company.getSystemTime(), dev);
+            company.startExecutingTask(task.getTask(), company.getSystemTime(), dev, authenticationToken);
         }
     }
 
@@ -451,7 +453,7 @@ public class TaskMan implements Serializable {
             availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
         }
 
-        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
+        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability, authenticationToken));
     }
 
     /**
@@ -463,7 +465,7 @@ public class TaskMan implements Serializable {
     public ResourceWrapper createResource(ResourceData data) {
         String name = data.getName();
         ResourceType type = data.getType().getType();
-        return wrapResource(company.createResource(name, type));
+        return wrapResource(company.createResource(name, type, authenticationToken));
     }
 
     /**
@@ -477,7 +479,7 @@ public class TaskMan implements Serializable {
      * @return Whether or not it is available
      */
     public boolean isTaskAvailableFor(LocalDateTime time, DeveloperWrapper dev,TaskWrapper task) {
-        return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask());
+        return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask(), authenticationToken);
     }
 
     /**
@@ -488,7 +490,7 @@ public class TaskMan implements Serializable {
      */
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
-        return wrapDeveloper(company.createDeveloper(name));
+        return wrapDeveloper(company.createDeveloper(name, authenticationToken));
     }
 
     /**
@@ -507,7 +509,6 @@ public class TaskMan implements Serializable {
      */
     public void restoreFromMemento(Memento memento) {
         company = memento.getSavedState().getCompany();
-        timeKeeper = memento.getSavedState().getTimekeeper();
     }
 
     public static class Memento {

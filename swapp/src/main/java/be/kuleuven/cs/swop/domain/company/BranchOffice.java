@@ -122,10 +122,6 @@ public class BranchOffice implements Serializable {
         return getProjectManager().createProject(title, description, creationTime, dueTime);
     }
 
-    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
-        return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
-    }
-
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
@@ -138,14 +134,6 @@ public class BranchOffice implements Serializable {
      */
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task) {
         return getPlanningManager().isTier2AvailableFor(time, dev, task);
-    }
-
-    public void setAlternativeFor(Task t, Task alt){
-        t.setAlternative(alt);
-    }
-
-    public void addDependencyTo(Task t,Task dep){
-        t.addDependency(dep);
     }
 
     // finish, fail and executing has to happen through the planningManager
