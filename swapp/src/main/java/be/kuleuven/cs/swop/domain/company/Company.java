@@ -25,6 +25,7 @@ public class Company {
     private final Timekeeper timeKeeper = new Timekeeper();
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
+    
     public Company() {
         
     }
@@ -54,9 +55,8 @@ public class Company {
     }
     
     public Set<Task> getAssignedTasksOf(Project project, AuthenticationToken at){
-        // FIXME make nicer, don't use instanceof
-        if (at.getUser() instanceof Developer) {
-            return at.getOffice().getAssignedTasksOf(project, (Developer)at.getUser());
+        if (at.isDeveloper()) {
+            return at.getOffice().getAssignedTasksOf(project, at.getAsDeveloper());
         }
         else {
             return new HashSet<>();
@@ -123,8 +123,14 @@ public class Company {
         at.getOffice().failTask(t, period);
     }
 
-    public void startExecutingTask(Task t, LocalDateTime time, Developer dev, AuthenticationToken at) {
-        at.getOffice().startExecutingTask(t, time, dev);
+    public void startExecutingTask(Task t, LocalDateTime time, AuthenticationToken at) {
+        if (at.isDeveloper()) {
+            Developer dev = at.getAsDeveloper();
+            at.getOffice().startExecutingTask(t, time, dev);
+        }
+        else {
+            throw new IllegalArgumentException("Manager is trying to execute a task.");
+        }
     }
 
     public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability, AuthenticationToken at){
@@ -139,8 +145,13 @@ public class Company {
         return at.getOffice().createDeveloper(name);
     }
     
-    public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task, AuthenticationToken at) {
-        return at.getOffice().isTaskAvailableFor(time, dev, task);
+    public boolean isTaskAvailableFor(LocalDateTime time, Task task, AuthenticationToken at) {
+        if (at.isDeveloper()) {
+            return at.getOffice().isTaskAvailableFor(time, at.getAsDeveloper(), task);
+        }
+        else {
+            return false;
+        }
     }
     
     /**

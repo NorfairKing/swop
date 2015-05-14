@@ -20,6 +20,7 @@ import java.util.function.Function;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
+import be.kuleuven.cs.swop.domain.company.Authenticator;
 import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -36,7 +37,8 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 @SuppressWarnings("serial")
 public class TaskMan implements Serializable {
 
-    private Company    company;
+    private Company company;
+    private Authenticator authenticator;
     private AuthenticationToken authenticationToken;
 
     /**
@@ -50,6 +52,18 @@ public class TaskMan implements Serializable {
     private Company getCompany()
     {
         return this.company;
+    }
+    
+    public AuthenticationToken getCurrentAuthenticationToken() {
+        return authenticationToken;
+    }
+    
+    public void setCurrentAuthenticationToken(AuthenticationToken token) {
+        this.authenticationToken = token;
+    }
+    
+    public void requestAuthenticationFor(BranchOfficeWrapper office, UserWrapper user) {
+        authenticationToken = authenticator.createFor(office.getOffice(), user.getUser());
     }
 
     // Wrapping functions
@@ -115,14 +129,19 @@ public class TaskMan implements Serializable {
         }
         return result;
     }
+    
+    public Set<BranchOfficeWrapper> getOffices() {
+        return map(company.getOffices(), o -> new BranchOfficeWrapper(o));
+    }
 
     /**
-     * Retrieve all known users
+     * Retrieve all users for the given branch office
      *
+     * @param office The branch office from which you want the users
      * @return A set of all known users, currently only developers
      */
-    public Set<UserWrapper> getUsers() {
-        Set<UserWrapper> users = map(company.getDevelopers(authenticationToken), u -> wrapUser(u));
+    public Set<UserWrapper> getUsersFrom(BranchOfficeWrapper office) {
+        Set<UserWrapper> users = map(office.getOffice().getDevelopers(), u -> wrapUser(u));
         users.add(wrapUser(new Manager("Manager")));
         return users;
     }
@@ -403,13 +422,7 @@ public class TaskMan implements Serializable {
                 company.failTask(task.getTask(), timePeriod, authenticationToken);
             }
         } else {
-            ExecutingStatusData execStatusData = (ExecutingStatusData) statusData;
-            UserWrapper user = execStatusData.getDeveloper();
-            if (!(user.getUser() instanceof Developer)) {
-                throw new IllegalArgumentException("Given user is not developer.");
-            }
-            Developer dev = (Developer)user.getUser();
-            company.startExecutingTask(task.getTask(), company.getSystemTime(), dev, authenticationToken);
+            company.startExecutingTask(task.getTask(), company.getSystemTime(), authenticationToken);
         }
     }
 
@@ -478,8 +491,8 @@ public class TaskMan implements Serializable {
      * @param task The task to check
      * @return Whether or not it is available
      */
-    public boolean isTaskAvailableFor(LocalDateTime time, DeveloperWrapper dev,TaskWrapper task) {
-        return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask(), authenticationToken);
+    public boolean isTaskAvailableFor(LocalDateTime time, TaskWrapper task) {
+        return getCompany().isTaskAvailableFor(time, task.getTask(), authenticationToken);
     }
 
     /**

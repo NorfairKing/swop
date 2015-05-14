@@ -17,7 +17,6 @@ public class SessionController {
     private UserInterface   ui;
     private TaskMan         taskMan;
     private TaskMan.Memento taskManBackup;
-    private UserWrapper     currentUser;
 
     /**
      * Full constructor
@@ -34,21 +33,8 @@ public class SessionController {
         setFacade(facade);
     }
 
-    public UserWrapper getCurrentUser() {
-        return this.currentUser;
-    }
-
-    protected boolean canHaveAsCurrentUser(UserWrapper user) {
-        return user != null;
-    }
-
-    protected void setCurrentUser(UserWrapper user) {
-        if (!canHaveAsCurrentUser(user)) { throw new IllegalArgumentException(ERROR_ILLEGAL_USER); }
-        this.currentUser = user;
-    }
-
     public boolean isLoggedIn() {
-        return this.currentUser != null;
+        return taskMan.getCurrentAuthenticationToken() != null;
     }
 
     /**
@@ -113,10 +99,25 @@ public class SessionController {
      * Starts a session to select the user. This isn't specified in the exercise, but in the current design we need this.
      */
     public void startSelectUserSession() {
-        Set<UserWrapper> users = getTaskMan().getUsers();
+        
+        Set<BranchOfficeWrapper> offices = getTaskMan().getOffices();
+        
+        BranchOfficeWrapper office = getUi().selectOffice(offices);
+        
+        if (office == null) return;
+        
+        Set<UserWrapper> users = getTaskMan().getUsersFrom(office);
+        
         UserWrapper user = getUi().selectUser(users);
-        if (user == null) { return; }
-        setCurrentUser(user);
+        
+        if (user == null) return;
+        
+        try {
+            getTaskMan().requestAuthenticationFor(office, user);
+        }
+        catch (IllegalArgumentException ex) {
+            getUi().showError("Failed logging in.");
+        }
     }
 
     /**
@@ -346,10 +347,6 @@ public class SessionController {
             return;
         }
 
-        if (!currentUser.isDeveloper())
-            return;
-        DeveloperWrapper d = currentUser.asDeveloper();
-        
         // User indicates he wants to update the status of a task
 
         // The system show a list of all available tasks and the projects they belong to
@@ -358,8 +355,8 @@ public class SessionController {
         Map<ProjectWrapper, Set<TaskWrapper>> assignedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
 
         for (ProjectWrapper p : allProjects) {
-            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p, d); // This will crash when the current user is a manager. Not fixing this because we don't do access controll. The UI has to
-                                                                               // implement responsibility for this.
+            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p); // this will return empty set if manager
+            
             if (!assignedTasks.isEmpty()) {
                 assignedTaskMap.put(p, assignedTasks);
             }
@@ -463,7 +460,6 @@ public class SessionController {
     }
 
     private static final String ERROR_NO_LOGIN       = "No user has logged in, please log in first.";
-    private static final String ERROR_ILLEGAL_USER   = "Invalid user for session controller.";
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";
     private static final String ERROR_ILLEGAL_FACADE = "Invalid facade controller for session controller.";
 }

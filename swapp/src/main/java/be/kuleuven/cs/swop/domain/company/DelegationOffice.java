@@ -19,12 +19,16 @@ public class DelegationOffice {
             return false;
         }
         //TODO: More checks?
+        return true;
     }
     public Delegation createDelegation(Task task, BranchOffice from, BranchOffice to){
         Delegation del = new Delegation(task,from, to);
+        
         if(isValidDelegation(del)){
             delegations.add(del);
+            return del;
         }
+        return null;
     }
 
 }

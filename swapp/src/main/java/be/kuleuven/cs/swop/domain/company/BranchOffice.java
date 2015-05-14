@@ -11,7 +11,6 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -26,15 +25,23 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class BranchOffice implements Serializable {
 
+    private final String location;
+    
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
 
-    public BranchOffice() {
+    public BranchOffice(String location) {
+        this.location = location;
+        
         setProjectManager(new ProjectManager());
         setPlanningManager(new PlanningManager());
     }
 
     // Getters and setters of internal state
+    public String getLocation() {
+        return location;
+    }
+    
     private ProjectManager getProjectManager() {
         return projectManager;
     }
