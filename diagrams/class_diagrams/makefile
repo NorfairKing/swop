@@ -14,14 +14,16 @@ CLASS_DIAGRAMS = \
 	task_planning_uml.eps \
 	delegate_task_uml.eps \
 	task_status_uml.eps \
-	simulation_uml.eps
+	simulation_uml.eps \
+	top_level_uml.eps
 
 CLASS_DIAGRAM_PNGS = \
 	entire_domain_uml.png \
 	task_planning_uml.png \
 	delegate_task_uml.png \
 	task_status_uml.png \
-	simulation_uml.png
+	simulation_uml.png \
+	top_level_uml.png
 
 
 class_diagrams: $(CLASS_DIAGRAMS)
