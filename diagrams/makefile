@@ -1,43 +1,11 @@
-OUT_EXT     = eps
-OUT_FORMAT  = $(OUT_EXT)
+.PHONY: class_diagrams domain_model fsms
 
-GRAPHVIZCC  = dot
-PLANTCC     = plantuml
+all:
+	$(MAKE) -C class_diagrams
+	$(MAKE) -C domain_model
+	$(MAKE) -C fsms
 
-DFS_SUFFIX  = fsm
-UML_SUFFIX  = uml
-
-DOT_EXT     = dot
-
-DIRTY_EXT   = *.$(OUT_EXT)
-
-PLANT       = 	facade_uml.eps \
-				domain_model_uml.eps \
-				high_level_uml.eps \
-				post_office_uml.eps \
-				entire_domain_uml.eps \
-				sequence_post_office_uml.eps \
-				sequence_task_planning_uml.eps \
-				sequence_createTask_uml.eps \
-				sequence_createTask_simple_uml.eps \
-				sequence_update_task_status_uml.eps \
-				sequence_update_task_status_simple_uml.eps \
-				sequence_planTask_uml.eps \
-				sequence_planTask_simple_uml.eps
-GRAPHVIZ    = 	task_fsm.eps \
-				project_fsm.eps
-
-all: plantuml_illustrations graphviz_illustrations
-
-plantuml_illustrations: $(PLANT)
-
-graphviz_illustrations: $(GRAPHVIZ)
-
-%_$(DFS_SUFFIX).$(OUT_EXT): %_$(DFS_SUFFIX).$(DOT_EXT)
-	$(GRAPHVIZCC) -T$(OUT_FORMAT) $< -o $@
-
-%_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
-	$(PLANTCC) -t$(OUT_FORMAT) $< $@
-	
 clean:
-	rm -r $(DIRTY_EXT)
+	$(MAKE) -C class_diagrams clean
+	$(MAKE) -C domain_model clean
+	$(MAKE) -C fsms clean
