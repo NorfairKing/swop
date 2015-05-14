@@ -10,6 +10,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public abstract class IncompleteStatus extends TaskStatus {
 
+    IncompleteStatus() { }
     IncompleteStatus(Task task) {
         super(task);
     }

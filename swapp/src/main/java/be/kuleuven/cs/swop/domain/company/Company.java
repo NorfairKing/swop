@@ -27,7 +27,6 @@ public class Company {
     private final DelegationOffice delegationOffice = new DelegationOffice();
     
     public Company() {
-        
     }
     
     public ImmutableSet<BranchOffice> getOffices() {
@@ -177,5 +176,7 @@ public class Company {
     public LocalDateTime getSystemTime() {
         return timeKeeper.getTime();
     }
+    
+    
     
 }

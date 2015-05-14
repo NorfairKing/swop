@@ -11,6 +11,8 @@ public class FailedStatus extends PerformedStatus {
 
     private Task alternative;
 
+    @SuppressWarnings("unused")
+    private FailedStatus() { }
     FailedStatus(Task task, DateTimePeriod performedDuring) {
         super(task, performedDuring);
     }

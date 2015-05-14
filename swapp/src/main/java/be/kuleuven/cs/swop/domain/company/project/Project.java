@@ -21,6 +21,7 @@ public class Project implements Serializable {
     private LocalDateTime   dueTime;
     private final Set<Task> tasks = new HashSet<Task>();
 
+    Project() { }
     /**
      * Full constructor
      *

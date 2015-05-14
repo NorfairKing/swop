@@ -20,7 +20,9 @@ public class ProjectManager implements Serializable {
     /**
      * Full constructor
      */
-    public ProjectManager() {}
+    public ProjectManager() {
+        
+    }
 
     /**
      * Retrieves the all the projects this program has to manage.

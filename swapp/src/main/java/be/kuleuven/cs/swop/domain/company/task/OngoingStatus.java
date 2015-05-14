@@ -7,7 +7,9 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public class OngoingStatus extends IncompleteStatus {
 
-    public OngoingStatus(Task task) {
+    @SuppressWarnings("unused")
+    private OngoingStatus() { }
+    OngoingStatus(Task task) {
         super(task);
     }
 

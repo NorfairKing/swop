@@ -12,6 +12,7 @@ public abstract class PerformedStatus extends TaskStatus {
 
 	private DateTimePeriod performedDuring;
 
+	PerformedStatus() { };
 	PerformedStatus(Task task, DateTimePeriod performedDuring) {
 		super(task);
 		this.performedDuring(performedDuring);

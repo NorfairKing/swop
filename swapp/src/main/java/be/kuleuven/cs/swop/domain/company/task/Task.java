@@ -27,6 +27,7 @@ public class Task implements Serializable {
     private TaskStatus       status;
     private Set<Requirement> requirements = new HashSet<Requirement>();
 
+    Task() { }
     /**
      * Full constructor
      *

@@ -12,6 +12,7 @@ abstract class TaskStatus implements Serializable {
 
     private Task task;
 
+    TaskStatus() {}
     TaskStatus(Task task) {
         setTask(task);
     }
