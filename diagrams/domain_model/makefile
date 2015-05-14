@@ -11,7 +11,7 @@ all: $(DOMAIN_MODEL)
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
 	$(PLANTCC) -t$(OUT_FORMAT) $< $@
 
-DIRTY_EXT = *.$(OUT_EXT)
+DIRTY_EXT = *.$(OUT_EXT) *.pdf
 	
 clean:
 	rm -f $(DIRTY_EXT)

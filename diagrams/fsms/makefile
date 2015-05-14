@@ -12,7 +12,7 @@ all: $(FSMS)
 %_$(DFS_SUFFIX).$(OUT_EXT): %_$(DFS_SUFFIX).$(DOT_EXT)
 	$(GRAPHVIZCC) -T$(OUT_FORMAT) $< -o $@
 
-DIRTY_EXT   = *.$(OUT_EXT)
+DIRTY_EXT = *.$(OUT_EXT) *.pdf
 	
 clean:
 	rm -f $(DIRTY_EXT)
