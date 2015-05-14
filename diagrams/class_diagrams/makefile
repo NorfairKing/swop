@@ -6,11 +6,12 @@ DOT_EXT     = dot
 
 
 CLASS_DIAGRAMS = entire_domain_uml.eps \
-				 task_planning_uml.eps
+				 task_planning_uml.eps \
+				 delegate_task_uml.eps
 
 PNG_DIAGRAMS = entire_domain_uml.png
 
-class_diagrams: $(CLASS_DIAGRAMS) $(PNG_DIAGRAMS)
+class_diagrams: *.cl *.ass $(CLASS_DIAGRAMS) $(PNG_DIAGRAMS)
 
 classes:
 	./compileraw.sh class *.cl

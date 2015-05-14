@@ -1,0 +1,10 @@
+@startuml
+
+title "Delegate Task"
+
+!include delegation.ass
+!include delegationoffice.ass
+!include delegatedstatus.ass
+!include task.ass
+
+@enduml
