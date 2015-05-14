@@ -25,7 +25,4 @@ output_file=$filename.$out_ext
 start="@startuml"
 end="@enduml"
 
-text="$start\n$(cat $input_file)\n$end"
-echo -e $text | plantuml -failfast -nbthread auto -p -t$out_ext > $output_file
-
-
+echo -e "$start \\n $(cat $input_file) \\n $end" | plantuml -failfast -nbthread auto -p -t$out_ext > $output_file
