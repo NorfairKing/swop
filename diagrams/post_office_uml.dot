@@ -4,6 +4,9 @@ title "Post office"
 
 class PostOffice {
     delegations: Set<Delegation>
+
+    DelegatedTask createDelegatedTask(task)
+    Delegation createDelegationFor createDelegation(from,to,task,delegated)
 }
 
 class Delegation {
@@ -19,9 +22,17 @@ class Task {
 class DelegatedTask {
 }
 
-Task <|-- DelegatedTask
+class TaskStatus {
+}
 
-Delegation "1" -- "1" Task
+class DelegatedStatus {
+}
+
+Task <|-- DelegatedTask
+TaskStatus <|-- DelegatedStatus
+
+DelegatedStatus "1" -> "1" Delegation
+Task --* TaskStatus
 Delegation "1" -- "1" DelegatedTask
 Delegation "1" -- "2" BranchOffice
 

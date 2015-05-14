@@ -1,0 +1,36 @@
+digraph finite_state_machine {
+    node [label=""];
+
+    labelloc="t";
+    label="Task FSM";
+
+    start           [shape="circle", style="filled", fillcolor="black"];
+    available       [label="available"];
+    unavailable     [label="unavailable"];
+    planned         [label="planned"];
+    delegated       [label="delegated"];
+    executing       [label="executing"];
+    finished        [label="finished", peripheries=2];
+    failed          [label="failed",peripheries=2];
+
+    start -> available[label="create"];
+
+    available -> unavailable [label="add dependency"];
+    available -> failed      [label="fail"];
+    available -> delegated   [label="delegate"];
+    available -> planned     [label="plan"];
+
+    planned -> failed        [label="fail"];
+    planned -> executing   [label="start"];
+
+    executing -> finished    [label="finished"];
+    executing -> failed      [label="fail"];
+
+    delegated -> finished    [label="delegated task finished"];
+    delegated -> failed      [label="delegated task failed"];
+
+    unavailable -> available [label="all dependencies finished"];
+    unavailable -> failed    [label="fail"];
+    unavailable -> planned   [label="plan"];
+
+}

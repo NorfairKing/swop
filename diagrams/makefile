@@ -4,7 +4,7 @@ OUT_EXT     = eps
 GRAPHVIZCC  = dot
 PLANTCC     = plantuml
 
-DFS_SUFFIX  = dfs
+DFS_SUFFIX  = fsm
 UML_SUFFIX  = uml
 
 DOT_EXT     = dot
@@ -13,15 +13,17 @@ PLANT       = 	facade_uml.eps \
 				domain_model_uml.eps \
 				high_level_uml.eps \
 				post_office_uml.eps \
+				task_planning_uml.eps \
 				sequence_post_office_uml.eps \
+				sequence_task_planning_uml.eps \
 				sequence_createTask_uml.eps \
 				sequence_createTask_simple_uml.eps \
 				sequence_update_task_status_uml.eps \
 				sequence_update_task_status_simple_uml.eps \
 				sequence_planTask_uml.eps \
 				sequence_planTask_simple_uml.eps
-GRAPHVIZ    = 	task_dfs.eps \
-				project_dfs.eps
+GRAPHVIZ    = 	task_fsm.eps \
+				project_fsm.eps
 
 all: plantuml_illustrations graphviz_illustrations
 

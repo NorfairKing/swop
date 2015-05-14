@@ -2,11 +2,9 @@
 
 title "Delegate Post"
 
-actor Manager
-
-participant UI
-
 Company -> PostOffice: "delegate(from,to,task)"
+PostOffice -> PostOffice: "createDelegatedTaskFor(task)"
+PostOffice -> PostOffice: "createDelegationFor(from,to,task,delegatedTask)"
 PostOffice -> BranchOfficeFrom: "setDelegated(task)"
-PostOffice -> BranchOfficeTo: "createDelegatedTask(task)"
+PostOffice -> BranchOfficeTo: "addDelegated(delegatedTask)"
 @enduml

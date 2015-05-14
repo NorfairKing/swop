@@ -1,4 +1,7 @@
 digraph finite_state_machine {
+    labelloc="t";
+    label="Project FSM";
+
     node [label=""];
 
     start           [label="start", shape=none];
