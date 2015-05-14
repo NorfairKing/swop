@@ -20,6 +20,7 @@ import java.util.function.Function;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
 import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -36,22 +37,17 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 @SuppressWarnings("serial")
 public class TaskMan implements Serializable {
 
-    private Timekeeper timeKeeper;
     private Company    company;
+    private AuthenticationToken authenticationToken;
 
     /**
      * Full constructor
      */
     public TaskMan() {
-        this.timeKeeper = new Timekeeper();
         this.company = new Company();
     }
 
     // Getters
-    private Timekeeper getTimekeeper() {
-        return this.timeKeeper;
-    }
-
     private Company getCompany()
     {
         return this.company;
@@ -104,8 +100,6 @@ public class TaskMan implements Serializable {
         return result;
     }
 
-    // Sorry, I just hate Java (Syd)
-    // Nah, generics are fun! You go girl! (Pablo)
     private <Type, WrapperType, ImageType, ImageTypeWrapper> Map<WrapperType, ImageTypeWrapper> map(Map<? extends Type, ImageType> presents, Function<Type, WrapperType> wrap,
             Function<ImageType, ImageTypeWrapper> wrapImage) {
         Map<WrapperType, ImageTypeWrapper> result = new HashMap<>();
@@ -129,7 +123,7 @@ public class TaskMan implements Serializable {
      * @return A set of all known users, currently only developers
      */
     public Set<UserWrapper> getUsers() {
-        Set<UserWrapper> users = map(company.getDevelopers(), u -> wrapUser(u));
+        Set<UserWrapper> users = map(company.getDevelopers(authenticationToken), u -> wrapUser(u));
         users.add(wrapUser(new Manager("Manager")));
         return users;
     }
@@ -141,7 +135,7 @@ public class TaskMan implements Serializable {
      *
      */
     public Set<ProjectWrapper> getProjects() {
-        return map(company.getProjects(), p -> wrapProject(p));
+        return map(company.getProjects(authenticationToken), p -> wrapProject(p));
     }
 
     /**
@@ -150,7 +144,7 @@ public class TaskMan implements Serializable {
      * @return A set of the resources types
      */
     public Set<ResourceTypeWrapper> getResourceTypes() {
-        return map(company.getResourceTypes(), r -> wrapResourceType(r));
+        return map(company.getResourceTypes(authenticationToken), r -> wrapResourceType(r));
     }
 
     /**
@@ -161,7 +155,7 @@ public class TaskMan implements Serializable {
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
-        return map(company.getUnplannedTasksOf(project.getProject()), t -> wrapTask(t));
+        return map(company.getUnplannedTasksOf(project.getProject(), authenticationToken), t -> wrapTask(t));
     }
 
     /**
@@ -413,7 +407,7 @@ public class TaskMan implements Serializable {
                 throw new IllegalArgumentException("Given user is not developer.");
             }
             Developer dev = (Developer)user.getUser();
-            company.startExecutingTask(task.getTask(), getTimekeeper().getTime(), dev);
+            company.startExecutingTask(task.getTask(), company.getSystemTime(), dev);
         }
     }
 
@@ -428,8 +422,7 @@ public class TaskMan implements Serializable {
      *
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
-        if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        timeKeeper.setTime(time);
+        company.updateSystemTime(time);
     }
 
     /**
@@ -438,7 +431,7 @@ public class TaskMan implements Serializable {
      * @return The current system time
      */
     public LocalDateTime getSystemTime() {
-        return timeKeeper.getTime();
+        return company.getSystemTime();
     }
 
     /**
