@@ -1,1 +1,8 @@
+
+!ifndef DEVELOPERREQUIREMENT_ASS
+!define DEVELOPERREQUIREMENT_ASS
+
 !include developerrequirement.cl
+
+!endif
+

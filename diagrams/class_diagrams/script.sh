@@ -3,7 +3,7 @@ then
     shift
     for var in "$@"
     do
-        ./script.sh $suffix $var
+        ./script.sh $var
     done
     exit
 fi
@@ -15,11 +15,9 @@ base=$(basename "$file")
 extension="${base##*.}"
 filename="${base%.*}"
 
-uppername=${filename^^}
+uppername="${filename^^}_${extension^^}"
 
 text="$(cat $file)"
-
-echo $uppername
 
 echo "
 !ifndef $uppername
@@ -28,5 +26,5 @@ echo "
 $text
 
 !endif
-" #> $file
+" > $file
 

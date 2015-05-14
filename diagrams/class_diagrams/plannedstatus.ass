@@ -1,1 +1,8 @@
+
+!ifndef PLANNEDSTATUS_ASS
+!define PLANNEDSTATUS_ASS
+
 !include plannedstatus.cl
+
+!endif
+

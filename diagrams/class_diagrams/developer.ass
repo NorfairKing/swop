@@ -1,2 +1,9 @@
+
+!ifndef DEVELOPER_ASS
+!define DEVELOPER_ASS
+
 !include developer.cl
  
+
+!endif
+

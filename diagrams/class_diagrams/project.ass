@@ -1,4 +1,11 @@
+
+!ifndef PROJECT_ASS
+!define PROJECT_ASS
+
 !include project.cl
 !include task.cl
 
 Project --> "*" Task
+
+!endif
+

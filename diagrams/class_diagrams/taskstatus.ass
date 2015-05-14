@@ -1,1 +1,8 @@
+
+!ifndef TASKSTATUS_ASS
+!define TASKSTATUS_ASS
+
 !include taskstatus.cl
+
+!endif
+

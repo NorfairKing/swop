@@ -1,1 +1,8 @@
+
+!ifndef RESOURCETYPE_ASS
+!define RESOURCETYPE_ASS
+
 !include resourcetype.cl
+
+!endif
+

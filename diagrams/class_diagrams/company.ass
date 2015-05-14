@@ -1,3 +1,7 @@
+
+!ifndef COMPANY_ASS
+!define COMPANY_ASS
+
 !include company.cl
 !include branchoffice.cl
 !include resourcetype.cl
@@ -6,3 +10,6 @@
 Company --> "*" BranchOffice
 Company --> "*" ResourceType
 Company --> "1" DelegationOffice
+
+!endif
+

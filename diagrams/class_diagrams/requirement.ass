@@ -1,2 +1,9 @@
+
+!ifndef REQUIREMENT_ASS
+!define REQUIREMENT_ASS
+
 !include requirement.cl
  
+
+!endif
+
