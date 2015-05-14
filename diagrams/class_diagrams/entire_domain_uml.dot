@@ -3,35 +3,33 @@
 title "Domain Class Diagram"
  
 !include authenticationtoken.ass
-!include taskstatus.ass
-!include executingstatus.ass
+!include authenticator.ass
+!include branchoffice.ass
 !include company.ass
-!include reservable.ass
 !include delegatedstatus.ass
-!include developerrequirement.ass
 !include delegation.ass
 !include delegationoffice.ass
-!include authenticator.ass
-!include user.ass
-!include planning.ass
+!include developer.ass
+!include developerrequirement.ass
+!include executingstatus.ass
 !include failedstatus.ass
-!include requirements.ass
 !include finishedstatus.ass
 !include manager.ass
+!include planning.ass
 !include project.ass
+!include requirement.ass
+!include requirements.ass
+!include reservable.ass
+!include resource.ass
+!include resourcerequirement.ass
+!include resourcetype.ass
 !include task.ass
 !include taskinfo.ass
-!include timeperiod.ass
-!include branchoffice.ass
-!include timeconstrainedresourcetype.ass
-!include resource.ass
-!include requirement.ass
-!include developer.ass
-!include resourcerequirement.ass
-!include taskstati.ass
 !include taskman.ass
-!include plannedstatus.ass
-!include resourcetype.ass
-
+!include taskstati.ass
+!include taskstatus.ass
+!include timeconstrainedresourcetype.ass
+!include timeperiod.ass
+!include user.ass
 
 @enduml

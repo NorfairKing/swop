@@ -6,7 +6,6 @@
 !include failedstatus.ass
 !include finishedstatus.ass
 !include delegatedstatus.ass
-!include plannedstatus.ass
 !include executingstatus.ass
 
 !endif

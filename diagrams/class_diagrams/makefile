@@ -5,9 +5,7 @@ UML_SUFFIX  = uml
 DOT_EXT     = dot
 
 
-CLASS_DIAGRAMS = 	entire_domain_uml.eps \
-					task_planning_uml.eps \
-					task_uml.eps
+CLASS_DIAGRAMS = entire_domain_uml.eps
 
 class_diagrams: $(CLASS_DIAGRAMS)
 

@@ -3,6 +3,7 @@
 !define EXECUTINGSTATUS_ASS
 
 !include executingstatus.cl
+!include planning.cl
 
 !endif
 

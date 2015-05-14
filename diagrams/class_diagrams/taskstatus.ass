@@ -3,6 +3,9 @@
 !define TASKSTATUS_ASS
 
 !include taskstatus.cl
+!include planning.cl
+
+TaskStatus --> "0..1" Planning
 
 !endif
 
