@@ -8,7 +8,7 @@
 
 Delegation --> "1" BranchOffice: "from"
 Delegation --> "1" BranchOffice: "to"
-Delegation --> "1" Task: "delegatedTask"
+Delegation --> "1" Task: "delegationTask"
 
 !endif
 

@@ -1,0 +1,19 @@
+@startuml
+
+participant Company as c
+participant PostOffice as po
+participant BranchOfficeFrom as bof
+participant BranchOfficeTo as bot
+
+c -> po: delegateTask(task,from,to)
+po -> po: createDelegationTask(task)
+po -> po: createDelegation(from,to,task,delegationTask)
+po -> bof: setDelegated(task)
+alt inSimulation
+    po -> bot: addTask(delegationTask)
+    po -> po: addDelegation(delegation)
+else
+    po -> po: addToDelegationBuffer(delegation)
+end
+
+@enduml

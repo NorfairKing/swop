@@ -11,7 +11,7 @@ CLASS_DIAGRAMS = entire_domain_uml.eps \
 
 PNG_DIAGRAMS = entire_domain_uml.png
 
-class_diagrams: *.cl *.ass $(CLASS_DIAGRAMS) $(PNG_DIAGRAMS)
+class_diagrams: $(CLASS_DIAGRAMS) $(PNG_DIAGRAMS)
 
 classes:
 	./compileraw.sh class *.cl
