@@ -1,3 +1,11 @@
+
+!ifndef RESOURCE_ASS
+!define RESOURCE_ASS
+
 !include resource.cl
 !include resourcetype.cl
+
 Resource --> "1" ResourceType
+
+!endif
+

@@ -1,0 +1,8 @@
+
+!ifndef AUTHENTICATOR_ASS
+!define AUTHENTICATOR_ASS
+
+!include authenticator.cl
+
+!endif
+

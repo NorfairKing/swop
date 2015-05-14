@@ -1,7 +1,0 @@
-@startuml
-
-title "Task planning"
-
-!include task_planning.uml
-
-@enduml

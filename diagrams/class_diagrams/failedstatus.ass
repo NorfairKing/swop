@@ -1,6 +1,13 @@
+
+!ifndef FAILEDSTATUS_ASS
+!define FAILEDSTATUS_ASS
+
 !include task.cl
 !include failedstatus.cl
 !include timeperiod.cl
 
 FailedStatus --> "0..1" Task: "alternative"
 FailedStatus --> "1" TimePeriod
+
+!endif
+

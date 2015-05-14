@@ -1,0 +1,13 @@
+
+!ifndef PLANNING_ASS
+!define PLANNING_ASS
+
+!include planning.cl
+!include reservable.cl
+!include task.cl
+
+Planning --> "*" Reservable
+Planning --> "1" LocalDateTime
+
+!endif
+

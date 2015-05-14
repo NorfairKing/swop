@@ -1,0 +1,8 @@
+
+!ifndef RESERVABLE_ASS
+!define RESERVABLE_ASS
+
+!include reservable.cl
+
+!endif
+

@@ -1,3 +1,7 @@
+
+!ifndef BRANCHOFFICE_ASS
+!define BRANCHOFFICE_ASS
+
 !include branchoffice.cl
 !include project.cl
 !include resource.cl
@@ -6,3 +10,6 @@
 BranchOffice --> "*" Project
 BranchOffice --> "*" Resource
 BranchOffice --> "*" User
+
+!endif
+

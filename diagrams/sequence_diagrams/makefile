@@ -5,17 +5,9 @@ UML_SUFFIX  = uml
 DOT_EXT     = dot
 
 
-CLASS_DIAGRAMS = entire_domain_uml.eps
+SEQUENCE_DIAGRAMS =	
 
-class_diagrams: $(CLASS_DIAGRAMS)
-
-classes:
-	./compileraw.sh class *.cl
-
-associations:
-	./compileraw.sh asso *.ass
-
-all: classes associations class_diagrams
+sequence_diagrams: $(SEQUENCE_DIAGRAMS)
 
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
 	$(PLANTCC) -t$(OUT_FORMAT) $< $@

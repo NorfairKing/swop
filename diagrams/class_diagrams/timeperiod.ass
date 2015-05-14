@@ -1,0 +1,8 @@
+
+!ifndef TIMEPERIOD_ASS
+!define TIMEPERIOD_ASS
+
+!include timeperiod.cl
+
+!endif
+
