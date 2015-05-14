@@ -17,7 +17,7 @@ classes:
 associations:
 	./compileraw.sh *.ass
 
-all: classes associations
+all: classes associations class_diagrams
 
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
 	$(PLANTCC) -t$(OUT_FORMAT) $< $@
