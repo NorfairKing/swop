@@ -4,8 +4,10 @@
 
 !include taskstatus.cl
 !include planning.cl
+!include task.cl
 
 TaskStatus --> "0..1" Planning
+TaskStatus --> "1" Task
 
 !endif
 
