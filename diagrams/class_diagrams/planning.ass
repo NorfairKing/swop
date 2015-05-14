@@ -1,0 +1,7 @@
+!include planning.cl
+!include reservable.cl
+!include task.cl
+
+Planning --> "*" Reservable
+Planning --> "1" Task
+Planning --> "1" LocalDateTime

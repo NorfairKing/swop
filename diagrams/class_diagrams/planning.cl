@@ -1,1 +1,3 @@
-class Planning
+class Planning {
+    LocalDateTime: plannedStartTime
+}

@@ -1,5 +1,37 @@
 @startuml
 
 title "Domain Class Diagram"
+ 
+!include authenticationtoken.ass
+!include taskstatus.ass
+!include executingstatus.ass
+!include company.ass
+!include reservable.ass
+!include delegatedstatus.ass
+!include developerrequirement.ass
+!include delegation.ass
+!include delegationoffice.ass
+!include authenticator.ass
+!include user.ass
+!include planning.ass
+!include failedstatus.ass
+!include requirements.ass
+!include finishedstatus.ass
+!include manager.ass
+!include project.ass
+!include task.ass
+!include taskinfo.ass
+!include timeperiod.ass
+!include branchoffice.ass
+!include timeconstrainedresourcetype.ass
+!include resource.ass
+!include requirement.ass
+!include developer.ass
+!include resourcerequirement.ass
+!include taskstati.ass
+!include taskman.ass
+!include plannedstatus.ass
+!include resourcetype.ass
+
 
 @enduml

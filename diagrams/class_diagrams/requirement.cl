@@ -1,3 +1,4 @@
 class Requirement {
     int: amount
 }
+

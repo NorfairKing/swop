@@ -1,1 +1,3 @@
-class Company
+class Company {
+    String: Name
+}

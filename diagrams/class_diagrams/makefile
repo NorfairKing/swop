@@ -12,10 +12,10 @@ CLASS_DIAGRAMS = 	entire_domain_uml.eps \
 class_diagrams: $(CLASS_DIAGRAMS)
 
 classes:
-	./compileraw.sh *.cl
+	./compileraw.sh class *.cl
 
 associations:
-	./compileraw.sh *.ass
+	./compileraw.sh asso *.ass
 
 all: classes associations class_diagrams
 

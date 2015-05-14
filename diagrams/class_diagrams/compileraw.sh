@@ -1,28 +1,34 @@
+out_ext=eps
 
-if [ "$#" -ne 1 ]
+suffix=$1
+if [ "$#" -ne 2 ]
 then
-    echo "Compiling $# diagrams"
+    total=$(($#-1))
+    echo "Compiling $total diagrams"
     counter=1
+    shift
     for var in "$@"
     do
-        ./compileraw.sh $var
+        ./compileraw.sh $suffix $var
         echo "($counter/$#): Done compiling $var"
         counter=$((counter+1))
     done
     exit
 fi
 
-file="$1"
+file="$2"
 
 base=$(basename "$file")
 extension="${base##*.}"
 filename="${base%.*}"
 
-out_ext=eps
 input_file=$base
-output_file=$filename.$out_ext
+output_file="${filename}_$suffix.$out_ext"
 
 start="@startuml"
 end="@enduml"
 
-echo -e "$start \\n $(cat $input_file) \\n $end" | plantuml -failfast -nbthread auto -p -t$out_ext > $output_file
+empty_comment="' empty line of comment"
+#echo "$input_file -> $output_file"
+
+echo -e "$start \n\n $(cat $input_file)\n$empty_comment \n\n $end" | plantuml -failfast2 -nbthread auto -p -t$out_ext > $output_file

@@ -1,1 +1,3 @@
-class BranchOffice
+class BranchOffice {
+    String location
+}
