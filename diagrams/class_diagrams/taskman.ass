@@ -1,0 +1,6 @@
+!include taskman.cl
+!include authenticator.cl
+!include company.cl
+
+TaskMan --> "1" Authenticator
+TaskMan --> "1" Company

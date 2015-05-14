@@ -1,0 +1,8 @@
+!include branchoffice.cl
+!include project.cl
+!include resource.cl
+!include user.cl
+
+BranchOffice --> "*" Project
+BranchOffice --> "*" Resource
+BranchOffice --> "*" User

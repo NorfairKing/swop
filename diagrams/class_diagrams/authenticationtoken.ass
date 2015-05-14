@@ -1,0 +1,6 @@
+!include authenticationtoken.cl
+!include branchoffice.cl
+!include user.cl
+
+AuthenticationToken --> "1" BranchOffice
+AuthenticationToken --> "1" User

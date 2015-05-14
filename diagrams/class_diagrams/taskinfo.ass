@@ -1,0 +1,5 @@
+!include taskinfo.cl
+!include requirements.cl
+
+TaskInfo --> "*" Requirements
+TaskInfo --> "*" TaskInfo: "dependsOn"
