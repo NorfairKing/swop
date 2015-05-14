@@ -7,7 +7,8 @@ DOT_EXT     = dot
 
 CLASS_DIAGRAMS = entire_domain_uml.eps \
 				 task_planning_uml.eps \
-				 delegate_task_uml.eps
+				 delegate_task_uml.eps \
+				 task_status_uml.eps
 
 PNG_DIAGRAMS = entire_domain_uml.png
 

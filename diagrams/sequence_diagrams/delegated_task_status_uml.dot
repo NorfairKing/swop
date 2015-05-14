@@ -1,5 +1,7 @@
 @startuml
 
+title "Delegated Task Status"
+
 participant Project as p
 participant OriginalTask as ot
 participant OriginalStatus as os

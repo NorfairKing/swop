@@ -1,5 +1,7 @@
 @startuml
 
+title "Delegate Task"
+
 participant Company as c
 participant PostOffice as po
 participant BranchOfficeFrom as bof
