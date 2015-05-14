@@ -194,6 +194,38 @@
                   }
                 },
                 "name":"Timmy"
+              },
+              {
+                "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+                "workday":{
+                  "startTime":{
+                    "hour":7,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  },
+                  "stopTime":{
+                    "hour":17,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  }
+                },
+                "breakPeriod":{
+                  "startTime":{
+                    "hour":11,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  },
+                  "stopTime":{
+                    "hour":14,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  }
+                },
+                "name":"Beertje"
               }
             ]
           }
