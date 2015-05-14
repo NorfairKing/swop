@@ -2,6 +2,8 @@
 
 title "Domain Class Diagram"
 
+class AuthenticationToken
+class Authenticator
 class BranchOffice
 class Company
 class DelegatedStatus
@@ -24,21 +26,27 @@ class Resource
 class ResourceType
 class Task 
 class TaskInfo
+class TaskMan
 class TaskStatus
 class TimePeriod
 class User
+interface Requireable
 
-User <|-- Manager
-User <|-- Developer
-TaskStatus <|-- PlannedStatus
-TaskStatus <|-- ExecutingStatus
+Requireable <|-- Developer
+Requireable <|-- ResourceType
 TaskStatus <|-- DelegatedStatus
+TaskStatus <|-- ExecutingStatus
 TaskStatus <|-- FailedStatus
 TaskStatus <|-- FinishedStatus
+TaskStatus <|-- PlannedStatus
+User <|-- Developer
+User <|-- Manager
 
-BranchOffice --> "*" User
+AuthenticationToken --> "1" BranchOffice
+AuthenticationToken --> "1" User
 BranchOffice --> "*" Project
 BranchOffice --> "*" Resource
+BranchOffice --> "*" User
 Company --> "*" BranchOffice
 Company --> "*" ResourceType
 Company --> "1" DelegationOffice
@@ -53,12 +61,14 @@ FailedStatus --> "1" TimePeriod
 FinishedStatus --> "1" TimePeriod
 PlannedStatus --> "1" Planning
 Project --> "*" Task
+Requirement --> "*" Requireable
 Requirements --> "*" Requirement
 Resource --> "1" ResourceType
 Task --> "1" TaskInfo
 Task --> "1" TaskStatus
 TaskInfo --> "*" Requirements
 TaskInfo --> "*" TaskInfo: "dependsOn"
-Requirement --> "*" ResourceType
+TaskMan --> "1" Authenticator
+TaskMan --> "1" Company
 
 @enduml

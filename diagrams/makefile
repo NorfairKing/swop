@@ -1,5 +1,5 @@
-OUT_FORMAT  = eps
 OUT_EXT     = eps
+OUT_FORMAT  = $(OUT_EXT)
 
 GRAPHVIZCC  = dot
 PLANTCC     = plantuml
@@ -9,11 +9,13 @@ UML_SUFFIX  = uml
 
 DOT_EXT     = dot
 
+DIRTY_EXT   = *.$(OUT_EXT)
+
 PLANT       = 	facade_uml.eps \
 				domain_model_uml.eps \
 				high_level_uml.eps \
 				post_office_uml.eps \
-				task_planning_uml.eps \
+				entire_domain_uml.eps \
 				sequence_post_office_uml.eps \
 				sequence_task_planning_uml.eps \
 				sequence_createTask_uml.eps \
@@ -36,3 +38,6 @@ graphviz_illustrations: $(GRAPHVIZ)
 
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
 	$(PLANTCC) -t$(OUT_FORMAT) $< $@
+	
+clean:
+	rm -r $(DIRTY_EXT)
