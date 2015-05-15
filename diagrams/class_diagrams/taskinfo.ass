@@ -5,7 +5,7 @@
 !include taskinfo.cl
 !include requirements.cl
 
-TaskInfo --> "*" Requirements
+TaskInfo --> "1" Requirements
 TaskInfo --> "*" TaskInfo: "dependsOn"
 
 !endif
