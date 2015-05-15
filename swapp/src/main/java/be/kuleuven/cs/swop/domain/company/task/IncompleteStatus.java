@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.Delegation;
 
 
 @SuppressWarnings("serial")
@@ -59,6 +60,11 @@ public abstract class IncompleteStatus extends TaskStatus {
     @Override
     void setAlternative(Task alternative) {
         throw new IllegalStateException(ERROR_SET_ALTERNATIVE_ERROR);
+    }
+    
+    @Override
+    void delegate(Delegation del){
+    	goToStatus(new DelegatedStatus(del));
     }
 
     private static String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";

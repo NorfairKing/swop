@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.Delegation;
 
 
 @SuppressWarnings("serial")
@@ -68,6 +69,12 @@ public abstract class PerformedStatus extends TaskStatus {
 	void execute() {
 		throw new IllegalStateException(ERROR_EXECUTE);
 	}
+	
+	@Override
+	void delegate(Delegation del){
+		throw new IllegalStateException(ERROR_DELEGATE);
+	}
+
 
 	/**
 	 * Retrieves the TimePeriod for when this Task was performed.
@@ -118,4 +125,6 @@ public abstract class PerformedStatus extends TaskStatus {
 	private static String ERROR_FINISH                   = "Can't finish a performed task.";
 	private static String ERROR_FAIL                     = "Can't fail a performed task.";
 	private static String ERROR_EXECUTE                     = "Can't execute a performed task.";
+	private static String ERROR_DELEGATE                     = "Can't delegate a performed task.";
+
 }

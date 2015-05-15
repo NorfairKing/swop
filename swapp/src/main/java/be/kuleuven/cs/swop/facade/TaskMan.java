@@ -22,6 +22,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
 import be.kuleuven.cs.swop.domain.company.Authenticator;
+import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -505,6 +506,12 @@ public class TaskMan implements Serializable {
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
         return wrapDeveloper(company.createDeveloper(name, authenticationToken));
+    }
+    
+    public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice){
+    	Task task = wrappedTask.getTask();
+    	BranchOffice newOffice = wrappedOffice.getOffice();
+    	getCompany().delegateTask(task, newOffice);
     }
     
     /**

@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -29,6 +31,7 @@ public class BranchOffice implements Serializable {
     
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
+    private Set<Task> delegatedTasks = new HashSet<Task>();
 
     public BranchOffice(String location) {
         this.location = location;
@@ -168,6 +171,16 @@ public class BranchOffice implements Serializable {
 
     public Developer createDeveloper(String name) {
         return getPlanningManager().createDeveloper(name);
+    }
+    
+    public boolean hasTask(Task task){
+    	 Project proj = projectManager.getProjectFor(task);
+    	 return proj != null;
+    }
+    public Task createDelegatedTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
+    	Task task = new Task(description, estimatedDuration, acceptableDeviation, requirements);
+    	delegatedTasks.add(task);
+    	return task;
     }
 
 }

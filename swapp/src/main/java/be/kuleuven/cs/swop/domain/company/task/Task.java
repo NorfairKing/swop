@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.Delegation;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
@@ -390,6 +391,10 @@ public class Task implements Serializable {
 
     public Task getAlternative() {
         return status.getAlternative();
+    }
+    
+    public void delegate(Delegation del){
+    	status.delegate(del);
     }
 
     /**

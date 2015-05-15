@@ -177,6 +177,21 @@ public class Company {
         return timeKeeper.getTime();
     }
     
+    //TODO: Proper checking
+    public void delegateTask(Task task, BranchOffice newOffice){
+    	BranchOffice oldOffice = getOfficeFromTask(task);
+    	Delegation del = getDelegationOffice().createDelegation(task, oldOffice, newOffice);
+    }
+    
+    public BranchOffice getOfficeFromTask(Task task){
+    	for(BranchOffice office : offices){
+    		if(office.hasTask(task)){
+    			return office;
+    		}
+    	}
+    	return null;
+    }
+    
     
     
 }
