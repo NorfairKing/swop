@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,13 +30,15 @@ public class BranchOffice implements Serializable {
     
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
-    private Set<Task> delegatedTasks = new HashSet<Task>();
+    private Project delegationProject;
 
     public BranchOffice(String location) {
         this.location = location;
         
         setProjectManager(new ProjectManager());
         setPlanningManager(new PlanningManager());
+        
+        delegationProject = getProjectManager().createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
     }
 
     // Getters and setters of internal state
@@ -178,8 +179,7 @@ public class BranchOffice implements Serializable {
     	 return proj != null;
     }
     public Task createDelegatedTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
-    	Task task = new Task(description, estimatedDuration, acceptableDeviation, requirements);
-    	delegatedTasks.add(task);
+    	Task task = delegationProject.createTask(description, estimatedDuration, acceptableDeviation, requirements);
     	return task;
     }
 
