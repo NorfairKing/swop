@@ -23,7 +23,8 @@ extension="${base##*.}"
 filename="${base%.*}"
 
 input_file=$base
-output_file="${filename}_$suffix.$out_ext"
+output_file1="${filename}_$suffix.$out_ext"
+output_file2="${filename}_$suffix.png"
 
 start="@startuml"
 end="@enduml"
@@ -31,4 +32,5 @@ end="@enduml"
 empty_comment="' empty line of comment"
 #echo "$input_file -> $output_file"
 
-echo -e "$start \n\n $(cat $input_file)\n$empty_comment \n\n $end" | plantuml -failfast2 -nbthread auto -p -t$out_ext > $output_file
+echo -e "$start \n\n $(cat $input_file)\n$empty_comment \n\n $end" | plantuml -failfast2 -nbthread auto -p -t$out_ext > $output_file1
+echo -e "$start \n\n $(cat $input_file)\n$empty_comment \n\n $end" | plantuml -failfast2 -nbthread auto -p -tpng > $output_file2

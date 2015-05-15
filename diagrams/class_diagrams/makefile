@@ -16,7 +16,8 @@ CLASS_DIAGRAMS = \
 	task_status_uml.eps \
 	simulation_uml.eps \
 	top_level_uml.eps \
-	office_login_uml.eps
+	office_login_uml.eps \
+	reservables_uml.eps
 
 CLASS_DIAGRAM_PNGS = \
 	entire_domain_uml.png \
@@ -25,7 +26,8 @@ CLASS_DIAGRAM_PNGS = \
 	task_status_uml.png \
 	simulation_uml.png \
 	top_level_uml.png \
-	office_login_uml.png
+	office_login_uml.png \
+	reservables_uml.png
 
 
 class_diagrams: $(CLASS_DIAGRAMS)
