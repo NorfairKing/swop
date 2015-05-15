@@ -3,7 +3,6 @@
 !define REQUIREMENT_ASS
 
 !include requirement.cl
- 
 
 !endif
 
