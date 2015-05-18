@@ -2,10 +2,12 @@ package be.kuleuven.cs.swop.domain.company.resource;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 
 import com.google.common.collect.ImmutableSet;
 
-public class Requirements {
+@SuppressWarnings("serial")
+public class Requirements implements Serializable {
 
     private final Set<Requirement> reqs;
 
