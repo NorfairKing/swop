@@ -4,10 +4,8 @@
 
 !include task.cl
 !include failedstatus.cl
-!include timeperiod.cl
 
 FailedStatus --> "0..1" Task: "alternative"
-FailedStatus --> "1" TimePeriod
 
 !endif
 

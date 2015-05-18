@@ -6,7 +6,7 @@ participant Authenticator as a
 participant AuthenticationToken as at
 
 sc -> tm: login(branchOffice, user)
-tm -> a: getAuthenticationToken(branchOffice, user)
+tm -> a: requestAuthenticationFor(branchOffice, user)
 a -> at: new (branchOffice, user)
 at --> tm: authenticationToken
 tm -> tm: setAuthenticationToken

@@ -1,0 +1,7 @@
+
+!ifndef INCOMPLETESTATUS_ASS
+!define INCOMPLETESTATUS_ASS
+
+!include incompletestatus.cl
+
+!endif

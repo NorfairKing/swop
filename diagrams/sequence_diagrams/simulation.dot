@@ -9,9 +9,8 @@ participant BranchOfficeMemento as bom
 tm -> c: "startSimulationFor(branchOffice)"
 c -> po: "startSimulationFor(branchOffice)"
 c -> bo: "getMemento()"
-bo -> bom: "new()"
-bo -> bom: "setState()"
-bo --> c: "branchOfficeMemento"
+bo -> bom: "new(branchOffice)"
+bom --> c: "branchOfficeMemento"
 
 ... Simulation ...
 
@@ -19,8 +18,7 @@ tm -> c: "stopSimulationFor(branchOffice, success)"
 alt success
     c -> po: "realiseSimulationFor(branchOffice)"
     loop bufferedDelegations
-        po -> bo: "addDelegated(delegationTask)"
-        po -> po: "addDelegation(delegation)"
+        po -> po: "commitDelegation(delegation)"
     end
 else
     c -> bo: "setMemento(branchOfficeMemento)"

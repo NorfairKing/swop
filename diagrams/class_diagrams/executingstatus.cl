@@ -2,9 +2,9 @@
 !ifndef EXECUTINGSTATUS_CL
 !define EXECUTINGSTATUS_CL
 
-!include taskstatus.cl
+!include incompletestatus.cl
 class ExecutingStatus
-TaskStatus <|-- ExecutingStatus
+IncompleteStatus <|-- ExecutingStatus
 
 !endif
 

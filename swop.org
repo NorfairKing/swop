@@ -275,7 +275,6 @@ Stateless task + state
 
 
 
-
 ** tweede sessie:
 *** Feedback (4.5/6)
     - Casts teveel
@@ -295,3 +294,4 @@ Stateless task + state
     - nullcheck in CLI
     - pass op met teveel wrapper
     - postbus is oke: postoffice is caretaker van memento van branchoffice
+** derde sessie

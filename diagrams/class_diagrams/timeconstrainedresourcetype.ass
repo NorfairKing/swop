@@ -3,6 +3,9 @@
 !define TIMECONSTRAINEDRESOURCETYPE_ASS
 
 !include timeconstrainedresourcetype.cl
+!include timeperiod.cl
+
+TimeConstrainedResourceType -> TimePeriod: "dailyAvailability"
 
 !endif
 
