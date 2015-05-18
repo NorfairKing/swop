@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.Delegation;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ abstract class TaskStatus implements Serializable {
 
     private Task task;
 
+    TaskStatus() {}
     TaskStatus(Task task) {
         setTask(task);
     }
@@ -73,6 +75,8 @@ abstract class TaskStatus implements Serializable {
     abstract void fail(DateTimePeriod period);
     
     abstract void execute();
+    
+    abstract void delegate(Delegation del);
 
     void goToStatus(TaskStatus status) {
         this.task.setStatus(status);
@@ -103,6 +107,11 @@ abstract class TaskStatus implements Serializable {
     abstract boolean wasFinishedEarly();
 
     abstract boolean wasFinishedLate();
+    
+    Delegation getDelegation(){
+    	return null;
+    }
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";
+
 }

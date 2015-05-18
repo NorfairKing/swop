@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -21,6 +22,8 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public interface UserInterface {
+    
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices);
     
     /**
      * Shows a list of all users and makes the user select one.

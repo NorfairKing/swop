@@ -9,6 +9,8 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public class FinishedStatus extends PerformedStatus {
 
+    @SuppressWarnings("unused")
+    private FinishedStatus() { }
     FinishedStatus(Task task, DateTimePeriod performedDuring) {
         super(task, performedDuring);
     }

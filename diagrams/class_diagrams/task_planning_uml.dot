@@ -2,6 +2,8 @@
 
 title "Task planning"
 
-!include task_planning.uml
+!include task.ass
+!include planning.ass
+!include taskstatus.ass
 
 @enduml

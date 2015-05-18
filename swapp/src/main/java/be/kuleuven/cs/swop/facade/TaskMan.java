@@ -1,11 +1,7 @@
 package be.kuleuven.cs.swop.facade;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,8 +15,9 @@ import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
+import be.kuleuven.cs.swop.domain.company.Authenticator;
+import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -37,7 +34,8 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 @SuppressWarnings("serial")
 public class TaskMan implements Serializable {
 
-    private Company    company;
+    private Company company;
+    private Authenticator authenticator = new Authenticator();
     private AuthenticationToken authenticationToken;
 
     /**
@@ -51,6 +49,18 @@ public class TaskMan implements Serializable {
     private Company getCompany()
     {
         return this.company;
+    }
+    
+    public AuthenticationToken getCurrentAuthenticationToken() {
+        return authenticationToken;
+    }
+    
+    public void setCurrentAuthenticationToken(AuthenticationToken token) {
+        this.authenticationToken = token;
+    }
+    
+    public void requestAuthenticationFor(BranchOfficeWrapper office, UserWrapper user) {
+        authenticationToken = authenticator.createFor(office.getOffice(), user.getUser());
     }
 
     // Wrapping functions
@@ -116,26 +126,50 @@ public class TaskMan implements Serializable {
         }
         return result;
     }
+    
+    public Set<BranchOfficeWrapper> getOffices() {
+        return map(company.getOffices(), o -> new BranchOfficeWrapper(o));
+    }
 
     /**
-     * Retrieve all known users
+     * Retrieve all users for the given branch office
      *
+     * @param office The branch office from which you want the users
      * @return A set of all known users, currently only developers
      */
-    public Set<UserWrapper> getUsers() {
-        Set<UserWrapper> users = map(company.getDevelopers(authenticationToken), u -> wrapUser(u));
+    public Set<UserWrapper> getUsersFrom(BranchOfficeWrapper office) {
+        Set<UserWrapper> users = map(office.getOffice().getDevelopers(), u -> wrapUser(u));
         users.add(wrapUser(new Manager("Manager")));
         return users;
     }
 
     /**
-     * Retrieve every Project managed by this program.
+     * Retrieve every Project managed by your current office.
      *
      * @return Returns a Set of ProjectWrappers.
      *
      */
     public Set<ProjectWrapper> getProjects() {
         return map(company.getProjects(authenticationToken), p -> wrapProject(p));
+    }
+    
+    /**
+     * Retrieve every Project managed by this program.
+     *
+     * @return Returns a Set of ProjectWrappers.
+     *
+     */
+    public Set<ProjectWrapper> getAllProjects() {
+        return map(company.getAllProjects(), p -> wrapProject(p));
+    }
+    
+    /**
+     * Searches all known branchoffices to see which manages the project.
+     * @param project The project for which you want the office
+     * @return The office that manages the project
+     */
+    public BranchOfficeWrapper getOfficeOf(ProjectWrapper project) {
+        return new BranchOfficeWrapper(company.getOfficeOf(project.getProject()));
     }
 
     /**
@@ -159,14 +193,13 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieves the assigned tasks of a developer from a single project
+     * Retrieves the assigned tasks from a single project for current authenticated user
      *
      * @param project The project to retrieve from
-     * @param dev The dev to retrieve for
      * @return The assigned tasks
      */
-    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project, DeveloperWrapper dev){
-        return map(company.getAssignedTasksOf(project.getProject(), dev.getDeveloper()), t -> wrapTask(t));
+    public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project) {
+        return map(company.getAssignedTasksOf(project.getProject(), authenticationToken), t -> wrapTask(t));
     }
 
     /**
@@ -176,7 +209,7 @@ public class TaskMan implements Serializable {
      * @return The planning of the given task
      */
     public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
-        return wrapPlanning(company.getPlanningFor(task.getTask()));
+        return wrapPlanning(company.getPlanningFor(task.getTask(), authenticationToken));
     }
 
     /**
@@ -187,7 +220,11 @@ public class TaskMan implements Serializable {
      * @return A list of suggested time options
      */
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
-        return company.getPlanningTimeOptions(task.getTask(), AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, timeKeeper.getTime());
+        return company.getPlanningTimeOptions(
+                task.getTask(), 
+                AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, 
+                company.getSystemTime(),
+                authenticationToken);
     }
 
     /**
@@ -198,11 +235,11 @@ public class TaskMan implements Serializable {
      * @return The list with options
      */
     public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningResourceOptions(task.getTask(), time), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
+        return map(company.getPlanningResourceOptions(task.getTask(), time, authenticationToken), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
     }
 
     public Set<ResourceWrapper> getResources(){
-    	return map(company.getResources(), t -> wrapResource(t));
+    	return map(company.getResources(authenticationToken), t -> wrapResource(t));
     }
 
     /**
@@ -213,7 +250,7 @@ public class TaskMan implements Serializable {
      * @return The possible developers
      */
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningDeveloperOptions(task.getTask(), time), d -> wrapDeveloper(d));
+        return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> wrapDeveloper(d));
     }
 
     /**
@@ -228,7 +265,7 @@ public class TaskMan implements Serializable {
      */
     public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {
-			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
 		} catch (ConflictingPlanningException e) {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
@@ -247,14 +284,14 @@ public class TaskMan implements Serializable {
      */
     public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
     	try {
-			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()));
+			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
 		} catch (ConflictingPlanningException e) {
 			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
 
     public void removePlanning(TaskPlanningWrapper planning){
-    	company.removePlanning(planning.getPlanning());
+    	company.removePlanning(planning.getPlanning(), authenticationToken);
     }
 
     /**
@@ -280,10 +317,10 @@ public class TaskMan implements Serializable {
         LocalDateTime dueTime = data.getDueTime();
         LocalDateTime creationTime = data.getCreationTime();
         if (data.getCreationTime() == null) {
-            creationTime = timeKeeper.getTime();
+            creationTime = company.getSystemTime();
         }
 
-        return wrapProject(company.createProject(title, description, creationTime, dueTime));
+        return wrapProject(company.createProject(title, description, creationTime, dueTime, authenticationToken));
     }
 
     /**
@@ -337,7 +374,7 @@ public class TaskMan implements Serializable {
     public TaskWrapper createAlternativeFor(TaskWrapper task, TaskData data) {
         if (task == null) { throw new IllegalArgumentException("Trying to create alternative for null task"); }
 
-        Project project = company.getProjectFor(task.getTask());
+        Project project = company.getProjectFor(task.getTask(), authenticationToken);
 
         TaskWrapper alternative = createTaskFor(new ProjectWrapper(project), data);
 
@@ -396,18 +433,12 @@ public class TaskMan implements Serializable {
             DateTimePeriod timePeriod = new DateTimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
 
             if (performedStatusData.isSuccessful()) {
-                company.finishTask(task.getTask(), timePeriod);
+                company.finishTask(task.getTask(), timePeriod, authenticationToken);
             } else {
-                company.failTask(task.getTask(), timePeriod);
+                company.failTask(task.getTask(), timePeriod, authenticationToken);
             }
         } else {
-            ExecutingStatusData execStatusData = (ExecutingStatusData) statusData;
-            UserWrapper user = execStatusData.getDeveloper();
-            if (!(user.getUser() instanceof Developer)) {
-                throw new IllegalArgumentException("Given user is not developer.");
-            }
-            Developer dev = (Developer)user.getUser();
-            company.startExecutingTask(task.getTask(), company.getSystemTime(), dev);
+            company.startExecutingTask(task.getTask(), company.getSystemTime(), authenticationToken);
         }
     }
 
@@ -451,7 +482,7 @@ public class TaskMan implements Serializable {
             availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
         }
 
-        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
+        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability, authenticationToken));
     }
 
     /**
@@ -463,7 +494,7 @@ public class TaskMan implements Serializable {
     public ResourceWrapper createResource(ResourceData data) {
         String name = data.getName();
         ResourceType type = data.getType().getType();
-        return wrapResource(company.createResource(name, type));
+        return wrapResource(company.createResource(name, type, authenticationToken));
     }
 
     /**
@@ -476,8 +507,8 @@ public class TaskMan implements Serializable {
      * @param task The task to check
      * @return Whether or not it is available
      */
-    public boolean isTaskAvailableFor(LocalDateTime time, DeveloperWrapper dev,TaskWrapper task) {
-        return getCompany().isTaskAvailableFor(time, dev.getDeveloper(), task.getTask());
+    public boolean isTaskAvailableFor(LocalDateTime time, TaskWrapper task) {
+        return getCompany().isTaskAvailableFor(time, task.getTask(), authenticationToken);
     }
 
     /**
@@ -488,73 +519,49 @@ public class TaskMan implements Serializable {
      */
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
-        return wrapDeveloper(company.createDeveloper(name));
+        return wrapDeveloper(company.createDeveloper(name, authenticationToken));
     }
-
+    
+    public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice){
+    	Task task = wrappedTask.getTask();
+    	BranchOffice newOffice = wrappedOffice.getOffice();
+    	getCompany().delegateTask(task, newOffice);
+    }
+    
+    public void startSimulation() {
+        company.startSimulationFor(authenticationToken);
+    }
+    
+    public void realizeSimulation() {
+        company.realizeSimulationFor(authenticationToken);
+    }
+    
+    public void cancelSimulation() {
+        company.cancelSimulationFor(authenticationToken);
+    }
+    
+    public boolean isInASimulation() {
+        return company.isInASimulation();
+    }
+    
     /**
-     * Creates a memento of the system
-     *
-     * @return The created memento
+     * Saves the company to disk.
+     * 
+     * @param path Where to save it.
+     * @throws FileNotFoundException If you can't save there.
      */
-    public Memento saveToMemento() {
-        return new Memento(this);
+    public void saveEverythingToFile(String path) throws FileNotFoundException {
+        JSONReader.writeToDisk(path, company);
     }
-
+    
     /**
-     * Restore the system from a memento
-     *
-     * @param memento The memento to restore from
+     * Loads the company from disk.
+     * 
+     * @param path Where to load from.
+     * @throws FileNotFoundException If there is no file found.
      */
-    public void restoreFromMemento(Memento memento) {
-        company = memento.getSavedState().getCompany();
-        timeKeeper = memento.getSavedState().getTimekeeper();
-    }
-
-    public static class Memento {
-
-        private TaskMan state;
-
-        public Memento(TaskMan state) {
-            this.state = state.getDeepCopy();
-        }
-
-        TaskMan getSavedState() {
-            return state;
-        }
-    }
-
-    /**
-     * Creates a deep copy of TaskMan
-     * This is done by writing it to a bytestream, using the build-in java serializer
-     * and then reading it out again.
-     * This gives a very clean way to prevent duplication by multiple references, or
-     * problems with looping references.
-     * It does however take a bit more memory because value classes will also be copied
-     * where they aren't strictly needed.
-     *
-     * @return A deep copy of this class.
-     */
-    private TaskMan getDeepCopy() {
-        TaskMan orig = this;
-        TaskMan obj = null;
-        try {
-            // Write the object out to a byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(orig);
-            out.flush();
-            out.close();
-
-            // Make an input stream from the byte array and read
-            // a copy of the object back in.
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            obj = (TaskMan) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        }
-        return obj;
+    public void loadEverythingFromFile(String path) throws FileNotFoundException {
+        company = (Company)JSONReader.readFromDisk(path);
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;

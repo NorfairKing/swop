@@ -3,9 +3,17 @@ package be.kuleuven.cs.swop.domain.company;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.Timekeeper;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
@@ -18,8 +26,9 @@ public class Company {
     private LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
+    private BranchOffice.Memento officeMemento;
+    
     public Company() {
-        
     }
     
     public ImmutableSet<BranchOffice> getOffices() {
@@ -34,6 +43,23 @@ public class Company {
         return at.getOffice().getProjects();
     }
     
+    public ImmutableSet<Project> getAllProjects() {
+        Set<Project> all = new HashSet<>();
+        for (BranchOffice office: offices) {
+            all.addAll(office.getProjects());
+        }
+        return ImmutableSet.copyOf(all);
+    }
+    
+    public BranchOffice getOfficeOf(Project project) {
+        for (BranchOffice office: offices) {
+            if (office.getProjects().contains(project)) {
+                return office;
+            }
+        }
+        return null;
+    }
+    
     public ImmutableSet<ResourceType> getResourceTypes(AuthenticationToken at) {
         return at.getOffice().getResourceTypes();
     }
@@ -44,6 +70,126 @@ public class Company {
 
     private DelegationOffice getDelegationOffice() {
         return delegationOffice;
+    }
+    
+    public Set<Task> getAssignedTasksOf(Project project, AuthenticationToken at){
+        if (at.isDeveloper()) {
+            return at.getOffice().getAssignedTasksOf(project, at.getAsDeveloper());
+        }
+        else {
+            return new HashSet<>();
+        }
+    }
+    
+    public TaskPlanning getPlanningFor(Task task, AuthenticationToken at) {
+        return at.getOffice().getPlanningFor(task);
+    }
+    
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time, AuthenticationToken at) {
+        return at.getOffice().getPlanningTimeOptions(task, amount, time);
+    }
+
+    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time, AuthenticationToken at) {
+        return at.getOffice().getPlanningResourceOptions(task, time);
+    }
+
+    public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time, AuthenticationToken at) {
+        return at.getOffice().getPlanningDeveloperOptions(task, time);
+    }
+
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs, AuthenticationToken at) throws ConflictingPlanningException {
+        at.getOffice().createPlanning(task, time, rss, devs);
+    }
+
+    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs, AuthenticationToken at) throws ConflictingPlanningException {
+        at.getOffice().createPlanningWithBreak(task, time, rss, devs);
+    }
+    
+    public void removePlanning(TaskPlanning planning, AuthenticationToken at){      
+        at.getOffice().removePlanning(planning);      
+    }
+
+    public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime, AuthenticationToken at) {
+        return at.getOffice().createProject(title, description, creationTime, dueTime);
+    }
+
+    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
+        return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
+    }
+    
+    public Set<Resource> getResources(AuthenticationToken at) {       
+        return at.getOffice().getResources();     
+    }
+
+    public Project getProjectFor(Task task, AuthenticationToken at){
+        return at.getOffice().getProjectFor(task);
+    }
+    
+    public void setAlternativeFor(Task t, Task alt){
+        t.setAlternative(alt);
+    }
+
+    public void addDependencyTo(Task t,Task dep){
+        t.addDependency(dep);
+    }
+    
+    public void finishTask(Task t, DateTimePeriod period, AuthenticationToken at){
+        at.getOffice().finishTask(t, period);
+    }
+
+    public void failTask(Task t,DateTimePeriod period, AuthenticationToken at){
+        at.getOffice().failTask(t, period);
+    }
+
+    public void startExecutingTask(Task t, LocalDateTime time, AuthenticationToken at) {
+        if (at.isDeveloper()) {
+            Developer dev = at.getAsDeveloper();
+            at.getOffice().startExecutingTask(t, time, dev);
+        }
+        else {
+            throw new IllegalArgumentException("Manager is trying to execute a task.");
+        }
+    }
+
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability, AuthenticationToken at){
+        return at.getOffice().createResourceType(name, requires, conflicts, selfConflicting, availability);
+    }
+
+    public Resource createResource(String name, ResourceType type, AuthenticationToken at){
+        return at.getOffice().createResource(name, type);
+    }
+
+    public Developer createDeveloper(String name, AuthenticationToken at) {
+        return at.getOffice().createDeveloper(name);
+    }
+    
+    public boolean isTaskAvailableFor(LocalDateTime time, Task task, AuthenticationToken at) {
+        if (at.isDeveloper()) {
+            return at.getOffice().isTaskAvailableFor(time, at.getAsDeveloper(), task);
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public void startSimulationFor(AuthenticationToken at) {
+        officeMemento = at.getOffice().saveToMemento();
+        delegationOffice.startSimulation(at.getOffice());
+    }
+    
+    public void realizeSimulationFor(AuthenticationToken at) {
+        delegationOffice.commitSimulation();
+        officeMemento = null; //everything already done on this branchoffice
+    }
+    
+    public void cancelSimulationFor(AuthenticationToken at) {
+        at.getOffice().restoreFromMemento(officeMemento);
+        delegationOffice.rollbackSimulation();
+        officeMemento = null;
+    }
+    
+    public boolean isInASimulation() {
+        return officeMemento != null;
     }
     
     /**
@@ -70,8 +216,21 @@ public class Company {
         return time;
     }
     
-    public void delegate(Task oldTask, BranchOffice newOffice){
-        
+    //TODO: Proper checking
+    public void delegateTask(Task task, BranchOffice newOffice){
+    	BranchOffice oldOffice = getOfficeFromTask(task);
+    	Delegation del = getDelegationOffice().createDelegation(task, oldOffice, newOffice);
     }
+    
+    public BranchOffice getOfficeFromTask(Task task){
+    	for(BranchOffice office : offices){
+    		if(office.hasTask(task)){
+    			return office;
+    		}
+    	}
+    	return null;
+    }
+    
+    
     
 }

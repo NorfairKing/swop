@@ -16,8 +16,6 @@ public class SessionController {
 
     private UserInterface   ui;
     private TaskMan         taskMan;
-    private TaskMan.Memento taskManBackup;
-    private UserWrapper     currentUser;
 
     /**
      * Full constructor
@@ -34,21 +32,8 @@ public class SessionController {
         setFacade(facade);
     }
 
-    public UserWrapper getCurrentUser() {
-        return this.currentUser;
-    }
-
-    protected boolean canHaveAsCurrentUser(UserWrapper user) {
-        return user != null;
-    }
-
-    protected void setCurrentUser(UserWrapper user) {
-        if (!canHaveAsCurrentUser(user)) { throw new IllegalArgumentException(ERROR_ILLEGAL_USER); }
-        this.currentUser = user;
-    }
-
     public boolean isLoggedIn() {
-        return this.currentUser != null;
+        return taskMan.getCurrentAuthenticationToken() != null;
     }
 
     /**
@@ -113,10 +98,25 @@ public class SessionController {
      * Starts a session to select the user. This isn't specified in the exercise, but in the current design we need this.
      */
     public void startSelectUserSession() {
-        Set<UserWrapper> users = getTaskMan().getUsers();
+        
+        Set<BranchOfficeWrapper> offices = getTaskMan().getOffices();
+        
+        BranchOfficeWrapper office = getUi().selectOffice(offices);
+        
+        if (office == null) return;
+        
+        Set<UserWrapper> users = getTaskMan().getUsersFrom(office);
+        
         UserWrapper user = getUi().selectUser(users);
-        if (user == null) { return; }
-        setCurrentUser(user);
+        
+        if (user == null) return;
+        
+        try {
+            getTaskMan().requestAuthenticationFor(office, user);
+        }
+        catch (IllegalArgumentException ex) {
+            getUi().showError("Failed logging in.");
+        }
     }
 
     /**
@@ -127,9 +127,10 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
+        
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
-        Set<ProjectWrapper> projects = getTaskMan().getProjects();
+        Set<ProjectWrapper> projects = getTaskMan().getAllProjects();
         getUi().showProjects(projects);
 
         // The user selects a project to view more details
@@ -311,6 +312,43 @@ public class SessionController {
         // End session
         handleSimulationStep();
     }
+    
+    public void startDelegateTaskSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
+        
+        // The system shows a list of all currently unplanned tasks and the project they belong to.
+        Set<ProjectWrapper> allProjects = taskMan.getProjects();
+        Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+
+        for (ProjectWrapper p : allProjects) {
+            Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
+            if (!unplannedTasks.isEmpty()) {
+                unplannedTaskMap.put(p, unplannedTasks);
+            }
+        }
+        // The user selects the tasks he wants to delegate
+        TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+        if (selectedTask == null) {
+            handleSimulationStep();
+            return;
+        }
+        
+        // The system shows an overview of the different branch offices
+        Set<BranchOfficeWrapper> offices = taskMan.getOffices();
+        BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
+        if (selectedOffice == null) {
+            handleSimulationStep();
+            return;
+        }
+        
+        taskMan.delegateTask(selectedTask, selectedOffice);
+
+        // End session
+        handleSimulationStep();
+    }
 
     public void startResolveConflictSession(TaskPlanningWrapper planning) {
         if (!isLoggedIn()) {
@@ -346,10 +384,6 @@ public class SessionController {
             return;
         }
 
-        if (!currentUser.isDeveloper())
-            return;
-        DeveloperWrapper d = currentUser.asDeveloper();
-        
         // User indicates he wants to update the status of a task
 
         // The system show a list of all available tasks and the projects they belong to
@@ -358,8 +392,8 @@ public class SessionController {
         Map<ProjectWrapper, Set<TaskWrapper>> assignedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
 
         for (ProjectWrapper p : allProjects) {
-            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p, d); // This will crash when the current user is a manager. Not fixing this because we don't do access controll. The UI has to
-                                                                               // implement responsibility for this.
+            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p); // this will return empty set if manager
+            
             if (!assignedTasks.isEmpty()) {
                 assignedTaskMap.put(p, assignedTasks);
             }
@@ -433,11 +467,11 @@ public class SessionController {
             return;
         }
         // The user indicates he wants to start a simulation
-        taskManBackup = getTaskMan().saveToMemento();
+        getTaskMan().startSimulation();
     }
 
     private void handleSimulationStep() {
-        if (taskManBackup != null) {
+        if (getTaskMan().isInASimulation()) {
             SimulationStepData simData = getUi().getSimulationStepData();
             if (!simData.getContinueSimulation()) {
                 if (simData.getRealizeSimulation()) {
@@ -452,18 +486,15 @@ public class SessionController {
 
     private void realizeSimulation() {
         // The user indicates he wants to realize the simulation
-        // Nothing has to be done. Just throw away the backup.
-        taskManBackup = null;
+        getTaskMan().realizeSimulation();
     }
 
     private void cancelSimulation() {
         // The user indicates he wants to cancel the simulation.
-        getTaskMan().restoreFromMemento(taskManBackup);
-        taskManBackup = null;
+        getTaskMan().cancelSimulation();
     }
 
     private static final String ERROR_NO_LOGIN       = "No user has logged in, please log in first.";
-    private static final String ERROR_ILLEGAL_USER   = "Invalid user for session controller.";
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";
     private static final String ERROR_ILLEGAL_FACADE = "Invalid facade controller for session controller.";
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
@@ -65,7 +66,7 @@ public class CLI implements UserInterface {
         System.out.println("\nLOGIN:");
         do {
             getSessionController().startSelectUserSession();
-        } while (getUser() == null);
+        } while (sessionController.getTaskMan().getCurrentAuthenticationToken() == null);
     }
 
     private String selectCommand() {
@@ -96,7 +97,7 @@ public class CLI implements UserInterface {
             	break;
         }
 
-        if (getUser().isDeveloper()) {
+        if (sessionController.getTaskMan().getCurrentAuthenticationToken().isDeveloper()) {
             switch (command) {
                 case "help":
                 case "h":
@@ -112,8 +113,8 @@ public class CLI implements UserInterface {
                     break;
 
             }
-
-        } else if (getUser().isManager()) {
+        } 
+        else {
             switch (command) {
                 case "help":
                 case "h":
@@ -124,6 +125,7 @@ public class CLI implements UserInterface {
                     System.out.println("project / p:   create project");
                     System.out.println("task    / t:   create task");
                     System.out.println("plan       :   plan task");
+                    System.out.println("delegate   :   delegate task");
                     System.out.println("simulation :   simulation");
                     break;
                 case "project":
@@ -137,14 +139,15 @@ public class CLI implements UserInterface {
                 case "plan":
                     getSessionController().startPlanTaskSession();
                     break;
+                case "delegate":
+                    getSessionController().startDelegateTaskSession();
+                    break;
                 case "simulation":
                     getSessionController().startRunSimulationSession();
                     break;
             }
-
-        } else {
-            System.out.println("You broke our type system. Congratz! Now call the smart IT people to have it fixed.");
         }
+        
         return false;
     }
 
@@ -170,6 +173,11 @@ public class CLI implements UserInterface {
     }
 
     // Interface methods
+    
+    @Override
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) {
+        return selectFromCollection(offices, "branch offices", o -> o.getLocation());
+    }
 
     @Override
     public UserWrapper selectUser(Set<UserWrapper> usersSet) {
@@ -201,6 +209,7 @@ public class CLI implements UserInterface {
         System.out.println(""
                 + "# " + project.getTitle() + "\n"
                 + "# Desc:    " + project.getDescription() + "\n"
+                + "# Office:  " + sessionController.getTaskMan().getOfficeOf(project).getLocation() + "\n"
                 + "# Created: " + formatDate(project.getCreationTime()) + "\n"
                 + "# Due:     " + formatDate(project.getDueTime()) + "\n"
                 + "# ETA:     " + formatDate(project.estimatedFinishTime(currentTime))
@@ -282,13 +291,11 @@ public class CLI implements UserInterface {
             System.out.println("#   Still needs work");
         }
 
-        if (getUser().isDeveloper()) {
-            if (sessionController.getTaskMan().isTaskAvailableFor(currentTime, getUser().asDeveloper(), task)) {
-                System.out.println("#   You can execute this task");
-            }
-            else {
-                System.out.println("#   Cannot be executed by you at this point");
-            }
+        if (sessionController.getTaskMan().isTaskAvailableFor(currentTime, task)) {
+            System.out.println("#   You can execute this task");
+        }
+        else {
+            System.out.println("#   Cannot be executed by you at this point");
         }
     }
 
@@ -430,7 +437,7 @@ public class CLI implements UserInterface {
             }
         } else {
             if (start) {
-                return new ExecutingStatusData(getUser());
+                return new ExecutingStatusData();
             } else {
                 return new FailedStatusData(startTime, endTime);
             }
@@ -800,10 +807,6 @@ public class CLI implements UserInterface {
 
     private void printDelimiter() {
         System.out.println("# ----------------------------------");
-    }
-
-    private UserWrapper getUser() {
-        return getSessionController().getCurrentUser();
     }
 
     // Constants

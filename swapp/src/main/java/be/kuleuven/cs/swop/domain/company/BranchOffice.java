@@ -1,6 +1,11 @@
 package be.kuleuven.cs.swop.domain.company;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,15 +31,26 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class BranchOffice implements Serializable {
 
+    private final String location;
+    
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
+    private Project delegationProject;
 
-    public BranchOffice() {
+    public BranchOffice(String location) {
+        this.location = location;
+        
         setProjectManager(new ProjectManager());
         setPlanningManager(new PlanningManager());
+        
+        delegationProject = getProjectManager().createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
     }
 
     // Getters and setters of internal state
+    public String getLocation() {
+        return location;
+    }
+    
     private ProjectManager getProjectManager() {
         return projectManager;
     }
@@ -122,10 +138,6 @@ public class BranchOffice implements Serializable {
         return getProjectManager().createProject(title, description, creationTime, dueTime);
     }
 
-    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
-        return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
-    }
-
     /**
      * Check if the task is available.
      * This is the 'available' described in the second iteration.
@@ -138,14 +150,6 @@ public class BranchOffice implements Serializable {
      */
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task) {
         return getPlanningManager().isTier2AvailableFor(time, dev, task);
-    }
-
-    public void setAlternativeFor(Task t, Task alt){
-        t.setAlternative(alt);
-    }
-
-    public void addDependencyTo(Task t,Task dep){
-        t.addDependency(dep);
     }
 
     // finish, fail and executing has to happen through the planningManager
@@ -173,6 +177,83 @@ public class BranchOffice implements Serializable {
 
     public Developer createDeveloper(String name) {
         return getPlanningManager().createDeveloper(name);
+    }
+    
+    public boolean hasTask(Task task){
+    	 Project proj = projectManager.getProjectFor(task);
+    	 return proj != null;
+    }
+    public Task createDelegatedTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
+    	Task task = delegationProject.createTask(description, estimatedDuration, acceptableDeviation, requirements);
+    	return task;
+    }
+    
+    // Memento for simulation
+    /**
+     * Creates a memento of the system
+     *
+     * @return The created memento
+     */
+    public Memento saveToMemento() {
+        return new Memento(this);
+    }
+
+    /**
+     * Restore the system from a memento
+     *
+     * @param memento The memento to restore from
+     */
+    public void restoreFromMemento(Memento memento) {
+        projectManager = memento.getSavedState().projectManager;
+        planningManager = memento.getSavedState().planningManager;
+        delegationProject = memento.getSavedState().delegationProject;
+    }
+
+    public static class Memento {
+
+        private BranchOffice state;
+
+        public Memento(BranchOffice state) {
+            this.state = state.getDeepCopy();
+        }
+
+        BranchOffice getSavedState() {
+            return state;
+        }
+    }
+    
+    /**
+     * Creates a deep copy of this class.
+     * This is done by writing it to a bytestream, using the build-in java serializer
+     * and then reading it out again.
+     * This gives a very clean way to prevent duplication by multiple references, or
+     * problems with looping references.
+     * It does however take a bit more memory because value classes and final variables 
+     * will also be copied where they aren't strictly needed.
+     *
+     * @return A deep copy of this class.
+     */
+    private BranchOffice getDeepCopy() {
+        BranchOffice orig = this;
+        BranchOffice obj = null;
+        try {
+            // Write the object out to a byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(orig);
+            out.flush();
+            out.close();
+
+            // Make an input stream from the byte array and read
+            // a copy of the object back in.
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            obj = (BranchOffice) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return obj;
     }
 
 }

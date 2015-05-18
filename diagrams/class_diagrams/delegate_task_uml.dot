@@ -2,6 +2,9 @@
 
 title "Delegate Task"
 
-!include delegate_task.uml
+!include delegation.ass
+!include delegationoffice.ass
+!include delegatedstatus.ass
+!include task.ass
 
 @enduml

@@ -9,31 +9,27 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class Developer extends User {
 
-    private TimePeriod workday = new TimePeriod(LocalTime.of(WORKDAY_START,0), LocalTime.of(WORKDAY_END,0)); //cannot be static :(
-
-    private TimePeriod breakPeriod = new TimePeriod(LocalTime.of(BREAK_PERIOD_START,0), LocalTime.of(BREAK_PERIOD_END,0));
-
     public Developer(String name) {
         super(name);
     }
 
     public boolean isAvailableDuring(DateTimePeriod period) {
-        return this.workday.isDuring(period);
+        return WORKDAY.isDuring(period);
     }
 
     public boolean isAvailableDuring(LocalTime time) {
-        return workday.isDuring(time);
+        return WORKDAY.isDuring(time);
     }
 
     public boolean isAvailableDuring(LocalDateTime time) {
     	if(time == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
     	}
-        return workday.isDuring(LocalTime.from(time));
+        return WORKDAY.isDuring(LocalTime.from(time));
     }
 
     public boolean canTakeBreakDuring(DateTimePeriod period) {
-        return this.breakPeriod.isDuring(period);
+        return BREAK_PERIOD.isDuring(period);
     }
 
     // FIXME, use better values when you figure out how to use them.
@@ -44,6 +40,9 @@ public class Developer extends User {
     private static final int BREAK_PERIOD_START = 11;
     private static final int BREAK_PERIOD_END   = 14;
     private static final int WORKDAY_END        = 17;
+    
+    private static final TimePeriod WORKDAY = new TimePeriod(LocalTime.of(WORKDAY_START,0), LocalTime.of(WORKDAY_END,0));
+    private static final TimePeriod BREAK_PERIOD = new TimePeriod(LocalTime.of(BREAK_PERIOD_START,0), LocalTime.of(BREAK_PERIOD_END,0));
     
     private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
 

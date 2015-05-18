@@ -1,0 +1,31 @@
+@startuml
+
+participant TaskMan as tm
+participant Company as c
+participant BranchOffice as bo
+participant DelegationOffice as po
+participant BranchOfficeMemento as bom
+
+tm -> c: "startSimulationFor(branchOffice)"
+c -> po: "startSimulationFor(branchOffice)"
+c -> bo: "getMemento()"
+bo -> bom: "new()"
+bo -> bom: "setState()"
+bo --> c: "branchOfficeMemento"
+
+... Simulation ...
+
+tm -> c: "stopSimulationFor(branchOffice, success)"
+alt success
+    c -> po: "realiseSimulationFor(branchOffice)"
+    loop bufferedDelegations
+        po -> bo: "addDelegated(delegationTask)"
+        po -> po: "addDelegation(delegation)"
+    end
+else
+    c -> bo: "setMemento(branchOfficeMemento)"
+    c -> po: "cancelSimulationFor(branchOffice)"
+end
+
+
+@enduml

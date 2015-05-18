@@ -1,0 +1,10 @@
+@startuml
+
+title "Top level"
+
+!include taskman.ass
+!include company.ass
+!include delegationoffice.ass
+!include branchoffice.ass
+
+@enduml

@@ -1,9 +1,0 @@
-!include task.cl
-!include executingstatus.cl
-!include plannedstatus.cl
-!include taskinfo.cl
-!include planning.cl
-
-ExecutingStatus --> "1" Planning
-PlannedStatus --> "1" Planning
-Task --> "1" TaskStatus
