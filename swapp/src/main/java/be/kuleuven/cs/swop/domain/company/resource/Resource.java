@@ -1,21 +1,27 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
+
 import java.io.Serializable;
+
+import be.kuleuven.cs.swop.domain.company.Reservable;
 
 
 @SuppressWarnings("serial")
-public class Resource implements Serializable{
+public class Resource implements Reservable, Serializable {
 
     private ResourceType type;
     private final String name;
 
-    @SuppressWarnings("unused") // for (de)serializing
-    private Resource() { this.name = null; }
-    
+    @SuppressWarnings("unused")
+    // for (de)serializing
+    private Resource() {
+        this.name = null;
+    }
+
     public Resource(ResourceType type, String name) {
         if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
         if (type == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);
-        
+
         this.type = type;
         this.name = name;
     }

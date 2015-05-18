@@ -1,13 +1,16 @@
 package be.kuleuven.cs.swop.domain.company.user;
 
+
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
+import be.kuleuven.cs.swop.domain.company.Reservable;
 
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 
+
 @SuppressWarnings("serial")
-public class Developer extends User {
+public class Developer extends User implements Reservable {
 
     public Developer(String name) {
         super(name);
@@ -22,9 +25,7 @@ public class Developer extends User {
     }
 
     public boolean isAvailableDuring(LocalDateTime time) {
-    	if(time == null){
-    		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
-    	}
+        if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return WORKDAY.isDuring(LocalTime.from(time));
     }
 
@@ -35,15 +36,15 @@ public class Developer extends User {
     // FIXME, use better values when you figure out how to use them.
     // Also, change them to getters, in case we might want them to be
     // different for different developers.
-    private static final int WORKDAY_START      = 7;
-    public  static final int BREAK_TIME         = 1;
-    private static final int BREAK_PERIOD_START = 11;
-    private static final int BREAK_PERIOD_END   = 14;
-    private static final int WORKDAY_END        = 17;
-    
-    private static final TimePeriod WORKDAY = new TimePeriod(LocalTime.of(WORKDAY_START,0), LocalTime.of(WORKDAY_END,0));
-    private static final TimePeriod BREAK_PERIOD = new TimePeriod(LocalTime.of(BREAK_PERIOD_START,0), LocalTime.of(BREAK_PERIOD_END,0));
-    
-    private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
+    private static final int        WORKDAY_START          = 7;
+    public static final int         BREAK_TIME             = 1;
+    private static final int        BREAK_PERIOD_START     = 11;
+    private static final int        BREAK_PERIOD_END       = 14;
+    private static final int        WORKDAY_END            = 17;
+
+    private static final TimePeriod WORKDAY                = new TimePeriod(LocalTime.of(WORKDAY_START, 0), LocalTime.of(WORKDAY_END, 0));
+    private static final TimePeriod BREAK_PERIOD           = new TimePeriod(LocalTime.of(BREAK_PERIOD_START, 0), LocalTime.of(BREAK_PERIOD_END, 0));
+
+    private static final String     ERROR_NULL_DURING_TIME = "The time to check may not be null.";
 
 }

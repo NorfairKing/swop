@@ -48,6 +48,8 @@ public class Delegation {
     
     private String ERROR_TASK_ALREADY_SET = "A task has already been set for this Delegation";
     private String ERROR_TASK_NULL = "The Task for this Delegation may not be set to null";
+
+
     
 
 }

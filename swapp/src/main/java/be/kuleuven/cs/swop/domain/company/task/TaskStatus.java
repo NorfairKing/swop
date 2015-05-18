@@ -69,7 +69,6 @@ abstract class TaskStatus implements Serializable {
         return task != null;
     }
 
-
     abstract void finish(DateTimePeriod period);
 
     abstract void fail(DateTimePeriod period);
@@ -113,6 +112,22 @@ abstract class TaskStatus implements Serializable {
     }
     TaskPlanning getPlanning(){
         return planning;
+    }
+
+    /**
+     * Gives an indication of when this planning has taken, or should take place. If the task is already finished, the planning knows when it was, and returns that as the period it was done. If the
+     * task isn't finished the planning will estimate a period based on the planned starting time and how long the task needs.
+     *
+     * @return An estimated period in which the task should be done, or the real period in which it was done.
+     */
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+        if(getTask().isPlanned()){
+            TaskPlanning p = getTask().getPlanning();
+            return p.getEstimatedPeriod();
+
+        }else{
+            return null;
+        }
     }
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";

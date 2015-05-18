@@ -125,4 +125,10 @@ public class DelegatedStatus extends TaskStatus {
 	private static String ERROR_EXECUTE                     = "Can't execute a delegated task.";
 	private static String ERROR_DELEGATE                     = "Can't delegate a task that's already delegated.";
 
+    @Override
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+        // TODO Auto-generated method stub
+        return null; // TODO FIXME, ask delegationTask
+    }
+
 }

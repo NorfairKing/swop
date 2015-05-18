@@ -12,108 +12,111 @@ import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 @SuppressWarnings("serial")
 public abstract class CompletedStatus extends TaskStatus {
 
-	private final DateTimePeriod performedDuring;
+    private final DateTimePeriod performedDuring;
 
-	CompletedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
-		super(task, planning);
+    CompletedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
+        super(task, planning);
         if (!canHaveBeenPerfomedDuring(performedDuring)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }
-        this.performedDuring = performedDuring;	}
-
-	/**
-	 * Checks whether the project containing this status can finish.
-	 *
-	 * @return Returns false.
-	 */
-	@Override
-	boolean canFinish() {
-		return false;
-	}
-
-	/**
-	 * Checks whether the project containing this status can fail.
-	 *
-	 * @return Returns false.
-	 */
-	@Override
-	boolean canFail() {
-		return false;
-	}
-
-	/**
-	 * Checks whether this status is final and therefore can't be changed.
-	 *
-	 * @return Returns true.
-	 */
-	@Override
-	boolean isFinal() {
-		return true;
-	}
-	
-    @Override
-    boolean isExecuting() {
-    	return false;
+        this.performedDuring = performedDuring;
     }
 
+    /**
+     * Checks whether the project containing this status can finish.
+     *
+     * @return Returns false.
+     */
+    @Override
+    boolean canFinish() {
+        return false;
+    }
 
-	@Override
-	void fail(DateTimePeriod period) {
-		throw new IllegalStateException(ERROR_FAIL);
-	}
+    /**
+     * Checks whether the project containing this status can fail.
+     *
+     * @return Returns false.
+     */
+    @Override
+    boolean canFail() {
+        return false;
+    }
 
-	@Override
-	void finish(DateTimePeriod period) {
-		throw new IllegalStateException(ERROR_FINISH);
-	}
+    /**
+     * Checks whether this status is final and therefore can't be changed.
+     *
+     * @return Returns true.
+     */
+    @Override
+    boolean isFinal() {
+        return true;
+    }
 
-	@Override
-	void execute() {
-		throw new IllegalStateException(ERROR_EXECUTE);
-	}
-	
-	@Override
-	void delegate(Delegation del){
-		throw new IllegalStateException(ERROR_DELEGATE);
-	}
+    @Override
+    boolean isExecuting() {
+        return false;
+    }
 
+    @Override
+    void fail(DateTimePeriod period) {
+        throw new IllegalStateException(ERROR_FAIL);
+    }
 
-	/**
-	 * Retrieves the TimePeriod for when this Task was performed.
-	 *
-	 * @return Returns a TimePeriod for when the Task was performed or null if the Task isn't failed of finished yet.
-	 */
-	@Override
-	DateTimePeriod getPerformedDuring() {
-		return performedDuring;
-	}
+    @Override
+    void finish(DateTimePeriod period) {
+        throw new IllegalStateException(ERROR_FINISH);
+    }
 
-	abstract LocalDateTime getEstimatedOrRealFinishDate(java.time.LocalDateTime currentDate);
+    @Override
+    void execute() {
+        throw new IllegalStateException(ERROR_EXECUTE);
+    }
 
-	/**
-	 * Checks whether or not this Task can be performed during the given timespan.
-	 *
-	 * @param timespan
-	 *            The TimePeriod that has to be checked.
-	 * @return Returns true if this Task could be performed during the given TimePeriod.
-	 */
-	protected boolean canHaveBeenPerfomedDuring(DateTimePeriod timespan) {
-		return timespan != null;
-	}
+    @Override
+    void delegate(Delegation del) {
+        throw new IllegalStateException(ERROR_DELEGATE);
+    }
 
-	double getRealDuration() {
-		return (double) TimeCalculator.getDurationMinutes(
-				getPerformedDuring().getStartTime(),
-				getPerformedDuring().getStopTime());
-	}
-	
-	@Override
-	boolean canExecute() {
-		return false;
-	}
+    /**
+     * Retrieves the TimePeriod for when this Task was performed.
+     *
+     * @return Returns a TimePeriod for when the Task was performed or null if the Task isn't failed of finished yet.
+     */
+    @Override
+    DateTimePeriod getPerformedDuring() {
+        return performedDuring;
+    }
 
-	private static String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
-	private static String ERROR_FINISH                   = "Can't finish a performed task.";
-	private static String ERROR_FAIL                     = "Can't fail a performed task.";
-	private static String ERROR_EXECUTE                     = "Can't execute a performed task.";
-	private static String ERROR_DELEGATE                     = "Can't delegate a performed task.";
+    abstract LocalDateTime getEstimatedOrRealFinishDate(java.time.LocalDateTime currentDate);
+
+    /**
+     * Checks whether or not this Task can be performed during the given timespan.
+     *
+     * @param timespan
+     *            The TimePeriod that has to be checked.
+     * @return Returns true if this Task could be performed during the given TimePeriod.
+     */
+    protected boolean canHaveBeenPerfomedDuring(DateTimePeriod timespan) {
+        return timespan != null;
+    }
+
+    double getRealDuration() {
+        return (double) TimeCalculator.getDurationMinutes(
+                getPerformedDuring().getStartTime(),
+                getPerformedDuring().getStopTime());
+    }
+
+    @Override
+    boolean canExecute() {
+        return false;
+    }
+
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+        return this.getPerformedDuring();
+    }
+
+    private static String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
+    private static String ERROR_FINISH                   = "Can't finish a performed task.";
+    private static String ERROR_FAIL                     = "Can't fail a performed task.";
+    private static String ERROR_EXECUTE                  = "Can't execute a performed task.";
+    private static String ERROR_DELEGATE                 = "Can't delegate a performed task.";
 
 }

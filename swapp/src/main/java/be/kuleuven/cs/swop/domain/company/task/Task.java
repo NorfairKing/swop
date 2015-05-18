@@ -226,8 +226,13 @@ public class Task implements Serializable {
     public TaskPlanning getPlanning(){
         return status.getPlanning();
     }
+ 
 
     private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
+
+    public boolean isPlanned() {
+        return this.getPlanning() != null;
+    }
 
 }
