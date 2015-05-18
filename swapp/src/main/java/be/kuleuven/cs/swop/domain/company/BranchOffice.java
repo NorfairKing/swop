@@ -1,6 +1,11 @@
 package be.kuleuven.cs.swop.domain.company;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -181,6 +186,74 @@ public class BranchOffice implements Serializable {
     public Task createDelegatedTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
     	Task task = delegationProject.createTask(description, estimatedDuration, acceptableDeviation, requirements);
     	return task;
+    }
+    
+    // Memento for simulation
+    /**
+     * Creates a memento of the system
+     *
+     * @return The created memento
+     */
+    public Memento saveToMemento() {
+        return new Memento(this);
+    }
+
+    /**
+     * Restore the system from a memento
+     *
+     * @param memento The memento to restore from
+     */
+    public void restoreFromMemento(Memento memento) {
+        projectManager = memento.getSavedState().projectManager;
+        planningManager = memento.getSavedState().planningManager;
+        delegationProject = memento.getSavedState().delegationProject;
+    }
+
+    public static class Memento {
+
+        private BranchOffice state;
+
+        public Memento(BranchOffice state) {
+            this.state = state.getDeepCopy();
+        }
+
+        BranchOffice getSavedState() {
+            return state;
+        }
+    }
+    
+    /**
+     * Creates a deep copy of this class.
+     * This is done by writing it to a bytestream, using the build-in java serializer
+     * and then reading it out again.
+     * This gives a very clean way to prevent duplication by multiple references, or
+     * problems with looping references.
+     * It does however take a bit more memory because value classes and final variables 
+     * will also be copied where they aren't strictly needed.
+     *
+     * @return A deep copy of this class.
+     */
+    private BranchOffice getDeepCopy() {
+        BranchOffice orig = this;
+        BranchOffice obj = null;
+        try {
+            // Write the object out to a byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(orig);
+            out.flush();
+            out.close();
+
+            // Make an input stream from the byte array and read
+            // a copy of the object back in.
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            obj = (BranchOffice) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return obj;
     }
 
 }

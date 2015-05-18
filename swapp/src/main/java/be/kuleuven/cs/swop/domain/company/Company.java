@@ -25,6 +25,7 @@ public class Company {
     private final Timekeeper timeKeeper = new Timekeeper();
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
+    private BranchOffice.Memento officeMemento;
     
     public Company() {
     }
@@ -151,6 +152,26 @@ public class Company {
         else {
             return false;
         }
+    }
+    
+    public void startSimulationFor(AuthenticationToken at) {
+        officeMemento = at.getOffice().saveToMemento();
+        delegationOffice.startSimulation(at.getOffice());
+    }
+    
+    public void realizeSimulationFor(AuthenticationToken at) {
+        delegationOffice.commitSimulation();
+        officeMemento = null; //everything already done on this branchoffice
+    }
+    
+    public void cancelSimulationFor(AuthenticationToken at) {
+        at.getOffice().restoreFromMemento(officeMemento);
+        delegationOffice.rollbackSimulation();
+        officeMemento = null;
+    }
+    
+    public boolean isInASimulation() {
+        return officeMemento != null;
     }
     
     /**

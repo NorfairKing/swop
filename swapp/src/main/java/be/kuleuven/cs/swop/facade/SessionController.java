@@ -16,7 +16,6 @@ public class SessionController {
 
     private UserInterface   ui;
     private TaskMan         taskMan;
-    private TaskMan.Memento taskManBackup;
 
     /**
      * Full constructor
@@ -430,11 +429,11 @@ public class SessionController {
             return;
         }
         // The user indicates he wants to start a simulation
-        taskManBackup = getTaskMan().saveToMemento();
+        getTaskMan().startSimulation();
     }
 
     private void handleSimulationStep() {
-        if (taskManBackup != null) {
+        if (getTaskMan().isInASimulation()) {
             SimulationStepData simData = getUi().getSimulationStepData();
             if (!simData.getContinueSimulation()) {
                 if (simData.getRealizeSimulation()) {
@@ -449,14 +448,12 @@ public class SessionController {
 
     private void realizeSimulation() {
         // The user indicates he wants to realize the simulation
-        // Nothing has to be done. Just throw away the backup.
-        taskManBackup = null;
+        getTaskMan().realizeSimulation();
     }
 
     private void cancelSimulation() {
         // The user indicates he wants to cancel the simulation.
-        getTaskMan().restoreFromMemento(taskManBackup);
-        taskManBackup = null;
+        getTaskMan().cancelSimulation();
     }
 
     private static final String ERROR_NO_LOGIN       = "No user has logged in, please log in first.";

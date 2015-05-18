@@ -1,12 +1,7 @@
 package be.kuleuven.cs.swop.facade;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -514,6 +509,22 @@ public class TaskMan implements Serializable {
     	getCompany().delegateTask(task, newOffice);
     }
     
+    public void startSimulation() {
+        company.startSimulationFor(authenticationToken);
+    }
+    
+    public void realizeSimulation() {
+        company.realizeSimulationFor(authenticationToken);
+    }
+    
+    public void cancelSimulation() {
+        company.cancelSimulationFor(authenticationToken);
+    }
+    
+    public boolean isInASimulation() {
+        return company.isInASimulation();
+    }
+    
     /**
      * Saves the company to disk.
      * 
@@ -532,71 +543,6 @@ public class TaskMan implements Serializable {
      */
     public void loadEverythingFromFile(String path) throws FileNotFoundException {
         company = (Company)JSONReader.readFromDisk(path);
-    }
-
-    /**
-     * Creates a memento of the system
-     *
-     * @return The created memento
-     */
-    public Memento saveToMemento() {
-        return new Memento(this);
-    }
-
-    /**
-     * Restore the system from a memento
-     *
-     * @param memento The memento to restore from
-     */
-    public void restoreFromMemento(Memento memento) {
-        company = memento.getSavedState().getCompany();
-    }
-
-    public static class Memento {
-
-        private TaskMan state;
-
-        public Memento(TaskMan state) {
-            this.state = state.getDeepCopy();
-        }
-
-        TaskMan getSavedState() {
-            return state;
-        }
-    }
-
-    /**
-     * Creates a deep copy of TaskMan
-     * This is done by writing it to a bytestream, using the build-in java serializer
-     * and then reading it out again.
-     * This gives a very clean way to prevent duplication by multiple references, or
-     * problems with looping references.
-     * It does however take a bit more memory because value classes will also be copied
-     * where they aren't strictly needed.
-     *
-     * @return A deep copy of this class.
-     */
-    private TaskMan getDeepCopy() {
-        TaskMan orig = this;
-        TaskMan obj = null;
-        try {
-            // Write the object out to a byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(orig);
-            out.flush();
-            out.close();
-
-            // Make an input stream from the byte array and read
-            // a copy of the object back in.
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            obj = (TaskMan) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        }
-        return obj;
     }
 
     private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
