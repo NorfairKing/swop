@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
@@ -302,6 +303,12 @@ public class CLI implements UserInterface {
         if (office != null) {
             System.out.println("#   Has been delegated to: " + office.getLocation());
         }
+    }
+    
+    private void printPlanning(TaskPlanning planning){
+        System.out.println(""
+                + "#   Planned start time: " + planning.getPlannedStartTime() + "\n");
+        //TODO
     }
 
     @Override
