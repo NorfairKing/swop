@@ -398,6 +398,10 @@ public class Task implements Serializable {
     	status.delegate(del);
     }
     
+    public Delegation getDelegation() {
+        return status.getDelegation();
+    }
+    
     public TaskPlanning getPlanning(){
         return status.getPlanning();
     }

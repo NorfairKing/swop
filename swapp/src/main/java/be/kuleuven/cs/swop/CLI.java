@@ -297,6 +297,11 @@ public class CLI implements UserInterface {
         else {
             System.out.println("#   Cannot be executed by you at this point");
         }
+        
+        BranchOfficeWrapper office = sessionController.getTaskMan().getOfficeToWhichThisTaskIsDelegated(task);
+        if (office != null) {
+            System.out.println("#   Has been delegated to: " + office.getLocation());
+        }
     }
 
     @Override

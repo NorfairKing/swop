@@ -528,6 +528,11 @@ public class TaskMan implements Serializable {
     	getCompany().delegateTask(task, newOffice);
     }
     
+    public BranchOfficeWrapper getOfficeToWhichThisTaskIsDelegated(TaskWrapper task) {
+        if (task.getTask().getDelegation() == null) return null;
+        return new BranchOfficeWrapper(task.getTask().getDelegation().getNewOffice());
+    }
+    
     public void startSimulation() {
         company.startSimulationFor(authenticationToken);
     }
