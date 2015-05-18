@@ -27,7 +27,7 @@ public class Company {
     private LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
-    private BranchOffice.Memento officeMemento;
+    private Map<BranchOffice, BranchOffice.Memento> officeMementos;
     
     public Company() {
     }
@@ -174,23 +174,37 @@ public class Company {
     }
     
     public void startSimulationFor(AuthenticationToken at) {
-        officeMemento = at.getOffice().saveToMemento();
+        // no nested simulations allowed
+        if (isInASimulationFor(at)) {
+            throw new IllegalStateException();
+        }
+        
+        officeMementos.put(at.getOffice(), at.getOffice().saveToMemento());
         delegationOffice.startSimulation(at.getOffice());
     }
     
     public void realizeSimulationFor(AuthenticationToken at) {
+        if (!isInASimulationFor(at)) {
+            throw new IllegalStateException();
+        }
+        
         delegationOffice.commitSimulation();
-        officeMemento = null; //everything already done on this branchoffice
+        officeMementos.remove(at.getOffice());
     }
     
     public void cancelSimulationFor(AuthenticationToken at) {
+        if (!isInASimulationFor(at)) {
+            throw new IllegalStateException();
+        }
+        
+        BranchOffice.Memento officeMemento = officeMementos.get(at.getOffice());
         at.getOffice().restoreFromMemento(officeMemento);
         delegationOffice.rollbackSimulation();
-        officeMemento = null;
+        officeMementos.remove(at.getOffice());
     }
     
-    public boolean isInASimulation() {
-        return officeMemento != null;
+    public boolean isInASimulationFor(AuthenticationToken at) {
+        return officeMementos.containsKey(at.getOffice());
     }
     
     /**

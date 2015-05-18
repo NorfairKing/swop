@@ -541,7 +541,7 @@ public class TaskMan implements Serializable {
     }
     
     public boolean isInASimulation() {
-        return company.isInASimulation();
+        return company.isInASimulationFor(authenticationToken);
     }
     
     /**
