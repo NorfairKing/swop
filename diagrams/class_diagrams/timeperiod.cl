@@ -3,8 +3,8 @@
 !define TIMEPERIOD_CL
 
 class TimePeriod {
-    LocalDateTime: startTime
-    LocalDateTime: endTime
+    LocalTime: startTime
+    LocalTime: endTime
 }
 
 !endif

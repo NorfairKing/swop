@@ -3,9 +3,6 @@
 !define FINISHEDSTATUS_ASS
 
 !include finishedstatus.cl
-!include timeperiod.cl
-
-FinishedStatus --> "1" TimePeriod
 
 !endif
 

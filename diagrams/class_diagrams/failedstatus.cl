@@ -2,9 +2,9 @@
 !ifndef FAILEDSTATUS_CL
 !define FAILEDSTATUS_CL
 
-!include taskstatus.cl
+!include completedstatus.cl
 class FailedStatus
-TaskStatus <|-- FailedStatus
+CompletedStatus <|-- FailedStatus
 
 !endif
 

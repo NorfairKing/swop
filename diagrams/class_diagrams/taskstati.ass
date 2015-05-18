@@ -3,10 +3,13 @@
 !define TASKSTATI_ASS
 
 !include taskstatus.ass
+!include completedstatus.ass
 !include failedstatus.ass
 !include finishedstatus.ass
 !include delegatedstatus.ass
+!include incompletestatus.ass
 !include executingstatus.ass
+!include unstartedstatus.ass
 
 !endif
 

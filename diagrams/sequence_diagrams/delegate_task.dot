@@ -3,19 +3,20 @@
 title "Delegate Task"
 
 participant Company as c
-participant PostOffice as po
-participant BranchOfficeFrom as bof
+participant DelegationOffice as po
+participant Delegation as d
+participant TaskToDelegate as t
 participant BranchOfficeTo as bot
 
 c -> po: delegateTask(task,from,to)
-po -> po: createDelegationTask(task)
-po -> po: createDelegation(from,to,task,delegationTask)
-po -> bof: setDelegated(task)
+
+po -> d: new(task,from,to)
+d --> po: delegation
+po -> t: setDelegated(delegation)
 alt inSimulation
-    po -> bot: addDelegated(delegationTask)
-    po -> po: addDelegation(delegation)
-else
     po -> po: addToDelegationBuffer(delegation)
+else
+    po -> po: commitDelegation(delegation)
 end
 
 @enduml

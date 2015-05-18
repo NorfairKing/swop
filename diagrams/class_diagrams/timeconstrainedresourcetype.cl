@@ -4,9 +4,7 @@
 
 !include resourcetype.cl
 
-class TimeConstrainedResourceType {
-    TimePeriod: dailyAvailability
-}
+class TimeConstrainedResourceType
 ResourceType <|-- TimeConstrainedResourceType
 
 !endif

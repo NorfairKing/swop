@@ -12,13 +12,15 @@ SEQUENCE_DIAGRAMS =	\
 	delegate_task.eps \
 	delegated_task_status.eps \
 	office_login.eps \
-	simulation.eps
+	simulation.eps \
+	commit_delegation.eps
 
 SEQUENCE_DIAGRAM_PNGS = \
 	delegate_task.png \
 	delegated_task_status.png \
 	office_login.png \
-	simulation.png
+	simulation.png \
+	commit_delegation.png
 
 sequence_diagrams: $(SEQUENCE_DIAGRAMS)
 
