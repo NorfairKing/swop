@@ -18,13 +18,15 @@ public class DelegationOffice {
         if(del == null){
             return false;
         }
+        return true;
         //TODO: More checks?
     }
-    public Delegation createDelegation(Task task, BranchOffice from, BranchOffice to){
-        Delegation del = new Delegation(task,from, to);
+    public Delegation createDelegation(BranchOffice from, BranchOffice to){
+        Delegation del = new Delegation(null,from, to);
         if(isValidDelegation(del)){
             delegations.add(del);
         }
+        return del;
     }
 
 }

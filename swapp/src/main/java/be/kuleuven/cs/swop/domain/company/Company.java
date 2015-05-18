@@ -1,10 +1,10 @@
 package be.kuleuven.cs.swop.domain.company;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class Company {
 
-    private final Timekeeper timeKeeper = new Timekeeper();
+    private LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
     public Company() {
@@ -58,7 +58,7 @@ public class Company {
      */
     public void updateSystemTime(LocalDateTime time) throws IllegalArgumentException {
         if (time == null) { throw new IllegalArgumentException("Null date for system time update"); }
-        timeKeeper.setTime(time);
+        this.time = time;
     }
 
     /**
@@ -67,7 +67,11 @@ public class Company {
      * @return The current system time
      */
     public LocalDateTime getSystemTime() {
-        return timeKeeper.getTime();
+        return time;
+    }
+    
+    public void delegate(Task oldTask, BranchOffice newOffice){
+        
     }
     
 }
