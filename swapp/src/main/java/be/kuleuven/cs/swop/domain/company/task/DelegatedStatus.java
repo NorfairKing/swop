@@ -10,7 +10,8 @@ public class DelegatedStatus extends TaskStatus {
 	
 	private Delegation del;
 	
-	DelegatedStatus(Delegation del){
+	DelegatedStatus(Task task, Delegation del) {
+	    super(task);
 		this.del = del;
 	}
 

@@ -311,6 +311,43 @@ public class SessionController {
         // End session
         handleSimulationStep();
     }
+    
+    public void startDelegateTaskSession() {
+        if (!isLoggedIn()) {
+            getUi().showError(ERROR_NO_LOGIN);
+            return;
+        }
+        
+        // The system shows a list of all currently unplanned tasks and the project they belong to.
+        Set<ProjectWrapper> allProjects = taskMan.getProjects();
+        Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+
+        for (ProjectWrapper p : allProjects) {
+            Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
+            if (!unplannedTasks.isEmpty()) {
+                unplannedTaskMap.put(p, unplannedTasks);
+            }
+        }
+        // The user selects the tasks he wants to delegate
+        TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+        if (selectedTask == null) {
+            handleSimulationStep();
+            return;
+        }
+        
+        // The system shows an overview of the different branch offices
+        Set<BranchOfficeWrapper> offices = taskMan.getOffices();
+        BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
+        if (selectedOffice == null) {
+            handleSimulationStep();
+            return;
+        }
+        
+        taskMan.delegateTask(selectedTask, selectedOffice);
+
+        // End session
+        handleSimulationStep();
+    }
 
     public void startResolveConflictSession(TaskPlanningWrapper planning) {
         if (!isLoggedIn()) {

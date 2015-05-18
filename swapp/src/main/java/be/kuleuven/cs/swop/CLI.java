@@ -125,6 +125,7 @@ public class CLI implements UserInterface {
                     System.out.println("project / p:   create project");
                     System.out.println("task    / t:   create task");
                     System.out.println("plan       :   plan task");
+                    System.out.println("delegate   :   delegate task");
                     System.out.println("simulation :   simulation");
                     break;
                 case "project":
@@ -137,6 +138,9 @@ public class CLI implements UserInterface {
                     break;
                 case "plan":
                     getSessionController().startPlanTaskSession();
+                    break;
+                case "delegate":
+                    getSessionController().startDelegateTaskSession();
                     break;
                 case "simulation":
                     getSessionController().startRunSimulationSession();
