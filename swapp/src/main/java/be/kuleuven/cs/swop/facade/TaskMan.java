@@ -144,13 +144,32 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieve every Project managed by this program.
+     * Retrieve every Project managed by your current office.
      *
      * @return Returns a Set of ProjectWrappers.
      *
      */
     public Set<ProjectWrapper> getProjects() {
         return map(company.getProjects(authenticationToken), p -> wrapProject(p));
+    }
+    
+    /**
+     * Retrieve every Project managed by this program.
+     *
+     * @return Returns a Set of ProjectWrappers.
+     *
+     */
+    public Set<ProjectWrapper> getAllProjects() {
+        return map(company.getAllProjects(), p -> wrapProject(p));
+    }
+    
+    /**
+     * Searches all known branchoffices to see which manages the project.
+     * @param project The project for which you want the office
+     * @return The office that manages the project
+     */
+    public BranchOfficeWrapper getOfficeOf(ProjectWrapper project) {
+        return new BranchOfficeWrapper(company.getOfficeOf(project.getProject()));
     }
 
     /**

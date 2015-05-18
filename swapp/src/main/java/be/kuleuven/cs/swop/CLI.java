@@ -209,6 +209,7 @@ public class CLI implements UserInterface {
         System.out.println(""
                 + "# " + project.getTitle() + "\n"
                 + "# Desc:    " + project.getDescription() + "\n"
+                + "# Office:  " + sessionController.getTaskMan().getOfficeOf(project).getLocation() + "\n"
                 + "# Created: " + formatDate(project.getCreationTime()) + "\n"
                 + "# Due:     " + formatDate(project.getDueTime()) + "\n"
                 + "# ETA:     " + formatDate(project.estimatedFinishTime(currentTime))

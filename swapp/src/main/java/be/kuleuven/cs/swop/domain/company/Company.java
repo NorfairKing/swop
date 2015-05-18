@@ -42,6 +42,23 @@ public class Company {
         return at.getOffice().getProjects();
     }
     
+    public ImmutableSet<Project> getAllProjects() {
+        Set<Project> all = new HashSet<>();
+        for (BranchOffice office: offices) {
+            all.addAll(office.getProjects());
+        }
+        return ImmutableSet.copyOf(all);
+    }
+    
+    public BranchOffice getOfficeOf(Project project) {
+        for (BranchOffice office: offices) {
+            if (office.getProjects().contains(project)) {
+                return office;
+            }
+        }
+        return null;
+    }
+    
     public ImmutableSet<ResourceType> getResourceTypes(AuthenticationToken at) {
         return at.getOffice().getResourceTypes();
     }
