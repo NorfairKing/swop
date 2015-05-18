@@ -14,11 +14,11 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 @SuppressWarnings("serial")
 public class ResourceType implements Serializable {
 
-	private String            name;
-	private Set<ResourceType> dependencies = new HashSet<ResourceType>();
-	private Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
+	private final String            name;
+	private final Set<ResourceType> dependencies = new HashSet<ResourceType>();
+	private final Set<ResourceType> conflictsWith = new HashSet<ResourceType>();
 
-    protected ResourceType() { }
+    protected ResourceType() { this(" "); }
 	/**
 	 * Simple constructor for a resource type that doesn't have dependencies and doesn't conflict with anything
 	 * @param name The name for this resource type
@@ -50,7 +50,9 @@ public class ResourceType implements Serializable {
 	 * @param selfConflicting Whether it conflicts with itself
 	 */
 	public ResourceType(String name, Set<ResourceType> dependencies, Set<ResourceType> conflicts, boolean selfConflicting) {
-		this.setName(name);
+		if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
+        
+		this.name = name;
 		this.setDependencies(dependencies);
 		this.setConflictsWith(conflicts, selfConflicting);
 	}
@@ -60,10 +62,9 @@ public class ResourceType implements Serializable {
 	}
 
 	private void setDependencies(Set<ResourceType> dependencies) {
-	    if (dependencies == null){
-	        dependencies = new HashSet<>();
+	    if (dependencies != null){
+	        dependencies.forEach(d -> addDependency(d));
 	    }
-	    dependencies.forEach(d -> addDependency(d));
 	}
 
 	protected boolean canHaveAsDependency(ResourceType dependency) {
@@ -102,16 +103,6 @@ public class ResourceType implements Serializable {
 	private void addConflict(ResourceType conflict){
 		if (!canHaveAsConflict(conflict)) throw new IllegalArgumentException(ERROR_ILLEGAL_CONFLICTS);
 		this.conflictsWith.add(conflict);
-	}
-	
-
-	private void setName(String name) {
-		if (!canHaveAsName(name)) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
-		this.name = name;
-	}
-
-	protected boolean canHaveAsName(String name) {
-		return name != null && !name.isEmpty();
 	}
 
 	public String getName() {

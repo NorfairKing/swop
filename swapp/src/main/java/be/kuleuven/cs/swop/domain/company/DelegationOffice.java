@@ -9,9 +9,9 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class DelegationOffice {
-    Set<Delegation> delegations = new HashSet<Delegation>();
-    BranchOffice simulatingOffice = null;
-    Map<Task,Delegation> delegationBuffer = new HashMap<Task, Delegation>();
+    private final Set<Delegation> delegations = new HashSet<Delegation>();
+    private BranchOffice simulatingOffice = null;
+    private final Map<Task,Delegation> delegationBuffer = new HashMap<Task, Delegation>();
 
     public DelegationOffice() {
         super();

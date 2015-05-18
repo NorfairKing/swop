@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class DateTimePeriod implements Serializable {
 
-    private LocalDateTime startTime;
-    private LocalDateTime stopTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime stopTime;
 
     /**
      * Full Constructor
@@ -24,8 +24,12 @@ public class DateTimePeriod implements Serializable {
      *
      */
     public DateTimePeriod(LocalDateTime start, LocalDateTime stop) {
-        setStartTime(start);
-        setStopTime(stop);
+        if (start == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+        if (stop == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+        if (start.isAfter(stop)) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+        
+        this.startTime = start;
+        this.stopTime = stop;
     }
 
     /**
@@ -39,24 +43,6 @@ public class DateTimePeriod implements Serializable {
     }
 
     /**
-     * Checks whether or not the given time is a valid beginning for this period, it's valid when the Date isn't null.
-     *
-     * @param startTime
-     *            The Date containing the time to be checked if it is a valid beginning for this perdiod.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStartTime(LocalDateTime startTime) {
-        return startTime != null;
-    }
-
-    private void setStartTime(LocalDateTime startTime) {
-        if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
-        this.startTime = startTime;
-    }
-
-    /**
      * Retries the time on which this period ends.
      *
      * @return The Date containing the end of this period.
@@ -64,27 +50,6 @@ public class DateTimePeriod implements Serializable {
      */
     public LocalDateTime getStopTime() {
         return (LocalDateTime) stopTime;
-    }
-
-    /**
-     * Checks whether or not the given time is a valid ending for this period, it's valid when the Date isn't null.
-     *
-     * @param stopTime
-     *            The Date containing the time to be checked if it is a valid ending for this perdiod.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStopTime(LocalDateTime stopTime) {
-        return stopTime != null && startTime != null && startTime.isBefore(stopTime);
-    }
-
-    /**
-     * Has to be used AFTER setStartTime().
-     */
-    private void setStopTime(LocalDateTime stopTime) {
-        if (!canHaveAsStopTime(stopTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
-        this.stopTime = stopTime;
     }
 
     /**
@@ -157,6 +122,5 @@ public class DateTimePeriod implements Serializable {
     	return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
     }
 
-    private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
-    private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
+    private static final String ERROR_ILLEGAL_TIMES = "Illegal start or stop time for time span.";
 }

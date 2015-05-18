@@ -14,7 +14,7 @@ public class TimePeriod implements Serializable {
     private final LocalTime startTime;
     private final LocalTime stopTime;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") //used for automatic (de)serializing
     private TimePeriod() {
         this.startTime = this.stopTime = null;
     }

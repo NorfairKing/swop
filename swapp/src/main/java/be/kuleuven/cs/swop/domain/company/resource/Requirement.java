@@ -8,38 +8,23 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class Requirement implements Serializable {
 
-    private int          amount;
-    private ResourceType type;
+    private final int          amount;
+    private final ResourceType type;
 
     public Requirement(int amount, ResourceType type) {
-        setAmount(amount);
-        setType(type);
+        if (type == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);
+        if (amount <= 0) throw new IllegalArgumentException(ERROR_ILLEGAL_AMOUNT);
+        
+        this.amount = amount;
+        this.type = type;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    protected boolean canHaveAsAmount(int amount) {
-        return amount > 0;
-    }
-
-    public void setAmount(int amount) {
-        if (!canHaveAsAmount(amount)) { throw new IllegalArgumentException(ERROR_ILLEGAL_AMOUNT); }
-        this.amount = amount;
-    }
-
     public ResourceType getType() {
         return type;
-    }
-
-    protected boolean canHaveAsType(ResourceType type) {
-        return type != null;
-    }
-
-    public void setType(ResourceType type) {
-        if (!canHaveAsType(type)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE); }
-        this.type = type;
     }
 
     public boolean isSatisfiedWith(Set<Resource> resources) {

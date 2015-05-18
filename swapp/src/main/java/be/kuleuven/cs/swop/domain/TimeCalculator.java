@@ -11,9 +11,9 @@ import java.time.temporal.ChronoUnit;
  */
 public final class TimeCalculator {
     
-    private static int         workDayStart = 8;
-    private static int         workDayEnd   = 16;
-    private static DayOfWeek[] workDays     = new DayOfWeek[] { DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY };
+    private static final int         workDayStart = 8;
+    private static final int         workDayEnd   = 16;
+    private static final DayOfWeek[] workDays     = new DayOfWeek[] { DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY };
 
     private TimeCalculator() {}
     
