@@ -5,19 +5,19 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Delegation;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
-public abstract class PerformedStatus extends TaskStatus {
+public abstract class CompletedStatus extends TaskStatus {
 
-	private DateTimePeriod performedDuring;
+	private final DateTimePeriod performedDuring;
 
-	PerformedStatus() { };
-	PerformedStatus(Task task, DateTimePeriod performedDuring) {
-		super(task);
-		this.performedDuring(performedDuring);
-	}
+	CompletedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
+		super(task, planning);
+        if (!canHaveBeenPerfomedDuring(performedDuring)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }
+        this.performedDuring = performedDuring;	}
 
 	/**
 	 * Checks whether the project containing this status can finish.
@@ -97,17 +97,6 @@ public abstract class PerformedStatus extends TaskStatus {
 	 */
 	protected boolean canHaveBeenPerfomedDuring(DateTimePeriod timespan) {
 		return timespan != null;
-	}
-
-	/**
-	 * Sets the timespan for this Task for when it was performed.
-	 *
-	 * @param timespan
-	 *            The TimePeriod for when during the Task was performed.
-	 */
-	void performedDuring(DateTimePeriod timespan) {
-		if (!canHaveBeenPerfomedDuring(timespan)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }
-		this.performedDuring = timespan;
 	}
 
 	double getRealDuration() {

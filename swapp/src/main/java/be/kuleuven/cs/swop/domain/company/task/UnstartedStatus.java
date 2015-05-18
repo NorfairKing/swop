@@ -2,15 +2,14 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
-public class OngoingStatus extends IncompleteStatus {
+public class UnstartedStatus extends IncompleteStatus {
 
-    @SuppressWarnings("unused")
-    private OngoingStatus() { }
-    OngoingStatus(Task task) {
-        super(task);
+    UnstartedStatus(Task task, TaskPlanning planning) {
+        super(task, planning);
     }
 
     /**
@@ -75,7 +74,7 @@ public class OngoingStatus extends IncompleteStatus {
     
     @Override
     void execute(){
-    	goToStatus(new ExecutingStatus(getTask()));
+    	goToStatus(new ExecutingStatus(getTask(), getPlanning()));
     }
 
     @Override

@@ -65,7 +65,7 @@ public class TaskStatusTest {
 	
 	@Test
 	public void ongoingBooleansTest(){
-		TaskStatus status1 = new OngoingStatus(task);
+		TaskStatus status1 = new UnstartedStatus(task);
 		assertTrue(status1.canFail());
 		assertTrue(status1.canExecute());
 		assertFalse(status1.canFinish());
@@ -390,7 +390,7 @@ public class TaskStatusTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void setTaskInvalidTest(){
-    	TaskStatus status1 = new OngoingStatus(task);
+    	TaskStatus status1 = new UnstartedStatus(task);
     	status1.setTask(null);
     }
 

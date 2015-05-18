@@ -183,7 +183,7 @@ public class BranchOffice implements Serializable {
     	 Project proj = projectManager.getProjectFor(task);
     	 return proj != null;
     }
-    public Task createDelegatedTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
+    public Task createDelegationTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
     	Task task = delegationProject.createTask(description, estimatedDuration, acceptableDeviation, requirements);
     	return task;
     }

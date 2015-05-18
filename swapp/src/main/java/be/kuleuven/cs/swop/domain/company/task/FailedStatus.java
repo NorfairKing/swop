@@ -4,17 +4,16 @@ package be.kuleuven.cs.swop.domain.company.task;
 import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
-public class FailedStatus extends PerformedStatus {
+public class FailedStatus extends CompletedStatus {
 
     private Task alternative;
 
-    @SuppressWarnings("unused")
-    private FailedStatus() { }
-    FailedStatus(Task task, DateTimePeriod performedDuring) {
-        super(task, performedDuring);
+    FailedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
+        super(task, planning, performedDuring);
     }
 
     /**

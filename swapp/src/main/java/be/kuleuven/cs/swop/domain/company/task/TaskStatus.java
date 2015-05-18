@@ -2,7 +2,8 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Delegation;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,11 +12,14 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 abstract class TaskStatus implements Serializable {
 
-    private Task task;
+    private final Task task;
+    private final TaskPlanning planning;
 
-    TaskStatus() {}
-    TaskStatus(Task task) {
-        setTask(task);
+    TaskStatus(Task task, TaskPlanning planning) {
+        if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
+        this.task = task;    
+        //TODO: CHECK IF PLANNING IS GOOD
+        this.planning = planning;
     }
 
     /**
@@ -65,10 +69,6 @@ abstract class TaskStatus implements Serializable {
         return task != null;
     }
 
-    void setTask(Task task) {
-        if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
-        this.task = task;
-    }
 
     abstract void finish(DateTimePeriod period);
 
@@ -110,6 +110,9 @@ abstract class TaskStatus implements Serializable {
     
     Delegation getDelegation(){
     	return null;
+    }
+    TaskPlanning getPlanning(){
+        return planning;
     }
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";

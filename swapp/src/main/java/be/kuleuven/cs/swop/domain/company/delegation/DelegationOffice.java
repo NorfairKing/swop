@@ -1,10 +1,11 @@
-package be.kuleuven.cs.swop.domain.company;
+package be.kuleuven.cs.swop.domain.company.delegation;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
@@ -45,7 +46,7 @@ public class DelegationOffice {
     	return simulatingOffice != null;
     }
     
-    void startSimulation(BranchOffice office){
+    public void startSimulation(BranchOffice office){
     	if(simulatingOffice != null){
     		throw new IllegalStateException(ERROR_ALREADY_SIMULATING);
     	}
@@ -53,7 +54,7 @@ public class DelegationOffice {
     }
     
     private void commitDelegation(Task task, Delegation del){
-        Task newTask = del.getNewOffice().createDelegatedTask(task.getDescription(),
+        Task newTask = del.getNewOffice().createDelegationTask(task.getDescription(),
         		task.getEstimatedDuration(),
         		task.getAcceptableDeviation(),
         		task.getRequirements());
@@ -62,7 +63,7 @@ public class DelegationOffice {
 
     }
     
-    void commitSimulation(){
+    public void commitSimulation(){
     	if(simulatingOffice == null){
     		throw new IllegalStateException(ERROR_NOT_SIMULATING);
     	}
@@ -75,7 +76,7 @@ public class DelegationOffice {
     	
     }
     
-    void rollbackSimulation(){
+    public void rollbackSimulation(){
     	if(simulatingOffice == null){
     		throw new IllegalStateException(ERROR_NOT_SIMULATING);
     	}

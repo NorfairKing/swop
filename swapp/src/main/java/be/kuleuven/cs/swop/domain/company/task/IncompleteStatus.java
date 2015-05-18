@@ -5,15 +5,15 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Delegation;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
 public abstract class IncompleteStatus extends TaskStatus {
 
-    IncompleteStatus() { }
-    IncompleteStatus(Task task) {
-        super(task);
+    IncompleteStatus(Task task, TaskPlanning planning) {
+        super(task, planning);
     }
 
     @Override
@@ -44,7 +44,7 @@ public abstract class IncompleteStatus extends TaskStatus {
 
     @Override
     void fail(DateTimePeriod period) {
-        goToStatus(new FailedStatus(getTask(), period));
+        goToStatus(new FailedStatus(getTask(), getPlanning(), period));
     }
 
     @Override

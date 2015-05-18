@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+<<<<<<< HEAD
+=======
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
-import be.kuleuven.cs.swop.domain.company.delegation.DelegationOffice;
+import be.kuleuven.cs.swop.domain.Timekeeper;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+>>>>>>> f88e63f224323717779bd77e0ca3617eb1607729
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
@@ -215,6 +217,10 @@ public class Company {
      */
     public LocalDateTime getSystemTime() {
         return time;
+    }
+    
+    public void delegate(Task oldTask, BranchOffice newOffice){
+        
     }
     
     //TODO: Proper checking

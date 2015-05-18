@@ -1,5 +1,6 @@
-package be.kuleuven.cs.swop.domain.company;
+package be.kuleuven.cs.swop.domain.company.delegation;
 
+import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 

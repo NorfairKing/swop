@@ -3,7 +3,7 @@ package be.kuleuven.cs.swop.domain.company.task;
 import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Delegation;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 
 @SuppressWarnings("serial")
 public class DelegatedStatus extends TaskStatus {
@@ -11,7 +11,7 @@ public class DelegatedStatus extends TaskStatus {
 	private Delegation del;
 	
 	DelegatedStatus(Task task, Delegation del) {
-	    super(task);
+	    super(task, null);
 		this.del = del;
 	}
 
