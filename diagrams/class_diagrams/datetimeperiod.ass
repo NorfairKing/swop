@@ -1,0 +1,8 @@
+
+!ifndef DATETIMEPERIOD_ASS
+!define DATETIMEPERIOD_ASS
+
+!include datetimeperiod.cl
+
+!endif
+

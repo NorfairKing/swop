@@ -1,0 +1,10 @@
+
+!ifndef COMPLETEDSTATUS_ASS
+!define COMPLETEDSTATUS_ASS
+
+!include completedstatus.cl
+!include datetimeperiod.cl
+
+CompletedStatus -> "1" DateTimePeriod
+
+!endif
