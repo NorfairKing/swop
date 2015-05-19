@@ -87,6 +87,9 @@ public class UnstartedStatus extends IncompleteStatus {
     	if(isPlanned()){
     		throw new IllegalStateException(ERROR_ALREADY_PLANNED);
     	}
+    	if(plan == null){
+    		throw new IllegalArgumentException(ERROR_ILLEGAL_PLAN);
+    	}
     	goToStatus(new UnstartedStatus(getTask(), plan));
     }
     
@@ -94,12 +97,14 @@ public class UnstartedStatus extends IncompleteStatus {
     void removePlanning(){
     	goToStatus(new UnstartedStatus(getTask(), null));
     }
-
-    private static String ERROR_FINISH = "Can't finish a task that has not been started.";
-
 	@Override
 	boolean canExecute() {
 		return true;
 	}
+	
+
+    private static final String ERROR_FINISH = "Can't finish a task that has not been started.";
+    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
+
 
 }

@@ -281,7 +281,6 @@ public class Task implements Serializable {
     }
     
     public void plan(TaskPlanning plan){
-    	//TODO: validate this
     	status.plan(plan);
     }
     
