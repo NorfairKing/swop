@@ -204,16 +204,6 @@ public class TaskMan implements Serializable {
     }
 
     /**
-     * Retrieves the planning for a given task
-     *
-     * @param task The task of which you want the planning
-     * @return The planning of the given task
-     */
-    public TaskPlanningWrapper getPlanningFor(TaskWrapper task) {
-        return wrapPlanning(company.getPlanningFor(task.getTask(), authenticationToken));
-    }
-
-    /**
      * Retrieves some suggestions for possible planning times of a task
      * Currently gives you the first 3 starting at the current system time
      *

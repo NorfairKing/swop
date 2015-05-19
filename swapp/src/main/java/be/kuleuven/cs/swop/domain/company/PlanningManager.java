@@ -38,23 +38,170 @@ public class PlanningManager implements Serializable {
     	this.office = office;
     }
     
+    
+    // PASSTHROUGH GETTERS
     public Set<TaskPlanning> getTaskPlannings() {
         return office.getTaskPlannings();
     }
+    
+    public Set<Developer> getDevelopers() {
+        return office.getDevelopers();
+    }
+    
+    public Set<Resource> getResources() {
+        return office.getResources();
+    }
+
+    public Set<ResourceType> getResourceTypes(){
+    	return office.getResourceTypes();
+    }
+    
+    public Task getTaskFor(TaskPlanning planning){
+    	return office.getTaskFor(planning);
+    }
+    
+    
+    // ADVANCED GETTERS
+    public DateTimePeriod getEstimatedOrPlanningPeriod(TaskPlanning plan){
+    	return getTaskFor(plan).getEstimatedOrPlanningPeriod();
+    }
+    
+    /**
+     * Retrieves the plannings for all the given tasks
+     *
+     * @param tasks The list of tasks we want the plannings for
+     * @return A set of all the planning
+     */
+    public Set<TaskPlanning> getPlanningsFor(Set<Task> tasks){
+        Set<TaskPlanning> plans = new HashSet<TaskPlanning>();
+        for(Task t : tasks){
+            TaskPlanning pl = t.getPlanning();
+            if(pl != null){
+                plans.add(pl);
+            }
+        }
+        return plans;
+    }
+    
+    /**
+     * Selects all unplanned tasks from the given set
+     * @param tasks The set of tasks
+     * @return Only the unplanned tasks from the set
+     */
+    public Set<Task> getUnplannedTasksFrom(Set<Task> tasks){
+        Set<Task> unplannedTasks = new HashSet<Task>();
+        for (Task t : tasks) {
+            if (! t.isPlanned()) {
+                unplannedTasks.add(t);
+            }
+        }
+        return unplannedTasks;
+    }
 
     /**
-     * Checks to see if this task if planned
-     *
-     * @param task The task to check
-     * @return Whether or not it is planned
+     * Selects all tasks that are assigned to the given dev
+     * @param tasks The tasks to check
+     * @param dev The dev to check
+     * @return The tasks to which the dev is assigned
      */
-    public boolean isPlanned(Task task) {
-        return this.getPlanningFor(task) != null;
+    public Set<Task> getAssignedTasksOf(Set<Task> tasks, Developer dev){
+        Set<TaskPlanning> allPlannings = getPlanningsFor(tasks);
+
+        Set<Task> assignedTasks = new HashSet<Task>();
+        for(TaskPlanning p : allPlannings){
+            if(p.getDevelopers().contains(dev)){
+                assignedTasks.add(getTaskFor(p));
+            }
+        }
+
+        return assignedTasks;
+    }
+    
+    /**
+     * Retrieves a number of times on which the given task could be planned
+     * The search starts at the given time
+     *
+     * @param task The task
+     * @param n How many options you want
+     * @param theTime The time to start the search on
+     * @return A list of possible times
+     */
+    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime theTime) {
+        theTime = theTime.plusMinutes(60-theTime.getMinute());
+        List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
+        if (getResources().isEmpty() && !task.getRequirements().isEmpty()) //safety checks
+            return timeOptions;
+        if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),getResources(), p.getAmount())))
+            return timeOptions;
+        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety.
+            if (this.isValidTimeForTask(theTime,task))
+                timeOptions.add(theTime);
+            theTime = TimeCalculator.addWorkingMinutes(theTime,60);
+        }
+        return timeOptions;
+    }
+    
+    /**
+     * Retrieves a list of options for each resource type needed by a task.
+     *
+     * @param task The task for which you want the options
+     * @param time The time on which you cant to use the resources
+     * @return The list with options
+     */
+    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
+        Set<Reservable> usedResources = new HashSet<Reservable>();
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
+        for (TaskPlanning planning : getTaskPlannings()) {
+            if (getEstimatedOrPlanningPeriod(planning).isDuring(period)) {
+                usedResources.addAll(planning.getReservations());
+            }
+        }
+        Set<Resource> availableResources = new HashSet<Resource>(getResources());
+        availableResources.removeAll(usedResources);
+        availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(period)).collect(Collectors.toSet());
+        Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
+        for (Requirement req : task.getRecursiveRequirements()) {
+            map.put(req.getType(), getResources().stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
+        }
+        return map;
     }
 
-    public boolean isUnplanned(Task task) {
-        return !this.isPlanned(task);
+    /**
+     * Retrieves a list of developers that can work on the task on a given time
+     *
+     * @param task The task for which you need developers
+     * @param time The time on which you need developers
+     * @return The possible developers
+     */
+    public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
+        Set<Developer> usedDevelopers = new HashSet<Developer>();
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
+        for (TaskPlanning planning : getTaskPlannings()) {
+            if (getEstimatedOrPlanningPeriod(planning).isDuring(period)) {
+                usedDevelopers.addAll(planning.getDevelopers());
+            }
+        }
+        Set<Developer> availableDevelopers = new HashSet<Developer>(getDevelopers().stream().filter( d -> d.isAvailableDuring(period)).collect(Collectors.toSet()));
+        availableDevelopers.removeAll(usedDevelopers);
+        return availableDevelopers;
     }
+    
+    
+    // VALIDATORS
+    
+    
+    
+    /**
+     * Removes a planning, freeing everything that it reserved.
+     *
+     * @param planning The planning that will be removed
+     */
+    public void removePlanning(TaskPlanning planning){
+    	getTaskFor(planning).removePlanning();
+    }
+
+    
+    
 
     /**
      * Is this developer available at this time
@@ -134,7 +281,7 @@ public class PlanningManager implements Serializable {
             return false;
         }
 
-        TaskPlanning planning = getPlanningFor(task);
+        TaskPlanning planning = task.getPlanning();
         if (planning == null){
             //System.out.println("2");
             return false;
@@ -165,95 +312,6 @@ public class PlanningManager implements Serializable {
         return true;
     }
 
-    /**
-     * Returns the planning for a given task
-     *
-     * @param task The task
-     * @return The planning
-     */
-    public TaskPlanning getPlanningFor(Task task) {
-        for (TaskPlanning planning : getTaskPlannings())
-        {
-            if (task == getTaskFor(planning))
-                return planning;
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves the plannings for all the given tasks
-     *
-     * @param tasks The list of tasks we want the plannings for
-     * @return A set of all the planning
-     */
-    public Set<TaskPlanning> getPlanningsFor(Set<Task> tasks){
-        Set<TaskPlanning> plans = new HashSet<TaskPlanning>();
-        for(Task t : tasks){
-            TaskPlanning pl = getPlanningFor(t);
-            if(pl != null){
-                plans.add(pl);
-            }
-        }
-        return plans;
-    }
-
-    /**
-     * Selects all unplanned tasks from the given set
-     * @param tasks The set of tasks
-     * @return Only the unplanned tasks from the set
-     */
-    public Set<Task> getUnplannedTasksFrom(Set<Task> tasks){
-        Set<Task> unplannedTasks = new HashSet<Task>();
-        for (Task t : tasks) {
-            if (isUnplanned(t)) {
-                unplannedTasks.add(t);
-            }
-        }
-        return unplannedTasks;
-    }
-
-    /**
-     * Selects all tasks that are assigned to the given dev
-     * @param tasks The tasks to check
-     * @param dev The dev to check
-     * @return The tasks to which the dev is assigned
-     */
-    public Set<Task> getAssignedTasksOf(Set<Task> tasks, Developer dev){
-        Set<TaskPlanning> allPlannings = getPlanningsFor(tasks);
-
-        Set<Task> assignedTasks = new HashSet<Task>();
-        for(TaskPlanning p : allPlannings){
-            if(p.getDevelopers().contains(dev)){
-                assignedTasks.add(getTaskFor(p));
-            }
-        }
-
-        return assignedTasks;
-    }
-
-    /**
-     * Retrieves a number of times on which the given task could be planned
-     * The search starts at the given time
-     *
-     * @param task The task
-     * @param n How many options you want
-     * @param theTime The time to start the search on
-     * @return A list of possible times
-     */
-    public List<LocalDateTime> getPlanningTimeOptions(Task task, int n, LocalDateTime theTime) {
-        theTime = theTime.plusMinutes(60-theTime.getMinute());
-        List<LocalDateTime> timeOptions = new ArrayList<LocalDateTime>();
-        if (getResources().isEmpty() && !task.getRequirements().isEmpty()) //safety checks
-            return timeOptions;
-        if (task.getRecursiveRequirements().stream().anyMatch(p -> !hasResourcesOfType(p.getType(),getResources(), p.getAmount())))
-            return timeOptions;
-        for (int i = 0; timeOptions.size() < n && i < 2000; i++) { //2000 iterations for safety.
-            if (this.isValidTimeForTask(theTime,task))
-                timeOptions.add(theTime);
-            theTime = TimeCalculator.addWorkingMinutes(theTime,60);
-        }
-        return timeOptions;
-    }
 
     /**
      * Checks to see if the task could be planned to start on this time
@@ -296,55 +354,68 @@ public class PlanningManager implements Serializable {
         }
         return false;
     }
+    
+    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+        if(task == null){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
+        }
 
-    /**
-     * Retrieves a list of options for each resource type needed by a task.
-     *
-     * @param task The task for which you want the options
-     * @param time The time on which you cant to use the resources
-     * @return The list with options
-     */
-    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
-        Set<Reservable> usedResources = new HashSet<Reservable>();
-        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-        for (TaskPlanning planning : getTaskPlannings()) {
-            if (getEstimatedOrPlanningPeriod(planning).isDuring(period)) {
-                usedResources.addAll(planning.getReservations());
-            }
+        if(startTime == null){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME);
         }
-        Set<Resource> availableResources = new HashSet<Resource>(getResources());
-        availableResources.removeAll(usedResources);
-        availableResources = availableResources.stream().filter( p -> p.getType().isAvailableDuring(period)).collect(Collectors.toSet());
-        Map<ResourceType,List<Resource>> map = new HashMap<ResourceType,List<Resource>>();
-        for (Requirement req : task.getRecursiveRequirements()) {
-            map.put(req.getType(), getResources().stream().filter( p -> p.isOfType(req.getType())).collect(Collectors.toList()));
+        
+        for( Reservable res : resources){
+        	if(res == null){
+        		throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE);
+        	}
         }
-        return map;
+    	
+    	// Check if the task is already planned
+    	if (task.isPlanned()) {
+            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
+        }
+        
+    	// Check if the set of resources is consistent
+        if (!RequirementsCalculator.isPossibleResourceSet(resources)){
+        	throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET);
+        }
+        
+        // Check if the resources are available during the planning
+        if (!areResourcesAvailableDuring(resources, new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))){
+        	throw new IllegalArgumentException(ERROR_RESOURCE_NOT_AVAILABLE);
+        }
+        
+        // Check if the resources aren't already planned for another task
+        TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
+        if(conflict != null){
+        	throw new ConflictingPlanningException(conflict);
+        }
     }
 
-    public Set<Resource> getResources() {
-        return office.getResources();
+    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Reservable> resources){
+    	for (TaskPlanning plan: getTaskPlannings()) {
+    		for(Reservable res: resources){
+    			if (getEstimatedOrPlanningPeriod(plan).overlaps(new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))) {
+    				if(plan.getReservations().contains(res)){
+    					return plan;
+    				}
+    			}
+    		}
+    	}
+    	return null;
     }
-
-    /**
-     * Retrieves a list of developers that can work on the task on a given time
-     *
-     * @param task The task for which you need developers
-     * @param time The time on which you need developers
-     * @return The possible developers
-     */
-    public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
-        Set<Developer> usedDevelopers = new HashSet<Developer>();
-        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-        for (TaskPlanning planning : getTaskPlannings()) {
-            if (getEstimatedOrPlanningPeriod(planning).isDuring(period)) {
-                usedDevelopers.addAll(planning.getDevelopers());
-            }
-        }
-        Set<Developer> availableDevelopers = new HashSet<Developer>(getDevelopers().stream().filter( d -> d.isAvailableDuring(period)).collect(Collectors.toSet()));
-        availableDevelopers.removeAll(usedDevelopers);
-        return availableDevelopers;
+    
+    private boolean areResourcesAvailableDuring(Set<Resource> resources, DateTimePeriod period){
+    	for(Resource res : resources){
+    		if(!res.getType().isAvailableDuring(period)){
+    			return false;
+    		}
+    	}
+    	return true;
     }
+    
+    
+    // ACTIONS
 
     /**
      * Creates a planning and keeps track of it.
@@ -378,93 +449,7 @@ public class PlanningManager implements Serializable {
         TaskPlanning newplanning = new TaskPlanningWithBreak(startTime, resources, task.getEstimatedDuration());
        	task.plan(newplanning);
     }
-    
-    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
-        if(task == null){
-        	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
-        }
-
-        if(startTime == null){
-        	throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME);
-        }
-        
-        for( Reservable res : resources){
-        	if(res == null){
-        		throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE);
-        	}
-        }
-    	
-    	// Check if the task is already planned
-    	if (this.getPlanningFor(task) != null) {
-            throw new IllegalArgumentException(ERROR_TASK_ALREADY_PLANNED);
-        }
-        
-    	// Check if the set of resources is consistent
-        if (!RequirementsCalculator.isPossibleResourceSet(resources)){
-        	throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET);
-        }
-        
-        // Check if the resources are available during the planning
-        if (!areResourcesAvailableDuring(resources, new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))){
-        	throw new IllegalArgumentException(ERROR_RESOURCE_NOT_AVAILABLE);
-        }
-        
-        // Check if the resources aren't already planned for another task
-        TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
-        if(conflict != null){
-        	throw new ConflictingPlanningException(conflict);
-        }
-    }
-
-    /**
-     * Removes a planning, freeing everything that it reserved.
-     *
-     * @param planning The planning that will be removed
-     */
-    public void removePlanning(TaskPlanning planning){
-    	getTaskFor(planning).removePlanning();
-    }
-
-    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Reservable> resources){
-    	for (TaskPlanning plan: getTaskPlannings()) {
-    		for(Reservable res: resources){
-    			if (getEstimatedOrPlanningPeriod(plan).overlaps(new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))) {
-    				if(plan.getReservations().contains(res)){
-    					return plan;
-    				}
-    			}
-    		}
-    	}
-    	return null;
-    }
-    
-    private boolean areResourcesAvailableDuring(Set<Resource> resources, DateTimePeriod period){
-    	for(Resource res : resources){
-    		if(!res.getType().isAvailableDuring(period)){
-    			return false;
-    		}
-    	}
-    	return true;
-    }
-
-    /**
-     * Get all the developers of the company.
-     *
-     * @return Every developer contained by a ImmutableSet
-     */
-    public Set<Developer> getDevelopers() {
-        return office.getDevelopers();
-    }
-
-
-    /**
-     * Returns all ResourceTypes this company has.
-     *
-     * @return Returns a ImmutableSet containing all the types of resources
-     */
-    public Set<ResourceType> getResourceTypes(){
-    	return office.getResourceTypes();
-    }
+   
 
     /**
      * Set that the task was finished during the given period
@@ -503,14 +488,6 @@ public class PlanningManager implements Serializable {
         else {
             throw new IllegalStateException(ERROR_ILLEGAL_EXECUTING_STATE);
         }
-    }
-    
-    public Task getTaskFor(TaskPlanning planning){
-    	return office.getTaskFor(planning);
-    }
-    
-    public DateTimePeriod getEstimatedOrPlanningPeriod(TaskPlanning plan){
-    	return getTaskFor(plan).getEstimatedOrPlanningPeriod();
     }
 
 

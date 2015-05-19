@@ -83,10 +83,6 @@ public class Company {
         }
     }
     
-    public TaskPlanning getPlanningFor(Task task, AuthenticationToken at) {
-        return at.getOffice().getPlanningFor(task);
-    }
-    
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time, AuthenticationToken at) {
         return at.getOffice().getPlanningTimeOptions(task, amount, time);
     }

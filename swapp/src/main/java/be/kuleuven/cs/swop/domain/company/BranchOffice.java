@@ -113,7 +113,7 @@ public class BranchOffice implements Serializable {
     }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
-        return planningManager.getUnplannedTasksFrom(project.getTasks());
+        return getPlanningManager().getUnplannedTasksFrom(project.getTasks());
     }
 
     /**
@@ -123,15 +123,11 @@ public class BranchOffice implements Serializable {
      * @return A set of all the planning
      */
     public Set<TaskPlanning> getPlanningsFor(Project project){
-        return planningManager.getPlanningsFor(project.getTasks());
+        return getPlanningManager().getPlanningsFor(project.getTasks());
     }
 
     public Set<Task> getAssignedTasksOf(Project project, Developer dev){
-        return planningManager.getAssignedTasksOf(project.getTasks(), dev);
-    }
-
-    public TaskPlanning getPlanningFor(Task task) {
-        return getPlanningManager().getPlanningFor(task);
+        return getPlanningManager().getAssignedTasksOf(project.getTasks(), dev);
     }
     
     public Task getTaskFor(TaskPlanning planning){
