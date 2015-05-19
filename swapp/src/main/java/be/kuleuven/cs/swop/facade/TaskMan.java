@@ -179,7 +179,7 @@ public class TaskMan implements Serializable {
      * @return A set of the resources types
      */
     public Set<ResourceTypeWrapper> getResourceTypes() {
-        return map(company.getResourceTypes(authenticationToken), r -> wrapResourceType(r));
+        return map(company.getResourceTypes(), r -> wrapResourceType(r));
     }
 
     /**
@@ -461,7 +461,7 @@ public class TaskMan implements Serializable {
             availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
         }
 
-        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability, authenticationToken));
+        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
     }
 
     /**

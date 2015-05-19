@@ -17,6 +17,7 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
@@ -28,6 +29,7 @@ public class Company {
     private LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
+    private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
     private Map<BranchOffice, BranchOffice.Memento> officeMementos;
     
     public Company() {
@@ -62,8 +64,8 @@ public class Company {
         return null;
     }
     
-    public ImmutableSet<ResourceType> getResourceTypes(AuthenticationToken at) {
-        return at.getOffice().getResourceTypes();
+    public ImmutableSet<ResourceType> getResourceTypes() {
+        return ImmutableSet.copyOf(resourceTypes);
     }
     
     public Set<Task> getUnplannedTasksOf(Project project, AuthenticationToken at) {
@@ -145,8 +147,29 @@ public class Company {
         }
     }
 
-    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability, AuthenticationToken at){
-        return at.getOffice().createResourceType(name, requires, conflicts, selfConflicting, availability);
+    /**
+     * Creates a new ResourceType.
+     *
+     * @param name The name of the new ResourceType
+     * @param requires The Set containing the dependencies of this type of resource
+     * @param conflicts The Set containing the conflicting types of resources, if a task
+     * requires a resource of this type, then it cannot require one of the conflicting
+     * types
+     * @param selfConflicting A boolean that, when true, a task requiring a resource of
+     * this type, can only reserve one of this type
+     * @param availability The period for when a resource of this type is available during
+     * the day
+     * @return The new ResourceType
+     */
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
+    	ResourceType type;
+    	if(availability != null){
+        	type = new TimeConstrainedResourceType(name,requires,conflicts, selfConflicting, availability);
+        }else{
+        	type = new ResourceType(name,requires,conflicts, selfConflicting);
+        }
+        resourceTypes.add(type);
+        return type;
     }
 
     public Resource createResource(String name, ResourceType type, AuthenticationToken at){

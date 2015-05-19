@@ -37,15 +37,15 @@ public class BranchOffice implements Serializable {
     private final String location;
     
     private final Set<Project> projects = new HashSet<Project>();
+    private final Company company;
     private PlanningManager planningManager;
     private Project delegationProject;
     private Set<Resource> resources = new HashSet<Resource>();
-    private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
     private Set<Developer> developers = new HashSet<Developer>();
 
-    public BranchOffice(String location) {
+    public BranchOffice(String location, Company company) {
         this.location = location;
-        
+        this.company = company;
         setPlanningManager(new PlanningManager(this));
         
         delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
@@ -78,7 +78,7 @@ public class BranchOffice implements Serializable {
     }
 
     public ImmutableSet<ResourceType> getResourceTypes() {
-        return ImmutableSet.copyOf(resourceTypes);
+        return company.getResourceTypes();
     }
     
     public Set<TaskPlanning> getTaskPlannings() {
@@ -229,31 +229,6 @@ public class BranchOffice implements Serializable {
 
     public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
         getPlanningManager().startExecutingTask(t, time, dev);
-    }
-
-    /**
-     * Creates a new ResourceType.
-     *
-     * @param name The name of the new ResourceType
-     * @param requires The Set containing the dependencies of this type of resource
-     * @param conflicts The Set containing the conflicting types of resources, if a task
-     * requires a resource of this type, then it cannot require one of the conflicting
-     * types
-     * @param selfConflicting A boolean that, when true, a task requiring a resource of
-     * this type, can only reserve one of this type
-     * @param availability The period for when a resource of this type is available during
-     * the day
-     * @return The new ResourceType
-     */
-    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
-    	ResourceType type;
-    	if(availability != null){
-        	type = new TimeConstrainedResourceType(name,requires,conflicts, selfConflicting, availability);
-        }else{
-        	type = new ResourceType(name,requires,conflicts, selfConflicting);
-        }
-        resourceTypes.add(type);
-        return type;
     }
 
     /**
