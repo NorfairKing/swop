@@ -31,7 +31,7 @@ public class DelegationOffice {
     
     public Delegation createDelegation(Task task, BranchOffice from, BranchOffice to){        
     	if(canDelegate(task,from, to)){ 
-            Delegation del = new Delegation(from, to);
+            Delegation del = new Delegation(task, from, to);
             task.delegate(del);
             if(isSimulating() && from == simulatingOffice){
             	delegationBuffer.put(task, del);
@@ -59,7 +59,7 @@ public class DelegationOffice {
         		task.getEstimatedDuration(),
         		task.getAcceptableDeviation(),
         		new Requirements(task.getRequirements()));
-        del.setTask(newTask);
+        del.setDelegationTask(newTask);
         delegations.add(del);
 
     }

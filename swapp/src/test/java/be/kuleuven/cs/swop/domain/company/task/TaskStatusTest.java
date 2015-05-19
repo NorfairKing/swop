@@ -391,7 +391,7 @@ public class TaskStatusTest {
     @Test(expected = IllegalArgumentException.class)
     public void setTaskInvalidTest(){
     	TaskStatus status1 = new UnstartedStatus(task);
-    	status1.setTask(null);
+    	status1.setDelegationTask(null);
     }
 
 

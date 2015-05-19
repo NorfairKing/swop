@@ -5,31 +5,39 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class Delegation {
-    private Task delegatedTask = null;
+	private final Task delegatedTask;;
+    private Task delegationTask = null;
     private final BranchOffice oldOffice;
     private final BranchOffice newOffice;
 	
-	public Delegation( BranchOffice oldOffice, BranchOffice newOffice) {
+	public Delegation(Task delegatedTask, BranchOffice oldOffice, BranchOffice newOffice) {
         super();
+        this.delegatedTask = delegatedTask;
         this.oldOffice = oldOffice;
         this.newOffice = newOffice;
     }
 	
-	void setTask(Task task){
-		if(delegatedTask != null){
+	void setDelegationTask(Task task){
+		if(delegationTask != null){
 			throw new IllegalStateException(ERROR_TASK_ALREADY_SET);
 		}
 		if(task == null){
 			throw new IllegalArgumentException(ERROR_TASK_NULL);
 		}
-		delegatedTask = task;
+		delegationTask = task;
 	}
     
+	/**
+	 * @return the delegatedTask
+	 */
+	public Task getDelegatedTask() {
+		return delegatedTask;
+	}
     /**
      * @return the delegatedTask
      */
-    public Task getDelegatedTask() {
-        return delegatedTask;
+    public Task getDelegationTask() {
+        return delegationTask;
     }
     
     /**

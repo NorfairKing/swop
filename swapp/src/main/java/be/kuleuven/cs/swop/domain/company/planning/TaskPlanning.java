@@ -54,7 +54,7 @@ public class TaskPlanning implements Serializable {
 
     public ImmutableSet<Developer> getDevelopers() {
         return null;
-        //FIXME: implement me!
+        //FIXME: implement me: Figure out issue #69 first
     }
 
     public LocalDateTime getPlannedStartTime() {

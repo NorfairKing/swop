@@ -90,9 +90,16 @@ public class BranchOffice implements Serializable {
         return ImmutableSet.copyOf(resourceTypes);
     }
     
-    public ImmutableSet<TaskPlanning> getTaskPlannings() {
-    	Set<TaskPlanning> plannings = null; //FIXME: implement me!
-    	return ImmutableSet.copyOf(plannings);
+    public Set<TaskPlanning> getTaskPlannings() {
+    	Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
+    	for(Project proj : projectManager.getProjects()){
+    		for(Task task : proj.getTasks()){
+    			if(task.getPlanning() != null){
+    				plannings.add(task.getPlanning());
+    			}
+    		}
+    	}
+    	return plannings;
     }
     
     protected boolean canHaveAsTaskPlanning(TaskPlanning planning){
@@ -126,7 +133,13 @@ public class BranchOffice implements Serializable {
     }
     
     public Task getTaskFor(TaskPlanning planning){
-    	//FIXME: implement this!!!
+    	for(Project proj : projectManager.getProjects()){
+    		for(Task task : proj.getTasks()){
+    			if(task.getPlanning() == planning){
+    				return task;
+    			}
+    		}
+    	}
     	return null;
     }
 
