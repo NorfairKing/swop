@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,7 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
@@ -37,12 +39,15 @@ public class BranchOffice implements Serializable {
     private ProjectManager  projectManager;
     private PlanningManager planningManager;
     private Project delegationProject;
+    private Set<Resource> resources = new HashSet<Resource>();
+    private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
+    private Set<Developer> developers = new HashSet<Developer>();
 
     public BranchOffice(String location) {
         this.location = location;
         
         setProjectManager(new ProjectManager());
-        setPlanningManager(new PlanningManager());
+        setPlanningManager(new PlanningManager(this));
         
         delegationProject = getProjectManager().createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
     }
@@ -70,7 +75,7 @@ public class BranchOffice implements Serializable {
 
     // Passthrough getters    
     public ImmutableSet<Developer> getDevelopers() {
-        return getPlanningManager().getDevelopers();
+        return ImmutableSet.copyOf(developers);
     }
 
     public ImmutableSet<Project> getProjects() {
@@ -78,11 +83,20 @@ public class BranchOffice implements Serializable {
     }
     
     public Set<Resource> getResources() {		
-    	return getPlanningManager().getResources();		
+        return ImmutableSet.copyOf(resources);
     }
 
     public ImmutableSet<ResourceType> getResourceTypes() {
-        return getPlanningManager().getResourceTypes();
+        return ImmutableSet.copyOf(resourceTypes);
+    }
+    
+    public ImmutableSet<TaskPlanning> getTaskPlannings() {
+    	Set<TaskPlanning> plannings = null; //FIXME: implement me!
+    	return ImmutableSet.copyOf(plannings);
+    }
+    
+    protected boolean canHaveAsTaskPlanning(TaskPlanning planning){
+        return planning != null;
     }
 
     public Project getProjectFor(Task task){
@@ -110,6 +124,11 @@ public class BranchOffice implements Serializable {
     public TaskPlanning getPlanningFor(Task task) {
         return getPlanningManager().getPlanningFor(task);
     }
+    
+    public Task getTaskFor(TaskPlanning planning){
+    	//FIXME: implement this!!!
+    	return null;
+    }
 
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time) {
         return getPlanningManager().getPlanningTimeOptions(task, amount, time);
@@ -123,16 +142,21 @@ public class BranchOffice implements Serializable {
         return getPlanningManager().getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
-        getPlanningManager().createPlanning(task, time, rss, devs);
+    public void createPlanning(Task task, LocalDateTime time, Set<Reservable> rss) throws ConflictingPlanningException {
+        getPlanningManager().createPlanning(task, time, rss);
     }
 
-    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss, Set<Developer> devs) throws ConflictingPlanningException {
-        getPlanningManager().createPlanningWithBreak(task, time, rss, devs);
+    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Reservable> rss) throws ConflictingPlanningException {
+        getPlanningManager().createPlanningWithBreak(task, time, rss);
     }
     
-    public void removePlanning(TaskPlanning planning){		
-	    	getPlanningManager().removePlanning(planning);		
+    /**
+     * Removes a planning, freeing everything that it reserved.
+     *
+     * @param planning The planning that will be removed
+     */
+    public void removePlanning(TaskPlanning planning){
+    	getPlanningManager().removePlanning(planning);
     }
 
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
@@ -168,16 +192,54 @@ public class BranchOffice implements Serializable {
         getPlanningManager().startExecutingTask(t, time, dev);
     }
 
-    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability){
-        return getPlanningManager().createResourceType(name, requires, conflicts, selfConflicting, availability);
+    /**
+     * Creates a new ResourceType.
+     *
+     * @param name The name of the new ResourceType
+     * @param requires The Set containing the dependencies of this type of resource
+     * @param conflicts The Set containing the conflicting types of resources, if a task
+     * requires a resource of this type, then it cannot require one of the conflicting
+     * types
+     * @param selfConflicting A boolean that, when true, a task requiring a resource of
+     * this type, can only reserve one of this type
+     * @param availability The period for when a resource of this type is available during
+     * the day
+     * @return The new ResourceType
+     */
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
+    	ResourceType type;
+    	if(availability != null){
+        	type = new TimeConstrainedResourceType(name,requires,conflicts, selfConflicting, availability);
+        }else{
+        	type = new ResourceType(name,requires,conflicts, selfConflicting);
+        }
+        resourceTypes.add(type);
+        return type;
     }
 
+    /**
+     * Creates a new resource and keeps track of it.
+     *
+     * @param name The name of the new resource
+     * @param type The ResourceType of the new resource
+     * @return Returns the newly created resource
+     */
     public Resource createResource(String name, ResourceType type){
-        return getPlanningManager().createResource(name, type);
+        Resource resource = new Resource(type,name);
+        resources.add(resource);
+        return resource;
     }
 
-    public Developer createDeveloper(String name) {
-        return getPlanningManager().createDeveloper(name);
+    /**
+     * Creates a new developer and keeps track of it.
+     *
+     * @param name The name for the new developer
+     * @return Returns the newly created developer
+     */
+    public Developer createDeveloper(String name){
+        Developer dev = new Developer(name);
+        developers.add(dev);
+        return dev;
     }
     
     public boolean hasTask(Task task){
@@ -256,5 +318,15 @@ public class BranchOffice implements Serializable {
         }
         return obj;
     }
+    
+    private static final String ERROR_ILLEGAL_TASK_PLANNING = "Illegal TaskPlanning in Planning manager.";
+    private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    private static final String ERROR_ILLEGAL_TASK         = "Illegal task provided.";
+    private static final String ERROR_ILLEGAL_DATETIME         = "Illegal date provided.";
+    private static final String ERROR_ILLEGAL_RESOURCE         = "Illegal resource provided.";
+    private static final String ERROR_ILLEGAL_DEVELOPER         = "Illegal developer provided.";
+    private static final String ERROR_ILLEGAL_RESOURCE_SET = "The given set of resources is not possible.";
+    private static final String ERROR_RESOURCE_NOT_AVAILABLE = "A resource is not available at that time.";
+    private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
 
 }

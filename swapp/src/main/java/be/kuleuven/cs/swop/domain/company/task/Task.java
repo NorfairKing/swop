@@ -69,6 +69,10 @@ public class Task implements Serializable {
     LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
         return getTaskInfo().getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
     }
+    
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+    	return status.getEstimatedOrPlanningPeriod();
+    }
 
     /**
      * Check whether this Task can have the given task as a dependency, the given Task can't be null and cannnot create a dependency loop when it's added as dependency to tis Task.
@@ -252,12 +256,12 @@ public class Task implements Serializable {
         return info.hasUnfinishedDependencies();
     }
     
-    public Requirements getRequirements() {
-        return info.getRequirements();
+    public Set<Requirement> getRequirements() {
+        return info.getRequirements().getRequirementSet();
     }
     
-    public Requirements getRecursiveRequirements() {
-        return info.getRecursiveRequirements();
+    public Set<Requirement> getRecursiveRequirements() {
+        return info.getRecursiveRequirements().getRequirementSet();
     }
     
     protected long getBestDuration() {
@@ -270,9 +274,19 @@ public class Task implements Serializable {
 
     private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
+    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
 
     public boolean isPlanned() {
-        return this.getPlanning() != null;
+        return status.isPlanned();
+    }
+    
+    public void plan(TaskPlanning plan){
+    	//TODO: validate this
+    	status.plan(plan);
+    }
+    
+    public void removePlanning(){
+    	status.removePlanning();
     }
 
 }

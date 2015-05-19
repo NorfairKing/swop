@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
@@ -57,7 +58,7 @@ public class DelegationOffice {
         Task newTask = del.getNewOffice().createDelegationTask(task.getDescription(),
         		task.getEstimatedDuration(),
         		task.getAcceptableDeviation(),
-        		task.getRequirements());
+        		new Requirements(task.getRequirements()));
         del.setTask(newTask);
         delegations.add(del);
 

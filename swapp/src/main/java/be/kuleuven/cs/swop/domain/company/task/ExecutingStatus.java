@@ -67,7 +67,20 @@ public class ExecutingStatus extends IncompleteStatus {
 	boolean canExecute() {
 		return false;
 	}
+	
+    @Override
+	void plan(TaskPlanning plan){
+    	throw new IllegalStateException(ERROR_PLAN);
+    }
+    
+    @Override
+    void removePlanning(){
+    	throw new IllegalStateException(ERROR_PLAN_REMOVE);
+    }
 
     private static String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
     private static String ERROR_EXECUTE = "Can't execute a task that's already being executed.";
+	private static String ERROR_PLAN                     = "Can't plan a task that's executing.";
+	private static String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's executing.";
+
 }

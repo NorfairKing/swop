@@ -81,6 +81,19 @@ public class UnstartedStatus extends IncompleteStatus {
     Task getAlternative() {
         return null;
     }
+    
+    @Override
+	void plan(TaskPlanning plan){
+    	if(isPlanned()){
+    		throw new IllegalStateException(ERROR_ALREADY_PLANNED);
+    	}
+    	goToStatus(new UnstartedStatus(getTask(), plan));
+    }
+    
+    @Override
+    void removePlanning(){
+    	goToStatus(new UnstartedStatus(getTask(), null));
+    }
 
     private static String ERROR_FINISH = "Can't finish a task that has not been started.";
 

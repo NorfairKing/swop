@@ -50,6 +50,12 @@ public class TaskPlanning implements Serializable {
     public ImmutableSet<Reservable> getReservations() {
         return ImmutableSet.copyOf(reservations);
     }
+    
+
+    public ImmutableSet<Developer> getDevelopers() {
+        return null;
+        //FIXME: implement me!
+    }
 
     public LocalDateTime getPlannedStartTime() {
         return plannedStartTime;

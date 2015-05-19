@@ -113,6 +113,14 @@ abstract class TaskStatus implements Serializable {
     TaskPlanning getPlanning(){
         return planning;
     }
+    
+    boolean isPlanned(){
+    	return planning != null;
+    }
+    
+    abstract void plan(TaskPlanning plan);
+    abstract void removePlanning();
+    
 
     /**
      * Gives an indication of when this planning has taken, or should take place. If the task is already finished, the planning knows when it was, and returns that as the period it was done. If the
@@ -131,5 +139,7 @@ abstract class TaskStatus implements Serializable {
     }
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";
+    protected static final String ERROR_ALREADY_PLANNED  = "This task is already planned.";
+
 
 }

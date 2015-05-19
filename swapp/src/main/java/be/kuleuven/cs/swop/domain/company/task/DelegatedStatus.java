@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 @SuppressWarnings("serial")
 public class DelegatedStatus extends TaskStatus {
@@ -119,16 +120,27 @@ public class DelegatedStatus extends TaskStatus {
 		return del;
 	}
 	
+    @Override
+	void plan(TaskPlanning plan){
+    	throw new IllegalStateException(ERROR_PLAN);
+    }
+    
+    @Override
+    void removePlanning(){
+    	throw new IllegalStateException(ERROR_PLAN_REMOVE);
+    }
+	
     private static String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for a delegated task.";
 	private static String ERROR_FINISH                   = "Can't finish a delegated task.";
 	private static String ERROR_FAIL                     = "Can't fail a delegated task.";
 	private static String ERROR_EXECUTE                     = "Can't execute a delegated task.";
 	private static String ERROR_DELEGATE                     = "Can't delegate a task that's already delegated.";
+	private static String ERROR_PLAN                     = "Can't plan a task that's delegated.";
+	private static String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's delegated.";
 
     @Override
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
-        // TODO Auto-generated method stub
-        return null; // TODO FIXME, ask delegationTask
+        return del.getDelegatedTask().getEstimatedOrPlanningPeriod();
     }
 
 }
