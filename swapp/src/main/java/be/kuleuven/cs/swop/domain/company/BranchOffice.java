@@ -36,7 +36,7 @@ public class BranchOffice implements Serializable {
 
     private final String location;
     
-    private ProjectManager  projectManager;
+    private final Set<Project> projects = new HashSet<Project>();
     private PlanningManager planningManager;
     private Project delegationProject;
     private Set<Resource> resources = new HashSet<Resource>();
@@ -46,23 +46,14 @@ public class BranchOffice implements Serializable {
     public BranchOffice(String location) {
         this.location = location;
         
-        setProjectManager(new ProjectManager());
         setPlanningManager(new PlanningManager(this));
         
-        delegationProject = getProjectManager().createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
+        delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
     }
 
     // Getters and setters of internal state
     public String getLocation() {
         return location;
-    }
-    
-    private ProjectManager getProjectManager() {
-        return projectManager;
-    }
-
-    private void setProjectManager(ProjectManager projectManager) {
-        this.projectManager = projectManager;
     }
 
     private PlanningManager getPlanningManager() {
@@ -79,7 +70,7 @@ public class BranchOffice implements Serializable {
     }
 
     public ImmutableSet<Project> getProjects() {
-        return getProjectManager().getProjects();
+        return ImmutableSet.copyOf(projects);
     }
     
     public Set<Resource> getResources() {		
@@ -92,7 +83,7 @@ public class BranchOffice implements Serializable {
     
     public Set<TaskPlanning> getTaskPlannings() {
     	Set<TaskPlanning> plannings = new HashSet<TaskPlanning>();
-    	for(Project proj : projectManager.getProjects()){
+    	for(Project proj : getProjects()){
     		for(Task task : proj.getTasks()){
     			if(task.getPlanning() != null){
     				plannings.add(task.getPlanning());
@@ -106,8 +97,19 @@ public class BranchOffice implements Serializable {
         return planning != null;
     }
 
-    public Project getProjectFor(Task task){
-        return getProjectManager().getProjectFor(task);
+    /**
+     * Tries to find the project of the given task and returns it.
+     * Returns null if no project was found, or the given task was null.
+     * 
+     * @param task The task to find the project for
+     * @return The project to which the task belongs
+     */
+    public Project getProjectFor(Task task) {
+        for (Project project : getProjects()) {
+            if (project.containsTask(task)) { return project; }
+        }
+
+        return null;
     }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
@@ -133,7 +135,7 @@ public class BranchOffice implements Serializable {
     }
     
     public Task getTaskFor(TaskPlanning planning){
-    	for(Project proj : projectManager.getProjects()){
+    	for(Project proj : getProjects()){
     		for(Task task : proj.getTasks()){
     			if(task.getPlanning() == planning){
     				return task;
@@ -172,8 +174,36 @@ public class BranchOffice implements Serializable {
     	getPlanningManager().removePlanning(planning);
     }
 
+    /**
+     * Creates and returns a new Project with the given arguments, this method is used by the importer of the yaml file because the creationTime is specified.
+     *
+     * @param title
+     *            A String containing the title for the new Project.
+     *
+     * @param description
+     *            A String containing the description for the new Project.
+     *
+     * @param creationTime
+     *            A Date containing the time when the new Project was created.
+     *
+     * @param dueTime
+     *            A Date containing the time for when the Project is due to be completed.
+     *
+     * @return Returns the newly created Project.
+     */
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
-        return getProjectManager().createProject(title, description, creationTime, dueTime);
+        Project project = new Project(title, description, creationTime, dueTime);
+        addProject(project);
+        return project;
+    }
+    
+    protected boolean canHaveAsProject(Project project) {
+        return project != null;
+    }
+
+    private void addProject(Project project) {
+        if (!canHaveAsProject(project)) throw new IllegalArgumentException(ERROR_ILLEGAL_PROJECT);
+        projects.add(project);
     }
 
     /**
@@ -256,7 +286,7 @@ public class BranchOffice implements Serializable {
     }
     
     public boolean hasTask(Task task){
-    	 Project proj = projectManager.getProjectFor(task);
+    	 Project proj = getProjectFor(task);
     	 return proj != null;
     }
     public Task createDelegationTask(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements){
@@ -280,7 +310,6 @@ public class BranchOffice implements Serializable {
      * @param memento The memento to restore from
      */
     public void restoreFromMemento(Memento memento) {
-        projectManager = memento.getSavedState().projectManager;
         planningManager = memento.getSavedState().planningManager;
         delegationProject = memento.getSavedState().delegationProject;
     }
@@ -341,5 +370,6 @@ public class BranchOffice implements Serializable {
     private static final String ERROR_ILLEGAL_RESOURCE_SET = "The given set of resources is not possible.";
     private static final String ERROR_RESOURCE_NOT_AVAILABLE = "A resource is not available at that time.";
     private static final String ERROR_TASK_ALREADY_PLANNED = "The given Task already has a planning.";
+    private static final String ERROR_ILLEGAL_PROJECT = "Invalid project for project manager";
 
 }
