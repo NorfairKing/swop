@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.task.Task;
+import be.kuleuven.cs.swop.domain.company.task.TaskInfo;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -244,20 +246,16 @@ public class Project implements Serializable {
      *
      */
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation) {
-        Task newTask = new Task(description, estimatedDuration, acceptableDeviation);
-        addTask(newTask);
-        return newTask;
+        return createTask(description, estimatedDuration, acceptableDeviation, new Requirements(new HashSet<Requirement>()));
     }
     
-    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
-        Task newTask = new Task(description, estimatedDuration, acceptableDeviation, requirements);
-        addTask(newTask);
-        return newTask;
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements) {
+        return createTask(description, estimatedDuration, acceptableDeviation,new HashSet<Task>(), requirements);
     }
     
-    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
-        Task newTask = new Task(description, estimatedDuration, acceptableDeviation, requirements);
-        dependencies.forEach(d -> newTask.addDependency(d));
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Requirements requirements) {
+        TaskInfo info = new TaskInfo(description, estimatedDuration, acceptableDeviation, requirements, dependencies);
+    	Task newTask = new Task(info);
         addTask(newTask);
         return newTask;
     }

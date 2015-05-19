@@ -123,7 +123,7 @@ public class TaskWrapper {
     
     public Set<RequirementWrapper> getRequirements(){
         Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
-        for (Requirement realReq : getTask().getRequirements()) {
+        for (Requirement realReq : getTask().getRequirements().getRequirementSet()) {
             result.add(new RequirementWrapper(realReq));
         }
         return result;
@@ -131,7 +131,7 @@ public class TaskWrapper {
     
     public Set<RequirementWrapper> getRecursiveRequirements(){
     	Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
-    	for (Requirement realReq : getTask().getRecursiveRequirements()) {
+    	for (Requirement realReq : getTask().getRecursiveRequirements().getRequirementSet()) {
     		result.add(new RequirementWrapper(realReq));
     	}
     	return result;

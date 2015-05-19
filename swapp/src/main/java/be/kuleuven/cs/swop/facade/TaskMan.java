@@ -23,6 +23,7 @@ import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -353,7 +354,7 @@ public class TaskMan implements Serializable {
             reqs = map(data.getRequirements(), (t, i) -> new Requirement(i, t.getType()));
         }
 
-        return wrapTask(company.createTaskFor(project.getProject(), descr, est, dev, deps, reqs));
+        return wrapTask(company.createTaskFor(project.getProject(), descr, est, dev, deps, new Requirements(reqs)));
     }
 
     /**
@@ -393,18 +394,6 @@ public class TaskMan implements Serializable {
      */
     public void setAlternativeFor(TaskWrapper task, TaskWrapper alternative) {
         company.setAlternativeFor(task.getTask(), alternative.getTask());
-    }
-
-    /**
-     * Add an existing task as dependency for another.
-     *
-     * @param task
-     *            The task to add a dependency to.
-     * @param dependency
-     *            The dependency.
-     */
-    public void addDependencyTo(TaskWrapper task, TaskWrapper dependency) {
-        company.addDependencyTo(task.getTask(), dependency.getTask());
     }
 
     /**

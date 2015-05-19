@@ -17,6 +17,7 @@ import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -183,7 +184,7 @@ public class BranchOffice implements Serializable {
     	 Project proj = projectManager.getProjectFor(task);
     	 return proj != null;
     }
-    public Task createDelegationTask(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements){
+    public Task createDelegationTask(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements){
     	Task task = delegationProject.createTask(description, estimatedDuration, acceptableDeviation, requirements);
     	return task;
     }

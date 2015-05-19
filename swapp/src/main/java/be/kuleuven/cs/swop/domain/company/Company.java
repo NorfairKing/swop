@@ -14,6 +14,7 @@ import be.kuleuven.cs.swop.domain.company.delegation.DelegationOffice;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -114,7 +115,7 @@ public class Company {
         return at.getOffice().createProject(title, description, creationTime, dueTime);
     }
 
-    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Set<Requirement> requirements) {
+    public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Requirements requirements) {
         return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
     }
     
@@ -128,10 +129,6 @@ public class Company {
     
     public void setAlternativeFor(Task t, Task alt){
         t.setAlternative(alt);
-    }
-
-    public void addDependencyTo(Task t,Task dep){
-        t.addDependency(dep);
     }
     
     public void finishTask(Task t, DateTimePeriod period, AuthenticationToken at){

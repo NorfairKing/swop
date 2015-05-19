@@ -10,6 +10,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
 import com.google.common.collect.ImmutableSet;
@@ -226,7 +227,46 @@ public class Task implements Serializable {
     public TaskPlanning getPlanning(){
         return status.getPlanning();
     }
- 
+    
+    public String getDescription() {
+        return info.getDescription();
+    }
+    
+    public long getEstimatedDuration() {
+        return info.getEstimatedDuration();
+    }
+    
+    boolean containsDependency(Task dependency) {
+        return info.containsDependency(dependency);
+    }
+    
+    public double getAcceptableDeviation() {
+        return info.getAcceptableDeviation();
+    }
+    
+    public ImmutableSet<Task> getDependencySet() {
+        return info.getDependencySet();
+    }
+    
+    boolean hasUnfinishedDependencies() {
+        return info.hasUnfinishedDependencies();
+    }
+    
+    public Requirements getRequirements() {
+        return info.getRequirements();
+    }
+    
+    public Requirements getRecursiveRequirements() {
+        return info.getRecursiveRequirements();
+    }
+    
+    protected long getBestDuration() {
+        return info.getBestDuration();
+    }
+
+    protected long getWorstDuration() {
+        return info.getWorstDuration();
+    }
 
     private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
