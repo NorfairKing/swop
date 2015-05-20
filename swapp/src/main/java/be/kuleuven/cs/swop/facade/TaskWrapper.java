@@ -218,6 +218,10 @@ public class TaskWrapper {
     	return this.task.hashCode() + "wrapper".hashCode();
     	
     }
+    
+    public TaskPlanningWrapper getPlanning(){
+    	return new TaskPlanningWrapper(getTask().getPlanning());
+    }
 
     
     

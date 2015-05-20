@@ -355,6 +355,7 @@ public class PlanningManager implements Serializable {
         return false;
     }
     
+
     private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException{
         if(task == null){
         	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
@@ -388,7 +389,7 @@ public class PlanningManager implements Serializable {
         // Check if the resources aren't already planned for another task
         TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
         if(conflict != null){
-        	throw new ConflictingPlannedTaskException(conflict);
+        	throw new ConflictingPlannedTaskException(getTaskFor(conflict));
         }
     }
 

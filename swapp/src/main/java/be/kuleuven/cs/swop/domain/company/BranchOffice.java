@@ -153,11 +153,11 @@ public class BranchOffice implements Serializable {
         return getPlanningManager().getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Reservable> rss) throws ConflictingPlanningException {
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
         getPlanningManager().createPlanning(task, time, rss);
     }
 
-    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Reservable> rss) throws ConflictingPlanningException {
+    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
         getPlanningManager().createPlanningWithBreak(task, time, rss);
     }
     

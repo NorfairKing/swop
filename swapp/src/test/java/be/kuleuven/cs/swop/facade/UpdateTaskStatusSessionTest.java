@@ -11,7 +11,7 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.facade.ConflictingPlanningWrapperException;
+import be.kuleuven.cs.swop.facade.ConflictingPlannedTaskWrapperException;
 import be.kuleuven.cs.swop.TestingUI;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.facade.DeveloperData;
@@ -48,7 +48,7 @@ public class UpdateTaskStatusSessionTest {
     }
     
     @Test
-    public void test() throws ConflictingPlanningWrapperException {
+    public void test() throws ConflictingPlannedTaskWrapperException {
         ui.addRequestTask(task);
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
@@ -77,7 +77,7 @@ public class UpdateTaskStatusSessionTest {
     }
     
     @Test
-    public void flowTest() throws ConflictingPlanningWrapperException {
+    public void flowTest() throws ConflictingPlannedTaskWrapperException {
         ui.addRequestTask(task);
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
