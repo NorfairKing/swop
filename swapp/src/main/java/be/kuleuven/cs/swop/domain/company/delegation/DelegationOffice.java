@@ -6,17 +6,18 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
+import be.kuleuven.cs.swop.domain.company.Company;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class DelegationOffice {
     private final Set<Delegation> delegations = new HashSet<Delegation>();
-    private BranchOffice simulatingOffice = null;
-    private final Map<Task,Delegation> delegationBuffer = new HashMap<Task, Delegation>();
+    private final Company company;
+    private final Set<Delegation> delegationBuffer = new HashSet<Delegation>();
 
-    public DelegationOffice() {
-        super();
+    public DelegationOffice(Company company) {
+        this.company = company;
     }
     
     
@@ -33,28 +34,18 @@ public class DelegationOffice {
     	if(canDelegate(task,from, to)){ 
             Delegation del = new Delegation(task, from, to);
             task.delegate(del);
-            if(isSimulating() && from == simulatingOffice){
-            	delegationBuffer.put(task, del);
+            if(company.isInASimulation(from) || company.isInASimulation(to)){
+            	delegationBuffer.add(del);
             }else{
-            	commitDelegation(task, del);
+            	commitDelegation(del);
             }
             return del;
         }
         return null;
     }
     
-    public boolean isSimulating(){
-    	return simulatingOffice != null;
-    }
-    
-    public void startSimulation(BranchOffice office){
-    	if(simulatingOffice != null){
-    		throw new IllegalStateException(ERROR_ALREADY_SIMULATING);
-    	}
-    	simulatingOffice = office;
-    }
-    
-    private void commitDelegation(Task task, Delegation del){
+    private void commitDelegation(Delegation del){
+        Task task = del.getDelegatedTask();
         Task newTask = del.getNewOffice().createDelegationTask(task.getDescription(),
         		task.getEstimatedDuration(),
         		task.getAcceptableDeviation(),
@@ -64,29 +55,28 @@ public class DelegationOffice {
 
     }
     
-    public void commitSimulation(){
-    	if(simulatingOffice == null){
-    		throw new IllegalStateException(ERROR_NOT_SIMULATING);
+    public void processBuffer(){
+        Set<Delegation> toRemove = new HashSet<Delegation>();
+    	for(Delegation del : delegationBuffer ){
+    	    if(!company.isInASimulation(del.getOldOffice()) && !company.isInASimulation(del.getNewOffice())){
+    	           commitDelegation(del);
+    	           toRemove.add(del);
+    	    }
     	}
-    	
-    	for(Map.Entry<Task, Delegation> entry : delegationBuffer.entrySet() ){
-    		commitDelegation(entry.getKey(), entry.getValue());
-    	}
-    	delegationBuffer.clear();
-    	simulatingOffice = null;
+    	delegationBuffer.remove(toRemove);
+
     	
     }
     
-    public void rollbackSimulation(){
-    	if(simulatingOffice == null){
-    		throw new IllegalStateException(ERROR_NOT_SIMULATING);
-    	}
-    	delegationBuffer.clear();
-    	simulatingOffice = null;
+    public void rollbackSimulation(BranchOffice office){
+        for(Delegation del : delegationBuffer ){
+            if(office == del.getOldOffice()){
+                delegationBuffer.remove(del);
+            }
+        }
+        processBuffer();
+        
     }
-    
-    private static final String ERROR_ALREADY_SIMULATING = "Can't start a simulation when there is already a simulation running.";
-    private static final String ERROR_NOT_SIMULATING = "Can't end a simulation when there is no simulation running.";
     
     
 

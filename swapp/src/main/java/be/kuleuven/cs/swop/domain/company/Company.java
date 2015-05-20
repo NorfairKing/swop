@@ -31,12 +31,13 @@ public class Company {
     
     private LocalDateTime                           time             = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice>                 offices          = new HashSet<BranchOffice>();
-    private final DelegationOffice                  delegationOffice = new DelegationOffice();
+    private final DelegationOffice                  delegationOffice;
     private Set<ResourceType>                       resourceTypes    = new HashSet<ResourceType>();
     private Map<BranchOffice, BranchOffice.Memento> officeMementos   = new HashMap<BranchOffice, BranchOffice.Memento>();
     
     public Company() {
         resourceTypes.add(Developer.DEVELOPER_TYPE);
+        delegationOffice = new DelegationOffice(this);
         //seedData();
     }
     
@@ -275,14 +276,12 @@ public class Company {
         if (isInASimulationFor(at)) { throw new IllegalStateException(); }
 
         officeMementos.put(at.getOffice(), at.getOffice().saveToMemento());
-        delegationOffice.startSimulation(at.getOffice());
     }
 
     public void realizeSimulationFor(AuthenticationToken at) {
         if (!isInASimulationFor(at)) { throw new IllegalStateException(); }
-
-        delegationOffice.commitSimulation();
         officeMementos.remove(at.getOffice());
+        delegationOffice.processBuffer();
     }
 
     public void cancelSimulationFor(AuthenticationToken at) {
@@ -290,12 +289,16 @@ public class Company {
 
         BranchOffice.Memento officeMemento = officeMementos.get(at.getOffice());
         at.getOffice().restoreFromMemento(officeMemento);
-        delegationOffice.rollbackSimulation();
         officeMementos.remove(at.getOffice());
+        delegationOffice.rollbackSimulation(at.getOffice());
     }
 
     public boolean isInASimulationFor(AuthenticationToken at) {
         return officeMementos.containsKey(at.getOffice());
+    }
+    
+    public boolean isInASimulation(BranchOffice office){
+        return officeMementos.containsKey(office);
     }
 
     /**
