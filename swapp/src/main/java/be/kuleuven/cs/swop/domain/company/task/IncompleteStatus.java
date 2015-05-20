@@ -12,8 +12,8 @@ import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 @SuppressWarnings("serial")
 public abstract class IncompleteStatus extends TaskStatus {
 
-    IncompleteStatus(Task task, TaskPlanning planning) {
-        super(task, planning);
+    IncompleteStatus(Task task) {
+        super(task);
     }
 
     @Override
@@ -44,7 +44,7 @@ public abstract class IncompleteStatus extends TaskStatus {
 
     @Override
     void fail(DateTimePeriod period) {
-        goToStatus(new FailedStatus(getTask(), getPlanning(), period));
+        goToStatus(new FailedStatus(getTask(), period));
     }
 
     @Override

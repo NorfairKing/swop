@@ -10,8 +10,8 @@ import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 @SuppressWarnings("serial")
 public class FinishedStatus extends CompletedStatus {
 
-    FinishedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
-        super(task, planning, performedDuring);
+    FinishedStatus(Task task, DateTimePeriod performedDuring) {
+        super(task, performedDuring);
     }
 
     @Override
@@ -69,4 +69,5 @@ public class FinishedStatus extends CompletedStatus {
     }
 
     private static String ERROR_SET_ALTERNATIVE = "Can't set an alternative for a finished task.";
+
 }

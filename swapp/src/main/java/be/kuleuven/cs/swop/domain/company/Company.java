@@ -36,12 +36,17 @@ public class Company {
     private Map<BranchOffice, BranchOffice.Memento> officeMementos   = new HashMap<BranchOffice, BranchOffice.Memento>();
     
     public Company() {
-    	//seedData();
+        resourceTypes.add(Developer.DEVELOPER_TYPE);
+        //seedData();
     }
     
     
     //FIXME: remove me when no longer needed!
     private void seedData(){
+        // Set Time
+        LocalDateTime startTime1 = LocalDateTime.of(2015, 6, 1 , 9 , 0);
+        this.time = startTime1;
+        
     	// Offices
     	BranchOffice office1 = new BranchOffice("Office 1", this);
     	BranchOffice office2 = new BranchOffice("Office 2", this);
@@ -65,14 +70,12 @@ public class Company {
     	ResourceType dataCenterType = createResourceType("Data Center", requireSet, conflictSet, false, dailyAvailability0);
     	
     	// Projects
-    	LocalDateTime startTime1 = LocalDateTime.of(2015, 6, 1 , 9 , 0);
-    	LocalDateTime startTime2 = LocalDateTime.of(2015, 6, 8 , 9 , 0);
     	LocalDateTime endTime1 = LocalDateTime.of(2015, 6,  5, 18 , 0);
     	LocalDateTime endTime2 = LocalDateTime.of(2015, 6,  22, 18 , 0);
     	Project proj1 = office1.createProject("Project 1", "This is Project 1", startTime1, endTime1);
-    	Project proj2 = office1.createProject("Project 2", "This is Project 2", startTime2, endTime2);
+    	Project proj2 = office1.createProject("Project 2", "This is Project 2", startTime1, endTime2);
     	Project proj3 = office2.createProject("Project 3", "This is Project 3", startTime1, endTime1);
-    	Project proj4 = office2.createProject("Project 4", "This is Project 4", startTime2, endTime2);
+    	Project proj4 = office2.createProject("Project 4", "This is Project 4", startTime1, endTime2);
     	
     	// Resources
     	
@@ -87,6 +90,9 @@ public class Company {
     	Resource conference2 = office1.createResource("The Small Conference Room", conferenceRoomType);
     	Resource testingSetup1 = office1.createResource("The Distributed Test Facility", testingSetupType);
     	Resource dataCenter1 = office1.createResource("Data Center 1", dataCenterType);
+    	Developer dev1 = office1.createDeveloper("Ann");
+    	Developer dev2 = office1.createDeveloper("Bob");
+    	Developer dev3 = office1.createDeveloper("Charlie");
 
     	
     	// Office 2
@@ -99,7 +105,11 @@ public class Company {
     	Resource conference3 = office2.createResource("The Big Conference Room #2", conferenceRoomType);
     	Resource conference4 = office2.createResource("The Small Conference Room #2", conferenceRoomType);
     	Resource testingSetup3 = office2.createResource("The Distributed Test Facility #2", testingSetupType);
-    	Resource dataCenter4 = office2.createResource("Data Center 2", dataCenterType);    
+    	Resource dataCenter4 = office2.createResource("Data Center 2", dataCenterType);
+        Developer dev4 = office2.createDeveloper("David");
+        Developer dev5 = office2.createDeveloper("Evelyn");
+        Developer dev6 = office2.createDeveloper("Fiona");
+
     	
     }
     
@@ -107,7 +117,7 @@ public class Company {
         return ImmutableSet.copyOf(offices);
     }
 
-    public ImmutableSet<Developer> getDevelopers(AuthenticationToken at) {
+    public Set<Developer> getDevelopers(AuthenticationToken at) {
         return at.getOffice().getDevelopers();
     }
 
@@ -161,6 +171,10 @@ public class Company {
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time, AuthenticationToken at) {
         return at.getOffice().getPlanningDeveloperOptions(task, time);
+    }
+    
+    public Project getDelegationProject(AuthenticationToken at){
+        return at.getOffice().getDelegationProject();
     }
 
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, AuthenticationToken at) throws ConflictingPlannedTaskException {

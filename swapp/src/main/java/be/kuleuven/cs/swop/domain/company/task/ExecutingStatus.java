@@ -8,8 +8,8 @@ import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 @SuppressWarnings("serial")
 public class ExecutingStatus extends IncompleteStatus {
 
-    ExecutingStatus(Task task, TaskPlanning planning) {
-        super(task, planning);
+    ExecutingStatus(Task task) {
+        super(task);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ExecutingStatus extends IncompleteStatus {
             throw new IllegalStateException(ERROR_FINISH);
         }
         else {
-            goToStatus(new FinishedStatus(getTask(), getPlanning(), period));
+            goToStatus(new FinishedStatus(getTask(), period));
         }
     }
     
@@ -69,13 +69,8 @@ public class ExecutingStatus extends IncompleteStatus {
 	}
 	
     @Override
-	void plan(TaskPlanning plan){
-    	throw new IllegalStateException(ERROR_PLAN);
-    }
-    
-    @Override
-    void removePlanning(){
-    	throw new IllegalStateException(ERROR_PLAN_REMOVE);
+    boolean canPlan() {
+        return false;
     }
 
     private static final String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";

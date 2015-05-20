@@ -216,6 +216,7 @@ public class SessionController {
             // the system asks for which project to create a task
             // slight deviation from use-case, as they don't specify when the user should select this
             Set<ProjectWrapper> projects = getTaskMan().getProjects();
+            projects.remove(getTaskMan().getDelegationProject());
             ProjectWrapper project = getUi().selectProject(projects);
 
             // If the user indicates he wants to leave the overview.
@@ -299,13 +300,7 @@ public class SessionController {
                     handleSimulationStep();
                     return;
                 }
-
-                Set<DeveloperWrapper> developerOptions = taskMan.getPlanningDeveloperOptions(selectedTask, chosenTime);
-                Set<DeveloperWrapper> chosenDevelopers = getUi().selectDevelopers(developerOptions);
-                if (chosenDevelopers == null) {
-                    handleSimulationStep();
-                    return;
-                }
+                
                 if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
                     if (getUi().askToAddBreak()) {
                         taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources);

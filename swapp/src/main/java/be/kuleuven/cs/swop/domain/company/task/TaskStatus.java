@@ -13,13 +13,10 @@ import java.time.LocalDateTime;
 abstract class TaskStatus implements Serializable {
 
     private final Task task;
-    private final TaskPlanning planning;
 
-    TaskStatus(Task task, TaskPlanning planning) {
+    TaskStatus(Task task) {
         if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         this.task = task;    
-        //TODO: CHECK IF PLANNING IS GOOD
-        this.planning = planning;
     }
 
     /**
@@ -110,16 +107,8 @@ abstract class TaskStatus implements Serializable {
     Delegation getDelegation(){
     	return null;
     }
-    TaskPlanning getPlanning(){
-        return planning;
-    }
     
-    boolean isPlanned(){
-    	return planning != null;
-    }
-    
-    abstract void plan(TaskPlanning plan);
-    abstract void removePlanning();
+    abstract boolean canPlan();
     
 
     /**
@@ -142,7 +131,6 @@ abstract class TaskStatus implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((planning == null) ? 0 : planning.hashCode());
         result = prime * result + ((task == null) ? 0 : task.hashCode());
         return result;
     }
@@ -153,9 +141,6 @@ abstract class TaskStatus implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         TaskStatus other = (TaskStatus) obj;
-        if (planning == null) {
-            if (other.planning != null) return false;
-        } else if (!planning.equals(other.planning)) return false;
         if (task == null) {
             if (other.task != null) return false;
         } else if (!task.equals(other.task)) return false;

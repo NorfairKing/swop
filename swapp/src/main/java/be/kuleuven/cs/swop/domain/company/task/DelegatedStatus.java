@@ -14,7 +14,7 @@ public class DelegatedStatus extends TaskStatus {
     private final Delegation del;
 
     DelegatedStatus(Task task, Delegation del) {
-        super(task, null);
+        super(task);
         if(!canHaveAsDelegation(del)){
             throw new IllegalArgumentException(ERROR_ILLEGAL_DELEGATION);
         }
@@ -130,13 +130,8 @@ public class DelegatedStatus extends TaskStatus {
     }
 
     @Override
-    void plan(TaskPlanning plan) {
-        throw new IllegalStateException(ERROR_PLAN);
-    }
-
-    @Override
-    void removePlanning() {
-        throw new IllegalStateException(ERROR_PLAN_REMOVE);
+    boolean canPlan() {
+        return false;
     }
 
     private static final String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for a delegated task.";
@@ -152,5 +147,7 @@ public class DelegatedStatus extends TaskStatus {
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
         return del.getDelegationTask().getEstimatedOrPlanningPeriod();
     }
+
+
 
 }
