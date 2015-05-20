@@ -5,7 +5,7 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
 public class Delegation {
-	private final Task delegatedTask;;
+	private final Task delegatedTask;
     private Task delegationTask = null;
     private final BranchOffice oldOffice;
     private final BranchOffice newOffice;
@@ -54,8 +54,8 @@ public class Delegation {
         return newOffice;
     }
     
-    private String ERROR_TASK_ALREADY_SET = "A task has already been set for this Delegation";
-    private String ERROR_TASK_NULL = "The Task for this Delegation may not be set to null";
+    private static final String ERROR_TASK_ALREADY_SET = "A task has already been set for this Delegation";
+    private static final String ERROR_TASK_NULL = "The Task for this Delegation may not be set to null";
 
 
     

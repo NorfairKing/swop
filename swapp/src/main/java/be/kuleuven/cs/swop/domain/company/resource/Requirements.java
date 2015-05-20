@@ -69,7 +69,7 @@ public class Requirements implements Serializable {
         return false;
     }
 
-    public boolean isPossibleResourceSet(Set<Resource> resources){
+    public static boolean isPossibleResourceSet(Set<Resource> resources){
 
     	Set<ResourceType> stillRequired = new HashSet<ResourceType>();
     	Set<ResourceType> conflicts = new HashSet<ResourceType>();

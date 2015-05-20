@@ -17,13 +17,12 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class Project implements Serializable {
 
-    private String          title;
-    private String          description;
-    private LocalDateTime   creationTime;
-    private LocalDateTime   dueTime;
-    private final Set<Task> tasks = new HashSet<Task>();
+    private final String        title;
+    private final String        description;
+    private final LocalDateTime creationTime;
+    private final LocalDateTime dueTime;
+    private final Set<Task>     tasks = new HashSet<Task>();
 
-    Project() { }
     /**
      * Full constructor
      *
@@ -31,16 +30,29 @@ public class Project implements Serializable {
      *            The title for the project.
      * @param description
      *            The description for the project.
-     * @param creationTime The date on which the project was created.
+     * @param creationTime
+     *            The date on which the project was created.
      * @param dueTime
      *            The date on which the project should be finished.
      *
+     * @throws IllegalArgumentException
+     *             If the new title isn't valid.
+     * @throws IllegalArgumentException
+     *             If the given description isn't valid.
+     * @throws IllegalArgumentException
+     *             If the given creationTime isn't valid.
+     * @throws IllegalArgumentException
+     *             If the new Date isn't valid.
      */
     public Project(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime) {
-        setTitle(title);
-        setDescription(description);
-        setCreationTime(creationTime);
-        setDueTime(dueTime);
+        if (!canHaveAsTitle(title)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TITLE); }
+        this.title = title;
+        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
+        this.description = description;
+        if (!canHaveAsCreationTime(creationTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_CREATIONTIME); }
+        this.creationTime = creationTime;
+        if (!canHaveAsDueTime(dueTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DUETIME); }
+        this.dueTime = dueTime;
     }
 
     /**
@@ -66,21 +78,6 @@ public class Project implements Serializable {
     }
 
     /**
-     * Changes this project's title to the give title.
-     *
-     * @param title
-     *            The new title.
-     *
-     * @throws IllegalArgumentException
-     *             If the new title isn't valid.
-     *
-     */
-    public void setTitle(String title) {
-        if (!canHaveAsTitle(title)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TITLE); }
-        this.title = title;
-    }
-
-    /**
      * Returns the project's description.
      *
      * @return The project's description.
@@ -103,21 +100,6 @@ public class Project implements Serializable {
     }
 
     /**
-     * Changes this project's description to the given description.
-     *
-     * @param description
-     *            The new description.
-     *
-     * @throws IllegalArgumentException
-     *             If the given description isn't valid.
-     *
-     */
-    public void setDescription(String description) {
-        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
-        this.description = description;
-    }
-
-    /**
      * Checks if the project is still ongoing and has unfinished work.
      *
      * @return Returns true if there is unfinished work.
@@ -137,9 +119,7 @@ public class Project implements Serializable {
         if (getTasks().isEmpty()) return false;
 
         for (Task task : getTasks()) {
-            if (!task.isFinishedOrHasFinishedAlternative()) {
-                return false;
-            }
+            if (!task.isFinishedOrHasFinishedAlternative()) { return false; }
         }
         return true;
     }
@@ -164,11 +144,6 @@ public class Project implements Serializable {
         return creationTime != null;
     }
 
-    private void setCreationTime(LocalDateTime creationTime) {
-        if (!canHaveAsCreationTime(creationTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_CREATIONTIME); }
-        this.creationTime = creationTime;
-    }
-
     /**
      * Retrieves the date of when the project is due to be finished.
      *
@@ -180,8 +155,7 @@ public class Project implements Serializable {
     }
 
     /**
-     * Checks whether or not the given dueTime is valid,
-     * this means it can't be null and it has to be after the project's creation time.
+     * Checks whether or not the given dueTime is valid, this means it can't be null and it has to be after the project's creation time.
      *
      * @param dueTime
      *            The Date to be checked for validity.
@@ -190,21 +164,6 @@ public class Project implements Serializable {
      */
     protected boolean canHaveAsDueTime(LocalDateTime dueTime) {
         return dueTime != null && dueTime.isAfter(getCreationTime());
-    }
-
-    /**
-     * Changes the project's Date to the given Date.
-     *
-     * @param dueTime
-     *            The new Date.
-     *
-     * @throws IllegalArgumentException
-     *             If the new Date isn't valid.
-     *
-     */
-    public void setDueTime(LocalDateTime dueTime) {
-        if (!canHaveAsDueTime(dueTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DUETIME); }
-        this.dueTime = dueTime;
     }
 
     /**
@@ -248,14 +207,14 @@ public class Project implements Serializable {
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation) {
         return createTask(description, estimatedDuration, acceptableDeviation, new Requirements(new HashSet<Requirement>()));
     }
-    
+
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements) {
-        return createTask(description, estimatedDuration, acceptableDeviation,new HashSet<Task>(), requirements);
+        return createTask(description, estimatedDuration, acceptableDeviation, new HashSet<Task>(), requirements);
     }
-    
+
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Requirements requirements) {
         TaskInfo info = new TaskInfo(description, estimatedDuration, acceptableDeviation, requirements, dependencies);
-    	Task newTask = new Task(info);
+        Task newTask = new Task(info);
         addTask(newTask);
         return newTask;
     }
@@ -273,7 +232,8 @@ public class Project implements Serializable {
     /**
      * Checks whether or not this Project contains the given Task.
      *
-     * @param task The Task that will be checked of this Project contains it.
+     * @param task
+     *            The Task that will be checked of this Project contains it.
      *
      * @return Returns true of this Project contains the given Task.
      *
@@ -283,26 +243,27 @@ public class Project implements Serializable {
     }
 
     /**
-     * Check whether or not this Project has finished on time,
-     * or when all Tasks haven't finished yet, whether or not it probably will
-     * finish on time.
+     * Check whether or not this Project has finished on time, or when all Tasks haven't finished yet, whether or not it probably will finish on time.
      *
-     * @param currentDate The current system time
+     * @param currentDate
+     *            The current system time
      * @return Returns true if this project is on time.
      *
      */
     public boolean isOnTime(LocalDateTime currentDate) {
         return !getDueTime().isBefore(estimatedFinishTime(currentDate));
     }
-    
+
     /**
      * Calculated the estimated finish time for this project.
-     * @param currentDate The current system time on which to base the estimation.
+     * 
+     * @param currentDate
+     *            The current system time on which to base the estimation.
      * @return The estimated finish time.
      */
-    public LocalDateTime estimatedFinishTime(LocalDateTime currentDate){
+    public LocalDateTime estimatedFinishTime(LocalDateTime currentDate) {
         LocalDateTime lastTime = LocalDateTime.MIN;
-        for (Task task: getTasks()) {
+        for (Task task : getTasks()) {
             LocalDateTime lastTimeOfThis = task.getEstimatedOrRealFinishDate(currentDate);
             if (lastTimeOfThis.isAfter(lastTime)) {
                 lastTime = lastTimeOfThis;
@@ -314,7 +275,8 @@ public class Project implements Serializable {
     /**
      * Check whether or not this Project isn't on time.
      *
-     * @param currentDate The current system time
+     * @param currentDate
+     *            The current system time
      * @return Returns false when this Project is on time.
      *
      */

@@ -11,7 +11,6 @@ import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
-import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -272,10 +271,6 @@ public class Task implements Serializable {
         return info.getWorstDuration();
     }
 
-    private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
-    private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
-
     public boolean isPlanned() {
         return status.isPlanned();
     }
@@ -287,5 +282,9 @@ public class Task implements Serializable {
     public void removePlanning(){
     	status.removePlanning();
     }
+    
+    private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
+    private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
+    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
 
 }
