@@ -19,7 +19,7 @@ import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
 import be.kuleuven.cs.swop.domain.company.Authenticator;
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.Company;
-import be.kuleuven.cs.swop.domain.company.ConflictingPlanningException;
+import be.kuleuven.cs.swop.domain.company.ConflictingPlannedTaskException;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
@@ -251,14 +251,14 @@ public class TaskMan implements Serializable {
      * @param time The time on which it is planned for the task to start
      * @param resources The resources to reserve for this task
      * @param developers The developers that have to work on the task
-     * @throws ConflictingPlanningWrapperException If the created planning would cause a
+     * @throws ConflictingPlannedTaskWrapperException If the created planning would cause a
      * conflict
      */
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> ) throws ConflictingPlannedTaskWrapperException {
     	try {
 			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
-		} catch (ConflictingPlanningException e) {
-			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+		} catch (ConflictingPlannedTaskException e) {
+			throw new ConflictingPlannedTaskWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
 
@@ -270,14 +270,14 @@ public class TaskMan implements Serializable {
      * @param time The time on which it is planned for the task to start
      * @param resources The resources to reserve for this task
      * @param developers The developers that have to work on the task
-     * @throws ConflictingPlanningWrapperException IF the created planning would cause a
+     * @throws ConflictingPlannedTaskWrapperException IF the created planning would cause a
      * conflict
      */
-    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlanningWrapperException {
+    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlannedTaskWrapperException {
     	try {
 			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
-		} catch (ConflictingPlanningException e) {
-			throw new ConflictingPlanningWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+		} catch (ConflictingPlannedTaskException e) {
+			throw new ConflictingPlannedTaskWrapperException(new TaskPlanningWrapper(e.getPlanning()));
 		}
     }
 

@@ -355,7 +355,7 @@ public class PlanningManager implements Serializable {
         return false;
     }
     
-    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlannedTaskException{
         if(task == null){
         	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
         }
@@ -388,7 +388,7 @@ public class PlanningManager implements Serializable {
         // Check if the resources aren't already planned for another task
         TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
         if(conflict != null){
-        	throw new ConflictingPlanningException(conflict);
+        	throw new ConflictingPlannedTaskException(getTaskFor(conflict));
         }
     }
 
@@ -427,7 +427,7 @@ public class PlanningManager implements Serializable {
      * @throws ConflictingPlanningException If the created planning will result in a
      * conflict.
      */
-    public void createPlanning(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    public void createPlanning(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlannedTaskException{
     	checkPlanningParameters(task, startTime, resources);
         TaskPlanning newplanning = new TaskPlanning(startTime, resources, task.getEstimatedDuration());
        	task.plan(newplanning);
@@ -444,7 +444,7 @@ public class PlanningManager implements Serializable {
      * @throws ConflictingPlanningException If the created planning will result in a
      * conflict.
      */
-    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlannedTaskException{
     	checkPlanningParameters(task, startTime, resources);
         TaskPlanning newplanning = new TaskPlanningWithBreak(startTime, resources, task.getEstimatedDuration());
        	task.plan(newplanning);

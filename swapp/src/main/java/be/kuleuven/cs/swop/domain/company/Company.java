@@ -97,11 +97,11 @@ public class Company {
         return at.getOffice().getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Reservable> rss, AuthenticationToken at) throws ConflictingPlanningException {
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, AuthenticationToken at) throws ConflictingPlannedTaskException {
         at.getOffice().createPlanning(task, time, rss);
     }
 
-    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Reservable> rss, AuthenticationToken at) throws ConflictingPlanningException {
+    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss, AuthenticationToken at) throws ConflictingPlannedTaskException {
         at.getOffice().createPlanningWithBreak(task, time, rss);
     }
     

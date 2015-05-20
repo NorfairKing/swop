@@ -302,8 +302,8 @@ public class SessionController {
                 }
                 taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
                 break;
-            } catch (ConflictingPlanningWrapperException e) {
-                startResolveConflictSession(e.getPlanning());
+            } catch (ConflictingPlannedTaskWrapperException e) {
+                startResolveConflictSession(e.getTask());
             } catch (Exception e) {
                 getUi().showError("Failed to plan task: " + e.getMessage());
             }
@@ -350,24 +350,24 @@ public class SessionController {
         handleSimulationStep();
     }
 
-    public void startResolveConflictSession(TaskPlanningWrapper planning) {
+    public void startResolveConflictSession(TaskWrapper task) {
         if (!isLoggedIn()) {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        taskMan.removePlanning(planning);
+        taskMan.removePlanning(task.getPlanning());
         while (true) {
             try {
-                getUi().showTaskPlanningContext(planning.getTask());
-                List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(planning.getTask());
+                getUi().showTaskPlanningContext(task);
+                List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(task);
 
                 // The system shows the first three possible starting times.
                 // The user selects a proposed time
                 LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-                taskMan.createPlanning(planning.getTask(), chosenTime, planning.getReservations(), planning.getDevelopers());
+                taskMan.createPlanning(task, chosenTime, task.getPlanning().getReservations(), task.getPlanning().getDevelopers());
                 break;
-            } catch (ConflictingPlanningWrapperException e) {
-                startResolveConflictSession(e.getPlanning());
+            } catch (ConflictingPlannedTaskWrapperException e) {
+                startResolveConflictSession(e.getTask());
             }
         }
 
