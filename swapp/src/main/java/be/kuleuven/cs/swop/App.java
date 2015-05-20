@@ -13,21 +13,21 @@ public class App {
      * 
      * @param args
      *            | 0: initialisation file.
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException {
         UserInterface ui = new CLI();
         TaskMan taskMan = new TaskMan();
-        
+
         if (args.length == 1) {
             String filePath = args[0];
             taskMan.loadEverythingFromFile(filePath);
         }
-        
+
         new SessionController(ui, taskMan);
-        
-        //taskMan.saveEverythingToFile("/Users/Pablo/Documents/Projects/SWOP/assignment/iteration3/output.json");
-        
+
+        // taskMan.saveEverythingToFile("/Users/Pablo/Documents/Projects/SWOP/assignment/iteration3/output.json");
+
         ui.start();
     }
 }

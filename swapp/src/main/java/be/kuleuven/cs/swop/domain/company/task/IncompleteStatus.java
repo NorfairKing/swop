@@ -67,6 +67,6 @@ public abstract class IncompleteStatus extends TaskStatus {
     	goToStatus(new DelegatedStatus(getTask(), del));
     }
 
-    private static String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";
+    private static final String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";
 
 }

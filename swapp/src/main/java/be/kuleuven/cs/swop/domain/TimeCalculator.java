@@ -5,18 +5,19 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+
 /**
  * A collection of functions to work with time and work-days
  *
  */
 public final class TimeCalculator {
-    
+
     private static final int         workDayStart = 8;
     private static final int         workDayEnd   = 16;
     private static final DayOfWeek[] workDays     = new DayOfWeek[] { DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY };
 
     private TimeCalculator() {}
-    
+
     private static LocalDateTime startOfDay(LocalDateTime input) {
         return input.withSecond(0).withMinute(0).withHour(0);
     }
@@ -63,8 +64,10 @@ public final class TimeCalculator {
     /**
      * This method calculates the working hours between two given Dates in minutes.
      * 
-     * @param start The starting Date for this calculation.
-     * @param stop The end Ddate for this calculation.
+     * @param start
+     *            The starting Date for this calculation.
+     * @param stop
+     *            The end Ddate for this calculation.
      * @return Returns an integer containing the working hours between the two Dates in minutes.
      */
     public static int workingMinutesBetween(LocalDateTime start, LocalDateTime stop) {
@@ -83,11 +86,12 @@ public final class TimeCalculator {
     }
 
     /**
-     * Adds a number of working minutes to a date
-     * It keeps in mind that no-one will work after the work-day ended.
+     * Adds a number of working minutes to a date It keeps in mind that no-one will work after the work-day ended.
      * 
-     * @param date The date to add the minutes to
-     * @param minutes The number of minutes to add
+     * @param date
+     *            The date to add the minutes to
+     * @param minutes
+     *            The number of minutes to add
      * @return The date to which the minutes are added
      */
     public static LocalDateTime addWorkingMinutes(LocalDateTime date, long minutes) {
@@ -119,11 +123,12 @@ public final class TimeCalculator {
     }
 
     /**
-     * Calculates how many minutes are between the two given dates
-     * They don't have to be ordered
+     * Calculates how many minutes are between the two given dates They don't have to be ordered
      * 
-     * @param start The first date
-     * @param end The second date
+     * @param start
+     *            The first date
+     * @param end
+     *            The second date
      * @return A number of minutes between the two
      */
     public static long getDurationMinutes(LocalDateTime start, LocalDateTime end) {

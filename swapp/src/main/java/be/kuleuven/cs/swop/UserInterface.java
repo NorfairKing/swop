@@ -22,13 +22,14 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public interface UserInterface {
-    
+
     public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices);
-    
+
     /**
      * Shows a list of all users and makes the user select one.
      * 
-     * @param users A list of all known users.
+     * @param users
+     *            A list of all known users.
      * @return The selected user from the users list.
      */
     public UserWrapper selectUser(Set<UserWrapper> users);
@@ -64,7 +65,7 @@ public interface UserInterface {
      *            The TaskWrapper that contains the Task that will be shown.
      */
     public void showTask(TaskWrapper task);
-    
+
     public void showTaskPlanningContext(TaskWrapper task);
 
     /**
@@ -107,36 +108,38 @@ public interface UserInterface {
      * @return Returns a TaskWrapper containing the Task selected by the user.
      */
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap);
-    
+
     /**
-     * Shows a list of suggested times and returns a time
-     * The returned time can be one of the suggestions, but doesn't have to be
+     * Shows a list of suggested times and returns a time The returned time can be one of the suggestions, but doesn't have to be
      * 
-     * @param options A list of selected times
+     * @param options
+     *            A list of selected times
      * @return Any time
      */
     public LocalDateTime selectTime(List<LocalDateTime> options);
-    
-     /**
+
+    /**
      * Shows a form in which, for each of the resource types, the user can select specific resources
      * 
-     * @param options A map of each resource type to several options for the actual resources
-     * @param requirements The Set of requirements that need to be satisfied.
+     * @param options
+     *            A map of each resource type to several options for the actual resources
+     * @param requirements
+     *            The Set of requirements that need to be satisfied.
      * @return A set of all selected resources, at least one for each type.
      */
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper,List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
+    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
 
     /**
      * Shows a list of developers for the user to select one or more from.
      * 
-     * @param developerOptions The developers to select from
+     * @param developerOptions
+     *            The developers to select from
      * @return A subset of the given developers
      */
     public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
 
     /**
-     * Asks the user when planning a task if the user wants to include a break in the
-     * planning.
+     * Asks the user when planning a task if the user wants to include a break in the planning.
      *
      * @return True if the user chose "yes".
      */
@@ -145,7 +148,8 @@ public interface UserInterface {
     /**
      * Requests data from the user for creating a task.
      *
-     * @param types The types of resources to choose from to add as resource
+     * @param types
+     *            The types of resources to choose from to add as resource
      * @return Returns a TaskData object containing the data for creating a Task
      */
     public TaskData getTaskData(Set<ResourceTypeWrapper> types);
@@ -153,7 +157,8 @@ public interface UserInterface {
     /**
      * Request data from the user for finishing or failing a Task,
      *
-     * @param task The task for which the status will be updated
+     * @param task
+     *            The task for which the status will be updated
      * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
      */
     public TaskStatusData getUpdateStatusData(TaskWrapper task);
@@ -197,10 +202,11 @@ public interface UserInterface {
 
     /**
      * Asks the user if he wants to continue the simulation
+     * 
      * @return True if the user wants to continue, false if not.
      */
     public SimulationStepData getSimulationStepData();
-    
+
     /**
      * Starts the user interface
      * 

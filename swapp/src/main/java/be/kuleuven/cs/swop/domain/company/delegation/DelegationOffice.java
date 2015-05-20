@@ -85,8 +85,8 @@ public class DelegationOffice {
     	simulatingOffice = null;
     }
     
-    private String ERROR_ALREADY_SIMULATING = "Can't start a simulation when there is already a simulation running.";
-    private String ERROR_NOT_SIMULATING = "Can't end a simulation when there is no simulation running.";
+    private static final String ERROR_ALREADY_SIMULATING = "Can't start a simulation when there is already a simulation running.";
+    private static final String ERROR_NOT_SIMULATING = "Can't end a simulation when there is no simulation running.";
     
     
 

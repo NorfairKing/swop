@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop.domain;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
 /**
  * A period between two dates
  */
@@ -27,7 +28,7 @@ public class DateTimePeriod implements Serializable {
         if (start == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
         if (stop == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
         if (start.isAfter(stop)) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
-        
+
         this.startTime = start;
         this.stopTime = stop;
     }
@@ -55,18 +56,19 @@ public class DateTimePeriod implements Serializable {
     /**
      * Checks if the given date time falls in this period
      * 
-     * @param time The time to check
+     * @param time
+     *            The time to check
      * @return Yes or no
      */
     public boolean isDuring(LocalDateTime time) {
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
-    
+
     /**
-     * Checks if the given date time falls in this period
-     * This however ignores the extremes, ie the exact start and end time.
+     * Checks if the given date time falls in this period This however ignores the extremes, ie the exact start and end time.
      * 
-     * @param time The time to check
+     * @param time
+     *            The time to check
      * @return Yes or no
      */
     public boolean isDuringExcludeExtremes(LocalDateTime time) {
@@ -74,52 +76,41 @@ public class DateTimePeriod implements Serializable {
     }
 
     /**
-     * Check if the given period fall entirely inside this one
-     * This is not the same as overlapping, the given one has to fall entirely in this one.
+     * Check if the given period fall entirely inside this one This is not the same as overlapping, the given one has to fall entirely in this one.
      * 
-     * @param period The period to check
+     * @param period
+     *            The period to check
      * @return Whether it falls entirely inside this period
      */
     public boolean isDuring(DateTimePeriod period) {
         return !period.getStartTime().isBefore(this.getStartTime()) && !period.getStopTime().isAfter(this.getStopTime());
     }
-    
+
     /**
      * Checks to see if the given period overlaps with this one.
      * 
-     * @param period The period to check
+     * @param period
+     *            The period to check
      * @return Whether the two periods overlap
      */
     public boolean overlaps(DateTimePeriod period) {
-        if (this.isDuringExcludeExtremes(period.startTime)) {
-            return true;
-        }
-        if (this.isDuringExcludeExtremes(period.stopTime)) {
-            return true;
-        }
-        if (period.isDuringExcludeExtremes(startTime)) {
-            return true;
-        }
-        if (period.isDuringExcludeExtremes(stopTime)) {
-            return true;
-        }
-        if(period.startTime.equals(startTime) && period.stopTime.equals(stopTime)){
-        	return true;
-        }
+        if (this.isDuringExcludeExtremes(period.startTime)) { return true; }
+        if (this.isDuringExcludeExtremes(period.stopTime)) { return true; }
+        if (period.isDuringExcludeExtremes(startTime)) { return true; }
+        if (period.isDuringExcludeExtremes(stopTime)) { return true; }
+        if (period.startTime.equals(startTime) && period.stopTime.equals(stopTime)) { return true; }
         return false;
     }
-    
+
     @Override
     public String toString() {
         return "DateTimePeriod [startTime=" + startTime + ", stopTime=" + stopTime + "]";
     }
-    
+
     @Override
-    public boolean equals(Object o){
-    	if(!(o instanceof DateTimePeriod)){
-    		return false;
-    	}
-    	return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
+    public boolean equals(Object o) {
+        if (!(o instanceof DateTimePeriod)) { return false; }
+        return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
     }
 
     private static final String ERROR_ILLEGAL_TIMES = "Illegal start or stop time for time span.";

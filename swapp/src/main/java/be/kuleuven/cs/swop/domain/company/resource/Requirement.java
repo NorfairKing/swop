@@ -40,7 +40,7 @@ public class Requirement implements Serializable {
         return false;
     }
 
-    private static String ERROR_ILLEGAL_AMOUNT = "Illegal amount for requirement";
-    private static String ERROR_ILLEGAL_TYPE   = "Illegal type for requirement.";
+    private static final String ERROR_ILLEGAL_AMOUNT = "Illegal amount for requirement";
+    private static final String ERROR_ILLEGAL_TYPE   = "Illegal type for requirement.";
 
 }

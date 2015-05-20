@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop.domain.company;
 
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
@@ -26,48 +27,45 @@ import com.google.common.collect.ImmutableSet;
 
 public class Company {
 
-    private LocalDateTime time = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-    private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
-    private final DelegationOffice delegationOffice = new DelegationOffice();
-    private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
+    private LocalDateTime                           time             = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+    private final Set<BranchOffice>                 offices          = new HashSet<BranchOffice>();
+    private final DelegationOffice                  delegationOffice = new DelegationOffice();
+    private Set<ResourceType>                       resourceTypes    = new HashSet<ResourceType>();
     private Map<BranchOffice, BranchOffice.Memento> officeMementos;
-    
-    public Company() {
-    }
-    
+
+    public Company() {}
+
     public ImmutableSet<BranchOffice> getOffices() {
         return ImmutableSet.copyOf(offices);
     }
-    
+
     public ImmutableSet<Developer> getDevelopers(AuthenticationToken at) {
         return at.getOffice().getDevelopers();
     }
-    
+
     public ImmutableSet<Project> getProjects(AuthenticationToken at) {
         return at.getOffice().getProjects();
     }
-    
+
     public ImmutableSet<Project> getAllProjects() {
         Set<Project> all = new HashSet<>();
-        for (BranchOffice office: offices) {
+        for (BranchOffice office : offices) {
             all.addAll(office.getProjects());
         }
         return ImmutableSet.copyOf(all);
     }
-    
+
     public BranchOffice getOfficeOf(Project project) {
-        for (BranchOffice office: offices) {
-            if (office.getProjects().contains(project)) {
-                return office;
-            }
+        for (BranchOffice office : offices) {
+            if (office.getProjects().contains(project)) { return office; }
         }
         return null;
     }
-    
+
     public ImmutableSet<ResourceType> getResourceTypes() {
         return ImmutableSet.copyOf(resourceTypes);
     }
-    
+
     public Set<Task> getUnplannedTasksOf(Project project, AuthenticationToken at) {
         return at.getOffice().getUnplannedTasksOf(project);
     }
@@ -75,8 +73,8 @@ public class Company {
     private DelegationOffice getDelegationOffice() {
         return delegationOffice;
     }
-    
-    public Set<Task> getAssignedTasksOf(Project project, AuthenticationToken at){
+
+    public Set<Task> getAssignedTasksOf(Project project, AuthenticationToken at) {
         if (at.isDeveloper()) {
             return at.getOffice().getAssignedTasksOf(project, at.getAsDeveloper());
         }
@@ -84,7 +82,7 @@ public class Company {
             return new HashSet<>();
         }
     }
-    
+
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time, AuthenticationToken at) {
         return at.getOffice().getPlanningTimeOptions(task, amount, time);
     }
@@ -104,9 +102,9 @@ public class Company {
     public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss, AuthenticationToken at) throws ConflictingPlannedTaskException {
         at.getOffice().createPlanningWithBreak(task, time, rss);
     }
-    
-    public void removePlanning(TaskPlanning planning, AuthenticationToken at){      
-        at.getOffice().removePlanning(planning);      
+
+    public void removePlanning(TaskPlanning planning, AuthenticationToken at) {
+        at.getOffice().removePlanning(planning);
     }
 
     public Project createProject(String title, String description, LocalDateTime creationTime, LocalDateTime dueTime, AuthenticationToken at) {
@@ -116,24 +114,24 @@ public class Company {
     public Task createTaskFor(Project project, String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Requirements requirements) {
         return project.createTask(description, estimatedDuration, acceptableDeviation, dependencies, requirements);
     }
-    
-    public Set<Resource> getResources(AuthenticationToken at) {       
-        return at.getOffice().getResources();     
+
+    public Set<Resource> getResources(AuthenticationToken at) {
+        return at.getOffice().getResources();
     }
 
-    public Project getProjectFor(Task task, AuthenticationToken at){
+    public Project getProjectFor(Task task, AuthenticationToken at) {
         return at.getOffice().getProjectFor(task);
     }
-    
-    public void setAlternativeFor(Task t, Task alt){
+
+    public void setAlternativeFor(Task t, Task alt) {
         t.setAlternative(alt);
     }
-    
-    public void finishTask(Task t, DateTimePeriod period, AuthenticationToken at){
+
+    public void finishTask(Task t, DateTimePeriod period, AuthenticationToken at) {
         at.getOffice().finishTask(t, period);
     }
 
-    public void failTask(Task t,DateTimePeriod period, AuthenticationToken at){
+    public void failTask(Task t, DateTimePeriod period, AuthenticationToken at) {
         at.getOffice().failTask(t, period);
     }
 
@@ -150,36 +148,37 @@ public class Company {
     /**
      * Creates a new ResourceType.
      *
-     * @param name The name of the new ResourceType
-     * @param requires The Set containing the dependencies of this type of resource
-     * @param conflicts The Set containing the conflicting types of resources, if a task
-     * requires a resource of this type, then it cannot require one of the conflicting
-     * types
-     * @param selfConflicting A boolean that, when true, a task requiring a resource of
-     * this type, can only reserve one of this type
-     * @param availability The period for when a resource of this type is available during
-     * the day
+     * @param name
+     *            The name of the new ResourceType
+     * @param requires
+     *            The Set containing the dependencies of this type of resource
+     * @param conflicts
+     *            The Set containing the conflicting types of resources, if a task requires a resource of this type, then it cannot require one of the conflicting types
+     * @param selfConflicting
+     *            A boolean that, when true, a task requiring a resource of this type, can only reserve one of this type
+     * @param availability
+     *            The period for when a resource of this type is available during the day
      * @return The new ResourceType
      */
-    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts,boolean selfConflicting, TimePeriod availability){
-    	ResourceType type;
-    	if(availability != null){
-        	type = new TimeConstrainedResourceType(name,requires,conflicts, selfConflicting, availability);
-        }else{
-        	type = new ResourceType(name,requires,conflicts, selfConflicting);
+    public ResourceType createResourceType(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod availability) {
+        ResourceType type;
+        if (availability != null) {
+            type = new TimeConstrainedResourceType(name, requires, conflicts, selfConflicting, availability);
+        } else {
+            type = new ResourceType(name, requires, conflicts, selfConflicting);
         }
         resourceTypes.add(type);
         return type;
     }
 
-    public Resource createResource(String name, ResourceType type, AuthenticationToken at){
+    public Resource createResource(String name, ResourceType type, AuthenticationToken at) {
         return at.getOffice().createResource(name, type);
     }
 
     public Developer createDeveloper(String name, AuthenticationToken at) {
         return at.getOffice().createDeveloper(name);
     }
-    
+
     public boolean isTaskAvailableFor(LocalDateTime time, Task task, AuthenticationToken at) {
         if (at.isDeveloper()) {
             return at.getOffice().isTaskAvailableFor(time, at.getAsDeveloper(), task);
@@ -188,41 +187,35 @@ public class Company {
             return false;
         }
     }
-    
+
     public void startSimulationFor(AuthenticationToken at) {
         // no nested simulations allowed
-        if (isInASimulationFor(at)) {
-            throw new IllegalStateException();
-        }
-        
+        if (isInASimulationFor(at)) { throw new IllegalStateException(); }
+
         officeMementos.put(at.getOffice(), at.getOffice().saveToMemento());
         delegationOffice.startSimulation(at.getOffice());
     }
-    
+
     public void realizeSimulationFor(AuthenticationToken at) {
-        if (!isInASimulationFor(at)) {
-            throw new IllegalStateException();
-        }
-        
+        if (!isInASimulationFor(at)) { throw new IllegalStateException(); }
+
         delegationOffice.commitSimulation();
         officeMementos.remove(at.getOffice());
     }
-    
+
     public void cancelSimulationFor(AuthenticationToken at) {
-        if (!isInASimulationFor(at)) {
-            throw new IllegalStateException();
-        }
-        
+        if (!isInASimulationFor(at)) { throw new IllegalStateException(); }
+
         BranchOffice.Memento officeMemento = officeMementos.get(at.getOffice());
         at.getOffice().restoreFromMemento(officeMemento);
         delegationOffice.rollbackSimulation();
         officeMementos.remove(at.getOffice());
     }
-    
+
     public boolean isInASimulationFor(AuthenticationToken at) {
         return officeMementos.containsKey(at.getOffice());
     }
-    
+
     /**
      * Changes the program's system time.
      *
@@ -246,22 +239,18 @@ public class Company {
     public LocalDateTime getSystemTime() {
         return time;
     }
-    
-    //TODO: Proper checking
-    public void delegateTask(Task task, BranchOffice newOffice){
-    	BranchOffice oldOffice = getOfficeFromTask(task);
-    	Delegation del = getDelegationOffice().createDelegation(task, oldOffice, newOffice);
+
+    // TODO: Proper checking
+    public void delegateTask(Task task, BranchOffice newOffice) {
+        BranchOffice oldOffice = getOfficeFromTask(task);
+        Delegation del = getDelegationOffice().createDelegation(task, oldOffice, newOffice);
     }
-    
-    public BranchOffice getOfficeFromTask(Task task){
-    	for(BranchOffice office : offices){
-    		if(office.hasTask(task)){
-    			return office;
-    		}
-    	}
-    	return null;
+
+    public BranchOffice getOfficeFromTask(Task task) {
+        for (BranchOffice office : offices) {
+            if (office.hasTask(task)) { return office; }
+        }
+        return null;
     }
-    
-    
-    
+
 }
