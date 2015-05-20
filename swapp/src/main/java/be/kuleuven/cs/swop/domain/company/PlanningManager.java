@@ -149,7 +149,7 @@ public class PlanningManager implements Serializable {
      * @return The list with options
      */
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
-        Set<Reservable> usedResources = new HashSet<Reservable>();
+        Set<Resource> usedResources = new HashSet<Resource>();
         DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         for (TaskPlanning planning : getTaskPlannings()) {
             if (getEstimatedOrPlanningPeriod(planning).isDuring(period)) {
@@ -317,7 +317,7 @@ public class PlanningManager implements Serializable {
      * Checks to see if the task could be planned to start on this time
      */
     private boolean isValidTimeForTask(LocalDateTime time, Task task) {
-        Set<Reservable> usedResources = new HashSet<Reservable>();
+        Set<Resource> usedResources = new HashSet<Resource>();
         Set<Developer> usedDevelopers = new HashSet<Developer>();
         DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         for (TaskPlanning planning : getTaskPlannings()) {
@@ -355,7 +355,7 @@ public class PlanningManager implements Serializable {
         return false;
     }
     
-    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException{
         if(task == null){
         	throw new IllegalArgumentException(ERROR_ILLEGAL_TASK);
         }
@@ -364,7 +364,7 @@ public class PlanningManager implements Serializable {
         	throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME);
         }
         
-        for( Reservable res : resources){
+        for( Resource res : resources){
         	if(res == null){
         		throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE);
         	}
@@ -388,13 +388,13 @@ public class PlanningManager implements Serializable {
         // Check if the resources aren't already planned for another task
         TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
         if(conflict != null){
-        	throw new ConflictingPlanningException(conflict);
+        	throw new ConflictingPlannedTaskException(conflict);
         }
     }
 
-    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Reservable> resources){
+    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Resource> resources){
     	for (TaskPlanning plan: getTaskPlannings()) {
-    		for(Reservable res: resources){
+    		for(Resource res: resources){
     			if (getEstimatedOrPlanningPeriod(plan).overlaps(new DateTimePeriod(startTime,startTime.plusMinutes(task.getEstimatedDuration())))) {
     				if(plan.getReservations().contains(res)){
     					return plan;
@@ -424,10 +424,10 @@ public class PlanningManager implements Serializable {
      * @param startTime The planned time this task will start
      * @param resources The resources that have been reserved for the task
      * @param devs The developers that will be working on this task.
-     * @throws ConflictingPlanningException If the created planning will result in a
+     * @throws ConflictingPlannedTaskException If the created planning will result in a
      * conflict.
      */
-    public void createPlanning(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException{
     	checkPlanningParameters(task, startTime, resources);
         TaskPlanning newplanning = new TaskPlanning(startTime, resources, task.getEstimatedDuration());
        	task.plan(newplanning);
@@ -441,10 +441,10 @@ public class PlanningManager implements Serializable {
      * @param startTime The planned time this task will start
      * @param resources The resources that have been reserved for the task
      * @param devs The developers that will be working on this task.
-     * @throws ConflictingPlanningException If the created planning will result in a
+     * @throws ConflictingPlannedTaskException If the created planning will result in a
      * conflict.
      */
-    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Reservable> resources) throws ConflictingPlanningException{
+    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException{
     	checkPlanningParameters(task, startTime, resources);
         TaskPlanning newplanning = new TaskPlanningWithBreak(startTime, resources, task.getEstimatedDuration());
        	task.plan(newplanning);

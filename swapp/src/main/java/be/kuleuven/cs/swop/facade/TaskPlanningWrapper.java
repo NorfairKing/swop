@@ -8,7 +8,7 @@ import java.util.Set;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Reservable;
+import be.kuleuven.cs.swop.domain.company.Resource;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
@@ -45,7 +45,7 @@ public class TaskPlanningWrapper {
 
     public Set<ResourceWrapper> getReservations() {
     	Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
-    	for (Reservable realRes : planning.getReservations()) {
+    	for (Resource realRes : planning.getReservations()) {
     		result.add(new ResourceWrapper(realRes));
     	}
     	return result;    }

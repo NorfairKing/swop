@@ -4,7 +4,6 @@ package be.kuleuven.cs.swop.domain.company.planning;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.company.Reservable;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
@@ -19,7 +18,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public class TaskPlanningWithBreak extends TaskPlanning {
 
-    public TaskPlanningWithBreak(LocalDateTime plannedStartTime, Set<Reservable> reservations, long taskDuration) {
+    public TaskPlanningWithBreak(LocalDateTime plannedStartTime, Set<Resource> reservations, long taskDuration) {
         super(plannedStartTime, reservations, taskDuration);
     }
 

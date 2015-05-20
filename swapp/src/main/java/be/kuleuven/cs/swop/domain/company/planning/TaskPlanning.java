@@ -10,7 +10,6 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Reservable;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.task.Task;
@@ -25,11 +24,11 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 @SuppressWarnings("serial")
 public class TaskPlanning implements Serializable {
 
-    private final Set<Reservable> reservations;
+    private final Set<Resource> reservations;
     private final LocalDateTime   plannedStartTime;
     private final long taskDuration;
 
-    public TaskPlanning(LocalDateTime plannedStartTime, Set<Reservable> reservations, long taskDuration) {
+    public TaskPlanning(LocalDateTime plannedStartTime, Set<Resource> reservations, long taskDuration) {
         if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
         this.reservations = reservations;
         if (!canHaveAsPlannedStartTime(plannedStartTime)) { throw new IllegalArgumentException(ERROR_INVALID_STARTIME); }
@@ -40,14 +39,14 @@ public class TaskPlanning implements Serializable {
         this.taskDuration = taskDuration;
     }
 
-    protected boolean canHaveAsReservations(Set<Reservable> reservations) {
-        for (Reservable r : reservations) {
+    protected boolean canHaveAsReservations(Set<Resource> reservations) {
+        for (Resource r : reservations) {
             if (r == null) { return false; }
         }
         return false; // TODO
     }
 
-    public ImmutableSet<Reservable> getReservations() {
+    public ImmutableSet<Resource> getReservations() {
         return ImmutableSet.copyOf(reservations);
     }
     

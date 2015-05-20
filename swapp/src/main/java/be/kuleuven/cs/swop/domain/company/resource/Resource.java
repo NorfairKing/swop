@@ -3,11 +3,9 @@ package be.kuleuven.cs.swop.domain.company.resource;
 
 import java.io.Serializable;
 
-import be.kuleuven.cs.swop.domain.company.Reservable;
-
 
 @SuppressWarnings("serial")
-public class Resource implements Reservable, Serializable {
+public class Resource implements Serializable {
 
     private ResourceType type;
     private final String name;
