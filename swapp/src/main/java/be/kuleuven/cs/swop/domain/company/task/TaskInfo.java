@@ -24,6 +24,8 @@ public class TaskInfo implements Serializable {
     private final Set<Task>        dependencies;
     private final Requirements     requirements;
 
+    @SuppressWarnings("unused")
+    private TaskInfo(){ description = null; estimatedDuration = 0; acceptableDeviation = 0; dependencies = null; requirements = null;} //for automatic (de)-serialization
     /**
      * Full constructor
      *

@@ -11,6 +11,8 @@ public class FailedStatus extends CompletedStatus {
 
     private Task alternative;
 
+    @SuppressWarnings("unused")
+    private FailedStatus() {super();} //for automatic (de)-serialization
     FailedStatus(Task task, DateTimePeriod performedDuring) {
         super(task, performedDuring);
     }

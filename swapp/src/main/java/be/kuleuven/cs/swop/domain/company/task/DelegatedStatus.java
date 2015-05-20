@@ -11,7 +11,9 @@ import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 public class DelegatedStatus extends TaskStatus {
 
     private final Delegation del;
-
+    
+    @SuppressWarnings("unused")
+    private DelegatedStatus() {super(); del = null;} //for automatic (de)-serialization
     DelegatedStatus(Task task, Delegation del) {
         super(task);
         if(!canHaveAsDelegation(del)){

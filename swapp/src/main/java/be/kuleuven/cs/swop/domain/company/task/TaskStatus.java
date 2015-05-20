@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 abstract class TaskStatus implements Serializable {
 
     private final Task task;
-
+    
+    protected TaskStatus() {task = null;} //for automatic (de)-serialization
+    
     TaskStatus(Task task) {
         if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
         this.task = task;    

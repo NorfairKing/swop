@@ -337,7 +337,7 @@ public class CLI implements UserInterface {
         return selectFromCollection(taskSet, "tasks", p -> {
             String total = p.getDescription();
             // FIXME check if available for current user
-                total += ", it is " + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : "available");
+                total += ", it is " + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : sessionController.getTaskMan().isTaskAvailableFor(null, p) ? "availble" : "unavailable");
 
                 if (p.isFinished()) {
                     total += " and was finished " + (p.wasFinishedEarly() ? "early" : p.wasFinishedLate() ? "late" : "on time");

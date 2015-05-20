@@ -7,6 +7,8 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public class UnstartedStatus extends IncompleteStatus {
 
+    @SuppressWarnings("unused")
+    private UnstartedStatus() {super();} //for automatic (de)-serialization
     UnstartedStatus(Task task) {
         super(task);
     }

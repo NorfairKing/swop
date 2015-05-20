@@ -11,6 +11,7 @@ import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 @SuppressWarnings("serial")
 public abstract class IncompleteStatus extends TaskStatus {
 
+    protected IncompleteStatus() {super();} //for automatic (de)-serialization
     IncompleteStatus(Task task) {
         super(task);
     }

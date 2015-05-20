@@ -11,6 +11,8 @@ public class Requirement implements Serializable {
     private final int          amount;
     private final ResourceType type;
 
+    @SuppressWarnings("unused")
+    private Requirement(){amount = 0; type = null;} //for automatic (de)-serialization
     public Requirement(int amount, ResourceType type) {
         if (type == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);
         if (amount <= 0) throw new IllegalArgumentException(ERROR_ILLEGAL_AMOUNT);

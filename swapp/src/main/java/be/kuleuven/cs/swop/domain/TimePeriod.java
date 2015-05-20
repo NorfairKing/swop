@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.domain;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -18,7 +19,7 @@ public class TimePeriod implements Serializable {
     @SuppressWarnings("unused")
     // used for automatic (de)serializing
     private TimePeriod() {
-        this.startTime = this.stopTime = null;
+        this.startTime = this.stopTime = LocalTime.now();
     }
 
     /**

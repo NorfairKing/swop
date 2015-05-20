@@ -13,6 +13,7 @@ public abstract class CompletedStatus extends TaskStatus {
 
     private final DateTimePeriod performedDuring;
 
+    protected CompletedStatus() {super(); performedDuring = null;} //for automatic (de)-serialization
     CompletedStatus(Task task, DateTimePeriod performedDuring) {
         super(task);
         if (!canHaveBeenPerfomedDuring(performedDuring)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }

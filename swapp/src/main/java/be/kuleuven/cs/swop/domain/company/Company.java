@@ -17,6 +17,7 @@ import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.delegation.DelegationOffice;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
@@ -39,7 +40,7 @@ public class Company implements Serializable {
     public Company() {
         resourceTypes.add(Developer.DEVELOPER_TYPE);
         delegationOffice = new DelegationOffice(this);
-        //seedData();
+        seedData();
     }
     
     
@@ -77,7 +78,6 @@ public class Company implements Serializable {
     	Project proj1 = office1.createProject("Project 1", "This is Project 1", startTime1, endTime1);
     	Project proj2 = office1.createProject("Project 2", "This is Project 2", startTime1, endTime2);
     	Project proj3 = office2.createProject("Project 3", "This is Project 3", startTime1, endTime1);
-    	Project proj4 = office2.createProject("Project 4", "This is Project 4", startTime1, endTime2);
     	
     	// Resources
     	
@@ -111,7 +111,60 @@ public class Company implements Serializable {
         Developer dev4 = office2.createDeveloper("David");
         Developer dev5 = office2.createDeveloper("Evelyn");
         Developer dev6 = office2.createDeveloper("Fiona");
+        
+        // Tasks
+        // Project 1
+        Set<Task> deps = new HashSet<Task>();
+        Set<Requirement> reqSet = new HashSet<Requirement>();
+        reqSet.add(new Requirement(2, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, carType));
+        reqSet.add(new Requirement(1, dataCenterType));
+        Requirements reqs = new Requirements(reqSet);
+        Task task1 = proj1.createTask("Upgrade server infrastructure", 120, 0, deps, reqs);
+        
+        
+        deps.add(task1);
+        reqSet.clear();
+        reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, conferenceRoomType));
+        reqSet.add(new Requirement(1, demoKitType));
+        reqs = new Requirements(reqSet);
+        Task task2 = proj1.createTask("Prepare demo dataset", 90, 0, deps, reqs);
+        
+        deps.clear();
+        reqSet.clear();
+        reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, conferenceRoomType));
+        reqSet.add(new Requirement(1, demoKitType));
+        reqs = new Requirements(reqSet);
+        Task task3 = proj1.createTask("Install demo kit in conference room", 30, 0, deps, reqs);
 
+        deps.clear();
+        deps.add(task2);
+        deps.add(task3);
+        reqSet.clear();
+        reqSet.add(new Requirement(2, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, conferenceRoomType));
+        reqSet.add(new Requirement(1, demoKitType));
+        reqs = new Requirements(reqSet);
+        Task task4 = proj1.createTask("Perform demo for clients", 60, 0, deps, reqs);
+        
+        
+        // Project 2
+        deps.clear();
+        reqSet.clear();
+        reqSet.add(new Requirement(3, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(2, whiteBoardType));
+        reqs = new Requirements(reqSet);
+        Task task5 = proj2.createTask("Brainstorm session", 60, 0, deps, reqs);
+        
+        // Project 3
+        deps.clear();
+        reqSet.clear();
+        reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, testingSetupType));
+        reqs = new Requirements(reqSet);
+        Task task6 = proj3.createTask("Test the prototype", 180, 0, deps, reqs);
     	
     }
     
@@ -264,6 +317,9 @@ public class Company implements Serializable {
     }
 
     public boolean isTaskAvailableFor(LocalDateTime time, Task task, AuthenticationToken at) {
+        if(time == null){
+            time = this.time;
+        }
         if (at.isDeveloper()) {
             return at.getOffice().isTaskAvailableFor(time, at.getAsDeveloper(), task);
         }

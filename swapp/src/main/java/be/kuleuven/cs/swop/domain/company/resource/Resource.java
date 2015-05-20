@@ -12,7 +12,8 @@ public class Resource implements Serializable {
     private final ResourceType type;
     private final String name;
 
-    protected Resource() { type = null; name = null; } //for automatic (de)-serialization
+    @SuppressWarnings("unused")
+    private Resource() { type = null; name = null; } //for automatic (de)-serialization
     
     public Resource(ResourceType type, String name) {
         if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
@@ -42,8 +43,8 @@ public class Resource implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + name.hashCode();
-        result = prime * result + type.hashCode();
+        result = prime * result + ((name != null) ? name.hashCode() : 0 );
+        result = prime * result + ((type != null) ? type.hashCode() : 0 );
         return result;
     }
 
