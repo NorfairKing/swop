@@ -36,6 +36,26 @@ public class Resource implements Serializable {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + name.hashCode();
+        result = prime * result + type.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Resource other = (Resource) obj;
+        if (!name.equals(other.name)) return false;
+        if (!type.equals(other.type)) return false;
+        return true;
+    }
+
     private static final String ERROR_ILLEGAL_TYPE = "Illegal resource type for resource.";
     private static final String ERROR_ILLEGAL_NAME = "Illegal name for resource.";
 }

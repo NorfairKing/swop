@@ -35,5 +35,25 @@ public class TimeConstrainedResourceType extends ResourceType {
         return this.getDailyAvailability().isDuring(period);
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((dailyAvailability == null) ? 0 : dailyAvailability.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
+        TimeConstrainedResourceType other = (TimeConstrainedResourceType) obj;
+        if (dailyAvailability == null) {
+            if (other.dailyAvailability != null) return false;
+        } else if (!dailyAvailability.equals(other.dailyAvailability)) return false;
+        return true;
+    }
+
     private static final String ERROR_ILLEGAL_AVAILABILITY = "Illegal daily availability TimePeriod for resource type.";
 }

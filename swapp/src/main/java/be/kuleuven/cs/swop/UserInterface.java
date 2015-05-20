@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.RequirementWrapper;
-import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
-import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -127,7 +127,7 @@ public interface UserInterface {
      *            The Set of requirements that need to be satisfied.
      * @return A set of all selected resources, at least one for each type.
      */
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
+    public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements);
 
     /**
      * Shows a list of developers for the user to select one or more from.
@@ -152,7 +152,7 @@ public interface UserInterface {
      *            The types of resources to choose from to add as resource
      * @return Returns a TaskData object containing the data for creating a Task
      */
-    public TaskData getTaskData(Set<ResourceTypeWrapper> types);
+    public TaskData getTaskData(Set<ResourceType> types);
 
     /**
      * Request data from the user for finishing or failing a Task,

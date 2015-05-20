@@ -116,7 +116,6 @@ public class ResourceType implements Serializable {
     	}
         return true;
 	}
-	
     public boolean isAvailableDuring(LocalDateTime date){
     	if(date == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
@@ -136,6 +135,31 @@ public class ResourceType implements Serializable {
     	}
         return true;
 	}
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((conflictsWith == null) ? 0 : conflictsWith.hashCode());
+        result = prime * result + ((dependencies == null) ? 0 : dependencies.hashCode());
+        result = prime * result + name.hashCode();
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        ResourceType other = (ResourceType) obj;
+        if (conflictsWith == null) {
+            if (other.conflictsWith != null) return false;
+        } else if (!conflictsWith.equals(other.conflictsWith)) return false;
+        if (dependencies == null) {
+            if (other.dependencies != null) return false;
+        } else if (!dependencies.equals(other.dependencies)) return false;
+        if (!name.equals(other.name)) return false;
+        return true;
+    }
 
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
 	private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";

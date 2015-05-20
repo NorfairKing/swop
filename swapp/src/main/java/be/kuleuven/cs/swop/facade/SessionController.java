@@ -11,6 +11,8 @@ import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
 
 public class SessionController {
@@ -220,7 +222,7 @@ public class SessionController {
             if (project == null) break;
 
             // The system shows the task creation form
-            Set<ResourceTypeWrapper> resourceTypes = getTaskMan().getResourceTypes();
+            Set<ResourceType> resourceTypes = getTaskMan().getResourceTypes();
             TaskData data = getUi().getTaskData(resourceTypes);
 
             // if the user indicates he wants to leave the overview.
@@ -276,11 +278,11 @@ public class SessionController {
                     return;
                 }
 
-                Map<ResourceTypeWrapper, List<ResourceWrapper>> resourceOptions = new HashMap<ResourceTypeWrapper, List<ResourceWrapper>>();
-                for (ResourceWrapper res : taskMan.getResources()) {
-                    ResourceTypeWrapper type = res.getType();
+                Map<ResourceType, List<Resource>> resourceOptions = new HashMap<ResourceType, List<Resource>>();
+                for (Resource res : taskMan.getResources()) {
+                    ResourceType type = res.getType();
                     boolean found = false;
-                    for (ResourceTypeWrapper key : resourceOptions.keySet()) {
+                    for (ResourceType key : resourceOptions.keySet()) {
                         if (key.equals(type)) {
                             found = true;
                             type = key;
@@ -288,11 +290,11 @@ public class SessionController {
                         }
                     }
                     if (!found) {
-                        resourceOptions.put(type, new ArrayList<ResourceWrapper>());
+                        resourceOptions.put(type, new ArrayList<Resource>());
                     }
                     resourceOptions.get(type).add(res);
                 }
-                Set<ResourceWrapper> chosenResources = getUi().selectResourcesFor(resourceOptions, selectedTask.getRecursiveRequirements());
+                Set<Resource> chosenResources = getUi().selectResourcesFor(resourceOptions, selectedTask.getRecursiveRequirements());
                 if (chosenResources == null) {
                     handleSimulationStep();
                     return;

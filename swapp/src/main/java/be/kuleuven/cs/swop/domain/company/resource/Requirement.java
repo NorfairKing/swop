@@ -40,6 +40,26 @@ public class Requirement implements Serializable {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + amount;
+        result = prime * result + type.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Requirement other = (Requirement) obj;
+        if (amount != other.amount) return false;
+        if (!type.equals(other.type)) return false;
+        return true;
+    }
+
     private static final String ERROR_ILLEGAL_AMOUNT = "Illegal amount for requirement";
     private static final String ERROR_ILLEGAL_TYPE   = "Illegal type for requirement.";
 

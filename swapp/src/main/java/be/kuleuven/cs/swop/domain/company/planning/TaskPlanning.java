@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain.company.planning;
 
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,9 +9,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
-import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
@@ -90,6 +87,32 @@ public class TaskPlanning implements Serializable {
     }
     public boolean includesBreak() {
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((plannedStartTime == null) ? 0 : plannedStartTime.hashCode());
+        result = prime * result + ((reservations == null) ? 0 : reservations.hashCode());
+        result = prime * result + (int) (taskDuration ^ (taskDuration >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TaskPlanning other = (TaskPlanning) obj;
+        if (plannedStartTime == null) {
+            if (other.plannedStartTime != null) return false;
+        } else if (!plannedStartTime.equals(other.plannedStartTime)) return false;
+        if (reservations == null) {
+            if (other.reservations != null) return false;
+        } else if (!reservations.equals(other.reservations)) return false;
+        if (taskDuration != other.taskDuration) return false;
+        return true;
     }
 
     private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations for planning.";

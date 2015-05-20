@@ -4,8 +4,6 @@ package be.kuleuven.cs.swop.facade;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +25,7 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
-import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 @SuppressWarnings("serial")
@@ -69,57 +65,10 @@ public class TaskMan implements Serializable {
     }
 
     // Wrapping functions
-    private UserWrapper wrapUser(User u) {
-        return new UserWrapper(u);
-    }
-
-    private DeveloperWrapper wrapDeveloper(Developer d) {
-        return new DeveloperWrapper(d);
-    }
-
-    private TaskWrapper wrapTask(Task t)
-    {
-        return new TaskWrapper(t);
-    }
-
-    private ProjectWrapper wrapProject(Project p)
-    {
-        return new ProjectWrapper(p);
-    }
-
-    private TaskPlanningWrapper wrapPlanning(TaskPlanning p) {
-        return new TaskPlanningWrapper(p);
-    }
-
-    private ResourceWrapper wrapResource(Resource r) {
-        return new ResourceWrapper(r);
-    }
-
-    private ResourceTypeWrapper wrapResourceType(ResourceType t) {
-        return new ResourceTypeWrapper(t);
-    }
-
     private <Type, WrapperType> Set<WrapperType> map(Set<? extends Type> presents, Function<Type, WrapperType> wrap) {
         Set<WrapperType> result = new HashSet<>();
         for (Type present : presents) {
             result.add(wrap.apply(present));
-        }
-        return result;
-    }
-
-    private <Type, WrapperType> List<WrapperType> map(List<? extends Type> presents, Function<Type, WrapperType> wrap) {
-        List<WrapperType> result = new ArrayList<>();
-        for (Type present : presents) {
-            result.add(wrap.apply(present));
-        }
-        return result;
-    }
-
-    private <Type, WrapperType, ImageType, ImageTypeWrapper> Map<WrapperType, ImageTypeWrapper> map(Map<? extends Type, ImageType> presents, Function<Type, WrapperType> wrap,
-            Function<ImageType, ImageTypeWrapper> wrapImage) {
-        Map<WrapperType, ImageTypeWrapper> result = new HashMap<>();
-        for (Type present : presents.keySet()) {
-            result.put(wrap.apply(present), wrapImage.apply(presents.get(present)));
         }
         return result;
     }
@@ -143,8 +92,8 @@ public class TaskMan implements Serializable {
      * @return A set of all known users, currently only developers
      */
     public Set<UserWrapper> getUsersFrom(BranchOfficeWrapper office) {
-        Set<UserWrapper> users = map(office.getOffice().getDevelopers(), u -> wrapUser(u));
-        users.add(wrapUser(new Manager("Manager")));
+        Set<UserWrapper> users = map(office.getOffice().getDevelopers(), u -> new UserWrapper(u));
+        users.add(new UserWrapper(new Manager("Manager")));
         return users;
     }
 
@@ -155,7 +104,7 @@ public class TaskMan implements Serializable {
      *
      */
     public Set<ProjectWrapper> getProjects() {
-        return map(company.getProjects(authenticationToken), p -> wrapProject(p));
+        return map(company.getProjects(authenticationToken), p -> new ProjectWrapper(p));
     }
     
     /**
@@ -165,7 +114,7 @@ public class TaskMan implements Serializable {
      *
      */
     public Set<ProjectWrapper> getAllProjects() {
-        return map(company.getAllProjects(), p -> wrapProject(p));
+        return map(company.getAllProjects(), p -> new ProjectWrapper(p));
     }
     
     /**
@@ -182,8 +131,8 @@ public class TaskMan implements Serializable {
      *
      * @return A set of the resources types
      */
-    public Set<ResourceTypeWrapper> getResourceTypes() {
-        return map(company.getResourceTypes(), r -> wrapResourceType(r));
+    public Set<ResourceType> getResourceTypes() {
+        return company.getResourceTypes();
     }
 
     /**
@@ -194,7 +143,7 @@ public class TaskMan implements Serializable {
      * @return A set of taskwrappers containing the unplanned tasks of the given project.
      */
     public Set<TaskWrapper> getUnplannedTasksOf(ProjectWrapper project) {
-        return map(company.getUnplannedTasksOf(project.getProject(), authenticationToken), t -> wrapTask(t));
+        return map(company.getUnplannedTasksOf(project.getProject(), authenticationToken), t -> new TaskWrapper(t));
     }
 
     /**
@@ -204,7 +153,7 @@ public class TaskMan implements Serializable {
      * @return The assigned tasks
      */
     public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project) {
-        return map(company.getAssignedTasksOf(project.getProject(), authenticationToken), t -> wrapTask(t));
+        return map(company.getAssignedTasksOf(project.getProject(), authenticationToken), t -> new TaskWrapper(t));
     }
 
     /**
@@ -229,12 +178,12 @@ public class TaskMan implements Serializable {
      * @param time The time on which you cant to use the resources
      * @return The list with options
      */
-    public Map<ResourceTypeWrapper, List<ResourceWrapper>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningResourceOptions(task.getTask(), time, authenticationToken), t -> wrapResourceType(t), l -> map(l, r -> wrapResource(r)));
+    public Map<ResourceType, List<Resource>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
+        return company.getPlanningResourceOptions(task.getTask(), time, authenticationToken);
     }
 
-    public Set<ResourceWrapper> getResources(){
-    	return map(company.getResources(authenticationToken), t -> wrapResource(t));
+    public Set<Resource> getResources(){
+    	return company.getResources(authenticationToken);
     }
 
     /**
@@ -245,7 +194,7 @@ public class TaskMan implements Serializable {
      * @return The possible developers
      */
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> wrapDeveloper(d));
+        return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> new DeveloperWrapper(d));
     }
 
     /**
@@ -258,9 +207,9 @@ public class TaskMan implements Serializable {
      * @throws ConflictingPlannedTaskWrapperException If the created planning would cause a
      * conflict
      */
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources ) throws ConflictingPlannedTaskWrapperException {
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<Resource> resources ) throws ConflictingPlannedTaskWrapperException {
     	try {
-			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), authenticationToken);
+			company.createPlanning(task.getTask(), time, resources, authenticationToken);
 		} catch (ConflictingPlannedTaskException e) {
 			throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
 		}
@@ -277,16 +226,16 @@ public class TaskMan implements Serializable {
      * @throws ConflictingPlannedTaskWrapperException IF the created planning would cause a
      * conflict
      */
-    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources) throws ConflictingPlannedTaskWrapperException {
+    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<Resource> resources) throws ConflictingPlannedTaskWrapperException {
     	try {
-			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), authenticationToken);
+			company.createPlanningWithBreak(task.getTask(), time, resources, authenticationToken);
 		} catch (ConflictingPlannedTaskException e) {
 			throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
 		}
     }
 
-    public void removePlanning(TaskPlanningWrapper planning){
-    	company.removePlanning(planning.getPlanning(), authenticationToken);
+    public void removePlanning(TaskPlanning planning){
+    	company.removePlanning(planning, authenticationToken);
     }
 
     /**
@@ -315,7 +264,7 @@ public class TaskMan implements Serializable {
             creationTime = company.getSystemTime();
         }
 
-        return wrapProject(company.createProject(title, description, creationTime, dueTime, authenticationToken));
+        return new ProjectWrapper(company.createProject(title, description, creationTime, dueTime, authenticationToken));
     }
 
     /**
@@ -345,10 +294,10 @@ public class TaskMan implements Serializable {
         Set<Task> deps = map(data.getDependencies(), t -> t.getTask());
         Set<Requirement> reqs = null;
         if (data.getRequirements() != null) {
-            reqs = map(data.getRequirements(), (t, i) -> new Requirement(i, t.getType()));
+            reqs = map(data.getRequirements(), (t, i) -> new Requirement(i, t));
         }
 
-        return wrapTask(company.createTaskFor(project.getProject(), descr, est, dev, deps, new Requirements(reqs)));
+        return new TaskWrapper(company.createTaskFor(project.getProject(), descr, est, dev, deps, new Requirements(reqs)));
     }
 
     /**
@@ -454,10 +403,10 @@ public class TaskMan implements Serializable {
      * @param data The data needed to create the type
      * @return The created type
      */
-    public ResourceTypeWrapper createResourceType(ResourceTypeData data) {
+    public ResourceType createResourceType(ResourceTypeData data) {
         String name = data.getName();
-        Set<ResourceType> requires = map(data.getRequires(), r -> r.getType());
-        Set<ResourceType> conflicts = map(data.getConflicts(), r -> r.getType());
+        Set<ResourceType> requires = data.getRequires();
+        Set<ResourceType> conflicts = data.getConflicts();
         boolean selfConflicting = data.isSelfConflicting();
 
         TimePeriod availability = null;
@@ -465,7 +414,7 @@ public class TaskMan implements Serializable {
             availability = new TimePeriod(data.getAvailibility()[0], data.getAvailibility()[1]);
         }
 
-        return wrapResourceType(company.createResourceType(name, requires, conflicts, selfConflicting, availability));
+        return company.createResourceType(name, requires, conflicts, selfConflicting, availability);
     }
 
     /**
@@ -474,10 +423,10 @@ public class TaskMan implements Serializable {
      * @param data The data needed to create the resource
      * @return The created resource
      */
-    public ResourceWrapper createResource(ResourceData data) {
+    public Resource createResource(ResourceData data) {
         String name = data.getName();
-        ResourceType type = data.getType().getType();
-        return wrapResource(company.createResource(name, type, authenticationToken));
+        ResourceType type = data.getType();
+        return company.createResource(name, type, authenticationToken);
     }
 
     /**
@@ -502,7 +451,7 @@ public class TaskMan implements Serializable {
      */
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
-        return wrapDeveloper(company.createDeveloper(name, authenticationToken));
+        return new DeveloperWrapper(company.createDeveloper(name, authenticationToken));
     }
     
     public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice){

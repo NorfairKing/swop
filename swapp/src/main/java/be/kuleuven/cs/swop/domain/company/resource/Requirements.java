@@ -127,4 +127,24 @@ public class Requirements implements Serializable {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((reqs == null) ? 0 : reqs.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Requirements other = (Requirements) obj;
+        if (reqs == null) {
+            if (other.reqs != null) return false;
+        } else if (!reqs.equals(other.reqs)) return false;
+        return true;
+    }
 }

@@ -13,17 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.text.PlainDocument;
-
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 

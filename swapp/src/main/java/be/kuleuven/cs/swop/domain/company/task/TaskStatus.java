@@ -138,6 +138,30 @@ abstract class TaskStatus implements Serializable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((planning == null) ? 0 : planning.hashCode());
+        result = prime * result + ((task == null) ? 0 : task.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TaskStatus other = (TaskStatus) obj;
+        if (planning == null) {
+            if (other.planning != null) return false;
+        } else if (!planning.equals(other.planning)) return false;
+        if (task == null) {
+            if (other.task != null) return false;
+        } else if (!task.equals(other.task)) return false;
+        return true;
+    }
+
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";
     protected static final String ERROR_ALREADY_PLANNED  = "This task is already planned.";
 

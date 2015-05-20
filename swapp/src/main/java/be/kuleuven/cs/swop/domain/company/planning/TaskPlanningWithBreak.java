@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
-import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 

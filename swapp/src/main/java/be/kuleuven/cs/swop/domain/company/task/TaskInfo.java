@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 
 import com.google.common.collect.ImmutableSet;
@@ -195,6 +194,40 @@ public class TaskInfo implements Serializable {
 
     public TaskInfo withoutDependencies() {
         return new TaskInfo(this.getDescription(),this.getEstimatedDuration(),this.getAcceptableDeviation(),this.getRequirements(),new HashSet<Task>());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(acceptableDeviation);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + ((dependencies == null) ? 0 : dependencies.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + (int) (estimatedDuration ^ (estimatedDuration >>> 32));
+        result = prime * result + ((requirements == null) ? 0 : requirements.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TaskInfo other = (TaskInfo) obj;
+        if (Double.doubleToLongBits(acceptableDeviation) != Double.doubleToLongBits(other.acceptableDeviation)) return false;
+        if (dependencies == null) {
+            if (other.dependencies != null) return false;
+        } else if (!dependencies.equals(other.dependencies)) return false;
+        if (description == null) {
+            if (other.description != null) return false;
+        } else if (!description.equals(other.description)) return false;
+        if (estimatedDuration != other.estimatedDuration) return false;
+        if (requirements == null) {
+            if (other.requirements != null) return false;
+        } else if (!requirements.equals(other.requirements)) return false;
+        return true;
     }
 
     private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";

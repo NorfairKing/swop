@@ -108,9 +108,23 @@ public class DateTimePeriod implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof DateTimePeriod)) { return false; }
-        return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + startTime.hashCode();
+        result = prime * result + stopTime.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        DateTimePeriod other = (DateTimePeriod) obj;
+        if (!startTime.equals(other.startTime)) return false;
+        if (!stopTime.equals(other.stopTime)) return false;
+        return true;
     }
 
     private static final String ERROR_ILLEGAL_TIMES = "Illegal start or stop time for time span.";

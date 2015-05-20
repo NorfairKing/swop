@@ -16,7 +16,6 @@ import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.delegation.DelegationOffice;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;

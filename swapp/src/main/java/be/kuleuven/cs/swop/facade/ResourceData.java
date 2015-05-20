@@ -1,9 +1,11 @@
 package be.kuleuven.cs.swop.facade;
 
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+
 public class ResourceData {
 	private String name;
-	private ResourceTypeWrapper type;
-	public ResourceData(String name, ResourceTypeWrapper type){
+	private ResourceType type;
+	public ResourceData(String name, ResourceType type){
 		this.setName(name);
 		this.setType(type);
 	}
@@ -13,10 +15,10 @@ public class ResourceData {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ResourceTypeWrapper getType() {
+	public ResourceType getType() {
 		return type;
 	}
-	public void setType(ResourceTypeWrapper type) {
+	public void setType(ResourceType type) {
 		this.type = type;
 	}
 

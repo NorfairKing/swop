@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+
 import com.google.common.collect.ImmutableSet;
 
 
@@ -13,9 +15,9 @@ public class TaskData {
     private long estimatedDuration;
     private double acceptableDeviation;
     private final Set<TaskWrapper> dependencies = new HashSet<>();
-    private Map<ResourceTypeWrapper, Integer> requirements;
+    private Map<ResourceType, Integer> requirements;
 
-    public TaskData(String description, long estimatedDuration, double acceptableDeviation, Map<ResourceTypeWrapper, Integer> requirements) {
+    public TaskData(String description, long estimatedDuration, double acceptableDeviation, Map<ResourceType, Integer> requirements) {
         setDescription(description);
         setEstimatedDuration(estimatedDuration);
         setAcceptableDeviation(acceptableDeviation);
@@ -59,11 +61,11 @@ public class TaskData {
         return ImmutableSet.copyOf(dependencies);
     }
 
-	public Map<ResourceTypeWrapper, Integer> getRequirements() {
+	public Map<ResourceType, Integer> getRequirements() {
 		return requirements;
 	}
 
-	public void setRequirements(Map<ResourceTypeWrapper, Integer> requirements) {
+	public void setRequirements(Map<ResourceType, Integer> requirements) {
 		this.requirements = requirements;
 	}
 

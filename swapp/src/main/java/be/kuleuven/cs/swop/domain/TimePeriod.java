@@ -71,10 +71,6 @@ public class TimePeriod implements Serializable {
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
 
-    private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
-    private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_PLAN      = "Illegal plan for task.";
-
     /**
      * Checks if the given period falls entirely inside this one If the given period falls (partly) outside this period, it'll return false.
      * 
@@ -107,9 +103,23 @@ public class TimePeriod implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof TimePeriod)) { return false; }
-        return this.startTime.equals(((TimePeriod) o).getStartTime()) && this.stopTime.equals(((TimePeriod) o).getStopTime());
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + startTime.hashCode();
+        result = prime * result + stopTime.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TimePeriod other = (TimePeriod) obj;
+        if (!startTime.equals(other.startTime)) return false;
+        if (!stopTime.equals(other.stopTime)) return false;
+        return true;
     }
 
     private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";

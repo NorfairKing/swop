@@ -35,6 +35,28 @@ public class Developer extends Resource implements User {
     public boolean canTakeBreakDuring(DateTimePeriod period) {
         return BREAK_PERIOD.isDuring(period);
     }
+    
+    public ResourceType getType() {
+        return DEVELOPER_TYPE;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getName().hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Developer other = (Developer) obj;
+        if (!getName().equals(other.getName())) return false;
+        return true;
+    }
 
     // FIXME, use better values when you figure out how to use them.
     // Also, change them to getters, in case we might want them to be

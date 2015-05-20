@@ -11,20 +11,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableSet;
-
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanningWithBreak;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
-import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
-import be.kuleuven.cs.swop.domain.TimePeriod;
 
 
 /**
@@ -490,12 +486,10 @@ public class PlanningManager implements Serializable {
         }
     }
 
-    private static final String ERROR_ILLEGAL_TASK_PLANNING   = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
     private static final String ERROR_ILLEGAL_TASK            = "Illegal task provided.";
     private static final String ERROR_ILLEGAL_DATETIME        = "Illegal date provided.";
     private static final String ERROR_ILLEGAL_RESOURCE        = "Illegal resource provided.";
-    private static final String ERROR_ILLEGAL_DEVELOPER       = "Illegal developer provided.";
     private static final String ERROR_ILLEGAL_RESOURCE_SET    = "The given set of resources is not possible.";
     private static final String ERROR_RESOURCE_NOT_AVAILABLE  = "A resource is not available at that time.";
     private static final String ERROR_TASK_ALREADY_PLANNED    = "The given Task already has a planning.";

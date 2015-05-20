@@ -3,14 +3,16 @@ package be.kuleuven.cs.swop.facade;
 import java.time.LocalTime;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+
 public class ResourceTypeData {
 	
 	private String name;
-	private Set<ResourceTypeWrapper> requires;
-	private Set<ResourceTypeWrapper> conflicts;
+	private Set<ResourceType> requires;
+	private Set<ResourceType> conflicts;
 	private boolean selfConflicting;
 	private  LocalTime[] availibility;
-	public ResourceTypeData(String name, Set<ResourceTypeWrapper> requires, Set<ResourceTypeWrapper> conflicts, boolean selfConflicting, LocalTime[] availibility ){
+	public ResourceTypeData(String name, Set<ResourceType> requires, Set<ResourceType> conflicts, boolean selfConflicting, LocalTime[] availibility ){
 		this.setName(name);
 		this.setRequires(requires);
 		this.setConflicts(conflicts);
@@ -23,16 +25,16 @@ public class ResourceTypeData {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Set<ResourceTypeWrapper> getRequires() {
+	public Set<ResourceType> getRequires() {
 		return requires;
 	}
-	public void setRequires(Set<ResourceTypeWrapper> requires) {
+	public void setRequires(Set<ResourceType> requires) {
 		this.requires = requires;
 	}
-	public Set<ResourceTypeWrapper> getConflicts() {
+	public Set<ResourceType> getConflicts() {
 		return conflicts;
 	}
-	public void setConflicts(Set<ResourceTypeWrapper> conflicts) {
+	public void setConflicts(Set<ResourceType> conflicts) {
 		this.conflicts = conflicts;
 	}
 	public boolean isSelfConflicting() {

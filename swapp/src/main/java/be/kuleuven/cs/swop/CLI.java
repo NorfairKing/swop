@@ -17,6 +17,9 @@ import java.util.function.Function;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
@@ -24,9 +27,6 @@ import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.RequirementWrapper;
-import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
-import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -313,6 +313,11 @@ public class CLI implements UserInterface {
         if (office != null) {
             System.out.println("#   Has been delegated to: " + office.getLocation());
         }
+        
+        if (task.getPlanning() != null) {
+            System.out.println("PLANNING: ");
+            printPlanning(task.getPlanning());
+        }
     }
 
     private void printPlanning(TaskPlanning planning) {
@@ -337,7 +342,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
+    public TaskData getTaskData(Set<ResourceType> types) {
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
@@ -349,9 +354,9 @@ public class CLI implements UserInterface {
         System.out.print("# Acceptable Deviation (%): ");
         double acceptableDeviation = promptPercentageAsDouble();
 
-        Map<ResourceTypeWrapper, Integer> reqs = new HashMap<ResourceTypeWrapper, Integer>();
+        Map<ResourceType, Integer> reqs = new HashMap<ResourceType, Integer>();
         while (true) {
-            ResourceTypeWrapper selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
+            ResourceType selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
             if (selectedType == null) {
                 break;
             }
@@ -501,24 +506,24 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
+    public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements) {
 
-        Map<ResourceTypeWrapper, String> typeSelectionMap = new HashMap<ResourceTypeWrapper, String>();
-        Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
+        Map<ResourceType, String> typeSelectionMap = new HashMap<ResourceType, String>();
+        Set<Resource> result = new HashSet<Resource>();
 
         while (true) {
 
-            for (ResourceTypeWrapper type : options.keySet()) {
+            for (ResourceType type : options.keySet()) {
                 int req = 0;
                 int amountSelected = 0;
                 String displayText;
-                for (RequirementWrapper require : requirements) {
+                for (Requirement require : requirements) {
                     if (require.getType().equals(type)) {
                         req = require.getAmount();
                         break;
                     }
                 }
-                for (ResourceWrapper selected : result) {
+                for (Resource selected : result) {
                     if (selected.getType().equals(type)) {
                         amountSelected++;
                     }
@@ -535,12 +540,12 @@ public class CLI implements UserInterface {
                 typeSelectionMap.put(type, displayText);
             }
 
-            Entry<ResourceTypeWrapper, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
+            Entry<ResourceType, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
             if (selectedEntry == null) { return result; }
 
-            ResourceTypeWrapper selectedType = selectedEntry.getKey();
+            ResourceType selectedType = selectedEntry.getKey();
             options.get(selectedType).sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-            ResourceWrapper selectedResource = selectResourceFor(selectedType, options.get(selectedType));
+            Resource selectedResource = selectResourceFor(selectedType, options.get(selectedType));
 
             if (selectedResource == null) {
                 continue;
@@ -556,7 +561,7 @@ public class CLI implements UserInterface {
 
     }
 
-    private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
+    private Resource selectResourceFor(ResourceType type, List<Resource> resources) {
         if (resources.isEmpty()) {
             System.out.println("No resource to select.");
             return null;
