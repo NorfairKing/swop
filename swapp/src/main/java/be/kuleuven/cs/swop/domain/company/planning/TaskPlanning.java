@@ -40,7 +40,7 @@ public class TaskPlanning implements Serializable {
         for (Resource r : reservations) {
             if (r == null) { return false; }
         }
-        return false; // TODO
+        return true;
     }
 
     public ImmutableSet<Resource> getReservations() {

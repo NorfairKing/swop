@@ -27,11 +27,11 @@ import be.kuleuven.cs.swop.domain.TimeCalculator;
  * A class that handles all the planning of and working on tasks.
  */
 @SuppressWarnings("serial")
-public class PlanningManager implements Serializable {
+public class PlanningDepartment implements Serializable {
 
     private final BranchOffice office;
 
-    public PlanningManager(BranchOffice office) {
+    public PlanningDepartment(BranchOffice office) {
         this.office = office;
     }
 

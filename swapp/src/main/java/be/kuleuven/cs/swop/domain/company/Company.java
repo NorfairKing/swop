@@ -142,8 +142,8 @@ public class Company implements Serializable {
         return null;
     }
 
-    public ImmutableSet<ResourceType> getResourceTypes() {
-        return ImmutableSet.copyOf(resourceTypes);
+    public Set<ResourceType> getResourceTypes() {
+        return new HashSet<ResourceType>(resourceTypes);
     }
 
     public Set<Task> getUnplannedTasksOf(Project project, AuthenticationToken at) {

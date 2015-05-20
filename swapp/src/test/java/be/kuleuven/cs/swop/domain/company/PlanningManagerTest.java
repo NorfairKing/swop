@@ -23,11 +23,11 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 public class PlanningManagerTest {
-    PlanningManager manager;
+    PlanningDepartment manager;
     
     @Before
     public void Setup() {
-        manager = new PlanningManager();
+        manager = new PlanningDepartment();
     }
     
     @Test(expected = IllegalArgumentException.class)
