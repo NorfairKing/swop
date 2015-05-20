@@ -233,7 +233,10 @@ public class CLI implements UserInterface {
 
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
-        return selectFromCollection(projectSet, "projects", p -> p.getTitle());
+        return selectFromCollection(projectSet, "projects",
+                p -> p.getTitle() + " - " + 
+                        sessionController.getTaskMan().getOfficeOf(p).getLocation()
+        );
     }
 
     @Override
