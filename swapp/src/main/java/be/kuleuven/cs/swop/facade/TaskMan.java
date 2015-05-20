@@ -247,6 +247,10 @@ public class TaskMan implements Serializable {
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> wrapDeveloper(d));
     }
+    
+    public ProjectWrapper getDelegationProject(){
+        return new ProjectWrapper(company.getDelegationProject(authenticationToken));
+    }
 
     /**
      * Create a planning for a task

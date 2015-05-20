@@ -43,13 +43,12 @@ public class BranchOffice implements Serializable {
     private PlanningManager      planningManager;
     private Project              delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
-    private final Set<Developer> developers = new HashSet<Developer>();
 
     public BranchOffice(String location, Company company) {
         this.location = location;
         this.company = company;
         this.planningManager = new PlanningManager(this);
-        delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.MAX);
+        this.delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.MAX);
     }
 
     // Getters and setters of internal state
@@ -58,8 +57,14 @@ public class BranchOffice implements Serializable {
     }
 
     // Passthrough getters
-    public ImmutableSet<Developer> getDevelopers() {
-        return ImmutableSet.copyOf(developers);
+    public Set<Developer> getDevelopers() {
+        Set<Developer> devs = new HashSet<Developer>();
+        for(Resource res : resources){
+            if(res.getType() == Developer.DEVELOPER_TYPE){
+                devs.add((Developer) res);
+            }
+        }
+        return devs;
     }
 
     public ImmutableSet<Project> getProjects() {
@@ -72,6 +77,10 @@ public class BranchOffice implements Serializable {
 
     public ImmutableSet<ResourceType> getResourceTypes() {
         return company.getResourceTypes();
+    }
+    
+    public Project getDelegationProject(){
+        return this.delegationProject;
     }
 
     public Set<TaskPlanning> getTaskPlannings() {
@@ -249,7 +258,7 @@ public class BranchOffice implements Serializable {
      */
     public Developer createDeveloper(String name) {
         Developer dev = new Developer(name);
-        developers.add(dev);
+        resources.add(dev);
         return dev;
     }
 
