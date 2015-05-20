@@ -142,7 +142,7 @@ public class SessionController {
         
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
-        Set<ProjectWrapper> projects = getTaskMan().getProjects();
+        Set<ProjectWrapper> projects = getTaskMan().getAllProjects();
         getUi().showProjects(projects);
 
         // The user selects a project to view more details
