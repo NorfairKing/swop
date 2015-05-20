@@ -17,7 +17,6 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 public class TaskPlanningTest {
     
-    Set<Developer> devSet;
     Set<Resource> resSet;
     Task task;
 
@@ -29,12 +28,9 @@ public class TaskPlanningTest {
 
     @Before
     public void setUp() throws Exception {
-        devSet = new HashSet<>();
-        devSet.add(new Developer("Sean"));
         
         resSet = new HashSet<>();
-        
-        task = new Task("description", 50, .5);
+        resSet.add(new Developer("Sean"));
     }
 
     @After
@@ -42,30 +38,18 @@ public class TaskPlanningTest {
 
     @Test
     public void constructorValidTest() {
-        new TaskPlanning(devSet, task, LocalDateTime.of(2015, 02, 20, 12, 0));
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void constructorInvalidDevelopersTest(){
-        devSet.add(null);
-        new TaskPlanning(devSet, task, LocalDateTime.of(2015, 02, 20, 12, 0));
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void constructorInvalidTaskTest(){
-        new TaskPlanning(devSet, null, LocalDateTime.of(2015, 02, 20, 12, 0));
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void constructorInvalidPlannedStartTimeTest(){
-        new TaskPlanning(devSet, task, null);
+        new TaskPlanning(LocalDateTime.of(2015, 02, 20, 12, 0), resSet, 50);
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void constructorInvalidResourcesTest(){
         resSet.add(null);
-        new TaskPlanning(devSet, task, LocalDateTime.of(2015,02,20,12,0),resSet);
+        new TaskPlanning(LocalDateTime.of(2015, 02, 20, 12, 0), resSet, 50);
     }
     
+    @Test(expected=IllegalArgumentException.class)
+    public void constructorInvalidPlannedStartTimeTest(){
+        new TaskPlanning(null, resSet, 50);
+    }
 
 }
