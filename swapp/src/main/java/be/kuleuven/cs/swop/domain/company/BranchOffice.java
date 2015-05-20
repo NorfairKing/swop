@@ -35,14 +35,14 @@ public class BranchOffice implements Serializable {
 
     private final Set<Project>   projects   = new HashSet<Project>();
     private final Company        company;
-    private PlanningDepartment      planningManager;
+    private PlanningDepartment      planningDepartment;
     private Project              delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
 
     public BranchOffice(String location, Company company) {
         this.location = location;
         this.company = company;
-        this.planningManager = new PlanningDepartment(this);
+        this.planningDepartment = new PlanningDepartment(this);
         this.delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.MAX);
     }
 
@@ -110,7 +110,7 @@ public class BranchOffice implements Serializable {
     }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
-        return this.planningManager.getUnplannedTasksFrom(project.getTasks());
+        return this.planningDepartment.getUnplannedTasksFrom(project.getTasks());
     }
 
     /**
@@ -121,11 +121,11 @@ public class BranchOffice implements Serializable {
      * @return A set of all the planning
      */
     public Set<TaskPlanning> getPlanningsFor(Project project) {
-        return this.planningManager.getPlanningsFor(project.getTasks());
+        return this.planningDepartment.getPlanningsFor(project.getTasks());
     }
 
     public Set<Task> getAssignedTasksOf(Project project, Developer dev) {
-        return this.planningManager.getAssignedTasksOf(project.getTasks(), dev);
+        return this.planningDepartment.getAssignedTasksOf(project.getTasks(), dev);
     }
 
     public Task getTaskFor(TaskPlanning planning) {
@@ -138,23 +138,23 @@ public class BranchOffice implements Serializable {
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time) {
-        return this.planningManager.getPlanningTimeOptions(task, amount, time);
+        return this.planningDepartment.getPlanningTimeOptions(task, amount, time);
     }
 
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
-        return this.planningManager.getPlanningResourceOptions(task, time);
+        return this.planningDepartment.getPlanningResourceOptions(task, time);
     }
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
-        return this.planningManager.getPlanningDeveloperOptions(task, time);
+        return this.planningDepartment.getPlanningDeveloperOptions(task, time);
     }
 
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        this.planningManager.createPlanning(task, time, rss);
+        this.planningDepartment.createPlanning(task, time, rss);
     }
 
     public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        this.planningManager.createPlanningWithBreak(task, time, rss);
+        this.planningDepartment.createPlanningWithBreak(task, time, rss);
     }
 
     /**
@@ -164,7 +164,7 @@ public class BranchOffice implements Serializable {
      *            The planning that will be removed
      */
     public void removePlanning(TaskPlanning planning) {
-        this.planningManager.removePlanning(planning);
+        this.planningDepartment.removePlanning(planning);
     }
 
     /**
@@ -211,22 +211,22 @@ public class BranchOffice implements Serializable {
      * @return Whether or not it is available
      */
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev, Task task) {
-        return this.planningManager.isTier2AvailableFor(time, dev, task);
+        return this.planningDepartment.isTier2AvailableFor(time, dev, task);
     }
 
     // finish, fail and executing has to happen through the planningManager
     // that's the class that can decide about this
     // We can't enforce this in java, but we enforce it with mind-power
     public void finishTask(Task t, DateTimePeriod period) {
-        this.planningManager.finishTask(t, period);
+        this.planningDepartment.finishTask(t, period);
     }
 
     public void failTask(Task t, DateTimePeriod period) {
-        this.planningManager.failTask(t, period);
+        this.planningDepartment.failTask(t, period);
     }
 
     public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
-        this.planningManager.startExecutingTask(t, time, dev);
+        this.planningDepartment.startExecutingTask(t, time, dev);
     }
 
     /**
@@ -284,7 +284,7 @@ public class BranchOffice implements Serializable {
      *            The memento to restore from
      */
     public void restoreFromMemento(Memento memento) {
-        planningManager = memento.getSavedState().planningManager;
+        planningDepartment = memento.getSavedState().planningDepartment;
         delegationProject = memento.getSavedState().delegationProject;
     }
 
