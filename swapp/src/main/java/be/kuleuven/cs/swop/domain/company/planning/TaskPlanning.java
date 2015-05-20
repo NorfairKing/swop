@@ -25,6 +25,8 @@ public class TaskPlanning implements Serializable {
     private final LocalDateTime   plannedStartTime;
     private final long taskDuration;
 
+    @SuppressWarnings("unused")
+    protected TaskPlanning() {reservations = null;plannedStartTime = null; taskDuration = 0;} //for automatic (de)-serialization
     public TaskPlanning(LocalDateTime plannedStartTime, Set<Resource> reservations, long taskDuration) {
         if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
         this.reservations = reservations;

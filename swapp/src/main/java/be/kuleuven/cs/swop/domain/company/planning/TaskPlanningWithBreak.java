@@ -17,6 +17,8 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 @SuppressWarnings("serial")
 public class TaskPlanningWithBreak extends TaskPlanning {
 
+    @SuppressWarnings("unused")
+    private TaskPlanningWithBreak() {super();} //for automatic (de)-serialization
     public TaskPlanningWithBreak(LocalDateTime plannedStartTime, Set<Resource> reservations, long taskDuration) {
         super(plannedStartTime, reservations, taskDuration);
     }

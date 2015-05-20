@@ -12,7 +12,7 @@ public class Requirements implements Serializable {
     private final Set<Requirement> reqs = new HashSet<Requirement>();
 
     public Requirements(Set<Requirement> requirements) {
-        for(Requirement req :reqs){
+        for(Requirement req :requirements){
             reqs.add(req);
         }
     }
