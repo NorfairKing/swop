@@ -1,5 +1,6 @@
 package be.kuleuven.cs.swop.facade;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 
 public class ResourceWrapper {
@@ -29,6 +30,10 @@ public class ResourceWrapper {
 
     public String getName() {
         return resource.getName();
+    }
+    
+    public boolean canTakeBreakDuring(DateTimePeriod period) {
+        return resource.canTakeBreakDuring(period);
     }
     
     @Override

@@ -3,6 +3,8 @@ package be.kuleuven.cs.swop.domain.company.resource;
 
 import java.io.Serializable;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
+
 
 @SuppressWarnings("serial")
 public class Resource implements Serializable {
@@ -34,6 +36,10 @@ public class Resource implements Serializable {
 
     public boolean isOfType(ResourceType type) {
         return type == this.getType();
+    }
+    
+    public boolean canTakeBreakDuring(DateTimePeriod period) {
+        return false;
     }
 
     private static final String ERROR_ILLEGAL_TYPE = "Illegal resource type for resource.";

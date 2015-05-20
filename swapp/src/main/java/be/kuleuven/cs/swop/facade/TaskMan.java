@@ -254,11 +254,11 @@ public class TaskMan implements Serializable {
      * @throws ConflictingPlannedTaskWrapperException If the created planning would cause a
      * conflict
      */
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> ) throws ConflictingPlannedTaskWrapperException {
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources ) throws ConflictingPlannedTaskWrapperException {
     	try {
-			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
+			company.createPlanning(task.getTask(), time, map(resources, p -> p.getResource()), authenticationToken);
 		} catch (ConflictingPlannedTaskException e) {
-			throw new ConflictingPlannedTaskWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+			throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
 		}
     }
 
@@ -273,11 +273,11 @@ public class TaskMan implements Serializable {
      * @throws ConflictingPlannedTaskWrapperException IF the created planning would cause a
      * conflict
      */
-    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources, Set<DeveloperWrapper> developers) throws ConflictingPlannedTaskWrapperException {
+    public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<ResourceWrapper> resources) throws ConflictingPlannedTaskWrapperException {
     	try {
-			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), map(developers, d -> d.getDeveloper()), authenticationToken);
+			company.createPlanningWithBreak(task.getTask(), time, map(resources, p -> p.getResource()), authenticationToken);
 		} catch (ConflictingPlannedTaskException e) {
-			throw new ConflictingPlannedTaskWrapperException(new TaskPlanningWrapper(e.getPlanning()));
+			throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
 		}
     }
 

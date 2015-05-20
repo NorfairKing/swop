@@ -8,7 +8,6 @@ import java.util.Set;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.Resource;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.user.Developer;

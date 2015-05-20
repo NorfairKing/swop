@@ -294,13 +294,13 @@ public class SessionController {
                     handleSimulationStep();
                     return;
                 }
-                if (!chosenDevelopers.isEmpty() && chosenDevelopers.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
+                if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
                     if (getUi().askToAddBreak()) {
-                        taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+                        taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources);
                         break;
                     }
                 }
-                taskMan.createPlanning(selectedTask, chosenTime, chosenResources, chosenDevelopers);
+                taskMan.createPlanning(selectedTask, chosenTime, chosenResources);
                 break;
             } catch (ConflictingPlannedTaskWrapperException e) {
                 startResolveConflictSession(e.getTask());
@@ -364,7 +364,7 @@ public class SessionController {
                 // The system shows the first three possible starting times.
                 // The user selects a proposed time
                 LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-                taskMan.createPlanning(task, chosenTime, task.getPlanning().getReservations(), task.getPlanning().getDevelopers());
+                taskMan.createPlanning(task, chosenTime, task.getPlanning().getReservations());
                 break;
             } catch (ConflictingPlannedTaskWrapperException e) {
                 startResolveConflictSession(e.getTask());
