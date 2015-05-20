@@ -87,6 +87,7 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     boolean isFinishedOrHasFinishedAlternative() {
+        // we consider the delegation task to be the alternative here.
         return getDelegation().getDelegationTask().isFinishedOrHasFinishedAlternative();
     }
 
@@ -102,22 +103,22 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     DateTimePeriod getPerformedDuring() {
-        return null;
+        return getDelegation().getDelegationTask().getPerformedDuring();
     }
 
     @Override
     boolean wasFinishedOnTime() {
-        return false;
+        return getDelegation().getDelegationTask().wasFinishedOnTime();
     }
 
     @Override
     boolean wasFinishedEarly() {
-        return false;
+        return getDelegation().getDelegationTask().wasFinishedEarly();
     }
 
     @Override
     boolean wasFinishedLate() {
-        return false;
+        return getDelegation().getDelegationTask().wasFinishedLate();
     }
 
     @Override
