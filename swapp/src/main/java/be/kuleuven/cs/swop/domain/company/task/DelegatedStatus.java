@@ -26,37 +26,40 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     boolean isFinished() {
-        return false;
+        return getDelegation().getDelegationTask().isFinished();
     }
 
     @Override
     boolean isFailed() {
-        return false;
+        return getDelegation().getDelegationTask().isFailed();
     }
 
     @Override
     boolean isExecuting() {
-        return false;
+        return getDelegation().getDelegationTask().isExecuting();
     }
 
     @Override
     boolean canFinish() {
-        return false;
+        return false; //the delegation task might be finishable, but this one can't anymore.
+        // It can however that the isFinished() call returns true, where before it returned false,
+        // even though it this status won't allow changing to the finished status. This happens
+        // when the delegation task is finished.
     }
 
     @Override
     boolean canFail() {
-        return false;
+        return false; //see canFinish
     }
 
     @Override
     boolean canExecute() {
-        return false;
+        return false; //see canFinish
     }
 
     @Override
     boolean isFinal() {
-        return false;
+        return getDelegation().getDelegationTask().isFinal();
     }
 
     @Override
@@ -79,12 +82,12 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
-        return null;
+        return getDelegation().getDelegationTask().getEstimatedOrRealFinishDate(currentDate);
     }
 
     @Override
     boolean isFinishedOrHasFinishedAlternative() {
-        return false;
+        return getDelegation().getDelegationTask().isFinishedOrHasFinishedAlternative();
     }
 
     @Override
@@ -120,7 +123,6 @@ public class DelegatedStatus extends TaskStatus {
     @Override
     void delegate(Delegation del) {
         throw new IllegalStateException(ERROR_DELEGATE);
-
     }
 
     @Override
@@ -142,7 +144,7 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
-        return del.getDelegationTask().getEstimatedOrPlanningPeriod();
+        return null;
     }
 
 
