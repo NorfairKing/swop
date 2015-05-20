@@ -40,7 +40,7 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
  */
 public class CLI implements UserInterface {
 
-    private final Scanner           scanner;
+    private final Scanner     scanner;
     private SessionController sessionController;
 
     public CLI() {
@@ -51,9 +51,9 @@ public class CLI implements UserInterface {
     public boolean start() {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
-        
+
         login();
-        
+
         String command;
         boolean stop = false;
         while (!stop) {
@@ -94,8 +94,8 @@ public class CLI implements UserInterface {
                 getSessionController().startAdvanceTimeSession();
                 break;
             case "break":
-            	System.out.println("Put a breakpoint here");
-            	break;
+                System.out.println("Put a breakpoint here");
+                break;
         }
 
         if (sessionController.getTaskMan().getCurrentAuthenticationToken().isDeveloper()) {
@@ -114,7 +114,7 @@ public class CLI implements UserInterface {
                     break;
 
             }
-        } 
+        }
         else {
             switch (command) {
                 case "help":
@@ -148,7 +148,7 @@ public class CLI implements UserInterface {
                     break;
             }
         }
-        
+
         return false;
     }
 
@@ -174,7 +174,7 @@ public class CLI implements UserInterface {
     }
 
     // Interface methods
-    
+
     @Override
     public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) {
         return selectFromCollection(offices, "branch offices", o -> o.getLocation());
@@ -256,9 +256,9 @@ public class CLI implements UserInterface {
         printTask(task);
         printDelimiter();
     }
-    
+
     @Override
-    public void showTaskPlanningContext(TaskWrapper task){
+    public void showTaskPlanningContext(TaskWrapper task) {
         System.out.println("PLANNING:");
         System.out.println(task.getDescription());
         printDelimiter();
@@ -298,17 +298,17 @@ public class CLI implements UserInterface {
         else {
             System.out.println("#   Cannot be executed by you at this point");
         }
-        
+
         BranchOfficeWrapper office = sessionController.getTaskMan().getOfficeToWhichThisTaskIsDelegated(task);
         if (office != null) {
             System.out.println("#   Has been delegated to: " + office.getLocation());
         }
     }
-    
-    private void printPlanning(TaskPlanning planning){
+
+    private void printPlanning(TaskPlanning planning) {
         System.out.println(""
                 + "#   Planned start time: " + planning.getPlannedStartTime() + "\n");
-        //TODO
+        // TODO
     }
 
     @Override
@@ -486,70 +486,64 @@ public class CLI implements UserInterface {
         System.out.println("The developer(s) could take a break during this Task.");
         System.out.println("Would you like for the planning to add a break? (y/n)");
         boolean wantsToAddBreak = promptBoolean("y", "n");
-        if (wantsToAddBreak) {
-            return true;
-        }
+        if (wantsToAddBreak) { return true; }
         return false;
     }
 
     @Override
     public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
-    	
-    	Map<ResourceTypeWrapper, String> typeSelectionMap = new HashMap<ResourceTypeWrapper, String>();
-    	Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
-    	
-    	while(true){
-    		
-        	for(ResourceTypeWrapper type : options.keySet()){
-        		int req = 0;
-        		int amountSelected = 0;
-        		String displayText;
-        		for(RequirementWrapper require: requirements){
-        			if(require.getType().equals(type)){
-        				req = require.getAmount();
-        				break;
-        			}
-        		}
-        		for(ResourceWrapper selected: result){
-        			if(selected.getType().equals(type)){
-        				amountSelected++;
-        			}
-        		}
-        		
-    			displayText = type.getName() + " (" + options.get(type).size() + " options";
-        		if(req != 0){
-        			displayText += ", " + req + " required ";
-        		}
-        		if(amountSelected != 0){
-        			displayText += ", " + amountSelected + " selected ";
-        		}
-        		displayText += ")";
-        		typeSelectionMap.put(type, displayText);
-        	}
-    		
-    		
-    		
-    		Entry<ResourceTypeWrapper, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
-    		if(selectedEntry == null){
-    			return result;
-    		}
-    		
-    		ResourceTypeWrapper selectedType = selectedEntry.getKey();
-    		options.get(selectedType).sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-    		ResourceWrapper selectedResource = selectResourceFor(selectedType, options.get(selectedType));
-    		
-    		if(selectedResource == null){
-    			continue;
-    		}
-    		
-    		if( result.contains(selectedResource)){
-    			System.out.println("That resource was already selected");
-    			continue;
-    		}
-    		result.add(selectedResource);
-    		
-    	}
-    	
+
+        Map<ResourceTypeWrapper, String> typeSelectionMap = new HashMap<ResourceTypeWrapper, String>();
+        Set<ResourceWrapper> result = new HashSet<ResourceWrapper>();
+
+        while (true) {
+
+            for (ResourceTypeWrapper type : options.keySet()) {
+                int req = 0;
+                int amountSelected = 0;
+                String displayText;
+                for (RequirementWrapper require : requirements) {
+                    if (require.getType().equals(type)) {
+                        req = require.getAmount();
+                        break;
+                    }
+                }
+                for (ResourceWrapper selected : result) {
+                    if (selected.getType().equals(type)) {
+                        amountSelected++;
+                    }
+                }
+
+                displayText = type.getName() + " (" + options.get(type).size() + " options";
+                if (req != 0) {
+                    displayText += ", " + req + " required ";
+                }
+                if (amountSelected != 0) {
+                    displayText += ", " + amountSelected + " selected ";
+                }
+                displayText += ")";
+                typeSelectionMap.put(type, displayText);
+            }
+
+            Entry<ResourceTypeWrapper, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
+            if (selectedEntry == null) { return result; }
+
+            ResourceTypeWrapper selectedType = selectedEntry.getKey();
+            options.get(selectedType).sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+            ResourceWrapper selectedResource = selectResourceFor(selectedType, options.get(selectedType));
+
+            if (selectedResource == null) {
+                continue;
+            }
+
+            if (result.contains(selectedResource)) {
+                System.out.println("That resource was already selected");
+                continue;
+            }
+            result.add(selectedResource);
+
+        }
+
     }
 
     private ResourceWrapper selectResourceFor(ResourceTypeWrapper type, List<ResourceWrapper> resources) {
@@ -602,7 +596,6 @@ public class CLI implements UserInterface {
             }
         } while (true);
 
-
         return selectedDevelopers;
     }
 
@@ -613,6 +606,7 @@ public class CLI implements UserInterface {
         printDelimiter();
     }
 
+    @Override
     public SimulationStepData getSimulationStepData() {
         System.out.println("Continue the simulation? (\"continue\", \"realize\" or \"cancel\")");
 
