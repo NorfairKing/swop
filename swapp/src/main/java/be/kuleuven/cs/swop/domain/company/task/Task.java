@@ -3,14 +3,12 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
-import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -48,7 +46,7 @@ public class Task implements Serializable {
     }
 
     public void setTaskInfo(TaskInfo info) {
-        if (!canHaveAsTaskInfo(info)) throw new IllegalArgumentException();
+        if (!canHaveAsTaskInfo(info)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK_INFO);
         this.info = info;
     }
 
@@ -288,6 +286,5 @@ public class Task implements Serializable {
     private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
     private static final String ERROR_PLAN  = "Task is in the wrong state to plan.";
-    private static final String ERROR_ILLEGAL_PLAN      = "Illegal plan for task.";
 
 }

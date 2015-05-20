@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
@@ -92,7 +91,6 @@ public class UnstartedStatus extends IncompleteStatus {
 	}
 
     private static final String ERROR_FINISH = "Can't finish a task that has not been started.";
-    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
 
 
 }

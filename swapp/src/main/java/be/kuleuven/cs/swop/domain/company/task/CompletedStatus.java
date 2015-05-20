@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import be.kuleuven.cs.swop.domain.TimeCalculator;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
-import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
@@ -123,7 +122,5 @@ public abstract class CompletedStatus extends TaskStatus {
     private static final String ERROR_FAIL                     = "Can't fail a performed task.";
     private static final String ERROR_EXECUTE                  = "Can't execute a performed task.";
     private static final String ERROR_DELEGATE                 = "Can't delegate a performed task.";
-	private static final String ERROR_PLAN                     = "Can't plan a task that's completed.";
-	private static final String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's completed.";
 
 }

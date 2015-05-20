@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 
 @SuppressWarnings("serial")
@@ -75,7 +74,5 @@ public class ExecutingStatus extends IncompleteStatus {
 
     private static final String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
     private static final String ERROR_EXECUTE = "Can't execute a task that's already being executed.";
-	private static final String ERROR_PLAN                     = "Can't plan a task that's executing.";
-	private static final String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's executing.";
 
 }
