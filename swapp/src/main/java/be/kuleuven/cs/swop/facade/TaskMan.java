@@ -56,6 +56,10 @@ public class TaskMan implements Serializable {
         return authenticationToken;
     }
     
+    public boolean isAuthenticated(){
+    	return authenticationToken != null;
+    }
+    
     public void setCurrentAuthenticationToken(AuthenticationToken token) {
         this.authenticationToken = token;
     }

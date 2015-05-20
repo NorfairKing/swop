@@ -2,6 +2,7 @@ package be.kuleuven.cs.swop.facade;
 
 
 import java.util.List;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,8 +100,17 @@ public class SessionController {
      */
     public void startSelectUserSession() {
         
-        Set<BranchOfficeWrapper> offices = getTaskMan().getOffices();
-        
+    	Set<BranchOfficeWrapper> offices;
+    	do{
+        offices = getTaskMan().getOffices();
+        if(offices.isEmpty()){
+        	getUi().showError(ERROR_NO_OFFICES);
+        	loadFromFile();
+        	if(getTaskMan().isAuthenticated()){
+        		return;
+        	}
+        }
+    	}while(offices.isEmpty());
         BranchOfficeWrapper office = getUi().selectOffice(offices);
         
         if (office == null) return;
@@ -130,7 +140,7 @@ public class SessionController {
         
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
-        Set<ProjectWrapper> projects = getTaskMan().getAllProjects();
+        Set<ProjectWrapper> projects = getTaskMan().getProjects();
         getUi().showProjects(projects);
 
         // The user selects a project to view more details
@@ -469,6 +479,25 @@ public class SessionController {
         // The user indicates he wants to start a simulation
         getTaskMan().startSimulation();
     }
+    
+    public void saveToFile(){
+    	String path = getUi().getFileName();
+    	try {
+			getTaskMan().saveEverythingToFile(path);
+		} catch (FileNotFoundException e) {
+			getUi().showError(e.getMessage());	
+		}
+    }
+    
+    public void loadFromFile(){
+    	String path = getUi().getFileName();
+    	try {
+    		getTaskMan().loadEverythingFromFile(path);
+    		startSelectUserSession();
+    	} catch (FileNotFoundException e) {
+    		getUi().showError(e.getMessage());	
+    	}
+    }
 
     private void handleSimulationStep() {
         if (getTaskMan().isInASimulation()) {
@@ -493,8 +522,10 @@ public class SessionController {
         // The user indicates he wants to cancel the simulation.
         getTaskMan().cancelSimulation();
     }
+    
 
     private static final String ERROR_NO_LOGIN       = "No user has logged in, please log in first.";
     private static final String ERROR_ILLEGAL_UI     = "Invalid user interface for session controller.";
     private static final String ERROR_ILLEGAL_FACADE = "Invalid facade controller for session controller.";
+    private static final String ERROR_NO_OFFICES = "No branch offices found, please import a save file.";
 }

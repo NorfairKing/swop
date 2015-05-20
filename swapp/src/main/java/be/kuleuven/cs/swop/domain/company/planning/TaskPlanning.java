@@ -51,9 +51,14 @@ public class TaskPlanning implements Serializable {
     }
     
 
-    public ImmutableSet<Developer> getDevelopers() {
-        return null;
-        //FIXME: implement me: Figure out issue #69 first
+    public Set<Developer> getDevelopers() {
+        Set<Developer> devs = new HashSet<Developer>();
+        for(Resource res : reservations){
+        	if(res.getType() == Developer.DEVELOPER_TYPE){
+        		devs.add((Developer) res);
+        	}
+        }
+        return devs;
     }
 
     public LocalDateTime getPlannedStartTime() {

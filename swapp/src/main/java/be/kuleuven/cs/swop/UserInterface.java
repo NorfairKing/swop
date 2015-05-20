@@ -201,6 +201,8 @@ public interface UserInterface {
      */
     public SimulationStepData getSimulationStepData();
     
+    public String getFileName();
+    
     /**
      * Starts the user interface
      * 

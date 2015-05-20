@@ -1,7 +1,9 @@
 package be.kuleuven.cs.swop.domain.company;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +32,74 @@ public class Company {
     private final Set<BranchOffice> offices = new HashSet<BranchOffice>();
     private final DelegationOffice delegationOffice = new DelegationOffice();
     private Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
-    private Map<BranchOffice, BranchOffice.Memento> officeMementos;
+    private Map<BranchOffice, BranchOffice.Memento> officeMementos = new HashMap<BranchOffice, BranchOffice.Memento>();
     
     public Company() {
+    	//seedData();
+    }
+    
+    
+    //FIXME: remove me when no longer needed!
+    private void seedData(){
+    	// Offices
+    	BranchOffice office1 = new BranchOffice("Office 1", this);
+    	BranchOffice office2 = new BranchOffice("Office 2", this);
+    	offices.add(office1);
+    	offices.add(office2);
+    	
+    	// Resource Types
+    	Set<ResourceType> requireSet = new HashSet<ResourceType>();
+    	Set<ResourceType> conflictSet = new HashSet<ResourceType>();
+    	TimePeriod dailyAvailability0 = new TimePeriod(LocalTime.of(12,00), LocalTime.of(17,00)); 
+
+    	ResourceType carType = createResourceType("Car", requireSet,conflictSet, false, null);
+    	ResourceType whiteBoardType = createResourceType("White Board", requireSet, conflictSet, false, null);
+    	conflictSet.add(whiteBoardType);
+    	ResourceType demoKitType = createResourceType("Demo Kit", requireSet, conflictSet, false, null);
+    	conflictSet.clear();
+    	requireSet.add(demoKitType);
+    	ResourceType conferenceRoomType = createResourceType("Conference Room", requireSet, conflictSet, true, null);
+    	requireSet.clear();
+    	ResourceType testingSetupType = createResourceType("Distributed Testing Setup", requireSet, conflictSet, false, null);
+    	ResourceType dataCenterType = createResourceType("Data Center", requireSet, conflictSet, false, dailyAvailability0);
+    	
+    	// Projects
+    	LocalDateTime startTime1 = LocalDateTime.of(2015, 6, 1 , 9 , 0);
+    	LocalDateTime startTime2 = LocalDateTime.of(2015, 6, 8 , 9 , 0);
+    	LocalDateTime endTime1 = LocalDateTime.of(2015, 6,  5, 18 , 0);
+    	LocalDateTime endTime2 = LocalDateTime.of(2015, 6,  22, 18 , 0);
+    	Project proj1 = office1.createProject("Project 1", "This is Project 1", startTime1, endTime1);
+    	Project proj2 = office1.createProject("Project 2", "This is Project 2", startTime2, endTime2);
+    	Project proj3 = office2.createProject("Project 3", "This is Project 3", startTime1, endTime1);
+    	Project proj4 = office2.createProject("Project 4", "This is Project 4", startTime2, endTime2);
+    	
+    	// Resources
+    	
+    	// Office 1
+    	Resource car1 = office1.createResource("Car 1", carType);
+    	Resource car2 = office1.createResource("Car 2", carType);
+    	Resource whiteBoard1 = office1.createResource("White Board 1", whiteBoardType);
+    	Resource whiteBoard2 = office1.createResource("White Board 2", whiteBoardType);
+    	Resource demoKit1 = office1.createResource("Demo Kit 1", demoKitType);
+    	Resource demoKit2 = office1.createResource("Demo Kit 2", demoKitType);
+    	Resource conference1 = office1.createResource("The Big Conference Room", conferenceRoomType);
+    	Resource conference2 = office1.createResource("The Small Conference Room", conferenceRoomType);
+    	Resource testingSetup1 = office1.createResource("The Distributed Test Facility", testingSetupType);
+    	Resource dataCenter1 = office1.createResource("Data Center 1", dataCenterType);
+
+    	
+    	// Office 2
+    	Resource car3 = office2.createResource("Car 3", carType);
+    	Resource car4 = office2.createResource("Car 4", carType);
+    	Resource whiteBoard3 = office2.createResource("White Board 3", whiteBoardType);
+    	Resource whiteBoard4 = office2.createResource("White Board 4", whiteBoardType);
+    	Resource demoKit3 = office2.createResource("Demo Kit 3", demoKitType);
+    	Resource demoKit4 = office2.createResource("Demo Kit 4", demoKitType);
+    	Resource conference3 = office2.createResource("The Big Conference Room #2", conferenceRoomType);
+    	Resource conference4 = office2.createResource("The Small Conference Room #2", conferenceRoomType);
+    	Resource testingSetup3 = office2.createResource("The Distributed Test Facility #2", testingSetupType);
+    	Resource dataCenter4 = office2.createResource("Data Center 2", dataCenterType);    
+    	
     }
     
     public ImmutableSet<BranchOffice> getOffices() {

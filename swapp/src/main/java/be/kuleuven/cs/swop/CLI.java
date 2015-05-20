@@ -96,6 +96,12 @@ public class CLI implements UserInterface {
             case "break":
             	System.out.println("Put a breakpoint here");
             	break;
+            case "save":
+            	getSessionController().saveToFile();
+            	break;
+            case "load":
+            	getSessionController().loadFromFile();
+            	break;
         }
 
         if (sessionController.getTaskMan().getCurrentAuthenticationToken().isDeveloper()) {
@@ -107,6 +113,8 @@ public class CLI implements UserInterface {
                     System.out.println("user       :   select the current user");
                     System.out.println("list    / l:   list all projects");
                     System.out.println("update  / u:   update task");
+                    System.out.println("save       :   save current state to file");
+                    System.out.println("load       :   load a save file");
                     break;
                 case "update":
                 case "u":
@@ -128,6 +136,8 @@ public class CLI implements UserInterface {
                     System.out.println("plan       :   plan task");
                     System.out.println("delegate   :   delegate task");
                     System.out.println("simulation :   simulation");
+                    System.out.println("save       :   save current state to file");
+                    System.out.println("load       :   load a save file");
                     break;
                 case "project":
                 case "p":
@@ -629,6 +639,13 @@ public class CLI implements UserInterface {
             }
         } while (true);
     }
+    
+    public String getFileName(){
+    	System.out.print("Please enter the file name: ");
+        String reply = this.getScanner().nextLine();
+        return reply;
+    }
+
 
     // Format methods
 

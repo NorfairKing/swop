@@ -48,7 +48,7 @@ public class BranchOffice implements Serializable {
         this.company = company;
         setPlanningManager(new PlanningManager(this));
         
-        delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
+        delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.MAX);
     }
 
     // Getters and setters of internal state
