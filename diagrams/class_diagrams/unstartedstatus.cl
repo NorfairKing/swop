@@ -3,7 +3,7 @@
 !define UNSTARTEDSTATUS_CL
 
 !include incompletestatus.cl
-class UnstartedStatus
+class UnstartedStatus << (V,orange) >>
 IncompleteStatus <|-- UnstartedStatus
 
 !endif

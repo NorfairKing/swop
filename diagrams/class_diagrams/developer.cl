@@ -4,10 +4,10 @@
 
  
 !include user.cl
-!include reservable.cl
+!include resource.cl
 
-class Developer
-Reservable <|-- Developer
+class Developer << (V,orange) >>
+Resource <|-- Developer
 User <|-- Developer
  
 

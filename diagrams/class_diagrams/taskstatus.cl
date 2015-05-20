@@ -2,7 +2,7 @@
 !ifndef TASKSTATUS_CL
 !define TASKSTATUS_CL
 
-class TaskStatus
+class TaskStatus << (V,orange) >>
 
 !endif
 

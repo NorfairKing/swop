@@ -1,1 +1,1 @@
-class AuthenticationToken
+class AuthenticationToken << (V,orange) >>

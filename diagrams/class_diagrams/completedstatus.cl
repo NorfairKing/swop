@@ -4,7 +4,7 @@
 
 !include taskstatus.cl
 
-class CompletedStatus
+class CompletedStatus << (V, orange) >>
 TaskStatus <|-- CompletedStatus
 
 !endif

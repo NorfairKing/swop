@@ -2,7 +2,7 @@
 !ifndef REQUIREMENTS_CL
 !define REQUIREMENTS_CL
 
-class Requirements
+class Requirements << (V,orange) >>
 
 !endif
 

@@ -3,7 +3,7 @@
 !define EXECUTINGSTATUS_CL
 
 !include incompletestatus.cl
-class ExecutingStatus
+class ExecutingStatus << (V,orange) >>
 IncompleteStatus <|-- ExecutingStatus
 
 !endif

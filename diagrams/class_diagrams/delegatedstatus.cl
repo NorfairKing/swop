@@ -3,7 +3,7 @@
 !define DELEGATEDSTATUS_CL
 
 !include taskstatus.cl
-class DelegatedStatus
+class DelegatedStatus << (V, orange) >>
 TaskStatus <|-- DelegatedStatus
 
 !endif

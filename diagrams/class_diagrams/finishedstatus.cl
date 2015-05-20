@@ -3,7 +3,7 @@
 !define FINISHEDSTATUS_CL
 
 !include completedstatus.cl
-class FinishedStatus
+class FinishedStatus << (V,orange) >>
 CompletedStatus <|-- FinishedStatus
 
 !endif

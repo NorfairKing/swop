@@ -3,9 +3,9 @@
 !define PLANNING_ASS
 
 !include planning.cl
-!include reservable.cl
+!include resource.cl
 
-Planning --> "*" Reservable
+Planning --> "*" Resource
 
 !endif
 

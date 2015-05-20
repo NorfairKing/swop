@@ -1,8 +1,0 @@
-@startuml
-
-!include requirements.ass
-!include requirement.ass
-!include developerrequirement.ass
-!include resourcerequirement.ass
-
-@enduml

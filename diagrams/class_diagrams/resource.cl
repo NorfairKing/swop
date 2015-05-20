@@ -2,10 +2,8 @@
 !ifndef RESOURCE_CL
 !define RESOURCE_CL
 
-!include reservable.cl
 
-class Resource
-Reservable <|-- Resource
+class Resource << (V,orange) >>
 
 !endif
 

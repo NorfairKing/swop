@@ -2,7 +2,7 @@
 !ifndef PLANNING_CL
 !define PLANNING_CL
 
-class Planning {
+class Planning << (V,orange) >> {
     LocalDateTime: plannedStartTime
 }
 

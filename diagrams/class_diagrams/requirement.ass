@@ -3,6 +3,9 @@
 !define REQUIREMENT_ASS
 
 !include requirement.cl
+!include resourcetype.cl
+
+Requirement --> "1" ResourceType
 
 !endif
 

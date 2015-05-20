@@ -2,7 +2,7 @@
 !ifndef REQUIREMENT_CL
 !define REQUIREMENT_CL
 
-class Requirement {
+class Requirement << (V,orange) >> {
     int: amount
 }
 

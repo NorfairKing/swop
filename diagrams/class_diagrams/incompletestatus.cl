@@ -4,7 +4,7 @@
 
 !include taskstatus.cl
 
-class IncompleteStatus
+class IncompleteStatus << (V,orange) >>
 TaskStatus <|-- IncompleteStatus
 
 !endif

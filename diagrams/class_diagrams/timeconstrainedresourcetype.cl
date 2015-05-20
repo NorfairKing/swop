@@ -4,7 +4,7 @@
 
 !include resourcetype.cl
 
-class TimeConstrainedResourceType
+class TimeConstrainedResourceType << (V,orange) >>
 ResourceType <|-- TimeConstrainedResourceType
 
 !endif
