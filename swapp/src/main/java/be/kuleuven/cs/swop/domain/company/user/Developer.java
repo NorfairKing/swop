@@ -4,16 +4,20 @@ package be.kuleuven.cs.swop.domain.company.user;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.Reservable;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 
 import java.time.LocalTime;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 
 @SuppressWarnings("serial")
-public class Developer extends User implements Reservable {
+public class Developer extends Resource implements User {
 
     public Developer(String name) {
-        super(name);
+        super(DEVELOPER_TYPE, name);
     }
 
     public boolean isAvailableDuring(DateTimePeriod period) {
@@ -46,5 +50,8 @@ public class Developer extends User implements Reservable {
     private static final TimePeriod BREAK_PERIOD           = new TimePeriod(LocalTime.of(BREAK_PERIOD_START, 0), LocalTime.of(BREAK_PERIOD_END, 0));
 
     private static final String     ERROR_NULL_DURING_TIME = "The time to check may not be null.";
+    
+	public static final ResourceType DEVELOPER_TYPE = new TimeConstrainedResourceType(
+			"Developer", new HashSet<>(), new HashSet<>(), false, WORKDAY);
 
 }
