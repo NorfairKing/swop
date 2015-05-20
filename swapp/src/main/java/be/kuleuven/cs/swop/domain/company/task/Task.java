@@ -22,11 +22,12 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class Task implements Serializable {
 
-    private TaskStatus status;
-    private TaskInfo info;
+    private TaskStatus   status;
+    private TaskInfo     info;
     private TaskPlanning planning;
 
-    Task() { }
+    Task() {}
+
     /**
      * Full constructor
      *
@@ -39,7 +40,7 @@ public class Task implements Serializable {
      */
     public Task(TaskInfo info) {
         setTaskInfo(info);
-        setStatus(new UnstartedStatus(this, null));
+        setStatus(new UnstartedStatus(this));
     }
 
     public TaskInfo getTaskInfo() {
@@ -58,7 +59,8 @@ public class Task implements Serializable {
     /**
      * Retrieves the best estimated finish time or, if this Task has finished, the real time when the Task finished.
      *
-     * @param currentDate The current system time
+     * @param currentDate
+     *            The current system time
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
@@ -68,9 +70,9 @@ public class Task implements Serializable {
     LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
         return getTaskInfo().getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
     }
-    
+
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
-    	return status.getEstimatedOrPlanningPeriod();
+        return status.getEstimatedOrPlanningPeriod();
     }
 
     /**
@@ -175,23 +177,20 @@ public class Task implements Serializable {
     }
 
     /**
-     * Set this task to executing.
-     * Only basic tests if it can are done here, the main testing is done by the planningManager.
-     * Because of this, this method should only be called by the planningManager.
-     * We can't enforce this in java, but that's a limitation we'll have to live with.
-     * Note: for convenience it is used in some tests directly, however there are also tests
-     * to see if the checking is done properly in the planningManager.
+     * Set this task to executing. Only basic tests if it can are done here, the main testing is done by the planningManager. Because of this, this method should only be called by the planningManager.
+     * We can't enforce this in java, but that's a limitation we'll have to live with. Note: for convenience it is used in some tests directly, however there are also tests to see if the checking is
+     * done properly in the planningManager.
      */
-    public void execute(){
-    	status.execute();
+    public void execute() {
+        status.execute();
     }
 
     /**
-     * The 'available' from the first iteration. This is just a basic check on the task level
-     * No deeper checks are done here.
+     * The 'available' from the first iteration. This is just a basic check on the task level No deeper checks are done here.
+     * 
      * @return Whether it is Tier1Available.
      */
-    public boolean isTier1Available(){
+    public boolean isTier1Available() {
         return !getTaskInfo().hasUnfinishedDependencies() && status.canExecute();
     }
 
@@ -218,51 +217,51 @@ public class Task implements Serializable {
     public Task getAlternative() {
         return status.getAlternative();
     }
-    
-    public void delegate(Delegation del){
-    	status.delegate(del);
+
+    public void delegate(Delegation del) {
+        status.delegate(del);
     }
-    
+
     public Delegation getDelegation() {
         return status.getDelegation();
     }
-    
-    public TaskPlanning getPlanning(){
-        return status.getPlanning();
+
+    public TaskPlanning getPlanning() {
+        return this.planning;
     }
-    
+
     public String getDescription() {
         return info.getDescription();
     }
-    
+
     public long getEstimatedDuration() {
         return info.getEstimatedDuration();
     }
-    
+
     boolean containsDependency(Task dependency) {
         return info.containsDependency(dependency);
     }
-    
+
     public double getAcceptableDeviation() {
         return info.getAcceptableDeviation();
     }
-    
+
     public ImmutableSet<Task> getDependencySet() {
         return info.getDependencySet();
     }
-    
+
     boolean hasUnfinishedDependencies() {
         return info.hasUnfinishedDependencies();
     }
-    
+
     public Set<Requirement> getRequirements() {
         return info.getRequirements().getRequirementSet();
     }
-    
+
     public Set<Requirement> getRecursiveRequirements() {
         return info.getRecursiveRequirements().getRequirementSet();
     }
-    
+
     protected long getBestDuration() {
         return info.getBestDuration();
     }
@@ -272,19 +271,23 @@ public class Task implements Serializable {
     }
 
     public boolean isPlanned() {
-        return status.isPlanned();
+        return this.planning != null;
     }
-    
-    public void plan(TaskPlanning plan){
-    	status.plan(plan);
+
+    public void plan(TaskPlanning plan) {
+        if (!this.status.canPlan()){
+            throw new IllegalStateException(ERROR_PLAN +" " + this.status.getClass().toString());
+        }
+        this.planning = plan;
     }
-    
-    public void removePlanning(){
-    	status.removePlanning();
+
+    public void removePlanning() {
+        this.planning = null;
     }
-    
+
     private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_PLAN    = "Illegal plan for task.";
+    private static final String ERROR_PLAN  = "Task is in the wrong state to plan.";
+    private static final String ERROR_ILLEGAL_PLAN      = "Illegal plan for task.";
 
 }

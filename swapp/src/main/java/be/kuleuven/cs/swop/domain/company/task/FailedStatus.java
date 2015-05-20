@@ -12,8 +12,8 @@ public class FailedStatus extends CompletedStatus {
 
     private Task alternative;
 
-    FailedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
-        super(task, planning, performedDuring);
+    FailedStatus(Task task, DateTimePeriod performedDuring) {
+        super(task, performedDuring);
     }
 
     /**
@@ -99,7 +99,9 @@ public class FailedStatus extends CompletedStatus {
     boolean wasFinishedLate() {
         return false;
     }
+    
 
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal alternative for failed status.";
+
 
 }

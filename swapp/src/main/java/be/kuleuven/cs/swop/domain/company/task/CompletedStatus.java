@@ -14,8 +14,8 @@ public abstract class CompletedStatus extends TaskStatus {
 
     private final DateTimePeriod performedDuring;
 
-    CompletedStatus(Task task, TaskPlanning planning, DateTimePeriod performedDuring) {
-        super(task, planning);
+    CompletedStatus(Task task, DateTimePeriod performedDuring) {
+        super(task);
         if (!canHaveBeenPerfomedDuring(performedDuring)) { throw new IllegalArgumentException(ERROR_ILLEGAL_PERFORMED_DURING); }
         this.performedDuring = performedDuring;
     }
@@ -114,15 +114,10 @@ public abstract class CompletedStatus extends TaskStatus {
     }
     
     @Override
-	void plan(TaskPlanning plan){
-    	throw new IllegalStateException(ERROR_PLAN);
+    boolean canPlan() {
+        return false;
     }
     
-    @Override
-    void removePlanning(){
-    	throw new IllegalStateException(ERROR_PLAN_REMOVE);
-    }
-
     private static final String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
     private static final String ERROR_FINISH                   = "Can't finish a performed task.";
     private static final String ERROR_FAIL                     = "Can't fail a performed task.";
