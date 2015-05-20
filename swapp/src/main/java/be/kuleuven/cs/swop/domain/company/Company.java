@@ -38,7 +38,7 @@ public class Company {
     public Company() {
         resourceTypes.add(Developer.DEVELOPER_TYPE);
         delegationOffice = new DelegationOffice(this);
-        //seedData();
+        seedData();
     }
     
     
