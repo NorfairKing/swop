@@ -321,9 +321,12 @@ public class CLI implements UserInterface {
     }
 
     private void printPlanning(TaskPlanning planning) {
-        System.out.println(""
-                + "#   Planned start time: " + planning.getPlannedStartTime() + "\n");
-        // TODO
+        System.out.println("#   Planned start time: " + planning.getPlannedStartTime() + "\n");
+        System.out.println("#   Planned duration: " + planning.getTaskDuration() + "\n");
+        System.out.println("#   Reservations: ");
+        for (Resource res: planning.getReservations()) {
+            System.out.println("      # " + res.getType().getName() + ": " + res.getName());
+        }
     }
 
     @Override
