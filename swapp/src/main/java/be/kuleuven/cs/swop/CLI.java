@@ -52,22 +52,25 @@ public class CLI implements UserInterface {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
 
-        login();
-
-        String command;
-        boolean stop = false;
-        while (!stop) {
-            command = this.selectCommand();
-            stop = execute(command);
+        if(login()){
+            String command;
+            boolean stop = false;
+            while (!stop) {
+                command = this.selectCommand();
+                stop = execute(command);
+            }
         }
+        System.out.println("Thanks for using TaskMan! Quitting...");
         return true;
     }
 
-    private void login() {
+    private boolean login() {
         System.out.println("\nLOGIN:");
-        do {
-            getSessionController().startSelectUserSession();
-        } while (sessionController.getTaskMan().getCurrentAuthenticationToken() == null);
+        getSessionController().startSelectUserSession();
+        if(sessionController.getTaskMan().getCurrentAuthenticationToken() == null){
+            return false;
+        }
+        return true;
     }
 
     private String selectCommand() {
