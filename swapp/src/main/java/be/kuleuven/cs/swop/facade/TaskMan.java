@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.facade;
 
 
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +27,7 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
 
 
-@SuppressWarnings("serial")
-public class TaskMan implements Serializable {
+public class TaskMan {
 
     private Company company;
     private Authenticator authenticator = new Authenticator();

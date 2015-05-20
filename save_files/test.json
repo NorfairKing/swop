@@ -1,5 +1,5 @@
 {
-  "@id":10,
+  "@id":5,
   "@type":"be.kuleuven.cs.swop.domain.company.Company",
   "time":{
     "@id":13,
@@ -21,53 +21,17 @@
       {
         "@id":15,
         "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
-        "location":"Office 2",
+        "location":"Office 1",
         "projects":{
           "@type":"java.util.HashSet",
           "@items":[
             {
-              "@id":18,
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Delegated tasks",
-              "description":"Tasks that have been delegated to this office.",
-              "creationTime":{
-                "date":{
-                  "year":2015,
-                  "month":5,
-                  "day":20
-                },
-                "time":{
-                  "hour":17,
-                  "minute":12,
-                  "second":6,
-                  "nano":146000000
-                }
-              },
-              "dueTime":{
-                "@id":14,
-                "date":{
-                  "year":999999999,
-                  "month":12,
-                  "day":31
-                },
-                "time":{
-                  "hour":23,
-                  "minute":59,
-                  "second":59,
-                  "nano":999999999
-                }
-              },
-              "tasks":{
-                "@type":"java.util.HashSet"
-              }
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 4",
-              "description":"This is Project 4",
+              "title":"Project 2",
+              "description":"This is Project 2",
               "creationTime":{"@ref":13},
               "dueTime":{
-                "@id":17,
+                "@id":18,
                 "date":{
                   "year":2015,
                   "month":6,
@@ -87,11 +51,11 @@
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 3",
-              "description":"This is Project 3",
+              "title":"Project 1",
+              "description":"This is Project 1",
               "creationTime":{"@ref":13},
               "dueTime":{
-                "@id":16,
+                "@id":17,
                 "date":{
                   "year":2015,
                   "month":6,
@@ -102,14 +66,50 @@
               "tasks":{
                 "@type":"java.util.HashSet"
               }
+            },
+            {
+              "@id":16,
+              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
+              "title":"Delegated tasks",
+              "description":"Tasks that have been delegated to this office.",
+              "creationTime":{
+                "date":{
+                  "year":2015,
+                  "month":5,
+                  "day":20
+                },
+                "time":{
+                  "hour":18,
+                  "minute":37,
+                  "second":52,
+                  "nano":520000000
+                }
+              },
+              "dueTime":{
+                "@id":14,
+                "date":{
+                  "year":999999999,
+                  "month":12,
+                  "day":31
+                },
+                "time":{
+                  "hour":23,
+                  "minute":59,
+                  "second":59,
+                  "nano":999999999
+                }
+              },
+              "tasks":{
+                "@type":"java.util.HashSet"
+              }
             }
           ]
         },
-        "company":{"@ref":10},
+        "company":{"@ref":5},
         "planningManager":{
           "office":{"@ref":15}
         },
-        "delegationProject":{"@ref":18},
+        "delegationProject":{"@ref":16},
         "resources":{
           "@type":"java.util.HashSet",
           "@items":[
@@ -126,7 +126,7 @@
                     "nano":0
                   },
                   "stopTime":{
-                    "@id":4,
+                    "@id":2,
                     "hour":17,
                     "minute":0,
                     "second":0,
@@ -141,39 +141,21 @@
                   "@type":"java.util.HashSet"
                 }
               },
-              "name":"Fiona"
+              "name":"Ann"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
               "type":{
-                "@id":2,
-                "name":"Demo Kit",
+                "@id":4,
+                "name":"White Board",
                 "dependencies":{
                   "@type":"java.util.HashSet"
                 },
                 "conflictsWith":{
-                  "@type":"java.util.HashSet",
-                  "@items":[
-                    {
-                      "@id":3,
-                      "@type":"be.kuleuven.cs.swop.domain.company.resource.ResourceType",
-                      "name":"White Board",
-                      "dependencies":{
-                        "@type":"java.util.HashSet"
-                      },
-                      "conflictsWith":{
-                        "@type":"java.util.HashSet"
-                      }
-                    }
-                  ]
+                  "@type":"java.util.HashSet"
                 }
               },
-              "name":"Demo Kit 4"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":6},
-              "name":"David"
+              "name":"White Board 2"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
@@ -183,7 +165,20 @@
                 "dependencies":{
                   "@type":"java.util.HashSet",
                   "@items":[
-                    {"@ref":2}
+                    {
+                      "@id":3,
+                      "@type":"be.kuleuven.cs.swop.domain.company.resource.ResourceType",
+                      "name":"Demo Kit",
+                      "dependencies":{
+                        "@type":"java.util.HashSet"
+                      },
+                      "conflictsWith":{
+                        "@type":"java.util.HashSet",
+                        "@items":[
+                          {"@ref":4}
+                        ]
+                      }
+                    }
                   ]
                 },
                 "conflictsWith":{
@@ -193,41 +188,12 @@
                   ]
                 }
               },
-              "name":"The Small Conference Room #2"
+              "name":"The Small Conference Room"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{
-                "@id":5,
-                "name":"Car",
-                "dependencies":{
-                  "@type":"java.util.HashSet"
-                },
-                "conflictsWith":{
-                  "@type":"java.util.HashSet"
-                }
-              },
-              "name":"Car 4"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":6},
-              "name":"Evelyn"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":3},
-              "name":"White Board 4"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":5},
-              "name":"Car 3"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":1},
-              "name":"The Big Conference Room #2"
+              "type":{"@ref":4},
+              "name":"White Board 1"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
@@ -241,12 +207,17 @@
                   "@type":"java.util.HashSet"
                 }
               },
-              "name":"The Distributed Test Facility #2"
+              "name":"The Distributed Test Facility"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":1},
+              "name":"The Big Conference Room"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
               "type":{
-                "@id":8,
+                "@id":9,
                 "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
                 "dailyAvailability":{
                   "startTime":{
@@ -255,7 +226,7 @@
                     "second":0,
                     "nano":0
                   },
-                  "stopTime":{"@ref":4}
+                  "stopTime":{"@ref":2}
                 },
                 "name":"Data Center",
                 "dependencies":{
@@ -265,42 +236,71 @@
                   "@type":"java.util.HashSet"
                 }
               },
-              "name":"Data Center 2"
+              "name":"Data Center 1"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":2},
-              "name":"Demo Kit 3"
+              "type":{
+                "@id":8,
+                "name":"Car",
+                "dependencies":{
+                  "@type":"java.util.HashSet"
+                },
+                "conflictsWith":{
+                  "@type":"java.util.HashSet"
+                }
+              },
+              "name":"Car 1"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":8},
+              "name":"Car 2"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{"@ref":6},
+              "name":"Charlie"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{"@ref":6},
+              "name":"Bob"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
               "type":{"@ref":3},
-              "name":"White Board 3"
+              "name":"Demo Kit 1"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":3},
+              "name":"Demo Kit 2"
             }
           ]
         }
       },
       {
-        "@id":9,
+        "@id":10,
         "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
-        "location":"Office 1",
+        "location":"Office 2",
         "projects":{
           "@type":"java.util.HashSet",
           "@items":[
             {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 1",
-              "description":"This is Project 1",
+              "title":"Project 4",
+              "description":"This is Project 4",
               "creationTime":{"@ref":13},
-              "dueTime":{"@ref":16},
+              "dueTime":{"@ref":18},
               "tasks":{
                 "@type":"java.util.HashSet"
               }
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 2",
-              "description":"This is Project 2",
+              "title":"Project 3",
+              "description":"This is Project 3",
               "creationTime":{"@ref":13},
               "dueTime":{"@ref":17},
               "tasks":{
@@ -319,10 +319,10 @@
                   "day":20
                 },
                 "time":{
-                  "hour":17,
-                  "minute":12,
-                  "second":6,
-                  "nano":143000000
+                  "hour":18,
+                  "minute":37,
+                  "second":52,
+                  "nano":524000000
                 }
               },
               "dueTime":{"@ref":14},
@@ -332,9 +332,9 @@
             }
           ]
         },
-        "company":{"@ref":10},
+        "company":{"@ref":5},
         "planningManager":{
-          "office":{"@ref":9}
+          "office":{"@ref":10}
         },
         "delegationProject":{"@ref":11},
         "resources":{
@@ -343,67 +343,67 @@
             {
               "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
               "type":{"@ref":6},
-              "name":"Ann"
+              "name":"Evelyn"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":1},
-              "name":"The Small Conference Room"
+              "type":{"@ref":4},
+              "name":"White Board 4"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":1},
-              "name":"The Big Conference Room"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":3},
-              "name":"White Board 1"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":3},
-              "name":"White Board 2"
+              "type":{"@ref":4},
+              "name":"White Board 3"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
               "type":{"@ref":8},
-              "name":"Data Center 1"
+              "name":"Car 3"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":9},
+              "name":"Data Center 2"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":8},
+              "name":"Car 4"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":1},
+              "name":"The Big Conference Room #2"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{"@ref":6},
+              "name":"Fiona"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":3},
+              "name":"Demo Kit 3"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":3},
+              "name":"Demo Kit 4"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{"@ref":1},
+              "name":"The Small Conference Room #2"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
               "type":{"@ref":7},
-              "name":"The Distributed Test Facility"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":5},
-              "name":"Car 1"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":2},
-              "name":"Demo Kit 1"
+              "name":"The Distributed Test Facility #2"
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
               "type":{"@ref":6},
-              "name":"Bob"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":2},
-              "name":"Demo Kit 2"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":6},
-              "name":"Charlie"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":5},
-              "name":"Car 2"
+              "name":"David"
             }
           ]
         }
@@ -414,20 +414,20 @@
     "delegations":{
       "@type":"java.util.HashSet"
     },
-    "simulatingOffice":null,
+    "company":{"@ref":5},
     "delegationBuffer":{
-      "@type":"java.util.HashMap"
+      "@type":"java.util.HashSet"
     }
   },
   "resourceTypes":{
     "@type":"java.util.HashSet",
     "@items":[
-      {"@ref":5},
-      {"@ref":6},
+      {"@ref":4},
       {"@ref":8},
       {"@ref":3},
       {"@ref":7},
-      {"@ref":2},
+      {"@ref":6},
+      {"@ref":9},
       {"@ref":1}
     ]
   },

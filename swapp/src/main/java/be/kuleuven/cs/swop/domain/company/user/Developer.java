@@ -15,6 +15,9 @@ import java.util.HashSet;
 @SuppressWarnings("serial")
 public class Developer extends Resource implements User {
 
+    @SuppressWarnings("unused")
+    private Developer() {  }; //for automatic (de)-serialization
+    
     public Developer(String name) {
         super(DEVELOPER_TYPE, name);
     }

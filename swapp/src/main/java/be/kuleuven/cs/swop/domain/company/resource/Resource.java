@@ -12,6 +12,8 @@ public class Resource implements Serializable {
     private final ResourceType type;
     private final String name;
 
+    protected Resource() { type = null; name = null; } //for automatic (de)-serialization
+    
     public Resource(ResourceType type, String name) {
         if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
         if (type == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);

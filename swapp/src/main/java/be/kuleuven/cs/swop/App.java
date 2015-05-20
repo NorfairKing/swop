@@ -26,8 +26,6 @@ public class App {
 
         new SessionController(ui, taskMan);
 
-        //taskMan.saveEverythingToFile("../save_files/test.json");
-
         ui.start();
     }
 }

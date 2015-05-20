@@ -1,8 +1,7 @@
 package be.kuleuven.cs.swop.domain.company.delegation;
 
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
@@ -11,13 +10,15 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
-public class DelegationOffice {
-    private final Set<Delegation> delegations = new HashSet<Delegation>();
+public class DelegationOffice implements Serializable {
+    private final Set<Delegation> delegations;
     private final Company company;
-    private final Set<Delegation> delegationBuffer = new HashSet<Delegation>();
+    private final Set<Delegation> delegationBuffer;
 
     public DelegationOffice(Company company) {
         this.company = company;
+        this.delegationBuffer = new HashSet<Delegation>();
+        this.delegations = new HashSet<Delegation>();
     }
     
     

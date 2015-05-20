@@ -13,6 +13,9 @@ public class TimeConstrainedResourceType extends ResourceType {
 
     private final TimePeriod dailyAvailability;
 
+    @SuppressWarnings("unused")
+    private TimeConstrainedResourceType() { dailyAvailability = null; } //for automatic (de)-serialization
+    
     public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod dailyAvailability) {
         super(name, requirements, conflicts, selfConflicting);
         if (!canHaveAsAvailability(dailyAvailability)) { throw new IllegalArgumentException(ERROR_ILLEGAL_AVAILABILITY); }

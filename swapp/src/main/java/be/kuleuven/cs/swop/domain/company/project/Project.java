@@ -21,8 +21,17 @@ public class Project implements Serializable {
     private final String        description;
     private final LocalDateTime creationTime;
     private final LocalDateTime dueTime;
-    private final Set<Task>     tasks = new HashSet<Task>();
+    private final Set<Task>     tasks;
 
+    @SuppressWarnings("unused")
+    private Project() { //for automatic (de)-serialization
+        title = null;
+        description = null;
+        creationTime = null;
+        dueTime = null;
+        tasks = null;
+    } //for automatic (de)-serialization
+    
     /**
      * Full constructor
      *
@@ -53,6 +62,8 @@ public class Project implements Serializable {
         this.creationTime = creationTime;
         if (!canHaveAsDueTime(dueTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DUETIME); }
         this.dueTime = dueTime;
+        
+        this.tasks = new HashSet<Task>();
     }
 
     /**

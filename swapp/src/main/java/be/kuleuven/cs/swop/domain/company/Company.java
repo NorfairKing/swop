@@ -1,6 +1,7 @@
 package be.kuleuven.cs.swop.domain.company;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -26,7 +27,7 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 import com.google.common.collect.ImmutableSet;
 
 
-public class Company {
+public class Company implements Serializable {
 
     
     private LocalDateTime                           time             = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -38,7 +39,7 @@ public class Company {
     public Company() {
         resourceTypes.add(Developer.DEVELOPER_TYPE);
         delegationOffice = new DelegationOffice(this);
-        seedData();
+        //seedData();
     }
     
     
