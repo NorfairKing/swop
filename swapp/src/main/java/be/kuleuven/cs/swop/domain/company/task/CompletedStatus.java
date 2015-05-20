@@ -123,12 +123,12 @@ public abstract class CompletedStatus extends TaskStatus {
     	throw new IllegalStateException(ERROR_PLAN_REMOVE);
     }
 
-    private static String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
-    private static String ERROR_FINISH                   = "Can't finish a performed task.";
-    private static String ERROR_FAIL                     = "Can't fail a performed task.";
-    private static String ERROR_EXECUTE                  = "Can't execute a performed task.";
-    private static String ERROR_DELEGATE                 = "Can't delegate a performed task.";
-	private static String ERROR_PLAN                     = "Can't plan a task that's completed.";
-	private static String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's completed.";
+    private static final String ERROR_ILLEGAL_PERFORMED_DURING = "Illegal timepriod performed during for performed status.";
+    private static final String ERROR_FINISH                   = "Can't finish a performed task.";
+    private static final String ERROR_FAIL                     = "Can't fail a performed task.";
+    private static final String ERROR_EXECUTE                  = "Can't execute a performed task.";
+    private static final String ERROR_DELEGATE                 = "Can't delegate a performed task.";
+	private static final String ERROR_PLAN                     = "Can't plan a task that's completed.";
+	private static final String ERROR_PLAN_REMOVE                     = "Can't remove the planning of a task that's completed.";
 
 }

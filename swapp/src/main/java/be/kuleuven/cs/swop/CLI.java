@@ -40,7 +40,7 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
  */
 public class CLI implements UserInterface {
 
-    private Scanner           scanner;
+    private final Scanner           scanner;
     private SessionController sessionController;
 
     public CLI() {

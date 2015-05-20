@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.text.PlainDocument;
+
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
@@ -40,13 +42,14 @@ public class BranchOffice implements Serializable {
     private final Company company;
     private PlanningManager planningManager;
     private Project delegationProject;
-    private Set<Resource> resources = new HashSet<Resource>();
-    private Set<Developer> developers = new HashSet<Developer>();
+    private final Set<Resource> resources = new HashSet<Resource>();
+    private final Set<Developer> developers = new HashSet<Developer>();
 
     public BranchOffice(String location, Company company) {
         this.location = location;
         this.company = company;
-        setPlanningManager(new PlanningManager(this));
+        
+        this.planningManager = new PlanningManager(this);
         
         delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.now());
     }
@@ -55,15 +58,7 @@ public class BranchOffice implements Serializable {
     public String getLocation() {
         return location;
     }
-
-    private PlanningManager getPlanningManager() {
-        return planningManager;
-    }
-
-    private void setPlanningManager(PlanningManager planningManager) {
-        this.planningManager = planningManager;
-    }
-
+    
     // Passthrough getters    
     public ImmutableSet<Developer> getDevelopers() {
         return ImmutableSet.copyOf(developers);
@@ -113,7 +108,7 @@ public class BranchOffice implements Serializable {
     }
 
     public Set<Task> getUnplannedTasksOf(Project project) {
-        return getPlanningManager().getUnplannedTasksFrom(project.getTasks());
+        return this.planningManager.getUnplannedTasksFrom(project.getTasks());
     }
 
     /**
@@ -123,11 +118,11 @@ public class BranchOffice implements Serializable {
      * @return A set of all the planning
      */
     public Set<TaskPlanning> getPlanningsFor(Project project){
-        return getPlanningManager().getPlanningsFor(project.getTasks());
+        return this.planningManager.getPlanningsFor(project.getTasks());
     }
 
     public Set<Task> getAssignedTasksOf(Project project, Developer dev){
-        return getPlanningManager().getAssignedTasksOf(project.getTasks(), dev);
+        return this.planningManager.getAssignedTasksOf(project.getTasks(), dev);
     }
     
     public Task getTaskFor(TaskPlanning planning){
@@ -142,23 +137,23 @@ public class BranchOffice implements Serializable {
     }
 
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time) {
-        return getPlanningManager().getPlanningTimeOptions(task, amount, time);
+        return this.planningManager.getPlanningTimeOptions(task, amount, time);
     }
 
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(Task task, LocalDateTime time) {
-        return getPlanningManager().getPlanningResourceOptions(task, time);
+        return this.planningManager.getPlanningResourceOptions(task, time);
     }
 
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time) {
-        return getPlanningManager().getPlanningDeveloperOptions(task, time);
+        return this.planningManager.getPlanningDeveloperOptions(task, time);
     }
 
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        getPlanningManager().createPlanning(task, time, rss);
+        this.planningManager.createPlanning(task, time, rss);
     }
 
     public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        getPlanningManager().createPlanningWithBreak(task, time, rss);
+        this.planningManager.createPlanningWithBreak(task, time, rss);
     }
     
     /**
@@ -167,7 +162,7 @@ public class BranchOffice implements Serializable {
      * @param planning The planning that will be removed
      */
     public void removePlanning(TaskPlanning planning){
-    	getPlanningManager().removePlanning(planning);
+    	this.planningManager.removePlanning(planning);
     }
 
     /**
@@ -213,22 +208,22 @@ public class BranchOffice implements Serializable {
      * @return Whether or not it is available
      */
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev,Task task) {
-        return getPlanningManager().isTier2AvailableFor(time, dev, task);
+        return this.planningManager.isTier2AvailableFor(time, dev, task);
     }
 
     // finish, fail and executing has to happen through the planningManager
     // that's the class that can decide about this
     // We can't enforce this in java, but we enforce it with mind-power
     public void finishTask(Task t, DateTimePeriod period){
-        getPlanningManager().finishTask(t, period);
+        this.planningManager.finishTask(t, period);
     }
 
     public void failTask(Task t,DateTimePeriod period){
-        getPlanningManager().failTask(t, period);
+        this.planningManager.failTask(t, period);
     }
 
     public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
-        getPlanningManager().startExecutingTask(t, time, dev);
+        this.planningManager.startExecutingTask(t, time, dev);
     }
 
     /**
