@@ -35,14 +35,14 @@ public class BranchOffice implements Serializable {
 
     private final Set<Project>   projects   = new HashSet<Project>();
     private final Company        company;
-    private PlanningManager      planningManager;
+    private PlanningDepartment      planningManager;
     private Project              delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
 
     public BranchOffice(String location, Company company) {
         this.location = location;
         this.company = company;
-        this.planningManager = new PlanningManager(this);
+        this.planningManager = new PlanningDepartment(this);
         this.delegationProject = createProject("Delegated tasks", "Tasks that have been delegated to this office.", LocalDateTime.now(), LocalDateTime.MAX);
     }
 
@@ -67,10 +67,10 @@ public class BranchOffice implements Serializable {
     }
 
     public Set<Resource> getResources() {
-        return ImmutableSet.copyOf(resources);
+        return new HashSet<Resource>(resources);
     }
 
-    public ImmutableSet<ResourceType> getResourceTypes() {
+    public Set<ResourceType> getResourceTypes() {
         return company.getResourceTypes();
     }
     
