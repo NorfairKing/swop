@@ -119,8 +119,8 @@ public class Company implements Serializable {
         reqSet.add(new Requirement(2, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(1, carType));
         reqSet.add(new Requirement(1, dataCenterType));
-        Requirements reqs = new Requirements(reqSet);
-        Task task1 = proj1.createTask("Upgrade server infrastructure", 120, 0, deps, reqs);
+        Requirements reqs1 = new Requirements(reqSet);
+        Task task1 = proj1.createTask("Upgrade server infrastructure", 120, 0, deps, reqs1);
         
         
         deps.add(task1);
@@ -128,16 +128,16 @@ public class Company implements Serializable {
         reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(1, conferenceRoomType));
         reqSet.add(new Requirement(1, demoKitType));
-        reqs = new Requirements(reqSet);
-        Task task2 = proj1.createTask("Prepare demo dataset", 90, 0, deps, reqs);
+        Requirements reqs2 = new Requirements(reqSet);
+        Task task2 = proj1.createTask("Prepare demo dataset", 90, 0, deps, reqs2);
         
         deps.clear();
         reqSet.clear();
         reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(1, conferenceRoomType));
         reqSet.add(new Requirement(1, demoKitType));
-        reqs = new Requirements(reqSet);
-        Task task3 = proj1.createTask("Install demo kit in conference room", 30, 0, deps, reqs);
+        Requirements reqs3 = new Requirements(reqSet);
+        Task task3 = proj1.createTask("Install demo kit in conference room", 30, 0, deps, reqs3);
 
         deps.clear();
         deps.add(task2);
@@ -146,8 +146,8 @@ public class Company implements Serializable {
         reqSet.add(new Requirement(2, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(1, conferenceRoomType));
         reqSet.add(new Requirement(1, demoKitType));
-        reqs = new Requirements(reqSet);
-        Task task4 = proj1.createTask("Perform demo for clients", 60, 0, deps, reqs);
+        Requirements reqs4 = new Requirements(reqSet);
+        Task task4 = proj1.createTask("Perform demo for clients", 60, 0, deps, reqs4);
         
         
         // Project 2
@@ -155,16 +155,16 @@ public class Company implements Serializable {
         reqSet.clear();
         reqSet.add(new Requirement(3, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(2, whiteBoardType));
-        reqs = new Requirements(reqSet);
-        Task task5 = proj2.createTask("Brainstorm session", 60, 0, deps, reqs);
+        Requirements reqs5 = new Requirements(reqSet);
+        Task task5 = proj2.createTask("Brainstorm session", 60, 0, deps, reqs5);
         
         // Project 3
         deps.clear();
         reqSet.clear();
         reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
         reqSet.add(new Requirement(1, testingSetupType));
-        reqs = new Requirements(reqSet);
-        Task task6 = proj3.createTask("Test the prototype", 180, 0, deps, reqs);
+        Requirements reqs6 = new Requirements(reqSet);
+        Task task6 = proj3.createTask("Test the prototype", 180, 0, deps, reqs6);
     	
     }
     

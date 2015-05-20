@@ -9,10 +9,12 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class Requirements implements Serializable {
 
-    private final Set<Requirement> reqs;
+    private final Set<Requirement> reqs = new HashSet<Requirement>();
 
     public Requirements(Set<Requirement> requirements) {
-        this.reqs = requirements;
+        for(Requirement req :reqs){
+            reqs.add(req);
+        }
     }
 
     public ImmutableSet<Requirement> getRequirementSet() {
