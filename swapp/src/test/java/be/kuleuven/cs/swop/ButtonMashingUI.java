@@ -13,16 +13,11 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
-import be.kuleuven.cs.swop.facade.DeveloperWrapper;
-import be.kuleuven.cs.swop.facade.ExecutingStatusData;
-import be.kuleuven.cs.swop.facade.FailedStatusData;
-import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
-import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
 import be.kuleuven.cs.swop.facade.UserWrapper;
 
@@ -32,7 +27,6 @@ public class ButtonMashingUI implements UserInterface {
     private static String         VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
     private SessionController     sessionController;
     private Random                random;
-    private Set<DeveloperWrapper> devs;
 
     private static String         ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
@@ -96,7 +90,6 @@ public class ButtonMashingUI implements UserInterface {
             task.wasFinishedEarly();
             task.wasFinishedLate();
             task.wasFinishedOnTime();
-            task.getPerformedDuring();
             task.getDependencySet().size();
         }
     }
@@ -136,17 +129,6 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        int n = random.nextInt(developerOptions.size() + 1);
-        devs = developerOptions;
-        Set<DeveloperWrapper> result = new HashSet<>();
-        for (int i = 0; i < n; i++) {
-            result.add(selectFromCollection(developerOptions));
-        }
-        return result;
-    }
-
-    @Override
     public SimulationStepData getSimulationStepData() {
         return new SimulationStepData(random.nextBoolean(), random.nextBoolean());
     }
@@ -159,7 +141,6 @@ public class ButtonMashingUI implements UserInterface {
         task.getDependencySet();
         task.getDescription();
         task.getEstimatedDuration();
-        task.getPerformedDuring();
         task.getRequirements();
         task.getRecursiveRequirements();
         task.isExecuting();
@@ -192,29 +173,6 @@ public class ButtonMashingUI implements UserInterface {
         double deviation = negative2 ? random.nextDouble() * 2.0 : random.nextDouble() * -2.0; // arbitrary
                                                                                                // constant
         return new TaskData(description, duration, deviation);
-    }
-
-    @Override
-    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-        if (random.nextDouble() < 0.1) return null;
-        LocalDateTime date1 = getTimeStamp();
-        LocalDateTime date2 = getTimeStamp();
-        int kind = random.nextInt(4);
-        switch (kind) {
-            case 0:
-                return new FinishedStatusData(date1, date2);
-            case 1:
-                return new FailedStatusData(date1, date2);
-            case 2:
-                if (devs == null) {
-                    return null;
-                }
-                else {
-                    return new ExecutingStatusData();
-                }
-            default:
-                return null;
-        }
     }
 
     @Override
@@ -328,5 +286,22 @@ public class ButtonMashingUI implements UserInterface {
     public String getFileName() {
         return selectFromCollection(Arrays.asList("test.json", "blablabla.doesnexist"));
     }
+
+	@Override
+	public boolean askExecute() throws ExitEvent {
+		return random.nextBoolean();
+	}
+
+	@Override
+	public boolean askFinish() throws ExitEvent {
+		return random.nextBoolean();
+	}
+
+	@Override
+	public Set<Resource> askSelectnewResources(Set<Resource> resources,
+			Map<ResourceType, List<Resource>> resourceOptions,
+			Set<Requirement> reqs) throws ExitEvent {
+		return null;
+	}
 
 }
