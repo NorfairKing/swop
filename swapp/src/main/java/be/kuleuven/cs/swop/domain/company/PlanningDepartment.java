@@ -436,9 +436,9 @@ public class PlanningDepartment implements Serializable {
      *
      * @param t
      *            The task that failed
-     * @param period
-     *            The period in which it failed
-     * @throws ConflictingPlannedTaskException 
+     * @param endTime
+     *            The time it failed
+     * @throws ConflictingPlannedTaskException When it conflicts with another task.
      */
     public void failTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
         if(t.isExecuting()){
@@ -462,9 +462,10 @@ public class PlanningDepartment implements Serializable {
      *            The task to execute
      * @param time
      *            The current time
-     * @param dev
-     *            The developer which indicated that work started
+     * @param resources
+     *            The used resources
      * @throws ConflictingPlannedTaskException 
+     * 			When it conflicts with another task.
      * @throws IllegalStateException
      *             If the task can't start execution
      */

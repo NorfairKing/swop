@@ -29,12 +29,7 @@ public class Task implements Serializable {
     /**
      * Full constructor
      *
-     * @param description
-     *            The description of the new task.
-     * @param estimatedDuration
-     *            The estimated duration of the task in minutes.
-     * @param acceptableDeviation
-     *            The acceptable deviation of time in which the task can be completed.
+     * @param info All info for this task.
      */
     public Task(TaskInfo info) {
         setTaskInfo(info);
@@ -140,9 +135,6 @@ public class Task implements Serializable {
     /**
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
      *
-     * @param period
-     *            The TimePeriod for when there has been worked on this project.
-     *
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
      */
@@ -152,9 +144,6 @@ public class Task implements Serializable {
 
     /**
      * Changes this Task's status to failed if possible, otherwise it throws an exception.
-     *
-     * @param period
-     *            The TimePeriod for when there has been worked on this project.
      *
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
