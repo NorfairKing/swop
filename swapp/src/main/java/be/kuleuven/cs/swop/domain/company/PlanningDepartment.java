@@ -327,14 +327,10 @@ public class PlanningDepartment implements Serializable {
         return false;
     }
 
-    private void checkPlanningParameters(Task task, DateTimePeriod period, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
+    private void checkPlanningParameters(Task task, DateTimePeriod period, Set<Resource> resources) throws ConflictingPlannedTaskException {
         if (task == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
 
         if (period == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME); }
-        
-        if(withBreak){
-            period = new DateTimePeriod(period.getStartTime(), period.getStopTime().plusMinutes(Developer.BREAK_TIME));
-        }
 
         for (Resource res : resources) {
             if (res == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE); }
@@ -408,8 +404,11 @@ public class PlanningDepartment implements Serializable {
      *             If the created planning will result in a conflict.
      */
     public void createPlanning(Task task, DateTimePeriod period, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
-        checkPlanningParameters(task, period, resources, withBreak);
-        TaskPlanning newplanning = new TaskPlanning(period, resources, withBreak);
+        if(withBreak){
+            period = new DateTimePeriod(period.getStartTime(), period.getStopTime().plusMinutes(Developer.BREAK_TIME));
+        }
+        checkPlanningParameters(task, period, resources);
+        TaskPlanning newplanning = new TaskPlanning(period, resources);
         task.plan(newplanning);
     }
     
