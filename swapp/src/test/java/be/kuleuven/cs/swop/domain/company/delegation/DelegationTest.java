@@ -1,11 +1,11 @@
-package be.kuleuven.cs.swop.domain;
+package be.kuleuven.cs.swop.domain.company.delegation;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 
-public class TimePeriodTest {
+public class DelegationTest {
 
     @Test
     public void test() {
