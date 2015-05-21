@@ -32,7 +32,7 @@ public class Resource implements Serializable {
     }
 
     public boolean isOfType(ResourceType type) {
-        return type.equals(this.getType());
+        return this.getType().equals(type);
     }
     
     public boolean canTakeBreakDuring(DateTimePeriod period) {

@@ -26,7 +26,7 @@ public class DemoTest {
     @Test
     public void test() throws FileNotFoundException {
         TaskMan t = buildData();
-        t.saveEverythingToFile("../save_files/demo.json");
+        t.saveEverythingToFile("demo.json");
     }
     
     private TaskMan buildData(){
