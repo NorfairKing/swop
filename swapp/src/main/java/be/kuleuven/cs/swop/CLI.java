@@ -759,6 +759,8 @@ public class CLI implements UserInterface {
             try {
                 String inputText = this.getScanner().nextLine();
                 if ("now".equals(inputText)) {
+                    return sessionController.getTaskMan().getSystemTime();
+                } else if ("nownow".equals(inputText)) {
                     return LocalDateTime.now();
                 } else {
                     return LocalDateTime.parse(inputText, parseFormat);
