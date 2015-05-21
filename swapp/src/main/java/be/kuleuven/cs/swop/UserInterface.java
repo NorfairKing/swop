@@ -118,6 +118,7 @@ public interface UserInterface {
      * @param options
      *            A list of selected times
      * @return Any time
+     * @throws ExitEvent To exit this event.
      */
     public LocalDateTime selectTime(List<LocalDateTime> options)  throws ExitEvent;
 
@@ -137,6 +138,7 @@ public interface UserInterface {
      * Asks the user when planning a task if the user wants to include a break in the planning.
      *
      * @return True if the user chose "yes".
+     * @throws ExitEvent To exit this event.
      */
     public boolean askToAddBreak() throws ExitEvent;
 
@@ -146,6 +148,7 @@ public interface UserInterface {
      * @param types
      *            The types of resources to choose from to add as resource
      * @return Returns a TaskData object containing the data for creating a Task
+     * @throws ExitEvent To exit this event.
      */
     public TaskData getTaskData(Set<ResourceType> types) throws ExitEvent;
 
@@ -153,6 +156,7 @@ public interface UserInterface {
      * Request data from the user necessary for creating a new Project.
      *
      * @return Returns a ProjectData object containing the data necessary for creating a new project.
+     * @throws ExitEvent To exit this event.
      */
     public ProjectData getProjectData() throws ExitEvent;
 
@@ -160,6 +164,7 @@ public interface UserInterface {
      * Requests a timestamp from the user.
      *
      * @return Returns a Date containing the requested timestamp.
+     * @throws ExitEvent To exit this event.
      */
     public LocalDateTime getTimeStamp() throws ExitEvent;
 

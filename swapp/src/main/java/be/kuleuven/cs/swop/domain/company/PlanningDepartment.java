@@ -260,8 +260,6 @@ public class PlanningDepartment implements Serializable {
      *
      * @param time
      *            The time to check for
-     * @param dev
-     *            The developer for whom the task might be available
      * @param task
      *            The task to check
      * @return Whether or not it is available
@@ -379,12 +377,10 @@ public class PlanningDepartment implements Serializable {
      *
      * @param task
      *            The task this new planning will be for
-     * @param startTime
-     *            The planned time this task will start
+     * @param period
+     *            The planned period for this task
      * @param resources
      *            The resources that have been reserved for the task
-     * @param devs
-     *            The developers that will be working on this task.
      * @throws ConflictingPlannedTaskException
      *             If the created planning will result in a conflict.
      */
@@ -397,12 +393,12 @@ public class PlanningDepartment implements Serializable {
      *
      * @param task
      *            The task this new planning will be for
-     * @param startTime
-     *            The planned time this task will start
+     * @param period
+     *            The planned period for this task
      * @param resources
      *            The resources that have been reserved for the task
-     * @param devs
-     *            The developers that will be working on this task.
+     * @param withBreak
+     * 				Whether or not to include a break in this planning. Breaks are 1 hour long.
      * @throws ConflictingPlannedTaskException
      *             If the created planning will result in a conflict.
      */
@@ -425,9 +421,9 @@ public class PlanningDepartment implements Serializable {
      *
      * @param t
      *            The task to finish
-     * @param period
-     *            The period in which it was finished
-     * @throws ConflictingPlannedTaskException 
+     * @param endTime
+     *            The time it was finished
+     * @throws ConflictingPlannedTaskException When it conflicts with another task.
      */
     public void finishTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
         DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
