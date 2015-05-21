@@ -1,8 +1,7 @@
 package be.kuleuven.cs.swop.domain;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
 
@@ -46,6 +45,11 @@ public class DateTimePeriodTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidEndTimeTest() {
         new DateTimePeriod(now, null);
+    }
+    
+    @Test
+    public void todo() {
+        fail("Hier zijn nog meer tests nodig!");
     }
 
 }
