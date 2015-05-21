@@ -450,41 +450,45 @@ public class SessionController {
             }
             TaskWrapper task = getUi().selectTaskFromProjects(assignedTaskMap);
 
-            // if the user indicates he wants to leave the overview.
-            if (task == null) {
-                handleSimulationStep();
-                return;
-            }
-
             if (task.isFinal()) {
                 getUi().showError("Can't update task: this task is already final.");
                 handleSimulationStep();
                 return;
             }
 
-            boolean firstIteration = true;
-            boolean askFinish = false;
+            //Check if the task can finish
+            boolean can_finish = task.isExecuting();
+               
+            boolean execute = false;
+            boolean finish = false;
             Set<Resource> chosenResources = null;
+
+            if(can_finish){
+                finish = getUi().askFinish(); // If the task can finish, ask the user if he wants to finish or fail the task
+            }else{
+                execute = getUi().askExecute(); // If the task cannot finish, ask the user if he wants to execute or fail the task
+                if(execute){
+                    // if the user decides to execute the ask, ask the user if he/she wants to use the planned resources or allocate new resources
+                    Set<Requirement> reqs = task.getRecursiveRequirements();
+                    Map<ResourceType, List<Resource>> resourceOptions = formatRequirementsForSelection(reqs);
+                    chosenResources = getUi().askSelectnewResources(task.getPlanning().getReservations(), resourceOptions, reqs);
+                }
+            }
+            
+            
             do {
                 try {
-                    boolean complete = task.isExecuting();
-
-                    if(complete){
-                        if(firstIteration){
-                            firstIteration = false;
-                            askFinish = getUi().askFinish();
-                        }
-                        taskMan.completeTask(task, askFinish);
-                    }else{
-                        if(firstIteration){
-                            firstIteration = false;
-                            Set<Requirement> reqs = task.getRecursiveRequirements();
-                            Map<ResourceType, List<Resource>> resourceOptions = formatRequirementsForSelection(reqs);
-                            chosenResources = getUi().askSelectnewResources(task.getPlanning().getReservations(), resourceOptions, reqs);
-                        }
-
+                    // With all the necessary data collected, attempt to perform the desired action
+                    // This can lead to conflicts so we will keep trying until all conflicts are resolved
+                    
+                    if(can_finish){
+                        taskMan.completeTask(task, finish);
+                    }else if(execute){
                         taskMan.executeTask(task, chosenResources);
+                    }else{
+                        taskMan.completeTask(task, false);
                     }
+
                     break;
                 } catch (IllegalArgumentException e) {
                     getUi().showError("Failed to update task: " + e.getMessage());
