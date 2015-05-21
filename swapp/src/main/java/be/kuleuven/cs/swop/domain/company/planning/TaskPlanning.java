@@ -87,9 +87,6 @@ public class TaskPlanning implements Serializable {
         LocalDateTime estimatedEndTime = plannedStartTime.plusMinutes(this.taskDuration);
         return new DateTimePeriod(plannedStartTime, estimatedEndTime);
     }
-    public boolean includesBreak() {
-        return false;
-    }
 
     @Override
     public int hashCode() {
