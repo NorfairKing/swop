@@ -19,7 +19,7 @@ public class TimePeriod implements Serializable {
     @SuppressWarnings("unused")
     // used for automatic (de)serializing
     private TimePeriod() {
-        this.startTime = this.stopTime = LocalTime.now();
+        this.startTime = this.stopTime = null;
     }
 
     /**
@@ -107,8 +107,8 @@ public class TimePeriod implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + startTime.hashCode();
-        result = prime * result + stopTime.hashCode();
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        result = prime * result + ((stopTime == null) ? 0 : stopTime.hashCode());
         return result;
     }
 

@@ -65,13 +65,13 @@ public class DelegatedStatus extends TaskStatus {
     }
 
     @Override
-    void finish(DateTimePeriod period) {
+    void finish() {
         throw new IllegalStateException(ERROR_FINISH);
 
     }
 
     @Override
-    void fail(DateTimePeriod period) {
+    void fail() {
         throw new IllegalStateException(ERROR_FAIL);
 
     }
@@ -101,11 +101,6 @@ public class DelegatedStatus extends TaskStatus {
     @Override
     void setAlternative(Task alternative) {
         throw new IllegalStateException(ERROR_SET_ALTERNATIVE_ERROR);
-    }
-
-    @Override
-    DateTimePeriod getPerformedDuring() {
-        return getDelegation().getDelegationTask().getPerformedDuring();
     }
 
     @Override

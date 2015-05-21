@@ -13,8 +13,8 @@ public class FailedStatus extends CompletedStatus {
 
     @SuppressWarnings("unused")
     private FailedStatus() {super();} //for automatic (de)-serialization
-    FailedStatus(Task task, DateTimePeriod performedDuring) {
-        super(task, performedDuring);
+    FailedStatus(Task task) {
+        super(task);
     }
 
     /**
@@ -79,7 +79,7 @@ public class FailedStatus extends CompletedStatus {
     LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
         if (getAlternative() == null) {
             // Makes no sense but the assignment said so...
-            return getPerformedDuring().getStopTime();
+            return getTask().getPlanning().getPlannedEndTime();
         }
         else {
             return getAlternative().getEstimatedOrRealFinishDate(currentDate);

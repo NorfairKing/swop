@@ -6,7 +6,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 
 @SuppressWarnings("serial")
 public class ExecutingStatus extends IncompleteStatus {
-
+    
     @SuppressWarnings("unused")
     private ExecutingStatus() {super();} //for automatic (de)-serialization
 
@@ -46,12 +46,12 @@ public class ExecutingStatus extends IncompleteStatus {
     }
 
     @Override
-    void finish(DateTimePeriod period) {
+    void finish() {
         if (getTask().hasUnfinishedDependencies()) {
             throw new IllegalStateException(ERROR_FINISH);
         }
         else {
-            goToStatus(new FinishedStatus(getTask(), period));
+            goToStatus(new FinishedStatus(getTask()));
         }
     }
     
@@ -72,7 +72,7 @@ public class ExecutingStatus extends IncompleteStatus {
 	
     @Override
     boolean canPlan() {
-        return false;
+        return true;
     }
 
     private static final String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";

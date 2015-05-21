@@ -100,15 +100,6 @@ public class TaskWrapper {
     }
 
     /**
-     * Retrieves the time period when the containing Task gets performed during.
-     *
-     * @return Returns the TimePeriod containing for when this Task is performed during.
-     */
-    public DateTimePeriod getPerformedDuring() {
-        return getTask().getPerformedDuring();
-    }
-
-    /**
      * Retrieves the containing Task's dependencies.
      *
      * @return Returns a Set containing the TaskWrappers which contain the  dependencies of this Task.
@@ -214,6 +205,9 @@ public class TaskWrapper {
     
     public TaskPlanning getPlanning(){
     	return getTask().getPlanning();
+    }
+    public DateTimePeriod getEstimatedOrPlanningPeriod(){
+        return task.getEstimatedOrPlanningPeriod();
     }
 
     

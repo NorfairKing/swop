@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.UserInterface.ExitEvent;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.ConflictingPlannedTaskException;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 
@@ -101,33 +104,37 @@ public class SessionController {
      * Starts a session to select the user. This isn't specified in the exercise, but in the current design we need this.
      */
     public void startSelectUserSession() {
-        
-    	Set<BranchOfficeWrapper> offices;
-    	do{
-        offices = getTaskMan().getOffices();
-        if(offices.isEmpty()){
-        	getUi().showError(ERROR_NO_OFFICES);
-        	loadFromFile();
-        	if(getTaskMan().isAuthenticated()){
-        		return;
-        	}
-        }
-    	}while(offices.isEmpty());
-        BranchOfficeWrapper office = getUi().selectOffice(offices);
-        
-        if (office == null) return;
-        
-        Set<UserWrapper> users = getTaskMan().getUsersFrom(office);
-        
-        UserWrapper user = getUi().selectUser(users);
-        
-        if (user == null) return;
-        
+
+        Set<BranchOfficeWrapper> offices;
         try {
+            do{
+                offices = getTaskMan().getOffices();
+                if(offices.isEmpty()){
+                    getUi().showError(ERROR_NO_OFFICES);
+                    loadFromFile();
+                    if(getTaskMan().isAuthenticated()){
+                        return;
+                    }
+                }
+            }while(offices.isEmpty());
+            BranchOfficeWrapper office = getUi().selectOffice(offices);
+
+            if (office == null) return;
+
+            Set<UserWrapper> users = getTaskMan().getUsersFrom(office);
+
+            UserWrapper user = getUi().selectUser(users);
+
+            if (user == null) return;
+
+
             getTaskMan().requestAuthenticationFor(office, user);
         }
         catch (IllegalArgumentException ex) {
             getUi().showError("Failed logging in.");
+        } catch (ExitEvent e) {
+            handleSimulationStep();
+            return;
         }
     }
 
@@ -139,7 +146,7 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        
+        try{
         // The user indicates he wants to see an overview of all projects
         // The system shows a list of projects
         Set<ProjectWrapper> projects = getTaskMan().getAllProjects();
@@ -171,6 +178,11 @@ public class SessionController {
 
         // End session
         handleSimulationStep();
+        
+        }catch(ExitEvent e){
+            handleSimulationStep();
+            return;
+        }
     }
 
     /**
@@ -181,26 +193,31 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        do {
-            // The user indicates he wants to create a project
-            // The system asks for the required data
-            ProjectData data = getUi().getProjectData();
+        try{
+            do {
+                // The user indicates he wants to create a project
+                // The system asks for the required data
+                ProjectData data = getUi().getProjectData();
 
-            // if the user indicates he wants to leave the overview.
-            if (data == null) return; // ui should return null if user cancels.
+                // if the user indicates he wants to leave the overview.
+                if (data == null) return; // ui should return null if user cancels.
 
-            // The project is created using the data provided by the user
-            try {
-                getTaskMan().createProject(data);
-                // finish only when successful
-                break;
-            } catch (IllegalArgumentException e) {
-                getUi().showError("Failed to create task: " + e.getMessage());
-            }
-        } while (true); // loop until user gives proper data, or cancels.
+                // The project is created using the data provided by the user
+                try {
+                    getTaskMan().createProject(data);
+                    // finish only when successful
+                    break;
+                } catch (IllegalArgumentException e) {
+                    getUi().showError("Failed to create task: " + e.getMessage());
+                }
+            } while (true); // loop until user gives proper data, or cancels.
 
-        // End session
-        handleSimulationStep();
+            // End session
+            handleSimulationStep();
+        }catch(ExitEvent e){
+            handleSimulationStep();
+            return;
+        }
     }
 
     /**
@@ -211,36 +228,39 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        // The user indicates he wants to create a new task
-        do {
-            // the system asks for which project to create a task
-            // slight deviation from use-case, as they don't specify when the user should select this
-            Set<ProjectWrapper> projects = getTaskMan().getProjects();
-            projects.remove(getTaskMan().getDelegationProject());
-            ProjectWrapper project = getUi().selectProject(projects);
+        try{
+            // The user indicates he wants to create a new task
+            do {
+                // the system asks for which project to create a task
+                // slight deviation from use-case, as they don't specify when the user should select this
+                Set<ProjectWrapper> projects = getTaskMan().getProjects();
+                projects.remove(getTaskMan().getDelegationProject());
+                ProjectWrapper project = getUi().selectProject(projects);
 
-            // If the user indicates he wants to leave the overview.
-            if (project == null) break;
+                // If the user indicates he wants to leave the overview.
+                if (project == null) break;
 
-            // The system shows the task creation form
-            Set<ResourceType> resourceTypes = getTaskMan().getResourceTypes();
-            TaskData data = getUi().getTaskData(resourceTypes);
+                // The system shows the task creation form
+                Set<ResourceType> resourceTypes = getTaskMan().getResourceTypes();
+                TaskData data = getUi().getTaskData(resourceTypes);
 
-            // if the user indicates he wants to leave the overview.
-            if (data == null) break;
 
-            // The system creates the task
-            try {
-                getTaskMan().createTaskFor(project, data);
-                // Finish only when successful
-                break;
-            } catch (IllegalArgumentException e) {
-                getUi().showError("Failed to create task: " + e.getMessage());
-            }
-        } while (true); // loop until proper data is given, or the user cancels.
+                // The system creates the task
+                try {
+                    getTaskMan().createTaskFor(project, data);
+                    // Finish only when successful
+                    break;
+                } catch (IllegalArgumentException e) {
+                    getUi().showError("Failed to create task: " + e.getMessage());
+                }
+            } while (true); // loop until proper data is given, or the user cancels.
 
-        // End session
-        handleSimulationStep();
+            // End session
+            handleSimulationStep();
+        }catch(ExitEvent e){
+            handleSimulationStep();
+            return;
+        }
     }
 
     public void startPlanTaskSession() {
@@ -248,76 +268,81 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        // The system shows a list of all currently unplanned tasks and the project they belong to.
-        Set<ProjectWrapper> allProjects = taskMan.getProjects();
-        Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+        try{
+            // The system shows a list of all currently unplanned tasks and the project they belong to.
+            Set<ProjectWrapper> allProjects = taskMan.getProjects();
+            Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
 
-        for (ProjectWrapper p : allProjects) {
-            Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
-            if (!unplannedTasks.isEmpty()) {
-                unplannedTaskMap.put(p, unplannedTasks);
+            for (ProjectWrapper p : allProjects) {
+                Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
+                if (!unplannedTasks.isEmpty()) {
+                    unplannedTaskMap.put(p, unplannedTasks);
+                }
             }
-        }
-        // The user selects the tasks he wants to plan
-        TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
-        if (selectedTask == null) {
+            // The user selects the tasks he wants to plan
+            TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+
+            while (true) {
+                try {
+                    getUi().showTaskPlanningContext(selectedTask);
+
+                    List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
+
+                    // The system shows the first three possible starting times.
+                    // The user selects a proposed time
+                    LocalDateTime chosenTime = getUi().selectTime(timeOptions);
+                    if (chosenTime == null) {
+                        handleSimulationStep();
+                        return;
+                    }
+                    
+                    Set<Requirement> reqs = selectedTask.getRecursiveRequirements();
+                    Map<ResourceType, List<Resource>> resourceOptions = formatRequirementsForSelection(reqs);
+                    Set<Resource> chosenResources = getUi().selectResourcesFor(resourceOptions, reqs);
+
+                    if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
+                        if (getUi().askToAddBreak()) {
+                            taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources);
+                            break;
+                        }
+                    }
+                    taskMan.createPlanning(selectedTask, chosenTime, chosenResources);
+                    break;
+                } catch (ConflictingPlannedTaskWrapperException e) {
+                    startResolveConflictSession(e.getTask());
+                } catch (Exception e) {
+                    getUi().showError("Failed to plan task: " + e.getMessage());
+                }
+
+                // End session
+                handleSimulationStep();
+            }
+
+        }catch (ExitEvent e) {
             handleSimulationStep();
             return;
         }
 
-        while (true) {
-            try {
-                getUi().showTaskPlanningContext(selectedTask);
-
-                List<LocalDateTime> timeOptions = taskMan.getPlanningTimeOptions(selectedTask);
-
-                // The system shows the first three possible starting times.
-                // The user selects a proposed time
-                LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-                if (chosenTime == null) {
-                    handleSimulationStep();
-                    return;
+    }
+    
+    private Map<ResourceType, List<Resource>> formatRequirementsForSelection(Set<Requirement> reqs) throws ExitEvent{
+        Map<ResourceType, List<Resource>> resourceOptions = new HashMap<ResourceType, List<Resource>>();
+        for (Resource res : taskMan.getResources()) {
+            ResourceType type = res.getType();
+            boolean found = false;
+            for (ResourceType key : resourceOptions.keySet()) {
+                if (key.equals(type)) {
+                    found = true;
+                    type = key;
+                    break;
                 }
-
-                Map<ResourceType, List<Resource>> resourceOptions = new HashMap<ResourceType, List<Resource>>();
-                for (Resource res : taskMan.getResources()) {
-                    ResourceType type = res.getType();
-                    boolean found = false;
-                    for (ResourceType key : resourceOptions.keySet()) {
-                        if (key.equals(type)) {
-                            found = true;
-                            type = key;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        resourceOptions.put(type, new ArrayList<Resource>());
-                    }
-                    resourceOptions.get(type).add(res);
-                }
-                Set<Resource> chosenResources = getUi().selectResourcesFor(resourceOptions, selectedTask.getRecursiveRequirements());
-                if (chosenResources == null) {
-                    handleSimulationStep();
-                    return;
-                }
-                
-                if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
-                    if (getUi().askToAddBreak()) {
-                        taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources);
-                        break;
-                    }
-                }
-                taskMan.createPlanning(selectedTask, chosenTime, chosenResources);
-                break;
-            } catch (ConflictingPlannedTaskWrapperException e) {
-                startResolveConflictSession(e.getTask());
-            } catch (Exception e) {
-                getUi().showError("Failed to plan task: " + e.getMessage());
             }
+            if (!found) {
+                resourceOptions.put(type, new ArrayList<Resource>());
+            }
+            resourceOptions.get(type).add(res);
         }
-
-        // End session
-        handleSimulationStep();
+        return resourceOptions;
     }
     
     public void startDelegateTaskSession() {
@@ -325,36 +350,42 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        
-        // The system shows a list of all currently unplanned tasks and the project they belong to.
-        Set<ProjectWrapper> allProjects = taskMan.getProjects();
-        Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
 
-        for (ProjectWrapper p : allProjects) {
-            Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
-            if (!unplannedTasks.isEmpty()) {
-                unplannedTaskMap.put(p, unplannedTasks);
+        try{
+            // The system shows a list of all currently unplanned tasks and the project they belong to.
+            Set<ProjectWrapper> allProjects = taskMan.getProjects();
+            Map<ProjectWrapper, Set<TaskWrapper>> unplannedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+
+            for (ProjectWrapper p : allProjects) {
+                Set<TaskWrapper> unplannedTasks = taskMan.getUnplannedTasksOf(p);
+                if (!unplannedTasks.isEmpty()) {
+                    unplannedTaskMap.put(p, unplannedTasks);
+                }
             }
-        }
-        // The user selects the tasks he wants to delegate
-        TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
-        if (selectedTask == null) {
-            handleSimulationStep();
-            return;
-        }
-        
-        // The system shows an overview of the different branch offices
-        Set<BranchOfficeWrapper> offices = taskMan.getOffices();
-        BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
-        if (selectedOffice == null) {
-            handleSimulationStep();
-            return;
-        }
-        
-        taskMan.delegateTask(selectedTask, selectedOffice);
+            // The user selects the tasks he wants to delegate
+            TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+            if (selectedTask == null) {
+                handleSimulationStep();
+                return;
+            }
 
-        // End session
-        handleSimulationStep();
+            // The system shows an overview of the different branch offices
+            Set<BranchOfficeWrapper> offices = taskMan.getOffices();
+            BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
+            if (selectedOffice == null) {
+                handleSimulationStep();
+                return;
+            }
+
+            taskMan.delegateTask(selectedTask, selectedOffice);
+
+            // End session
+            handleSimulationStep();
+
+        }catch(ExitEvent e){
+            handleSimulationStep();
+            return;
+        }
     }
 
     public void startResolveConflictSession(TaskWrapper task) {
@@ -362,6 +393,7 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
+        Set<Resource> reservations = task.getPlanning().getReservations();
         taskMan.removePlanning(task.getPlanning());
         while (true) {
             try {
@@ -371,10 +403,12 @@ public class SessionController {
                 // The system shows the first three possible starting times.
                 // The user selects a proposed time
                 LocalDateTime chosenTime = getUi().selectTime(timeOptions);
-                taskMan.createPlanning(task, chosenTime, task.getPlanning().getReservations());
+                taskMan.createPlanning(task, chosenTime, reservations);
                 break;
             } catch (ConflictingPlannedTaskWrapperException e) {
                 startResolveConflictSession(e.getTask());
+            } catch (ExitEvent e) {
+                getUi().showError("Cannot quit while resolving a conflict.");
             }
         }
 
@@ -390,58 +424,77 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
+        try{
 
-        // User indicates he wants to update the status of a task
+            // User indicates he wants to update the status of a task
 
-        // The system show a list of all available tasks and the projects they belong to
-        // The user selects a task he wants to change
-        Set<ProjectWrapper> allProjects = taskMan.getProjects();
-        Map<ProjectWrapper, Set<TaskWrapper>> assignedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
+            // The system show a list of all available tasks and the projects they belong to
+            // The user selects a task he wants to change
+            Set<ProjectWrapper> allProjects = taskMan.getProjects();
+            Map<ProjectWrapper, Set<TaskWrapper>> assignedTaskMap = new HashMap<ProjectWrapper, Set<TaskWrapper>>();
 
-        for (ProjectWrapper p : allProjects) {
-            Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p); // this will return empty set if manager
-            
-            if (!assignedTasks.isEmpty()) {
-                assignedTaskMap.put(p, assignedTasks);
+            for (ProjectWrapper p : allProjects) {
+                Set<TaskWrapper> assignedTasks = taskMan.getAssignedTasksOf(p); // this will return empty set if manager
+
+                if (!assignedTasks.isEmpty()) {
+                    assignedTaskMap.put(p, assignedTasks);
+                }
             }
-        }
-        TaskWrapper task = getUi().selectTaskFromProjects(assignedTaskMap);
+            TaskWrapper task = getUi().selectTaskFromProjects(assignedTaskMap);
 
-        // if the user indicates he wants to leave the overview.
-        if (task == null) {
+            // if the user indicates he wants to leave the overview.
+            if (task == null) {
+                handleSimulationStep();
+                return;
+            }
+
+            if (task.isFinal()) {
+                getUi().showError("Can't update task: this task is already final.");
+                handleSimulationStep();
+                return;
+            }
+
+            boolean firstIteration = true;
+            boolean askFinish = false;
+            Set<Resource> chosenResources = null;
+            do {
+                try {
+                    boolean complete = task.isExecuting();
+
+                    if(complete){
+                        if(firstIteration){
+                            firstIteration = false;
+                            askFinish = getUi().askFinish();
+                        }
+                        taskMan.completeTask(task, askFinish);
+                    }else{
+                        if(firstIteration){
+                            firstIteration = false;
+                            Set<Requirement> reqs = task.getRecursiveRequirements();
+                            Map<ResourceType, List<Resource>> resourceOptions = formatRequirementsForSelection(reqs);
+                            chosenResources = getUi().askSelectnewResources(task.getPlanning().getReservations(), resourceOptions, reqs);
+                        }
+
+                        taskMan.executeTask(task, chosenResources);
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    getUi().showError("Failed to update task: " + e.getMessage());
+                } catch (IllegalStateException e) {
+                    getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
+                } catch (ConflictingPlannedTaskWrapperException e) {
+                    startResolveConflictSession(e.getTask());
+                }
+            } while (true); // loop until proper data was given or user canceled.
+
+            // End session
+            handleSimulationStep();
+        }catch(ExitEvent e){
             handleSimulationStep();
             return;
         }
-
-        if (task.isFinal()) {
-            getUi().showError("Can't update task: this task is already final.");
-            handleSimulationStep();
-            return;
-        }
-
-        do {
-            try {
-                // The user enters all required details
-                TaskStatusData statusData = getUi().getUpdateStatusData(task);
-
-                // if the user cancels.
-                if (statusData == null) break;
-
-                // the system updates the task status
-                getTaskMan().updateTaskStatusFor(task, statusData);
-
-                // Finish wel successful
-                break;
-            } catch (IllegalArgumentException e) {
-                getUi().showError("Failed to update task: " + e.getMessage());
-            } catch (IllegalStateException e) {
-                getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
-            }
-        } while (true); // loop until proper data was given or user canceled.
-
-        // End session
-        handleSimulationStep();
     }
+   
 
     /**
      * Starts the "advance time" use case which lets the user interface request a new time for the system from the user.
@@ -451,21 +504,26 @@ public class SessionController {
             getUi().showError(ERROR_NO_LOGIN);
             return;
         }
-        // The user indicates he wants to modify the system time
-        // The system allows the user to choose a new time
-        LocalDateTime time = getUi().getTimeStamp();
+        try{
+            // The user indicates he wants to modify the system time
+            // The system allows the user to choose a new time
+            LocalDateTime time = getUi().getTimeStamp();
 
-        // if the user cancels.
-        if (time == null) {
+            // if the user cancels.
+            if (time == null) {
+                handleSimulationStep();
+                return;
+            }
+
+            // the system updates the system time.
+            getTaskMan().updateSystemTime(time);
+
+            // End session
+            handleSimulationStep();
+        }catch(ExitEvent e){
             handleSimulationStep();
             return;
         }
-
-        // the system updates the system time.
-        getTaskMan().updateSystemTime(time);
-
-        // End session
-        handleSimulationStep();
     }
 
     public void startRunSimulationSession() {

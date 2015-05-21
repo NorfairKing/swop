@@ -352,27 +352,32 @@ public class TaskMan {
      *
      * @throws IllegalArgumentException
      *             If some of the status data is incorrect.
+     * @throws ConflictingPlannedTaskWrapperException 
+     * @throws ConflictingPlannedTaskException 
      *
      */
-    public void updateTaskStatusFor(TaskWrapper task, TaskStatusData statusData) throws IllegalArgumentException {
+    public void completeTask(TaskWrapper task, boolean success) throws IllegalArgumentException, ConflictingPlannedTaskWrapperException {
         if (task == null) { throw new IllegalArgumentException("Null task for status update"); }
-        if (statusData == null) { throw new IllegalArgumentException("Null statusdata for status update"); }
 
-        if (statusData.isFinal()) {
-            PerformedStatusData performedStatusData = (PerformedStatusData) statusData;
-
-            if (performedStatusData.getStartTime() == null) { throw new IllegalArgumentException("Null start time for status update"); }
-            if (performedStatusData.getEndTime() == null) { throw new IllegalArgumentException("Null end time for status update"); }
-
-            DateTimePeriod timePeriod = new DateTimePeriod(performedStatusData.getStartTime(), performedStatusData.getEndTime());
-
-            if (performedStatusData.isSuccessful()) {
-                company.finishTask(task.getTask(), timePeriod, authenticationToken);
+        try {
+            if (success) {
+                company.finishTask(task.getTask(), authenticationToken);
             } else {
-                company.failTask(task.getTask(), timePeriod, authenticationToken);
+                company.failTask(task.getTask(), authenticationToken);
             }
-        } else {
-            company.startExecutingTask(task.getTask(), company.getSystemTime(), authenticationToken);
+        } catch (ConflictingPlannedTaskException e) {
+            throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
+        }
+    }
+    
+    public void executeTask(TaskWrapper task, Set<Resource> resources) throws IllegalArgumentException, ConflictingPlannedTaskWrapperException {
+        if (task == null) { throw new IllegalArgumentException("Null task for status update"); }
+        if (resources == null) { throw new IllegalArgumentException("Null setof Resources for status update"); }
+
+        try {
+            company.startExecutingTask(task.getTask(), resources, authenticationToken);
+        } catch (ConflictingPlannedTaskException e) {
+            throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
         }
     }
 

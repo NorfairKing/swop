@@ -24,6 +24,7 @@ public class DateTimePeriod implements Serializable {
      *            The Date containing the end of this peroid.
      *
      */
+    private DateTimePeriod(){startTime = null;stopTime = null;}
     public DateTimePeriod(LocalDateTime start, LocalDateTime stop) {
         if (start == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
         if (stop == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
@@ -111,8 +112,8 @@ public class DateTimePeriod implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + startTime.hashCode();
-        result = prime * result + stopTime.hashCode();
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        result = prime * result + ((stopTime == null) ? 0 : stopTime.hashCode());
         return result;
     }
 

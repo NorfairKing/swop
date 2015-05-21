@@ -149,12 +149,12 @@ public class BranchOffice implements Serializable {
         return this.planningDepartment.getPlanningDeveloperOptions(task, time);
     }
 
-    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        this.planningDepartment.createPlanning(task, time, rss);
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, boolean withBreak) throws ConflictingPlannedTaskException {
+        this.planningDepartment.createPlanning(task, time, rss, withBreak);
     }
 
-    public void createPlanningWithBreak(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
-        this.planningDepartment.createPlanningWithBreak(task, time, rss);
+    public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {
+        createPlanning(task, time, rss, false);
     }
 
     /**
@@ -211,22 +211,22 @@ public class BranchOffice implements Serializable {
      * @return Whether or not it is available
      */
     public boolean isTaskAvailableFor(LocalDateTime time, Developer dev, Task task) {
-        return this.planningDepartment.isTier2AvailableFor(time, dev, task);
+        return this.planningDepartment.isAvailableFor(dev, task, time);
     }
 
     // finish, fail and executing has to happen through the planningManager
     // that's the class that can decide about this
     // We can't enforce this in java, but we enforce it with mind-power
-    public void finishTask(Task t, DateTimePeriod period) {
-        this.planningDepartment.finishTask(t, period);
+    public void finishTask(Task t, LocalDateTime time) throws ConflictingPlannedTaskException {
+        this.planningDepartment.finishTask(t, time);
     }
 
-    public void failTask(Task t, DateTimePeriod period) {
-        this.planningDepartment.failTask(t, period);
+    public void failTask(Task t, LocalDateTime time) throws ConflictingPlannedTaskException {
+        this.planningDepartment.failTask(t, time);
     }
 
-    public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
-        this.planningDepartment.startExecutingTask(t, time, dev);
+    public void startExecutingTask(Task t, LocalDateTime time, Set<Resource> resources) throws ConflictingPlannedTaskException {
+        this.planningDepartment.startExecutingTask(t, time, resources);
     }
 
     /**

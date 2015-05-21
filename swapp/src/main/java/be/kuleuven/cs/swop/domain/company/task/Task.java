@@ -157,8 +157,8 @@ public class Task implements Serializable {
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
      */
-    public void finish(DateTimePeriod period) {
-        status.finish(period);
+    public void finish() {
+        status.finish();
     }
 
     /**
@@ -170,8 +170,8 @@ public class Task implements Serializable {
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
      */
-    public void fail(DateTimePeriod period) {
-        status.fail(period);
+    public void fail() {
+        status.fail();
     }
 
     /**
@@ -190,10 +190,6 @@ public class Task implements Serializable {
      */
     public boolean isTier1Available() {
         return !getTaskInfo().hasUnfinishedDependencies() && status.canExecute();
-    }
-
-    public DateTimePeriod getPerformedDuring() {
-        return status.getPerformedDuring();
     }
 
     public boolean wasFinishedOnTime() {

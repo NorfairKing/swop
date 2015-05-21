@@ -69,7 +69,7 @@ public class UnstartedStatus extends IncompleteStatus {
     }
 
     @Override
-    void finish(DateTimePeriod period) {
+    void finish() {
     	throw new IllegalStateException(ERROR_FINISH);
     }
     

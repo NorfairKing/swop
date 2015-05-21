@@ -43,18 +43,13 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    void fail(DateTimePeriod period) {
-        goToStatus(new FailedStatus(getTask(), period));
+    void fail() {
+        goToStatus(new FailedStatus(getTask()));
     }
 
     @Override
     boolean isFinishedOrHasFinishedAlternative() {
         return false;
-    }
-
-    @Override
-    DateTimePeriod getPerformedDuring() {
-        return null;
     }
 
     @Override

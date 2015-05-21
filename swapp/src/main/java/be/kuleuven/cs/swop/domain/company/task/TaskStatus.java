@@ -68,9 +68,9 @@ abstract class TaskStatus implements Serializable {
         return task != null;
     }
 
-    abstract void finish(DateTimePeriod period);
+    abstract void finish();
 
-    abstract void fail(DateTimePeriod period);
+    abstract void fail();
     
     abstract void execute();
     
@@ -92,8 +92,6 @@ abstract class TaskStatus implements Serializable {
     abstract Task getAlternative();
 
     abstract void setAlternative(Task alternative);
-
-    abstract DateTimePeriod getPerformedDuring();
 
     /**
      * Checks whether or not this Task was finished within the acceptable deviation.
@@ -128,6 +126,7 @@ abstract class TaskStatus implements Serializable {
             return null;
         }
     }
+    
 
     @Override
     public int hashCode() {

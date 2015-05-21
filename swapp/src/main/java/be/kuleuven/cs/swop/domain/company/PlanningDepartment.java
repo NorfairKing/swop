@@ -3,6 +3,7 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
-import be.kuleuven.cs.swop.domain.company.planning.TaskPlanningWithBreak;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
@@ -218,14 +218,7 @@ public class PlanningDepartment implements Serializable {
      */
     public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
         if (!dev.isAvailableDuring(time)) { return false; }
-        for (TaskPlanning plan : getTaskPlannings()) {
-            if (plan.getDevelopers().contains(dev) &&
-                    // getEstimatedOrPlanningPeriod(plan).isDuring(time) &&
-                    getEstimatedOrPlanningPeriod(plan).overlaps(new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()))) &&
-                    getTaskFor(plan) != task) { return false; }
-        }
-
-        return true;
+        return isTier2Available(time, task);
     }
 
     /**
@@ -274,7 +267,7 @@ public class PlanningDepartment implements Serializable {
      *            The task to check
      * @return Whether or not it is available
      */
-    public boolean isTier2AvailableFor(LocalDateTime time, Developer dev, Task task) {
+    public boolean isTier2Available(LocalDateTime time, Task task) {
         if (!task.isTier1Available()) {
             /*
              * System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size()); for (Task dep: task.getDependencySet()) { System.out.println(dep.getDescription() + "; " +
@@ -282,32 +275,11 @@ public class PlanningDepartment implements Serializable {
              */
             return false;
         }
-
-        TaskPlanning planning = task.getPlanning();
-        if (planning == null) {
-            // System.out.println("2");
-            return false;
-        }
-        Set<Developer> devs = planning.getDevelopers();
-        if (!devs.contains(dev)) {
-            // System.out.println("3");
-            return false;
-        }
-        for (Developer d : devs) {
-            if (!isAvailableFor(d, task, time)) {
-                // System.out.println("4");
+        for (Requirement req : task.getRecursiveRequirements()) {// TODO does this have to be recursive or not?!
+            DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration())); //FIXME update to period
+            if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)) {
+                // System.out.println("5: " + req.getType().getName());
                 return false;
-            }
-        }
-        if (getEstimatedOrPlanningPeriod(planning).isDuring(time)) {
-            // No problem, the planning already makes sure these reservations are in order.
-        } else {
-            for (Requirement req : task.getRecursiveRequirements()) {// TODO does this have to be recursive or not?!
-                DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-                if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)) {
-                    // System.out.println("5: " + req.getType().getName());
-                    return false;
-                }
             }
         }
 
@@ -355,10 +327,14 @@ public class PlanningDepartment implements Serializable {
         return false;
     }
 
-    private void checkPlanningParameters(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException {
+    private void checkPlanningParameters(Task task, DateTimePeriod period, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
         if (task == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
 
-        if (startTime == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME); }
+        if (period == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME); }
+        
+        if(withBreak){
+            period = new DateTimePeriod(period.getStartTime(), period.getStopTime().plusMinutes(Developer.BREAK_TIME));
+        }
 
         for (Resource res : resources) {
             if (res == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE); }
@@ -371,18 +347,18 @@ public class PlanningDepartment implements Serializable {
         if (!Requirements.isPossibleResourceSet(resources)) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET); }
 
         // Check if the resources are available during the planning
-        if (!areResourcesAvailableDuring(resources, new DateTimePeriod(startTime, startTime.plusMinutes(task.getEstimatedDuration())))) { throw new IllegalArgumentException(
+        if (!areResourcesAvailableDuring(resources, period)) { throw new IllegalArgumentException(
                 ERROR_RESOURCE_NOT_AVAILABLE); }
 
         // Check if the resources aren't already planned for another task
-        TaskPlanning conflict = getConflictIfExists(task, startTime, resources);
+        TaskPlanning conflict = getConflictIfExists(task, period, resources);
         if (conflict != null) { throw new ConflictingPlannedTaskException(getTaskFor(conflict)); }
     }
 
-    private TaskPlanning getConflictIfExists(Task task, LocalDateTime startTime, Set<Resource> resources) {
+    private TaskPlanning getConflictIfExists(Task task, DateTimePeriod period, Set<Resource> resources) {
         for (TaskPlanning plan : getTaskPlannings()) {
             for (Resource res : resources) {
-                if (getEstimatedOrPlanningPeriod(plan).overlaps(new DateTimePeriod(startTime, startTime.plusMinutes(task.getEstimatedDuration())))) {
+                if (getEstimatedOrPlanningPeriod(plan).overlaps(period)) {
                     if (plan.getReservations().contains(res)) { return plan; }
                 }
             }
@@ -413,10 +389,8 @@ public class PlanningDepartment implements Serializable {
      * @throws ConflictingPlannedTaskException
      *             If the created planning will result in a conflict.
      */
-    public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException {
-        checkPlanningParameters(task, startTime, resources);
-        TaskPlanning newplanning = new TaskPlanning(startTime, resources, task.getEstimatedDuration());
-        task.plan(newplanning);
+    public void createPlanning(Task task, DateTimePeriod period, Set<Resource> resources) throws ConflictingPlannedTaskException {
+        createPlanning(task, period, resources, false);
     }
 
     /**
@@ -433,10 +407,15 @@ public class PlanningDepartment implements Serializable {
      * @throws ConflictingPlannedTaskException
      *             If the created planning will result in a conflict.
      */
-    public void createPlanningWithBreak(Task task, LocalDateTime startTime, Set<Resource> resources) throws ConflictingPlannedTaskException {
-        checkPlanningParameters(task, startTime, resources);
-        TaskPlanning newplanning = new TaskPlanningWithBreak(startTime, resources, task.getEstimatedDuration());
+    public void createPlanning(Task task, DateTimePeriod period, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
+        checkPlanningParameters(task, period, resources, withBreak);
+        TaskPlanning newplanning = new TaskPlanning(period, resources, withBreak);
         task.plan(newplanning);
+    }
+    
+    public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
+        createPlanning(task, new DateTimePeriod(startTime, startTime.plusMinutes(task.getEstimatedDuration())), resources, withBreak);
+
     }
 
     /**
@@ -446,9 +425,12 @@ public class PlanningDepartment implements Serializable {
      *            The task to finish
      * @param period
      *            The period in which it was finished
+     * @throws ConflictingPlannedTaskException 
      */
-    public void finishTask(Task t, DateTimePeriod period) {
-        t.finish(period);
+    public void finishTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
+        DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
+        updatePlanningForState(t,period, t.getPlanning().getReservations());
+        t.finish();
     }
 
     /**
@@ -458,9 +440,19 @@ public class PlanningDepartment implements Serializable {
      *            The task that failed
      * @param period
      *            The period in which it failed
+     * @throws ConflictingPlannedTaskException 
      */
-    public void failTask(Task t, DateTimePeriod period) {
-        t.fail(period);
+    public void failTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
+        if(t.isPlanned()){
+            DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
+            updatePlanningForState(t,period, t.getPlanning().getReservations());
+        }
+        t.fail();
+    }
+    
+    private void updatePlanningForState(Task t, DateTimePeriod period, Set<Resource> reservations) throws ConflictingPlannedTaskException{
+        t.removePlanning();
+        createPlanning(t, period, reservations);
     }
 
     /**
@@ -472,21 +464,22 @@ public class PlanningDepartment implements Serializable {
      *            The current time
      * @param dev
      *            The developer which indicated that work started
+     * @throws ConflictingPlannedTaskException 
      * @throws IllegalStateException
      *             If the task can't start execution
      */
-    public void startExecutingTask(Task t, LocalDateTime time, Developer dev) {
-        if (isTier2AvailableFor(time, dev, t)) {
+    public void startExecutingTask(Task t, LocalDateTime time, Set<Resource> resources) throws ConflictingPlannedTaskException {
+        if (t.isTier1Available()) {
+            DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(t.getEstimatedDuration()));
+            updatePlanningForState(t,period, resources);
             t.execute();
-            // TODO Indien unplanning execution tell the system they are in use
-            // this however isn't in the scope of part 2, so we'll leave it for a later date
         }
         else {
             throw new IllegalStateException(ERROR_ILLEGAL_EXECUTING_STATE);
         }
     }
 
-    private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
+    private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task with unfinished dependencies.";
     private static final String ERROR_ILLEGAL_TASK            = "Illegal task provided.";
     private static final String ERROR_ILLEGAL_DATETIME        = "Illegal date provided.";
     private static final String ERROR_ILLEGAL_RESOURCE        = "Illegal resource provided.";

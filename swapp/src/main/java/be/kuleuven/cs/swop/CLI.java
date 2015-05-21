@@ -21,16 +21,11 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
-import be.kuleuven.cs.swop.facade.DeveloperWrapper;
-import be.kuleuven.cs.swop.facade.ExecutingStatusData;
-import be.kuleuven.cs.swop.facade.FailedStatusData;
-import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
-import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
 import be.kuleuven.cs.swop.facade.UserWrapper;
 
@@ -189,12 +184,12 @@ public class CLI implements UserInterface {
     // Interface methods
 
     @Override
-    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) {
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) throws ExitEvent {
         return selectFromCollection(offices, "branch offices", o -> o.getLocation());
     }
 
     @Override
-    public UserWrapper selectUser(Set<UserWrapper> usersSet) {
+    public UserWrapper selectUser(Set<UserWrapper> usersSet) throws ExitEvent {
         return selectFromCollection(usersSet, "users", u -> u.getName());
     }
 
@@ -235,7 +230,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) {
+    public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) throws ExitEvent {
         return selectFromCollection(projectSet, "projects",
                 p -> p.getTitle() + " - " + 
                         sessionController.getTaskMan().getOfficeOf(p).getLocation()
@@ -243,7 +238,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public ProjectData getProjectData() {
+    public ProjectData getProjectData() throws ExitEvent {
         System.out.println("CREATING PROJECT\n########");
         System.out.print("# Title: ");
         String title = promptString();
@@ -298,12 +293,12 @@ public class CLI implements UserInterface {
 
             System.out.println(""
                     + "#   Is Finished\n"
-                    + "#   Performed During: " + formatPeriod(task.getPerformedDuring()) + "\n"
+                    + "#   Performed During: " + formatPeriod(task.getEstimatedOrPlanningPeriod()) + "\n"
                     + "#   Was finished " + timeString + "\n");
         } else if (task.isFailed()) {
             System.out.println(""
                     + "#   Has Failed\n"
-                    + "#   Performed During: " + formatPeriod(task.getPerformedDuring()) + "\n");
+                    + "#   Performed During: " + formatPeriod(task.getEstimatedOrPlanningPeriod()) + "\n");
         } else {
             System.out.println("#   Still needs work");
         }
@@ -336,7 +331,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public TaskWrapper selectTask(Set<TaskWrapper> taskSet) {
+    public TaskWrapper selectTask(Set<TaskWrapper> taskSet) throws ExitEvent {
         return selectFromCollection(taskSet, "tasks", p -> {
             String total = p.getDescription();
             // FIXME check if available for current user
@@ -351,7 +346,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData(Set<ResourceType> types) {
+    public TaskData getTaskData(Set<ResourceType> types) throws ExitEvent {
         System.out.println("CREATING TASK\n########");
 
         System.out.print("# Description: ");
@@ -365,8 +360,10 @@ public class CLI implements UserInterface {
 
         Map<ResourceType, Integer> reqs = new HashMap<ResourceType, Integer>();
         while (true) {
-            ResourceType selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
-            if (selectedType == null) {
+            ResourceType selectedType = null;
+            try{
+            selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
+            }catch(ExitEvent e){
                 break;
             }
             int amount = promptPosInteger("Quantity required");
@@ -379,7 +376,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) {
+    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projectSet) throws ExitEvent {
         Map<ProjectWrapper, Set<TaskWrapper>> projectMap = new HashMap<>();
         for (ProjectWrapper p : projectSet) {
             projectMap.put(p, p.getTasks());
@@ -393,9 +390,10 @@ public class CLI implements UserInterface {
      * @param projectMap
      *            The selection of tasks for each project.
      * @return The selected task.
+     * @throws ExitEvent 
      */
     @Override
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) {
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) throws ExitEvent {
         List<Entry<ProjectWrapper, Set<TaskWrapper>>> tuples = new ArrayList<>(projectMap.entrySet());
         // sort tuples on project title
         tuples.sort((p1, p2) -> p1.getKey().getTitle().compareTo(p2.getKey().getTitle()));
@@ -423,70 +421,27 @@ public class CLI implements UserInterface {
         System.out.println("\n# ----------------------------------");
         int index = promptNumber(0, allTasks.size());
         if (index == 0) {
-            return null;
+            throw new ExitEvent();
         } else {
             return allTasks.get(index - 1);
         }
     }
 
+    
     @Override
-    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-
-        // Pretty damn ugly way to do it, feel free to refactor
-
-        System.out.println("UPDATE TASK STATUS\n########");
-        boolean needsDates = false;
-
-        boolean executing = task.isExecuting();
-        boolean successful = false;
-        boolean start = false;
-
-        LocalDateTime startTime = null;
-        LocalDateTime endTime = null;
-
-        if (executing) {
-            System.out.print("# Was the task successful (finish/fail): ");
-            successful = promptBoolean("finish", "fail");
-            needsDates = true;
-        } else {
-            System.out.print("# execute or fail the task (execute/fail): ");
-            start = promptBoolean("execute", "fail");
-            if (!start) {
-                needsDates = true;
-            }
-        }
-
-        if (needsDates) {
-            System.out.print("# Start Date: ");
-            startTime = promptDate();
-
-            System.out.print("# End Date: ");
-            endTime = promptDate();
-        }
-        
-        System.out.print("# Are you sure you want to update the status? (y/n): ");
-        if (!promptBoolean("y", "n")) {
-            return null;
-        }
-
-        if (executing) {
-            if (successful) {
-                return new FinishedStatusData(startTime, endTime);
-            } else {
-                return new FailedStatusData(startTime, endTime);
-            }
-        } else {
-            if (start) {
-                return new ExecutingStatusData();
-            } else {
-                return new FailedStatusData(startTime, endTime);
-            }
-        }
-
+    public boolean askExecute() throws ExitEvent {
+        System.out.print("# Execute or fail the task (execute/fail): ");
+        return promptBoolean("execute", "fail");
+    }
+    
+    @Override
+    public boolean askFinish() throws ExitEvent {
+        System.out.print("# Was the task successful (finish/fail): ");
+        return promptBoolean("finish", "fail");
     }
 
     @Override
-    public LocalDateTime getTimeStamp() {
+    public LocalDateTime getTimeStamp() throws ExitEvent {
         System.out.println("TIME STAMP\n########");
 
         System.out.print("# Time: ");
@@ -494,23 +449,32 @@ public class CLI implements UserInterface {
 
         return time;
     }
+    
+    public Set<Resource> askSelectnewResources(Set<Resource> resources, Map<ResourceType, List<Resource>> resourceOptions, Set<Requirement> reqs) throws ExitEvent{
+        System.out.print("# Use the resources from the planning or allocate new resources?: ");
+        boolean plan = promptBoolean("plan", "new");
+        if(plan){
+            return resources;
+        }else{
+            return selectResourcesFor(resourceOptions, reqs);
+        }
+    }
 
     @Override
-    public LocalDateTime selectTime(List<LocalDateTime> options) {
-        LocalDateTime time = selectFromCollection(options, "time", o -> formatDate(o));
-        if (time == null) {
-            System.out.println("Would you like to use a custom time? (y/n)");
-            boolean wantsToSelectCustom = promptBoolean("y", "n");
-            if (wantsToSelectCustom) {
-                System.out.print("Enter a time: ");
+    public LocalDateTime selectTime(List<LocalDateTime> options) throws ExitEvent {
+        LocalDateTime time;
+        try{
+            time = selectFromCollection(options, "time", o -> formatDate(o));
+        }catch(ExitEvent e){
+            System.out.println("Enter a custom timestamp or \"exit\" to quit.");
                 time = promptDate();
-            }
-        }
+        };
+
         return time;
     }
 
     @Override
-    public boolean askToAddBreak() {
+    public boolean askToAddBreak() throws ExitEvent {
         System.out.println("The developer(s) could take a break during this Task.");
         System.out.println("Would you like for the planning to add a break? (y/n)");
         boolean wantsToAddBreak = promptBoolean("y", "n");
@@ -553,8 +517,12 @@ public class CLI implements UserInterface {
                 typeSelectionMap.put(type, displayText);
             }
 
-            Entry<ResourceType, String> selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
-            if (selectedEntry == null) { return result; }
+            Entry<ResourceType, String> selectedEntry;
+            try {
+                selectedEntry = selectFromCollection(typeSelectionMap.entrySet(), "SELECT A TYPE", t -> t.getValue());
+            } catch (ExitEvent e) {
+                return result;
+            }
 
             ResourceType selectedType = selectedEntry.getKey();
             options.get(selectedType).sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
@@ -593,38 +561,6 @@ public class CLI implements UserInterface {
         } else {
             return resources.get(index - 1);
         }
-    }
-
-    @Override
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        if (developerOptions == null || developerOptions.size() == 0) {
-            System.out.println("No developers to select.");
-        }
-
-        List<DeveloperWrapper> developers = new ArrayList<>(developerOptions);
-        System.out.println("SELECT DEVELOPERS\n########");
-        for (int i = 0; i < developers.size(); i++) {
-            System.out.println("# " + (i + 1) + ") " + developers.get(i).getName());
-        }
-        printDelimiter();
-
-        Set<DeveloperWrapper> selectedDevelopers = new HashSet<>();
-        do {
-            int index = promptNumber(0, developers.size());
-            if (index == 0) {
-                break;
-            } else {
-                DeveloperWrapper selected = developers.get(index - 1);
-                if (selectedDevelopers.contains(selected)) {
-                    System.out.println("That developer was already selected...");
-                } else {
-                    System.out.println("Developer added, select another one? (0 to stop): ");
-                    selectedDevelopers.add(selected);
-                }
-            }
-        } while (true);
-
-        return selectedDevelopers;
     }
 
     @Override
@@ -754,11 +690,19 @@ public class CLI implements UserInterface {
         return inputIndex;
     }
 
-    private String promptString() {
-        return this.getScanner().nextLine();
+    private String promptString() throws ExitEvent {
+        String input = this.getScanner().nextLine();
+        if("".equals(input)){
+            System.out.println("Press enter again to quit");
+            input = this.getScanner().nextLine();
+        }
+        if("".equals(input)){
+            throw new ExitEvent();
+        }
+        return input;
     }
 
-    private LocalDateTime promptDate() {
+    private LocalDateTime promptDate() throws ExitEvent {
         while (true) {
             try {
                 String inputText = this.getScanner().nextLine();
@@ -766,16 +710,18 @@ public class CLI implements UserInterface {
                     return sessionController.getTaskMan().getSystemTime();
                 } else if ("nownow".equals(inputText)) {
                     return LocalDateTime.now();
+                } else if ("exit".equals(inputText)) {
+                    throw new ExitEvent();
                 } else {
                     return LocalDateTime.parse(inputText, parseFormat);
                 }
             } catch (DateTimeParseException e) {
-                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30 or use \"now\"");
+                System.out.println("# ERROR: Invalid Date Format. Needs to be like 2015-11-25 23:30 or use \"now\". Enter \"exit\" to quit");
             }
         }
     }
 
-    private boolean promptBoolean(String trueString, String falseString) {
+    private boolean promptBoolean(String trueString, String falseString) throws ExitEvent {
         boolean successful;
 
         do {
@@ -786,8 +732,10 @@ public class CLI implements UserInterface {
             } else if (success.equalsIgnoreCase(falseString)) {
                 successful = false;
                 break;
+            }else if(success.equalsIgnoreCase("exit")){
+                throw new ExitEvent();
             } else {
-                System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\": ");
+                System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\" or \"exit\": ");
             }
         } while (true);
 
@@ -824,10 +772,10 @@ public class CLI implements UserInterface {
         } while (true);
     }
 
-    private <T> T selectFromCollection(Collection<T> collection, String heading, Function<T, String> toString) {
+    private <T> T selectFromCollection(Collection<T> collection, String heading, Function<T, String> toString) throws ExitEvent {
         if (collection.isEmpty()) {
             System.out.println("No " + heading.toLowerCase() + " to select.");
-            return null;
+            throw new ExitEvent();
         }
 
         List<T> list = new ArrayList<>(collection);
@@ -840,7 +788,7 @@ public class CLI implements UserInterface {
 
         int index = promptNumber(0, list.size());
         if (index == 0) {
-            return null;
+            throw new ExitEvent();
         } else {
             return list.get(index - 1);
         }
