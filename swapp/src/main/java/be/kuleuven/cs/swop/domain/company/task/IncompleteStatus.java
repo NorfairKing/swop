@@ -17,7 +17,7 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    LocalDateTime getEstimatedOrRealFinishDate(java.time.LocalDateTime currentDate) {
+    LocalDateTime getEstimatedOrRealFinishDate(java.time.LocalDateTime currentDate) { //TODO: is this still correct?
         LocalDateTime lastOfDependencies = getTask().getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
         LocalDateTime now = currentDate;
         if (lastOfDependencies.isBefore(now)) {
