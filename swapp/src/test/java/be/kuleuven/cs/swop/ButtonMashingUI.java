@@ -194,7 +194,6 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public void showError(String error) {
-        error.toString();
     }
 
     private String randomString() {

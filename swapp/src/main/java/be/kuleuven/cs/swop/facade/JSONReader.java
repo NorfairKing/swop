@@ -29,7 +29,9 @@ public final class JSONReader {
     }
     
     public static void writeToDisk(String path, Object obj) throws FileNotFoundException {
-        File file = getFile(path);
+    	if (path == null) throw new FileNotFoundException();
+    	
+    	File file = getFile(path);
         System.out.println("Saved to: " + file.getAbsolutePath());
         FileOutputStream fop = new FileOutputStream(file);
         
@@ -41,6 +43,8 @@ public final class JSONReader {
     }
     
     public static Object readFromDisk(String path) throws FileNotFoundException {
+    	if (path == null) throw new FileNotFoundException();
+    	
         File file = getFile(path);
         FileInputStream fop = new FileInputStream(file);
         
