@@ -13,9 +13,9 @@ import be.kuleuven.cs.swop.facade.SessionController;
 
 public class AdvanceTimeSessionTest {
     
-    private static TestingUI  ui;
-    private static TaskMan taskMan;
-    private static SessionController controller;
+    private TestingUI  ui;
+    private TaskMan taskMan;
+    private SessionController controller;
     
     @Before
     public void setUp() throws Exception {
