@@ -224,8 +224,6 @@ public class TaskMan {
      *            The time on which it is planned for the task to start
      * @param resources
      *            The resources to reserve for this task
-     * @param developers
-     *            The developers that have to work on the task
      * @throws ConflictingPlannedTaskWrapperException
      *             If the created planning would cause a conflict
      */
@@ -246,8 +244,6 @@ public class TaskMan {
      *            The time on which it is planned for the task to start
      * @param resources
      *            The resources to reserve for this task
-     * @param developers
-     *            The developers that have to work on the task
      * @throws ConflictingPlannedTaskWrapperException
      *             IF the created planning would cause a conflict
      */
@@ -365,18 +361,16 @@ public class TaskMan {
     }
 
     /**
-     * Changes the status of a specified Task.
+     * Complete a task
      *
      * @param task
      *            The TaskWrapper containing the Task for which this method changes the status.
      *
-     * @param statusData
-     *            A TaskStatusData object containing the data for the new Task status.
+     * @param success Whether it was finished successfully or failed.
      *
      * @throws IllegalArgumentException
      *             If some of the status data is incorrect.
-     * @throws ConflictingPlannedTaskWrapperException 
-     * @throws ConflictingPlannedTaskException 
+     * @throws ConflictingPlannedTaskWrapperException  When conflicting with another task
      *
      */
     public void completeTask(TaskWrapper task, boolean success) throws IllegalArgumentException, ConflictingPlannedTaskWrapperException {
@@ -466,8 +460,6 @@ public class TaskMan {
      *
      * @param time
      *            The time to check for
-     * @param dev
-     *            The developer for whom the task might be available
      * @param task
      *            The task to check
      * @return Whether or not it is available

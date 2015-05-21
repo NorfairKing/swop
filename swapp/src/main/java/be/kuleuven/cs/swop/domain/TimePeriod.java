@@ -24,10 +24,10 @@ public class TimePeriod implements Serializable {
     /**
      * Full Constructor
      *
-     * @param start
+     * @param startTime
      *            The Time containing the start of this period.
      *
-     * @param stop
+     * @param stopTime
      *            The Time containing the end of this period.
      *
      */

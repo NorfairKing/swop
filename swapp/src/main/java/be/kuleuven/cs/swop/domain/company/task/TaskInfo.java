@@ -42,6 +42,8 @@ public class TaskInfo implements Serializable {
      *            The estimated duration of the task in minutes.
      * @param acceptableDeviation
      *            The acceptable deviation of time in which the task can be completed.
+     * @param requirements The requirements for this task
+     * @param dependencies The dependencies of this task
      */
     public TaskInfo(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements, Set<Task> dependencies) {
         if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }

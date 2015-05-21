@@ -13,8 +13,9 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 /**
- * Set\<Reservable\> reservations A class that represents the reservation of a task. It also includes the reservation of all needed resources and the developers assigned to do it. It ofcourse also
- * includes a planned starting time.
+ * Set Reservable: reservations A class that represents the reservation of a task.
+ * It also includes the reservation of all needed resources and the developers assigned to do it.
+ * It ofcourse also includes a planned starting time.
  *
  */
 @SuppressWarnings("serial")
