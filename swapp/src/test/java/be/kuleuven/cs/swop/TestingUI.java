@@ -26,39 +26,25 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 
 public class TestingUI implements UserInterface {
 
-    private SessionController sessionController;
-    private List<UserWrapper>       selectUser = new ArrayList<>();
-    private List<LocalDateTime>     requestTime = new ArrayList<>();
-    private List<ProjectData>       requestProjectData = new ArrayList<>();
-    private List<ProjectWrapper>    requestProject = new ArrayList<>();
-    private List<TaskData>          requestTaskData = new ArrayList<>();
-    private List<TaskWrapper>       requestTask = new ArrayList<>();
-    private List<TaskStatusData>    requestTaskStatusData = new ArrayList<>();
-    private List<LocalDateTime>     requestSelectTime = new ArrayList<>();
-    private List<Set<Resource>> requestResourcesSet = new ArrayList<>();
+    private SessionController           sessionController;
+    private List<UserWrapper>           selectUser = new ArrayList<>();
+    private List<LocalDateTime>         requestTime = new ArrayList<>();
+    private List<ProjectData>           requestProjectData = new ArrayList<>();
+    private List<ProjectWrapper>        requestProject = new ArrayList<>();
+    private List<TaskData>              requestTaskData = new ArrayList<>();
+    private List<TaskWrapper>           requestTask = new ArrayList<>();
+    private List<TaskStatusData>        requestTaskStatusData = new ArrayList<>();
+    private List<LocalDateTime>         requestSelectTime = new ArrayList<>();
+    private List<Set<Resource>>         requestResourcesSet = new ArrayList<>();
     private List<Set<DeveloperWrapper>> requestDevelopersSet = new ArrayList<>();
-    private List<SimulationStepData> requestSimStepData = new ArrayList<>();
-    private List<Boolean>           shouldAddBreak = new ArrayList<>();
-    private List<BranchOfficeWrapper> requestOffice = new ArrayList<>();
-    private List<String>            requestFileName = new ArrayList<>();
-    private Map<Object, Boolean> replaceOnAdd = new HashMap<>();
+    private List<SimulationStepData>    requestSimStepData = new ArrayList<>();
+    private List<Boolean>               shouldAddBreak = new ArrayList<>();
+    private List<BranchOfficeWrapper>   requestOffice = new ArrayList<>();
+    private List<String>                requestFileName = new ArrayList<>();
+    private Map<Object, Boolean>        replaceOnAdd = new HashMap<>();
     
     public TestingUI(){
     	super();
-    	replaceOnAdd.put(selectUser, false);
-    	replaceOnAdd.put(requestTime, false);
-    	replaceOnAdd.put(requestProjectData, false);
-    	replaceOnAdd.put(requestProject, false);
-    	replaceOnAdd.put(requestTaskData, false);
-    	replaceOnAdd.put(requestTask, false);
-    	replaceOnAdd.put(requestTaskStatusData, false);
-    	replaceOnAdd.put(requestSelectTime, false);
-    	replaceOnAdd.put(requestResourcesSet, false);
-    	replaceOnAdd.put(requestDevelopersSet, false);
-    	replaceOnAdd.put(requestSimStepData, false);
-        replaceOnAdd.put(shouldAddBreak, false);
-        replaceOnAdd.put(requestOffice, false);
-        replaceOnAdd.put(requestFileName, false);
     }
     
     
@@ -91,7 +77,7 @@ public class TestingUI implements UserInterface {
      * @param input
      */
     private <T> void addNext(List<T> list, T input){
-    	if(replaceOnAdd.get(list)){
+    	if(replaceOnAdd.containsKey(list) && replaceOnAdd.get(list)){
     		list.remove(0);
     	}
     	

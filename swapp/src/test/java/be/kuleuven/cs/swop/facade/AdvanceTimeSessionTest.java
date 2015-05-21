@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.TestingUI;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.SessionController;
 
@@ -23,7 +22,16 @@ public class AdvanceTimeSessionTest {
         ui = new TestingUI();
         taskMan = new TaskMan();
         controller = new SessionController(ui, taskMan);
-        controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
+        
+        // log in
+        ui.addFileName("test.json");
+        controller.loadFromFile();
+        BranchOfficeWrapper office = taskMan.getOffices().stream().findFirst().get();
+        ui.addOffice(office);
+        UserWrapper user = taskMan.getUsersFrom(office).stream().findFirst().get();
+        ui.addSelectUser(user);
+        controller.startSelectUserSession();
+        
         ui.start();
     }
     
