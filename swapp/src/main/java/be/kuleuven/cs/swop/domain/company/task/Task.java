@@ -66,24 +66,13 @@ public class Task implements Serializable {
     }
 
     LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
-        return getTaskInfo().getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
+        return info.getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
     }
 
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
         return status.getEstimatedOrPlanningPeriod();
     }
 
-    /**
-     * Check whether this Task can have the given task as a dependency, the given Task can't be null and cannnot create a dependency loop when it's added as dependency to tis Task.
-     *
-     * @param dependency
-     *            The given possible dependency.
-     * @return Returns true is the given Task isn't null or when it doesn't create a dependency loop when added as dependency.
-     */
-    public boolean canHaveAsDependency(Task dependency) {
-        if (dependency == null) { return false; }
-        return (dependency != this) && !dependency.containsDependency(this);
-    }
 
     /**
      * Sets an alternative Task for this Task for when this Task failed, the alternative can't be null, can't create a dependency loop and this Task has to be failed.
