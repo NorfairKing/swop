@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
@@ -241,41 +240,19 @@ public class ButtonMashingUI implements UserInterface {
 
     public void performAction() {
     	
-    	List<Consumer<Void>> sessions = new ArrayList<>();
-    	sessions.add( t -> getSessionController().startAdvanceTimeSession() );
+    	List<Runnable> sessions = new ArrayList<>();
+    	sessions.add( () -> getSessionController().startAdvanceTimeSession() );
+    	sessions.add( () -> getSessionController().startCreateProjectSession());
+    	sessions.add( () -> getSessionController().startCreateTaskSession());
+    	sessions.add( () -> getSessionController().startShowProjectsSession());
+    	sessions.add( () -> getSessionController().startUpdateTaskStatusSession());
+    	sessions.add( () -> getSessionController().startPlanTaskSession());
+    	sessions.add( () -> getSessionController().startRunSimulationSession());
+    	sessions.add( () -> getSessionController().startSelectUserSession());
+    	sessions.add( () -> getSessionController().startUpdateTaskStatusSession());
     	
-        int useCases = 9;
-        switch (random.nextInt(useCases)) {
-            case 0:
-                getSessionController().startAdvanceTimeSession();
-                break;
-            case 1:
-                getSessionController().startCreateProjectSession();
-                break;
-            case 2:
-                getSessionController().startCreateTaskSession();
-                break;
-            case 3:
-                getSessionController().startShowProjectsSession();
-                break;
-            case 4:
-                getSessionController().startUpdateTaskStatusSession();
-                break;
-            case 5:
-                getSessionController().startPlanTaskSession();
-                break;
-            case 6:
-                getSessionController().startRunSimulationSession();
-                break;
-            case 7:
-                getSessionController().startSelectUserSession();
-                break;
-            case 8:
-                getSessionController().startUpdateTaskStatusSession();
-                break;
-            default:
-                throw new RuntimeException("Java should never get here");
-        }
+    	int toCall = random.nextInt(sessions.size());
+    	sessions.get(toCall).run();
     }
 
     @Override

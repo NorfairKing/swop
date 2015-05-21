@@ -449,7 +449,12 @@ public class SessionController {
                 }
             }
             TaskWrapper task = getUi().selectTaskFromProjects(assignedTaskMap);
-
+            
+            if (task == null) {
+                handleSimulationStep();
+                return;
+            }
+            
             if (task.isFinal()) {
                 getUi().showError("Can't update task: this task is already final.");
                 handleSimulationStep();
@@ -544,7 +549,12 @@ public class SessionController {
             return;
         }
         // The user indicates he wants to start a simulation
-        getTaskMan().startSimulation();
+        try {
+        	getTaskMan().startSimulation();
+        }
+        catch (IllegalStateException ex) {
+        	getUi().showError("Already in a simulation.");
+        }
     }
     
     public void saveToFile(){
