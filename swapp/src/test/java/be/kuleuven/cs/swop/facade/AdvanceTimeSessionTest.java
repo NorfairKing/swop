@@ -7,24 +7,11 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.TestingUI;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.facade.TaskMan;
-import be.kuleuven.cs.swop.facade.SessionController;
-
-public class AdvanceTimeSessionTest {
-    
-    private static TestingUI  ui;
-    private static TaskMan taskMan;
-    private static SessionController controller;
+public class AdvanceTimeSessionTest extends BaseFacadeTest {
     
     @Before
     public void setUp() throws Exception {
-        ui = new TestingUI();
-        taskMan = new TaskMan();
-        controller = new SessionController(ui, taskMan);
-        controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
-        ui.start();
+        simpleSetup();
     }
     
     @Test

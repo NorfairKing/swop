@@ -12,36 +12,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.facade.ConflictingPlannedTaskWrapperException;
-import be.kuleuven.cs.swop.TestingUI;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.facade.DeveloperData;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
-import be.kuleuven.cs.swop.facade.TaskMan;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
 
 
-public class UpdateTaskStatusSessionTest {
-    private static TestingUI  ui;
-    private static TaskMan taskMan;
-    private static SessionController controller;
+public class UpdateTaskStatusSessionTest extends BaseFacadeTest {
     
     private ProjectWrapper project;
     private TaskWrapper task;
     
     @Before
     public void setUp() throws Exception {
-        ui = new TestingUI();
-        taskMan = new TaskMan();
-        controller = new SessionController(ui, taskMan);
-        controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
-        ui.start();
+        simpleSetup();
         
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
         task = taskMan.createTaskFor(project, new TaskData("TD", 500, .1));
@@ -53,11 +42,10 @@ public class UpdateTaskStatusSessionTest {
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
         
-        DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
-        taskMan.createPlanning(task, time,
-                new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
+        DeveloperWrapper dev = user.asDeveloper();
+        taskMan.createPlanning(task, time, new HashSet<Resource>(Arrays.asList(dev.getDeveloper())));
 
-        TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
+        TaskStatusData startData = new ExecutingStatusData();
         ui.addRequestTaskStatusData(startData);
         
         controller.startUpdateTaskStatusSession();
@@ -82,11 +70,10 @@ public class UpdateTaskStatusSessionTest {
         LocalDateTime time = LocalDateTime.of(2015, 1, 1, 8, 0);
         taskMan.updateSystemTime(time);
         
-        DeveloperWrapper dev = taskMan.createDeveloper(new DeveloperData("eddye"));
-        taskMan.createPlanning(task, time,
-                new HashSet<>(), new HashSet<>(Arrays.asList(dev)));
+        DeveloperWrapper dev = user.asDeveloper();
+        taskMan.createPlanning(task, time, new HashSet<Resource>(Arrays.asList(dev.getDeveloper())));
 
-        TaskStatusData startData = new ExecutingStatusData(dev.getAsUser());
+        TaskStatusData startData = new ExecutingStatusData();
         ui.addRequestTaskStatusData(startData);
         
         controller.startUpdateTaskStatusSession();

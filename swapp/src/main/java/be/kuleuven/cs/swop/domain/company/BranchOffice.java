@@ -35,8 +35,8 @@ public class BranchOffice implements Serializable {
 
     private final Set<Project>   projects   = new HashSet<Project>();
     private final Company        company;
-    private PlanningDepartment      planningDepartment;
-    private Project              delegationProject;
+    private final PlanningDepartment      planningDepartment;
+    private final Project        delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
 
     public BranchOffice(String location, Company company) {
@@ -284,8 +284,11 @@ public class BranchOffice implements Serializable {
      *            The memento to restore from
      */
     public void restoreFromMemento(Memento memento) {
-        planningDepartment = memento.getSavedState().planningDepartment;
-        delegationProject = memento.getSavedState().delegationProject;
+        this.resources.clear();
+        this.resources.addAll(memento.getSavedState().resources);
+        
+        this.projects.clear();
+        this.projects.addAll(memento.getSavedState().projects);
     }
 
     public static class Memento {

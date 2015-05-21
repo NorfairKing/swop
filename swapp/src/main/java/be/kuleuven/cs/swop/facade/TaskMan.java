@@ -29,35 +29,44 @@ import be.kuleuven.cs.swop.domain.company.user.Manager;
 
 public class TaskMan {
 
-    private Company company;
-    private Authenticator authenticator = new Authenticator();
+    private Company             company;
+    private Authenticator       authenticator = new Authenticator();
     private AuthenticationToken authenticationToken;
 
     /**
      * Full constructor
      */
     public TaskMan() {
+        this(new Company());
         this.company = new Company();
     }
 
-    // Getters
+    public TaskMan(Company company) {
+        if (!canHaveAsCompany(company)) { throw new IllegalArgumentException(ERROR_ILLEGAL_COMPANY); }
+        this.company = company;
+    }
+
     private Company getCompany()
     {
         return this.company;
     }
-    
+
+    protected boolean canHaveAsCompany(Company company) {
+        return company != null;
+    }
+
     public AuthenticationToken getCurrentAuthenticationToken() {
         return authenticationToken;
     }
-    
-    public boolean isAuthenticated(){
-    	return authenticationToken != null;
+
+    public boolean isAuthenticated() {
+        return authenticationToken != null;
     }
-    
+
     public void setCurrentAuthenticationToken(AuthenticationToken token) {
         this.authenticationToken = token;
     }
-    
+
     public void requestAuthenticationFor(BranchOfficeWrapper office, UserWrapper user) {
         authenticationToken = authenticator.createFor(office.getOffice(), user.getUser());
     }
@@ -78,7 +87,7 @@ public class TaskMan {
         }
         return result;
     }
-    
+
     public Set<BranchOfficeWrapper> getOffices() {
         return map(company.getOffices(), o -> new BranchOfficeWrapper(o));
     }
@@ -86,7 +95,8 @@ public class TaskMan {
     /**
      * Retrieve all users for the given branch office
      *
-     * @param office The branch office from which you want the users
+     * @param office
+     *            The branch office from which you want the users
      * @return A set of all known users, currently only developers
      */
     public Set<UserWrapper> getUsersFrom(BranchOfficeWrapper office) {
@@ -104,7 +114,7 @@ public class TaskMan {
     public Set<ProjectWrapper> getProjects() {
         return map(company.getProjects(authenticationToken), p -> new ProjectWrapper(p));
     }
-    
+
     /**
      * Retrieve every Project managed by this program.
      *
@@ -114,10 +124,12 @@ public class TaskMan {
     public Set<ProjectWrapper> getAllProjects() {
         return map(company.getAllProjects(), p -> new ProjectWrapper(p));
     }
-    
+
     /**
      * Searches all known branchoffices to see which manages the project.
-     * @param project The project for which you want the office
+     * 
+     * @param project
+     *            The project for which you want the office
      * @return The office that manages the project
      */
     public BranchOfficeWrapper getOfficeOf(ProjectWrapper project) {
@@ -147,7 +159,8 @@ public class TaskMan {
     /**
      * Retrieves the assigned tasks from a single project for current authenticated user
      *
-     * @param project The project to retrieve from
+     * @param project
+     *            The project to retrieve from
      * @return The assigned tasks
      */
     public Set<TaskWrapper> getAssignedTasksOf(ProjectWrapper project) {
@@ -155,16 +168,16 @@ public class TaskMan {
     }
 
     /**
-     * Retrieves some suggestions for possible planning times of a task
-     * Currently gives you the first 3 starting at the current system time
+     * Retrieves some suggestions for possible planning times of a task Currently gives you the first 3 starting at the current system time
      *
-     * @param task The task for which you want a possible time
+     * @param task
+     *            The task for which you want a possible time
      * @return A list of suggested time options
      */
     public List<LocalDateTime> getPlanningTimeOptions(TaskWrapper task) {
         return company.getPlanningTimeOptions(
-                task.getTask(), 
-                AMOUNT_AVAILABLE_TASK_TIME_OPTIONS, 
+                task.getTask(),
+                AMOUNT_AVAILABLE_TASK_TIME_OPTIONS,
                 company.getSystemTime(),
                 authenticationToken);
     }
@@ -172,61 +185,72 @@ public class TaskMan {
     /**
      * Retrieves a list of options for each resource type needed by a task.
      *
-     * @param task The task for which you want the options
-     * @param time The time on which you cant to use the resources
+     * @param task
+     *            The task for which you want the options
+     * @param time
+     *            The time on which you cant to use the resources
      * @return The list with options
      */
     public Map<ResourceType, List<Resource>> getPlanningResourceOptions(TaskWrapper task, LocalDateTime time) {
         return company.getPlanningResourceOptions(task.getTask(), time, authenticationToken);
     }
 
-    public Set<Resource> getResources(){
-    	return company.getResources(authenticationToken);
+    public Set<Resource> getResources() {
+        return company.getResources(authenticationToken);
     }
 
     /**
      * Retrieves a list of developers that can work on the task on a given time
      *
-     * @param task The task for which you need developers
-     * @param time The time on which you need developers
+     * @param task
+     *            The task for which you need developers
+     * @param time
+     *            The time on which you need developers
      * @return The possible developers
      */
     public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
         return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> new DeveloperWrapper(d));
     }
-    
-    public ProjectWrapper getDelegationProject(){
+
+    public ProjectWrapper getDelegationProject() {
         return new ProjectWrapper(company.getDelegationProject(authenticationToken));
     }
 
     /**
      * Create a planning for a task
      *
-     * @param task The task to plan
-     * @param time The time on which it is planned for the task to start
-     * @param resources The resources to reserve for this task
-     * @param developers The developers that have to work on the task
-     * @throws ConflictingPlannedTaskWrapperException If the created planning would cause a
-     * conflict
+     * @param task
+     *            The task to plan
+     * @param time
+     *            The time on which it is planned for the task to start
+     * @param resources
+     *            The resources to reserve for this task
+     * @param developers
+     *            The developers that have to work on the task
+     * @throws ConflictingPlannedTaskWrapperException
+     *             If the created planning would cause a conflict
      */
-    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<Resource> resources ) throws ConflictingPlannedTaskWrapperException {
-    	try {
-			company.createPlanning(task.getTask(), time, resources, authenticationToken);
-		} catch (ConflictingPlannedTaskException e) {
-			throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
-		}
+    public void createPlanning(TaskWrapper task, LocalDateTime time, Set<Resource> resources) throws ConflictingPlannedTaskWrapperException {
+        try {
+            company.createPlanning(task.getTask(), time, resources, authenticationToken);
+        } catch (ConflictingPlannedTaskException e) {
+            throw new ConflictingPlannedTaskWrapperException(new TaskWrapper(e.getTask()));
+        }
     }
 
     /**
-     * Create a planning for a task, this planning will include a break for the
-     * developers.
+     * Create a planning for a task, this planning will include a break for the developers.
      *
-     * @param task The task to plan
-     * @param time The time on which it is planned for the task to start
-     * @param resources The resources to reserve for this task
-     * @param developers The developers that have to work on the task
-     * @throws ConflictingPlannedTaskWrapperException IF the created planning would cause a
-     * conflict
+     * @param task
+     *            The task to plan
+     * @param time
+     *            The time on which it is planned for the task to start
+     * @param resources
+     *            The resources to reserve for this task
+     * @param developers
+     *            The developers that have to work on the task
+     * @throws ConflictingPlannedTaskWrapperException
+     *             IF the created planning would cause a conflict
      */
     public void createPlanningWithBreak(TaskWrapper task, LocalDateTime time, Set<Resource> resources) throws ConflictingPlannedTaskWrapperException {
     	try {
@@ -236,8 +260,8 @@ public class TaskMan {
 		}
     }
 
-    public void removePlanning(TaskPlanning planning){
-    	company.removePlanning(planning, authenticationToken);
+    public void removePlanning(TaskPlanning planning) {
+        company.removePlanning(planning, authenticationToken);
     }
 
     /**
@@ -407,7 +431,8 @@ public class TaskMan {
     /**
      * Creates a new resource type in the system
      *
-     * @param data The data needed to create the type
+     * @param data
+     *            The data needed to create the type
      * @return The created type
      */
     public ResourceType createResourceType(ResourceTypeData data) {
@@ -427,7 +452,8 @@ public class TaskMan {
     /**
      * Creates a new resource in the system
      *
-     * @param data The data needed to create the resource
+     * @param data
+     *            The data needed to create the resource
      * @return The created resource
      */
     public Resource createResource(ResourceData data) {
@@ -437,13 +463,14 @@ public class TaskMan {
     }
 
     /**
-     * Check if the task is available.
-     * This is the 'available' described in the second iteration.
-     * Alternatively could be called 'canMoveToExecuting'
+     * Check if the task is available. This is the 'available' described in the second iteration. Alternatively could be called 'canMoveToExecuting'
      *
-     * @param time The time to check for
-     * @param dev The developer for whom the task might be available
-     * @param task The task to check
+     * @param time
+     *            The time to check for
+     * @param dev
+     *            The developer for whom the task might be available
+     * @param task
+     *            The task to check
      * @return Whether or not it is available
      */
     public boolean isTaskAvailableFor(LocalDateTime time, TaskWrapper task) {
@@ -453,60 +480,66 @@ public class TaskMan {
     /**
      * Create a new developer in the system
      *
-     * @param data The data needed to create a developer
+     * @param data
+     *            The data needed to create a developer
      * @return The newly created developer
      */
     public DeveloperWrapper createDeveloper(DeveloperData data) {
         String name = data.getName();
         return new DeveloperWrapper(company.createDeveloper(name, authenticationToken));
     }
-    
-    public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice){
-    	Task task = wrappedTask.getTask();
-    	BranchOffice newOffice = wrappedOffice.getOffice();
-    	getCompany().delegateTask(task, newOffice);
+
+    public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice) {
+        Task task = wrappedTask.getTask();
+        BranchOffice newOffice = wrappedOffice.getOffice();
+        getCompany().delegateTask(task, newOffice);
     }
-    
+
     public BranchOfficeWrapper getOfficeToWhichThisTaskIsDelegated(TaskWrapper task) {
         if (task.getTask().getDelegation() == null) return null;
         return new BranchOfficeWrapper(task.getTask().getDelegation().getNewOffice());
     }
-    
+
     public void startSimulation() {
         company.startSimulationFor(authenticationToken);
     }
-    
+
     public void realizeSimulation() {
         company.realizeSimulationFor(authenticationToken);
     }
-    
+
     public void cancelSimulation() {
         company.cancelSimulationFor(authenticationToken);
     }
-    
+
     public boolean isInASimulation() {
         return company.isInASimulationFor(authenticationToken);
     }
-    
+
     /**
      * Saves the company to disk.
      * 
-     * @param path Where to save it.
-     * @throws FileNotFoundException If you can't save there.
+     * @param path
+     *            Where to save it.
+     * @throws FileNotFoundException
+     *             If you can't save there.
      */
     public void saveEverythingToFile(String path) throws FileNotFoundException {
         JSONReader.writeToDisk(path, company);
     }
-    
+
     /**
      * Loads the company from disk.
      * 
-     * @param path Where to load from.
-     * @throws FileNotFoundException If there is no file found.
+     * @param path
+     *            Where to load from.
+     * @throws FileNotFoundException
+     *             If there is no file found.
      */
     public void loadEverythingFromFile(String path) throws FileNotFoundException {
-        company = (Company)JSONReader.readFromDisk(path);
+        company = (Company) JSONReader.readFromDisk(path);
     }
 
-    private static final int AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
+    private static final int    AMOUNT_AVAILABLE_TASK_TIME_OPTIONS = 3;
+    private static final String ERROR_ILLEGAL_COMPANY              = "Invalid company for TaskMan";
 }

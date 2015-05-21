@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.UserInterface;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.RequirementWrapper;
-import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
-import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -25,35 +26,25 @@ import be.kuleuven.cs.swop.facade.UserWrapper;
 
 public class TestingUI implements UserInterface {
 
-    private SessionController sessionController;
-    private List<UserWrapper>       selectUser = new ArrayList<>();
-    private List<LocalDateTime>     requestTime = new ArrayList<>();
-    private List<ProjectData>       requestProjectData = new ArrayList<>();
-    private List<ProjectWrapper>    requestProject = new ArrayList<>();
-    private List<TaskData>          requestTaskData = new ArrayList<>();
-    private List<TaskWrapper>       requestTask = new ArrayList<>();
-    private List<TaskStatusData>    requestTaskStatusData = new ArrayList<>();
-    private List<LocalDateTime>     requestSelectTime = new ArrayList<>();
-    private List<Set<ResourceWrapper>> requestResourcesSet = new ArrayList<>();
+    private SessionController           sessionController;
+    private List<UserWrapper>           selectUser = new ArrayList<>();
+    private List<LocalDateTime>         requestTime = new ArrayList<>();
+    private List<ProjectData>           requestProjectData = new ArrayList<>();
+    private List<ProjectWrapper>        requestProject = new ArrayList<>();
+    private List<TaskData>              requestTaskData = new ArrayList<>();
+    private List<TaskWrapper>           requestTask = new ArrayList<>();
+    private List<TaskStatusData>        requestTaskStatusData = new ArrayList<>();
+    private List<LocalDateTime>         requestSelectTime = new ArrayList<>();
+    private List<Set<Resource>>         requestResourcesSet = new ArrayList<>();
     private List<Set<DeveloperWrapper>> requestDevelopersSet = new ArrayList<>();
-    private List<SimulationStepData> requestSimStepData = new ArrayList<>();
-    private List<Boolean>           shouldAddBreak = new ArrayList<>();
-    private Map<Object, Boolean> replaceOnAdd = new HashMap<>();
+    private List<SimulationStepData>    requestSimStepData = new ArrayList<>();
+    private List<Boolean>               shouldAddBreak = new ArrayList<>();
+    private List<BranchOfficeWrapper>   requestOffice = new ArrayList<>();
+    private List<String>                requestFileName = new ArrayList<>();
+    private Map<Object, Boolean>        replaceOnAdd = new HashMap<>();
     
     public TestingUI(){
     	super();
-    	replaceOnAdd.put(selectUser, false);
-    	replaceOnAdd.put(requestTime, false);
-    	replaceOnAdd.put(requestProjectData, false);
-    	replaceOnAdd.put(requestProject, false);
-    	replaceOnAdd.put(requestTaskData, false);
-    	replaceOnAdd.put(requestTask, false);
-    	replaceOnAdd.put(requestTaskStatusData, false);
-    	replaceOnAdd.put(requestSelectTime, false);
-    	replaceOnAdd.put(requestResourcesSet, false);
-    	replaceOnAdd.put(requestDevelopersSet, false);
-    	replaceOnAdd.put(requestSimStepData, false);
-    	replaceOnAdd.put(shouldAddBreak, false);
     }
     
     
@@ -86,7 +77,7 @@ public class TestingUI implements UserInterface {
      * @param input
      */
     private <T> void addNext(List<T> list, T input){
-    	if(replaceOnAdd.get(list)){
+    	if(replaceOnAdd.containsKey(list) && replaceOnAdd.get(list)){
     		list.remove(0);
     	}
     	
@@ -168,7 +159,7 @@ public class TestingUI implements UserInterface {
     }
 
     @Override
-    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
+    public TaskData getTaskData(Set<ResourceType> types) {
         return getNext(requestTaskData);
     }
 
@@ -229,12 +220,12 @@ public class TestingUI implements UserInterface {
         return getNext(requestSelectTime);
     }
     
-    public void addSelectResourcesFor(Set<ResourceWrapper> set) {
+    public void addSelectResourcesFor(Set<Resource> set) {
     	addNext(requestResourcesSet, set);
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper, List<ResourceWrapper>> options, Set<RequirementWrapper> requirements) {
+    public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements) {
         return getNext(requestResourcesSet);
     }
     
@@ -263,6 +254,24 @@ public class TestingUI implements UserInterface {
     @Override
     public boolean askToAddBreak() {
         return getNext(shouldAddBreak);
+    }
+    
+    public void addOffice(BranchOfficeWrapper office) {
+        addNext(requestOffice, office);
+    }
+
+    @Override
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) {
+        return getNext(requestOffice);
+    }
+
+    public void addFileName(String filename) {
+        addNext(requestFileName, filename);
+    }
+    
+    @Override
+    public String getFileName() {
+        return getNext(requestFileName);
     }
 
 

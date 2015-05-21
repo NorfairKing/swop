@@ -2,21 +2,23 @@ package be.kuleuven.cs.swop;
 
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ExecutingStatusData;
 import be.kuleuven.cs.swop.facade.FailedStatusData;
 import be.kuleuven.cs.swop.facade.FinishedStatusData;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.RequirementWrapper;
-import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
-import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
@@ -170,20 +172,18 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     @Override
-    public Set<ResourceWrapper> selectResourcesFor(
-            Map<ResourceTypeWrapper, List<ResourceWrapper>> options,
-            Set<RequirementWrapper> requirements) {
+    public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements) {
         int n = random.nextInt(options.size() + 1);
-        Set<ResourceWrapper> result = new HashSet<>();
+        Set<Resource> result = new HashSet<>();
         for (int i = 0; i < n; i++) {
-            ResourceTypeWrapper t = selectFromCollection(options.keySet());
+            ResourceType t = selectFromCollection(options.keySet());
             result.add(selectFromCollection(options.get(t)));
         }
         return result;
     }
 
     @Override
-    public TaskData getTaskData(Set<ResourceTypeWrapper> types) {
+    public TaskData getTaskData(Set<ResourceType> types) {
         if (random.nextDouble() < 0.1) return null;
         String description = randomString();
         long duration = (long)random.nextInt(480); // arbitrary
@@ -210,8 +210,7 @@ public class ButtonMashingUI implements UserInterface {
                     return null;
                 }
                 else {
-                    UserWrapper u = selectFromCollection(devs).getAsUser();
-                    return new ExecutingStatusData(u);
+                    return new ExecutingStatusData();
                 }
             default:
                 return null;
@@ -318,6 +317,16 @@ public class ButtonMashingUI implements UserInterface {
     @Override
     public boolean askToAddBreak() {
         return random.nextBoolean();
+    }
+
+    @Override
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) {
+        return selectFromCollection(offices);
+    }
+
+    @Override
+    public String getFileName() {
+        return selectFromCollection(Arrays.asList("test.json", "blablabla.doesnexist"));
     }
 
 }

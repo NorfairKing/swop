@@ -5,30 +5,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.TestingUI;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.facade.TaskMan;
-import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskData;
 
 
-public class CreateTaskSessionTest {
-    private static TestingUI  ui;
-    private static TaskMan taskMan;
-    private static SessionController controller;
+public class CreateTaskSessionTest extends BaseFacadeTest {
     
     @Before
     public void setUp() throws Exception {
-        ui = new TestingUI();
-        taskMan = new TaskMan();
-        controller = new SessionController(ui, taskMan);
-        controller.setCurrentUser(new UserWrapper(new Developer("Dave")));
-        
-        taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
-        
-        ui.start();
+        simpleSetup();
     }
     
     @Test

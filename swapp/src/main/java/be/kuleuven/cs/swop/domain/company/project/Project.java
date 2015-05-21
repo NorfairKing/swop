@@ -24,14 +24,14 @@ public class Project implements Serializable {
     private final Set<Task>     tasks;
 
     @SuppressWarnings("unused")
-    private Project() { //for automatic (de)-serialization
+    private Project() { // for automatic (de)-serialization
         title = null;
         description = null;
         creationTime = null;
         dueTime = null;
         tasks = null;
-    } //for automatic (de)-serialization
-    
+    } // for automatic (de)-serialization
+
     /**
      * Full constructor
      *
@@ -62,7 +62,7 @@ public class Project implements Serializable {
         this.creationTime = creationTime;
         if (!canHaveAsDueTime(dueTime)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DUETIME); }
         this.dueTime = dueTime;
-        
+
         this.tasks = new HashSet<Task>();
     }
 
@@ -216,11 +216,15 @@ public class Project implements Serializable {
      *
      */
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation) {
-        return createTask(description, estimatedDuration, acceptableDeviation, new Requirements(new HashSet<Requirement>()));
+        return createTask(description, estimatedDuration, acceptableDeviation, new Requirements());
     }
 
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Requirements requirements) {
         return createTask(description, estimatedDuration, acceptableDeviation, new HashSet<Task>(), requirements);
+    }
+
+    public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies) {
+        return createTask(description, estimatedDuration, acceptableDeviation, dependencies, new Requirements());
     }
 
     public Task createTask(String description, long estimatedDuration, double acceptableDeviation, Set<Task> dependencies, Requirements requirements) {
