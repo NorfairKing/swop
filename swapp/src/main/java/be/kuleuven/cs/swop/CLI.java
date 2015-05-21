@@ -390,7 +390,7 @@ public class CLI implements UserInterface {
      * @param projectMap
      *            The selection of tasks for each project.
      * @return The selected task.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit the event
      */
     @Override
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) throws ExitEvent {

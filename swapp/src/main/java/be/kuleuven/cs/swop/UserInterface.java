@@ -29,7 +29,7 @@ public interface UserInterface {
      * @param users
      *            A list of all known users.
      * @return The selected user from the users list.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public UserWrapper selectUser(Set<UserWrapper> users) throws ExitEvent;
 
@@ -74,7 +74,7 @@ public interface UserInterface {
      *            The Set of ProjectWrappers specifying the Projects from which the user needs to select from.
      *
      * @return Returns a ProjectWrapper containing the Project selected by the user.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public ProjectWrapper selectProject(Set<ProjectWrapper> projects) throws ExitEvent;
 
@@ -85,7 +85,7 @@ public interface UserInterface {
      *            The Set of TaskWrappers specifying the Tasks from which the user needs to select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public TaskWrapper selectTask(Set<TaskWrapper> tasks) throws ExitEvent;
 
@@ -96,7 +96,7 @@ public interface UserInterface {
      *            The Set of ProjectWrappers specifying the Projects from which the user needs to select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) throws ExitEvent;
 
@@ -108,7 +108,7 @@ public interface UserInterface {
      *            A map of projects to tasks that belong to them that the user should select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) throws ExitEvent;
 
@@ -129,7 +129,7 @@ public interface UserInterface {
      * @param requirements
      *            The Set of requirements that need to be satisfied.
      * @return A set of all selected resources, at least one for each type.
-     * @throws ExitEvent 
+     * @throws ExitEvent To exit this event.
      */
     public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements) throws ExitEvent;
 

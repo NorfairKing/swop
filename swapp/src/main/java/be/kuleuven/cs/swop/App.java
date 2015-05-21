@@ -13,7 +13,7 @@ public class App {
      * 
      * @param args
      *            | 0: initialisation file.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException If the first parameter doesn't point to a proper file.
      */
     public static void main(String[] args) throws FileNotFoundException {
         UserInterface ui = new CLI();
