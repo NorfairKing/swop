@@ -3,7 +3,11 @@ NAME 		= swop
 GROUP_NR 	= 02
 GROUP 	 	= group$(GROUP_NR)
 
+README 		= README.md
+
 FINAL_ZIP 	= $(NAME).zip
+FINAL_JAR   = system.jar
+FINAL_README= README.txt
 
 APP 		= swapp
 POM_FILE 	= $(APP)/pom.xml
@@ -16,19 +20,20 @@ DIAGRAM_DIR	= $(RESULT_DIR)/diagrams
 
 all: package doc diagrams
 	mkdir -p $(RESULT_DIR) $(DOC_DIR) $(DIAGRAM_DIR)
-	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)/system.jar
+	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)/$(FINAL_JAR)
 	cp -r swapp/src $(RESULT_DIR)
 	cp -r swapp/target/site/apidocs/* $(DOC_DIR)
-	cp -r diagrams/*.eps $(DIAGRAM_DIR)
+	find . -type f -name '*.eps' | cpio -pdm $(DIAGRAM_DIR)
+	cp $(README) $(RESULT_DIR)/$(FINAL_README)
 	zip -r $(FINAL_ZIP) $(RESULT_DIR)
 
 
 package:
-	mvn package -f $(POM_FILE)
+	mvn package --file $(POM_FILE) --define skipTests
 
 
 doc:
-	mvn javadoc:javadoc -f $(POM_FILE)
+	mvn javadoc:javadoc --file $(POM_FILE) --quiet --fail-never
 
 
 .PHONY: diagrams
