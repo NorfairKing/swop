@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -275,8 +274,8 @@ public class PlanningDepartment implements Serializable {
              */
             return false;
         }
-        for (Requirement req : task.getRecursiveRequirements()) {// TODO does this have to be recursive or not?!
-            DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration())); //FIXME update to period
+        for (Requirement req : task.getRecursiveRequirements()) {
+            DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
             if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)) {
                 // System.out.println("5: " + req.getType().getName());
                 return false;
@@ -345,6 +344,10 @@ public class PlanningDepartment implements Serializable {
         // Check if the resources are available during the planning
         if (!areResourcesAvailableDuring(resources, period)) { throw new IllegalArgumentException(
                 ERROR_RESOURCE_NOT_AVAILABLE); }
+        
+        // Check if all needed resources are present
+        if (!task.getTaskInfo().getRequirements().isSatisfiedWith(resources)) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET); }
+
 
         // Check if the resources aren't already planned for another task
         TaskPlanning conflict = getConflictIfExists(task, period, resources);

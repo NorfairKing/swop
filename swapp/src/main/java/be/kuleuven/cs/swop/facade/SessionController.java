@@ -280,6 +280,10 @@ public class SessionController {
             }
             // The user selects the tasks he wants to plan
             TaskWrapper selectedTask = getUi().selectTaskFromProjects(unplannedTaskMap);
+            if (selectedTask == null) {
+            	handleSimulationStep();
+                return;
+            }
 
             while (true) {
                 try {
@@ -298,6 +302,11 @@ public class SessionController {
                     Set<Requirement> reqs = selectedTask.getRecursiveRequirements();
                     Map<ResourceType, List<Resource>> resourceOptions = formatRequirementsForSelection(reqs);
                     Set<Resource> chosenResources = getUi().selectResourcesFor(resourceOptions, reqs);
+                    
+                    if (chosenResources == null) {
+                    	handleSimulationStep();
+                        return;
+                    }
 
                     if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
                         if (getUi().askToAddBreak()) {

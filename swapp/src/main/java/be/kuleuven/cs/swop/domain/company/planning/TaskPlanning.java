@@ -7,8 +7,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
@@ -52,7 +50,7 @@ public class TaskPlanning implements Serializable {
     public Set<Developer> getDevelopers() {
         Set<Developer> devs = new HashSet<Developer>();
         for(Resource res : reservations){
-        	if(res.getType() == Developer.DEVELOPER_TYPE){
+        	if(res.getType().equals(Developer.DEVELOPER_TYPE)){
         		devs.add((Developer) res);
         	}
         }
@@ -76,13 +74,6 @@ public class TaskPlanning implements Serializable {
         return getPlannedStartTime().until(getPlannedEndTime(), ChronoUnit.MINUTES);
     }
 
-    /* TODO MOVE TO REQUIREMENTS CLASS
-    private boolean satisfiedRequirements(Set<Resource> resources) {
-        for (Requirement req : task.getRecursiveRequirements()) {
-            if (!req.isSatisfiedWith(resources)) { return false; }
-        }
-        return true;
-    }*/
     public DateTimePeriod getEstimatedPeriod(){
         return period;
     }
@@ -113,5 +104,4 @@ public class TaskPlanning implements Serializable {
 
     private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations for planning.";
     private static final String ERROR_INVALID_STARTIME     = "Invalid start time for this planning.";
-    private static final String ERROR_INVALID_ENDTIME     = "Invalid end time for this planning.";
 }

@@ -122,6 +122,15 @@ public class Requirements implements Serializable {
         // Are all the requirements met?
         return stillRequired.isEmpty();
     }
+    
+    public boolean isSatisfiedWith(Set<Resource> resources) {
+    	for (Requirement req: reqs) {
+    		if (!req.isSatisfiedWith(resources)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
 
     /**
      * Checks to see if in this set of requirements there are two or more with the same type
