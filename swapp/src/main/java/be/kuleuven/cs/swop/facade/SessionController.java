@@ -12,7 +12,6 @@ import java.util.Set;
 import be.kuleuven.cs.swop.UserInterface;
 import be.kuleuven.cs.swop.UserInterface.ExitEvent;
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.ConflictingPlannedTaskException;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;

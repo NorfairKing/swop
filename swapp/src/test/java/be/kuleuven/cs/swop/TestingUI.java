@@ -13,13 +13,11 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
-import be.kuleuven.cs.swop.facade.DeveloperWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
-import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
 import be.kuleuven.cs.swop.facade.UserWrapper;
 
@@ -33,15 +31,16 @@ public class TestingUI implements UserInterface {
     private List<ProjectWrapper>        requestProject = new ArrayList<>();
     private List<TaskData>              requestTaskData = new ArrayList<>();
     private List<TaskWrapper>           requestTask = new ArrayList<>();
-    private List<TaskStatusData>        requestTaskStatusData = new ArrayList<>();
     private List<LocalDateTime>         requestSelectTime = new ArrayList<>();
     private List<Set<Resource>>         requestResourcesSet = new ArrayList<>();
-    private List<Set<DeveloperWrapper>> requestDevelopersSet = new ArrayList<>();
     private List<SimulationStepData>    requestSimStepData = new ArrayList<>();
     private List<Boolean>               shouldAddBreak = new ArrayList<>();
     private List<BranchOfficeWrapper>   requestOffice = new ArrayList<>();
     private List<String>                requestFileName = new ArrayList<>();
     private Map<Object, Boolean>        replaceOnAdd = new HashMap<>();
+    private List<Boolean>               requestExecute = new ArrayList<>();
+    private List<Boolean>               requestFinish = new ArrayList<>();
+    private List<Set<Resource>>         requestNewResources = new ArrayList<>();
     
     public TestingUI(){
     	super();
@@ -163,15 +162,6 @@ public class TestingUI implements UserInterface {
         return getNext(requestTaskData);
     }
 
-    public void addRequestTaskStatusData(TaskStatusData data) {
-    	addNext(requestTaskStatusData, data);
-    }
-
-    @Override
-    public TaskStatusData getUpdateStatusData(TaskWrapper task) {
-        return getNext(requestTaskStatusData);
-    }
-
     public void addRequestProjectDate(ProjectData data) {
     	addNext(requestProjectData, data);
     }
@@ -229,15 +219,6 @@ public class TestingUI implements UserInterface {
         return getNext(requestResourcesSet);
     }
     
-    public void addSelectDevelopers(Set<DeveloperWrapper> set) {
-    	addNext(requestDevelopersSet, set);
-    }
-
-    @Override
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions) {
-        return getNext(requestDevelopersSet);
-    }
-    
     public void addSimulationStepData(SimulationStepData data) {
     	addNext(requestSimStepData, data);
     }
@@ -273,6 +254,35 @@ public class TestingUI implements UserInterface {
     public String getFileName() {
         return getNext(requestFileName);
     }
+
+    public void addExecute(boolean ex) {
+    	addNext(requestExecute, ex);
+    }
+
+	@Override
+	public boolean askExecute() throws ExitEvent {
+		return getNext(requestExecute);
+	}
+
+	public void addFinish(boolean fin) {
+		addNext(requestFinish, fin);
+	}
+
+	@Override
+	public boolean askFinish() throws ExitEvent {
+		return getNext(requestFinish);
+	}
+
+	public void addSelectNewResources(Set<Resource> ress) {
+		addNext(requestNewResources, ress);
+	}
+
+	@Override
+	public Set<Resource> askSelectnewResources(Set<Resource> resources,
+			Map<ResourceType, List<Resource>> resourceOptions,
+			Set<Requirement> reqs) throws ExitEvent {
+		return getNext(requestNewResources);
+	}
 
 
 }
