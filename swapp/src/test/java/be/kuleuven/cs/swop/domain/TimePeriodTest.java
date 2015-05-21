@@ -48,27 +48,4 @@ public class TimePeriodTest {
         new DateTimePeriod(now, null);
     }
 
-    @Test
-    public void canHaveAsStartTimeValidTest() {
-        assertTrue(validTimePeriod1.canHaveAsStartTime(now));
-        assertTrue(validTimePeriod1.canHaveAsStartTime(now.plusHours(5)));
-    }
-
-    @Test
-    public void canHaveAsStartTimeInvalidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStartTime(null));
-    }
-
-    @Test
-    public void canHaveAsStopTimeValidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStopTime(now.plusHours(1)));
-        assertTrue(validTimePeriod1.canHaveAsStopTime(now.plusHours(3)));
-    }
-
-    @Test
-    public void canHaveAsStopTimeInvalidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStopTime(null));
-        assertFalse(validTimePeriod1.canHaveAsStopTime(now));
-    }
-
 }
