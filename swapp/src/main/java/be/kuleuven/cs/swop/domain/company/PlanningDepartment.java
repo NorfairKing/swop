@@ -451,8 +451,14 @@ public class PlanningDepartment implements Serializable {
     }
     
     private void updatePlanningForState(Task t, DateTimePeriod period, Set<Resource> reservations) throws ConflictingPlannedTaskException{
+        TaskPlanning plan = t.getPlanning();
         t.removePlanning();
+        try{
         createPlanning(t, period, reservations);
+        }catch(ConflictingPlannedTaskException e){
+            t.plan(plan);
+            throw e;
+        }
     }
 
     /**

@@ -209,6 +209,10 @@ public class TaskWrapper {
     public DateTimePeriod getEstimatedOrPlanningPeriod(){
         return task.getEstimatedOrPlanningPeriod();
     }
+    
+    public boolean isPlanned() {
+        return task.isPlanned();
+    }
 
     
     
@@ -216,5 +220,6 @@ public class TaskWrapper {
         return getTask().getEstimatedOrRealFinishDate(currentTime);
     }
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";
+
 
 }
