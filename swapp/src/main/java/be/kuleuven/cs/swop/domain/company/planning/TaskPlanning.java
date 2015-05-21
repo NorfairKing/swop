@@ -4,7 +4,6 @@ package be.kuleuven.cs.swop.domain.company.planning;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,19 +23,23 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 public class TaskPlanning implements Serializable {
 
     private final Set<Resource> reservations;
-    private final LocalDateTime   plannedStartTime;
-    private final LocalDateTime   plannedEndTime;
+    private final DateTimePeriod period;
+    private final boolean withBreak;
 
-    @SuppressWarnings("unused")
-    protected TaskPlanning() {reservations = null;plannedStartTime = null;plannedEndTime = null;} //for automatic (de)-serialization
-    public TaskPlanning(LocalDateTime plannedStartTime, Set<Resource> reservations, long duration) {
+    protected TaskPlanning() {reservations = null;period = null;withBreak = false;} //for automatic (de)-serialization
+    public TaskPlanning(DateTimePeriod period, Set<Resource> reservations, boolean withBreak) {
         if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
         this.reservations = reservations;
-        if (!canHaveAsPlannedStartTime(plannedStartTime)) { throw new IllegalArgumentException(ERROR_INVALID_STARTIME); }
-        this.plannedStartTime = plannedStartTime;
-        if (!canHaveAsTaskDuration(duration)) { throw new IllegalArgumentException(ERROR_INVALID_DURATION); }
-        this.plannedEndTime = plannedStartTime.plusMinutes(duration);
-
+        if (!canHaveAsPeriod(period)) { throw new IllegalArgumentException(ERROR_INVALID_STARTIME); }
+        this.withBreak = withBreak;
+        if(withBreak){
+            this.period = new DateTimePeriod(period.getStartTime(), period.getStopTime().plusMinutes(Developer.BREAK_TIME));
+        }else{
+            this.period = period;
+        }
+    }
+    public TaskPlanning(DateTimePeriod period, Set<Resource> reservations) {
+        this(period,reservations,false);
     }
 
     protected boolean canHaveAsReservations(Set<Resource> reservations) {
@@ -46,8 +49,12 @@ public class TaskPlanning implements Serializable {
         return true;
     }
 
-    public ImmutableSet<Resource> getReservations() {
-        return ImmutableSet.copyOf(reservations);
+    public Set<Resource> getReservations() {
+        Set<Resource> ress = new HashSet<Resource>();
+        for(Resource res : reservations){
+            ress.add(res);
+        }
+        return ress;
     }
     
 
@@ -62,29 +69,20 @@ public class TaskPlanning implements Serializable {
     }
 
     public LocalDateTime getPlannedStartTime() {
-        return plannedStartTime;
+        return period.getStartTime();
     }
     
     public LocalDateTime getPlannedEndTime() {
-        return plannedEndTime;
+        return period.getStopTime();
     }
 
-    protected boolean canHaveAsPlannedStartTime(LocalDateTime plannedStartTime) {
-        return plannedStartTime != null;
+    protected boolean canHaveAsPeriod(DateTimePeriod period) {
+        return period != null;
     }
     
-    protected boolean canHaveAsPlannedEndTime(LocalDateTime plannedEndTime) {
-        if(plannedStartTime == null) return false;
-        if(plannedEndTime.isBefore(plannedStartTime)) return false;
-        return true;
-    }
-    
-    protected boolean canHaveAsTaskDuration(long taskDuration){
-        return taskDuration > 0;
-    }
     
     public long getTaskDuration(){
-        return plannedStartTime.until(plannedEndTime, ChronoUnit.MINUTES);
+        return getPlannedStartTime().until(getPlannedEndTime(), ChronoUnit.MINUTES);
     }
 
     /* TODO MOVE TO REQUIREMENTS CLASS
@@ -95,7 +93,7 @@ public class TaskPlanning implements Serializable {
         return true;
     }*/
     public DateTimePeriod getEstimatedPeriod(){
-        return new DateTimePeriod(plannedStartTime, plannedEndTime);
+        return period;
     }
     public boolean includesBreak() {
         return false;
@@ -105,9 +103,8 @@ public class TaskPlanning implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((plannedStartTime == null) ? 0 : plannedStartTime.hashCode());
+        result = prime * result + ((period == null) ? 0 : period.hashCode());
         result = prime * result + ((reservations == null) ? 0 : reservations.hashCode());
-        result = prime * result + ((plannedEndTime == null) ? 0 : plannedEndTime.hashCode());
         return result;
     }
 
@@ -117,12 +114,9 @@ public class TaskPlanning implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         TaskPlanning other = (TaskPlanning) obj;
-        if (plannedStartTime == null) {
-            if (other.plannedStartTime != null) return false;
-        } else if (!plannedStartTime.equals(other.plannedStartTime)) return false;
-        if (plannedEndTime == null) {
-            if (other.plannedEndTime != null) return false;
-        } else if (!plannedEndTime.equals(other.plannedEndTime)) return false;
+        if (period == null) {
+            if (other.period != null) return false;
+        } else if (!period.equals(other.period)) return false;
         if (reservations == null) {
             if (other.reservations != null) return false;
         } else if (!reservations.equals(other.reservations)) return false;
@@ -131,4 +125,5 @@ public class TaskPlanning implements Serializable {
 
     private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations for planning.";
     private static final String ERROR_INVALID_STARTIME     = "Invalid start time for this planning.";
-    private static final String ERROR_INVALID_DURATION    = "Invalid duration for this planning.";}
+    private static final String ERROR_INVALID_ENDTIME     = "Invalid end time for this planning.";
+}

@@ -443,7 +443,7 @@ public class PlanningDepartment implements Serializable {
      * @throws ConflictingPlannedTaskException 
      */
     public void failTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
-        if(t.isPlanned()){
+        if(t.isExecuting()){
             DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
             updatePlanningForState(t,period, t.getPlanning().getReservations());
         }
