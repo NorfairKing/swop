@@ -346,7 +346,7 @@ public class PlanningDepartment implements Serializable {
     private boolean hasResourcesOfType(ResourceType type, Set<Resource> resources, int number) {
         int counter = 0;
         for (Resource resource : resources) {
-            if (resource.getType() == type) {
+            if (resource.getType().equals(type)) {
                 counter++;
             }
             if (counter >= number)
