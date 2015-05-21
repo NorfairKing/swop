@@ -2,12 +2,14 @@ package be.kuleuven.cs.swop;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
@@ -194,6 +196,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public void showError(String error) {
+    	System.out.println(error);
     }
 
     private String randomString() {
@@ -237,6 +240,10 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     public void performAction() {
+    	
+    	List<Consumer<Void>> sessions = new ArrayList<>();
+    	sessions.add( t -> getSessionController().startAdvanceTimeSession() );
+    	
         int useCases = 9;
         switch (random.nextInt(useCases)) {
             case 0:
@@ -283,7 +290,7 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public String getFileName() {
-        return selectFromCollection(Arrays.asList("test.json", "blablabla.doesnexist"));
+        return selectFromCollection(Arrays.asList("../save_files/test.json", "blablabla.doesnexist"));
     }
 
 	@Override
