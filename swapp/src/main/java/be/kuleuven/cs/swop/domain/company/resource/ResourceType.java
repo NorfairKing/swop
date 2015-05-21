@@ -139,9 +139,12 @@ public class ResourceType implements Serializable {
     @Override
     public int hashCode() {
         Set<ResourceType> conflictsWithWithoutThis = new HashSet<ResourceType>();
-        for(ResourceType type : conflictsWith){
-            if(type != this){
-                conflictsWithWithoutThis.add(type);
+        
+        if (conflictsWith != null) {
+            for(ResourceType type : conflictsWith){
+                if(type != this){
+                    conflictsWithWithoutThis.add(type);
+                }
             }
         }
         
@@ -149,7 +152,7 @@ public class ResourceType implements Serializable {
         int result = 1;
         result = prime * result + ((conflictsWithWithoutThis == null) ? 0 : conflictsWithWithoutThis.hashCode());
         result = prime * result + ((dependencies == null) ? 0 : dependencies.hashCode());
-        result = prime * result + name.hashCode();
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
     @Override

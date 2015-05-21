@@ -21,6 +21,8 @@ public class SimulationSessionTest extends BaseFacadeTest {
     @Test
     public void testCancel() {
         taskMan.updateSystemTime(LocalDateTime.of(2015, 1, 1, 8, 0));
+
+        int projectCountBefore = taskMan.getProjects().size();
         
         // start simulation
         controller.startRunSimulationSession();
@@ -30,7 +32,7 @@ public class SimulationSessionTest extends BaseFacadeTest {
         ui.addRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
         controller.startCreateProjectSession();
         
-        assertEquals(taskMan.getProjects().size(), 1);
+        assertEquals(projectCountBefore + 1, taskMan.getProjects().size());
         
         // start and cancel it, so nothing changes and we can cancel the simulation
         ui.addSimulationStepData(new SimulationStepData(false, false));
@@ -38,12 +40,14 @@ public class SimulationSessionTest extends BaseFacadeTest {
         controller.startShowProjectsSession();
         
         // project should be gone now
-        assertEquals(taskMan.getProjects().size(), 0);
+        assertEquals(projectCountBefore, taskMan.getProjects().size());
     }
     
     @Test
     public void testRealize() {
         taskMan.updateSystemTime(LocalDateTime.of(2015, 1, 1, 8, 0));
+        
+        int projectCountBefore = taskMan.getProjects().size();
         
         // start simulation
         controller.startRunSimulationSession();
@@ -53,14 +57,14 @@ public class SimulationSessionTest extends BaseFacadeTest {
         ui.addRequestProjectDate(new ProjectData("Een project", "Een description", LocalDateTime.of(2015, 1, 2, 8, 0)));
         controller.startCreateProjectSession();
         
-        assertEquals(taskMan.getProjects().size(), 1);
+        assertEquals(projectCountBefore + 1, taskMan.getProjects().size());
         
-        // start and cancel it, so nothing changes and we can cancel the simulation
+        // start and realize it, so nothing changes and we can cancel the simulation
         ui.addSimulationStepData(new SimulationStepData(false, true));
         ui.addRequestProject(null);
         controller.startShowProjectsSession();
         
         // nothing should have changed
-        assertEquals(taskMan.getProjects().size(), 1);
+        assertEquals(projectCountBefore + 1, taskMan.getProjects().size());
     } 
 }
