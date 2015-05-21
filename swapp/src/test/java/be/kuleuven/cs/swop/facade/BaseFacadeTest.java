@@ -3,7 +3,7 @@ package be.kuleuven.cs.swop.facade;
 import be.kuleuven.cs.swop.TestingUI;
 
 
-public class BaseFacadeTest {
+public abstract class BaseFacadeTest {
     
     protected TestingUI  ui;
     protected TaskMan taskMan;
