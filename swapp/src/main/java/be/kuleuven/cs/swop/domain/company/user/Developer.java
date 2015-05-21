@@ -15,7 +15,6 @@ import java.util.HashSet;
 @SuppressWarnings("serial")
 public class Developer extends Resource implements User {
 
-    @SuppressWarnings("unused")
     private Developer() { super(DEVELOPER_TYPE, "name"); }; //for automatic (de)-serialization
     
     public Developer(String name) {
@@ -61,9 +60,6 @@ public class Developer extends Resource implements User {
         return true;
     }
 
-    // FIXME, use better values when you figure out how to use them.
-    // Also, change them to getters, in case we might want them to be
-    // different for different developers.
     private static final int         WORKDAY_START          = 7;
     public static final int          BREAK_TIME             = 1;
     private static final int         BREAK_PERIOD_START     = 11;
