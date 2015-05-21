@@ -66,9 +66,7 @@ public class DelegationOffice implements Serializable {
     	           toRemove.add(del);
     	    }
     	}
-    	delegationBuffer.remove(toRemove);
-
-    	
+    	delegationBuffer.removeAll(toRemove);
     }
     
     public void rollbackSimulation(BranchOffice office){
