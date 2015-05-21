@@ -24,14 +24,12 @@ public class TaskPlanning implements Serializable {
 
     private final Set<Resource> reservations;
     private final DateTimePeriod period;
-    private final boolean withBreak;
 
-    protected TaskPlanning() {reservations = null;period = null;withBreak = false;} //for automatic (de)-serialization
+    protected TaskPlanning() {reservations = null;period = null;} //for automatic (de)-serialization
     public TaskPlanning(DateTimePeriod period, Set<Resource> reservations, boolean withBreak) {
         if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
         this.reservations = reservations;
         if (!canHaveAsPeriod(period)) { throw new IllegalArgumentException(ERROR_INVALID_STARTIME); }
-        this.withBreak = withBreak;
         if(withBreak){
             this.period = new DateTimePeriod(period.getStartTime(), period.getStopTime().plusMinutes(Developer.BREAK_TIME));
         }else{
@@ -94,9 +92,6 @@ public class TaskPlanning implements Serializable {
     }*/
     public DateTimePeriod getEstimatedPeriod(){
         return period;
-    }
-    public boolean includesBreak() {
-        return false;
     }
 
     @Override
