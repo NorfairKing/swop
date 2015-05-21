@@ -15,7 +15,7 @@ import com.cedarsoftware.util.io.JsonWriter;
 
 public final class JSONReader {
     
-    private static final Path DEFAULT_SAVE_PATH = Paths.get("../save_files/");
+    private static final Path DEFAULT_SAVE_PATH = Paths.get(".");
     
     private JSONReader() {}
     
