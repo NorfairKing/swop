@@ -448,7 +448,6 @@ public class CLI implements UserInterface {
             System.out.print("# Was the task successful (finish/fail): ");
             successful = promptBoolean("finish", "fail");
             needsDates = true;
-
         } else {
             System.out.print("# execute or fail the task (execute/fail): ");
             start = promptBoolean("execute", "fail");
@@ -463,6 +462,11 @@ public class CLI implements UserInterface {
 
             System.out.print("# End Date: ");
             endTime = promptDate();
+        }
+        
+        System.out.print("# Are you sure you want to update the status? (y/n): ");
+        if (!promptBoolean("y", "n")) {
+            return null;
         }
 
         if (executing) {
