@@ -446,6 +446,8 @@ public class PlanningDepartment implements Serializable {
         if(t.isExecuting()){
             DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
             updatePlanningForState(t,period, t.getPlanning().getReservations());
+        }else{
+            t.removePlanning();
         }
         t.fail();
     }
