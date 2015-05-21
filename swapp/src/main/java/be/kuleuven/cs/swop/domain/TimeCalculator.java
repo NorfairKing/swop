@@ -5,6 +5,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.facade.DeveloperData;
+
 
 /**
  * A collection of functions to work with time and work-days
@@ -102,12 +105,12 @@ public final class TimeCalculator {
             date = date.plusDays(1).withHour(8).withMinute(0).withSecond(0);
         }
 
-        if (date.getHour() < 8) {
+        if (date.getHour() < Developer.WORKDAY_START) {
             // Working day hasn't started. Reset date to start of this working day
-            date = date.withHour(8).withMinute(0).withSecond(0);
+            date = date.withHour(Developer.WORKDAY_START).withMinute(0).withSecond(0);
         }
 
-        LocalDateTime endOfCurrentWorkingDay = date.withHour(16).withMinute(0).withSecond(0);
+        LocalDateTime endOfCurrentWorkingDay = date.withHour(Developer.WORKDAY_END).withMinute(0).withSecond(0);
 
         // Get minutes from date to endOfCurrentWorkingDay
         long minutesCovered = ChronoUnit.MINUTES.between(date, endOfCurrentWorkingDay);
@@ -117,8 +120,7 @@ public final class TimeCalculator {
             return date.plusMinutes(minutes);
         } else {
             // Calculate remainingMinutes, and then recursively call this method with next working day
-            long remainingMinutes = minutes - minutesCovered;
-            return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(8).withMinute(0).withSecond(0), remainingMinutes);
+            return addWorkingMinutes(endOfCurrentWorkingDay.plusDays(1).withHour(Developer.WORKDAY_START).withMinute(0).withSecond(0), minutes);
         }
     }
 

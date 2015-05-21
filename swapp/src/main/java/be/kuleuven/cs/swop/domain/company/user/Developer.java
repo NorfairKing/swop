@@ -60,11 +60,11 @@ public class Developer extends Resource implements User {
         return true;
     }
 
-    private static final int         WORKDAY_START          = 7;
+    public static final int         WORKDAY_START          = 7;
     public static final int          BREAK_TIME             = 1;
-    private static final int         BREAK_PERIOD_START     = 11;
-    private static final int         BREAK_PERIOD_END       = 14;
-    private static final int         WORKDAY_END            = 17;
+    public static final int         BREAK_PERIOD_START     = 11;
+    public static final int         BREAK_PERIOD_END       = 14;
+    public static final int         WORKDAY_END            = 17;
 
     private static final TimePeriod  WORKDAY                = new TimePeriod(LocalTime.of(WORKDAY_START, 0), LocalTime.of(WORKDAY_END, 0));
     private static final TimePeriod  BREAK_PERIOD           = new TimePeriod(LocalTime.of(BREAK_PERIOD_START, 0), LocalTime.of(BREAK_PERIOD_END, 0));

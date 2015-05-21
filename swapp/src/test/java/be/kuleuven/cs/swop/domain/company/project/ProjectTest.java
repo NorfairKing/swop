@@ -20,9 +20,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
@@ -224,8 +226,8 @@ public class ProjectTest {
     @Test
     public void isOnTimeOneTaskTest3() {
         timeProject.createTask("task1", 9 * minutesPerHour, 0); // more than 8 hours of work
-        assertFalse(timeProject.isOnTime(epoch));
-        assertTrue(timeProject.isOverTime(epoch));
+        assertTrue(timeProject.isOnTime(epoch));
+        assertFalse(timeProject.isOverTime(epoch));
     }
 
     @Test
@@ -242,8 +244,8 @@ public class ProjectTest {
         timeProject.createTask("task1", 6 * minutesPerHour, 0); // 6 hours and
         timeProject.createTask("task2", 9 * minutesPerHour, 0.5); // 7 hours BUT these are parralellisable
 
-        assertFalse(timeProject.isOnTime(epoch));
-        assertTrue(timeProject.isOverTime(epoch));
+        assertTrue(timeProject.isOnTime(epoch));
+        assertFalse(timeProject.isOverTime(epoch));
     }
 
     @Test
@@ -264,9 +266,9 @@ public class ProjectTest {
         Set<Requirement> reqSet = new HashSet<Requirement>();
         Requirements reqs = new Requirements(reqSet);
         Set<Task> deps = new HashSet<Task>();
-        Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0); // 4 hours and
+        Task task1 = timeProject.createTask("task1", 5 * minutesPerHour, 0); // 5 hours and
         deps.add(task1);
-        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5, deps, reqs); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        Task task2 = timeProject.createTask("task2", 6 * minutesPerHour, 0.5, deps, reqs); // 6 hours BUT we need to add these up because 2 has to happen before 1
 
         assertFalse(timeProject.isOnTime(epoch));
         assertTrue(timeProject.isOverTime(epoch));
@@ -287,11 +289,12 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeOneTaskWithAlternativeTest2() {
-        Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0);
+        Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0);
         Task task2 = timeProject.createTask("task2", 7 * minutesPerHour, 0.5);
 
-        LocalDateTime curTime = epoch.plusHours(10);
-        task1.fail();//new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
+        LocalDateTime curTime = epoch.plusHours(11);
+        task1.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(7), epoch.plusHours(11)),new HashSet<Resource>()));
+        task1.fail();
         task1.setAlternative(task2);
 
         assertFalse(timeProject.isOnTime(curTime));
@@ -304,6 +307,7 @@ public class ProjectTest {
         Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(10);
+        task1.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)),new HashSet<Resource>()));
         task1.fail();//new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(10)));
         task1.setAlternative(task2);
 
@@ -314,9 +318,10 @@ public class ProjectTest {
     @Test
     public void isOnTimeOneTaskWithAlternativeTest4() {
         Task task1 = timeProject.createTask("task1", 4 * minutesPerHour, 0);
-        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5);
+        Task task2 = timeProject.createTask("task2", 7 * minutesPerHour, 0.5);
 
         LocalDateTime curTime = epoch.plusHours(12);
+        task1.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)),new HashSet<Resource>()));
         task1.fail();//new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
         task1.setAlternative(task2);
 
@@ -344,8 +349,8 @@ public class ProjectTest {
         deps.add(task2);
         Task task3 = timeProject.createTask("task3", 4 * minutesPerHour, 0.5, deps, reqs);
 
-        assertFalse(timeProject.isOnTime(epoch));
-        assertTrue(timeProject.isOverTime(epoch));
+        assertTrue(timeProject.isOnTime(epoch));
+        assertFalse(timeProject.isOverTime(epoch));
 
         deps.clear();
         deps.add(task3);
@@ -375,7 +380,7 @@ public class ProjectTest {
 
     @Test
     public void isOnTimeLotOfTasksTest() {
-        Project p = new Project("title", "description", epoch, epoch.plusDays(5)); // 24 hours of possible work
+        Project p = new Project("title", "description", epoch, epoch.plusDays(5)); // 4 days of work
         Set<Requirement> reqSet = new HashSet<Requirement>();
         Requirements reqs = new Requirements(reqSet);
         Set<Task> deps = new HashSet<Task>();
@@ -404,15 +409,16 @@ public class ProjectTest {
         deps.add(task4);
         Task task1 = p.createTask("task1", 1 * minutesPerHour, 0, deps, reqs);
 
-        assertTrue(p.isOnTime(epoch)); // 9+8+3+4 <= 24
+        assertTrue(p.isOnTime(epoch));
         assertFalse(p.isOverTime(epoch));
 
         LocalDateTime curTime = epoch.plusHours(12);
+        task4.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)),new HashSet<Resource>()));
         task4.execute();
         task4.finish();//new DateTimePeriod(epoch.plusHours(8), epoch.plusHours(12)));
 
-        assertFalse(p.isOnTime(curTime)); // 9+8+3+4 > 20
-        assertTrue(p.isOverTime(curTime));
+        assertTrue(p.isOnTime(curTime)); // 9 | 8 | 3+4  -> 3 days of work needed
+        assertFalse(p.isOverTime(curTime));
     }
 
     @Test
@@ -420,6 +426,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
 
         LocalDateTime curTime = epoch.plusHours(2);
+        task1.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(0), epoch.plusHours(2)),new HashSet<Resource>()));
         task1.execute();
         task1.finish();//new DateTimePeriod(epoch, epoch.plusHours(2)));
 
@@ -437,6 +444,7 @@ public class ProjectTest {
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
 
         LocalDateTime curTime = epoch.plusHours(15);
+        task1.plan(new TaskPlanning(new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(14)),new HashSet<Resource>()));
         task1.execute();
         task1.finish();//new DateTimePeriod(epoch.plusHours(12), epoch.plusHours(14)));
 
