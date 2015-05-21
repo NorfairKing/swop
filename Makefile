@@ -15,7 +15,7 @@ POM_FILE 	= $(APP)/pom.xml
 RESULT_DIR 	= $(GROUP)
 RESULT_JAR	= $(RESULT_DIR)/system.jar
 DOC_DIR 	= $(RESULT_DIR)/doc
-DIAGRAM_DIR	= $(RESULT_DIR)/diagrams
+DIAGRAM_DIR	= $(RESULT_DIR)
 
 
 all: package doc diagrams
@@ -23,13 +23,13 @@ all: package doc diagrams
 	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)/$(FINAL_JAR)
 	cp -r swapp/src $(RESULT_DIR)
 	cp -r swapp/target/site/apidocs/* $(DOC_DIR)
-	find . -type f -name '*.eps' | cpio -pdm $(DIAGRAM_DIR)
+	find diagrams -type f -name '*.eps' | cpio --pass-through --preserve-modification-time --make-directories --dot $(DIAGRAM_DIR)
 	cp $(README) $(RESULT_DIR)/$(FINAL_README)
 	zip -r $(FINAL_ZIP) $(RESULT_DIR)
 
 
 package:
-	mvn package --file $(POM_FILE) --define skipTests
+	mvn package --define skipTests --file $(POM_FILE) 
 
 
 doc:
