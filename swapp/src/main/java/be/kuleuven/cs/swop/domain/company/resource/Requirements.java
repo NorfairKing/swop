@@ -1,19 +1,25 @@
 package be.kuleuven.cs.swop.domain.company.resource;
 
+
 import java.util.HashSet;
 import java.util.Set;
 import java.io.Serializable;
 
 import com.google.common.collect.ImmutableSet;
 
+
 @SuppressWarnings("serial")
 public class Requirements implements Serializable {
 
     private final Set<Requirement> reqs = new HashSet<Requirement>();
 
+    public Requirements() {
+        this(new HashSet<Requirement>());
+    }
+
     public Requirements(Set<Requirement> requirements) {
         if (requirements != null) {
-            for(Requirement req :requirements){
+            for (Requirement req : requirements) {
                 reqs.add(req);
             }
         }
@@ -25,6 +31,7 @@ public class Requirements implements Serializable {
 
     /**
      * Gets a set of all requirements recursively. So including the requirements of requirements.
+     * 
      * @return The expanded set of requirements including those found recursivly
      */
     public Requirements getRecursiveRequirements() {
@@ -73,49 +80,47 @@ public class Requirements implements Serializable {
         return false;
     }
 
-    public static boolean isPossibleResourceSet(Set<Resource> resources){
+    public static boolean isPossibleResourceSet(Set<Resource> resources) {
 
-    	Set<ResourceType> stillRequired = new HashSet<ResourceType>();
-    	Set<ResourceType> conflicts = new HashSet<ResourceType>();
-    	Set<ResourceType> typesInSet = new HashSet<ResourceType>();
-    	for(Resource res : resources){
-    		ResourceType type = res.getType();
+        Set<ResourceType> stillRequired = new HashSet<ResourceType>();
+        Set<ResourceType> conflicts = new HashSet<ResourceType>();
+        Set<ResourceType> typesInSet = new HashSet<ResourceType>();
+        for (Resource res : resources) {
+            ResourceType type = res.getType();
 
-    		// Check if it conflicts with a previous resource
-    		if(conflicts.contains(type)){
-    			return false;
-    		}
+            // Check if it conflicts with a previous resource
+            if (conflicts.contains(type)) { return false; }
 
-    		// Check if one of the previous resources conflicts with this one (except self-conflicting resources)
-    		for(ResourceType con : type.getConflictsWith()){
-    			if(typesInSet.contains(con)){
-    				if(con == type){
-    					continue;
-    				}
-    				return false;
-    			}
-    		}
+            // Check if one of the previous resources conflicts with this one (except self-conflicting resources)
+            for (ResourceType con : type.getConflictsWith()) {
+                if (typesInSet.contains(con)) {
+                    if (con == type) {
+                        continue;
+                    }
+                    return false;
+                }
+            }
 
-    		// Add conflicts for this resource
-    		conflicts.addAll(type.getConflictsWith());
+            // Add conflicts for this resource
+            conflicts.addAll(type.getConflictsWith());
 
-    		// Add requirements for this resource that aren't fulfilled yet
-    		for(ResourceType req : type.getRequirements()){
-    			if(!typesInSet.contains(req)){
-    				stillRequired.add(req);
-    			}
-    		}
+            // Add requirements for this resource that aren't fulfilled yet
+            for (ResourceType req : type.getRequirements()) {
+                if (!typesInSet.contains(req)) {
+                    stillRequired.add(req);
+                }
+            }
 
-    		// Remove this from the still required resources
-    		stillRequired.remove(type);
+            // Remove this from the still required resources
+            stillRequired.remove(type);
 
-    		// Add to the current set of resources
-    		typesInSet.add(type);
+            // Add to the current set of resources
+            typesInSet.add(type);
 
-    	}
+        }
 
-		// Are all the requirements met?
-    	return stillRequired.isEmpty();
+        // Are all the requirements met?
+        return stillRequired.isEmpty();
     }
 
     /**

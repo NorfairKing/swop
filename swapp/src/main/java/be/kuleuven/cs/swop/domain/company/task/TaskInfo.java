@@ -18,14 +18,21 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class TaskInfo implements Serializable {
 
-    private final String           description;
-    private final long             estimatedDuration;
-    private final double           acceptableDeviation;
-    private final Set<Task>        dependencies;
-    private final Requirements     requirements;
+    private final String       description;
+    private final long         estimatedDuration;
+    private final double       acceptableDeviation;
+    private final Set<Task>    dependencies;
+    private final Requirements requirements;
 
     @SuppressWarnings("unused")
-    private TaskInfo(){ description = null; estimatedDuration = 0; acceptableDeviation = 0; dependencies = null; requirements = null;} //for automatic (de)-serialization
+    private TaskInfo() {
+        description = null;
+        estimatedDuration = 0;
+        acceptableDeviation = 0;
+        dependencies = null;
+        requirements = null;
+    } // for automatic (de)-serialization
+
     /**
      * Full constructor
      *
@@ -46,7 +53,7 @@ public class TaskInfo implements Serializable {
         if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
         this.requirements = requirements;
         if (dependencies.stream().anyMatch(t -> !canHaveAsDependency(t))) throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY);
-        this.dependencies = dependencies;
+        this.dependencies = new HashSet<Task>(dependencies);
     }
 
     /**
@@ -104,7 +111,8 @@ public class TaskInfo implements Serializable {
     /**
      * Checks if this task depends on the given task
      *
-     * @param dependency The possible dependency
+     * @param dependency
+     *            The possible dependency
      * @return Whether or not it actually is
      */
     boolean containsDependency(Task dependency) {
@@ -186,8 +194,8 @@ public class TaskInfo implements Serializable {
     }
 
     /**
-     * Gets all requirements of this task recursively.
-     * So doesn't just return the direct requirements of the task, but also the requirements of requirements
+     * Gets all requirements of this task recursively. So doesn't just return the direct requirements of the task, but also the requirements of requirements
+     * 
      * @return All requirements
      */
     public Requirements getRecursiveRequirements() {
@@ -195,7 +203,7 @@ public class TaskInfo implements Serializable {
     }
 
     public TaskInfo withoutDependencies() {
-        return new TaskInfo(this.getDescription(),this.getEstimatedDuration(),this.getAcceptableDeviation(),this.getRequirements(),new HashSet<Task>());
+        return new TaskInfo(this.getDescription(), this.getEstimatedDuration(), this.getAcceptableDeviation(), this.getRequirements(), new HashSet<Task>());
     }
 
     @Override
