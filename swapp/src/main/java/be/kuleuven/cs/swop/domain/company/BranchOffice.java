@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
@@ -334,7 +333,7 @@ public class BranchOffice implements Serializable {
         return obj;
     }
 
-    private static final String ERROR_ILLEGAL_TASK_PLANNING   = "Illegal TaskPlanning in Planning manager.";
+    /*private static final String ERROR_ILLEGAL_TASK_PLANNING   = "Illegal TaskPlanning in Planning manager.";
     private static final String ERROR_ILLEGAL_EXECUTING_STATE = "Can't execute a task that isn't available.";
     private static final String ERROR_ILLEGAL_TASK            = "Illegal task provided.";
     private static final String ERROR_ILLEGAL_DATETIME        = "Illegal date provided.";
@@ -342,7 +341,7 @@ public class BranchOffice implements Serializable {
     private static final String ERROR_ILLEGAL_DEVELOPER       = "Illegal developer provided.";
     private static final String ERROR_ILLEGAL_RESOURCE_SET    = "The given set of resources is not possible.";
     private static final String ERROR_RESOURCE_NOT_AVAILABLE  = "A resource is not available at that time.";
-    private static final String ERROR_TASK_ALREADY_PLANNED    = "The given Task already has a planning.";
+    private static final String ERROR_TASK_ALREADY_PLANNED    = "The given Task already has a planning.";*/
     private static final String ERROR_ILLEGAL_PROJECT         = "Invalid project for project manager";
 
 }

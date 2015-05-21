@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop.domain;
 
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 

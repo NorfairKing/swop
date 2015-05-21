@@ -1,9 +1,6 @@
 package be.kuleuven.cs.swop.domain.company.task;
 
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
-
-
 @SuppressWarnings("serial")
 public class ExecutingStatus extends IncompleteStatus {
     

@@ -24,7 +24,9 @@ public class DateTimePeriod implements Serializable {
      *            The Date containing the end of this peroid.
      *
      */
-    private DateTimePeriod(){startTime = null;stopTime = null;}
+    @SuppressWarnings("unused") // used by automatic (de)serialization
+	private DateTimePeriod(){startTime = null;stopTime = null;}
+    
     public DateTimePeriod(LocalDateTime start, LocalDateTime stop) {
         if (start == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
         if (stop == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);

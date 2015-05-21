@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,13 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.TimePeriod;
-import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 import be.kuleuven.cs.swop.domain.company.delegation.DelegationOffice;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
@@ -28,8 +24,8 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 import com.google.common.collect.ImmutableSet;
 
 
+@SuppressWarnings("serial")
 public class Company implements Serializable {
-
     
     private LocalDateTime                           time             = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
     private final Set<BranchOffice>                 offices          = new HashSet<BranchOffice>();
@@ -152,7 +148,7 @@ public class Company implements Serializable {
         at.getOffice().failTask(t, time);
     }
 
-    public void startExecutingTask(Task t, Set<Resource> resources, AuthenticationToken at) throws ConflictingPlannedTaskException { //FIXME
+    public void startExecutingTask(Task t, Set<Resource> resources, AuthenticationToken at) throws ConflictingPlannedTaskException {
         if (at.isDeveloper()) {
             at.getOffice().startExecutingTask(t, time, resources);
         }
@@ -261,10 +257,9 @@ public class Company implements Serializable {
         return time;
     }
 
-    // TODO: Proper checking
     public void delegateTask(Task task, BranchOffice newOffice) {
         BranchOffice oldOffice = getOfficeFromTask(task);
-        Delegation del = getDelegationOffice().createDelegation(task, oldOffice, newOffice);
+        getDelegationOffice().createDelegation(task, oldOffice, newOffice);
     }
 
     public BranchOffice getOfficeFromTask(Task task) {

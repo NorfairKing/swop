@@ -10,7 +10,9 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
+@SuppressWarnings("serial")
 public class DelegationOffice implements Serializable {
+	
     private final Set<Delegation> delegations;
     private final Company company;
     private final Set<Delegation> delegationBuffer;
