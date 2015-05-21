@@ -30,9 +30,4 @@ public class TaskPlanningWithBreak extends TaskPlanning {
         return new DateTimePeriod(getPlannedStartTime(), estimatedEndTime);
     }
 
-    @Override
-    public boolean includesBreak() {
-        return true;
-    }
-
 }
