@@ -261,4 +261,8 @@ public class Task implements Serializable {
     private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
     private static final String ERROR_PLAN  = "Task is in the wrong state to plan.";
 
+    public boolean isDelegated() {
+        return status.isDelegated();
+    }
+
 }

@@ -180,6 +180,11 @@ public class DelegatedStatus extends TaskStatus {
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
         return null;
     }
+    
+    @Override
+    public boolean isDelegated(){
+        return true;
+    }
 
 
 
