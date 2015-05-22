@@ -390,7 +390,13 @@ public class SessionController {
             // End session
             handleSimulationStep();
 
-        }catch(ExitEvent e){
+        }
+        catch (IllegalStateException ex) {
+        	getUi().showError("Failed to delegate task: " + ex.getMessage());
+            handleSimulationStep();
+            return;
+        }
+        catch (ExitEvent e) {
             handleSimulationStep();
             return;
         }

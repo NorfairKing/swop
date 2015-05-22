@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,13 @@ public class ButtonMashingUI implements UserInterface {
 
     private static String         ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
+    private Map<String, Integer> errorCount = new HashMap<>();
+    
     public ButtonMashingUI() {
         random = new Random(8008135);
     }
 
-    @Override
+	@Override
     public SessionController getSessionController() {
         return this.sessionController;
     }
@@ -49,6 +52,10 @@ public class ButtonMashingUI implements UserInterface {
         if (!canHaveAsSessionController(session)) throw new IllegalArgumentException(ERROR_ILLEGAL_SESSION_CONTROLLER);
         this.sessionController = session;
     }
+
+    public Map<String, Integer> getErrorCount() {
+		return errorCount;
+	}
 
     @Override
     public UserWrapper selectUser(Set<UserWrapper> users) {
@@ -196,6 +203,13 @@ public class ButtonMashingUI implements UserInterface {
     @Override
     public void showError(String error) {
     	System.out.println(error);
+    	if (errorCount.containsKey(error)) {
+    		int cur = errorCount.get(error);
+    		errorCount.put(error, cur+1);
+    	}
+    	else {
+    		errorCount.put(error, 1);
+    	}
     }
 
     private String randomString() {
@@ -212,12 +226,11 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     private <O> O selectFromCollection(Iterable<O> objects) {
-        Random r = new Random();
         double ch = 0;
         double c;
         O result = null;
         for (O o : objects) {
-            c = r.nextDouble();
+            c = random.nextDouble();
             if (c > ch) {
                 ch = c;
                 result = o;
@@ -250,6 +263,7 @@ public class ButtonMashingUI implements UserInterface {
     	sessions.add( () -> getSessionController().startRunSimulationSession());
     	sessions.add( () -> getSessionController().startSelectUserSession());
     	sessions.add( () -> getSessionController().startUpdateTaskStatusSession());
+    	sessions.add( () -> getSessionController().startDelegateTaskSession());
     	
     	int toCall = random.nextInt(sessions.size());
     	sessions.get(toCall).run();

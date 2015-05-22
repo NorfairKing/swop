@@ -1,6 +1,8 @@
 package be.kuleuven.cs.swop;
 
 
+import java.util.Map.Entry;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,8 +37,15 @@ public class ButtonMashingTest {
 
     @Test
     public void test() {
-        int amount = 1000; // arbitrary number
+        int amount = 10000; // arbitrary number
         ui.performActions(amount);
+        
+
+        for (Entry<String, Integer> kvp: ui.getErrorCount().entrySet()) {
+        	System.out.print(kvp.getValue());
+        	System.out.print("\t: ");
+        	System.out.println(kvp.getKey());
+        }
     }
 
 }

@@ -35,7 +35,7 @@ public class BranchOffice implements Serializable {
     private final Set<Project>   projects   = new HashSet<Project>();
     private final Company        company;
     private final PlanningDepartment      planningDepartment;
-    private final Project        delegationProject;
+    private Project        		 delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
 
     public BranchOffice(String location, Company company) {
@@ -284,35 +284,30 @@ public class BranchOffice implements Serializable {
      */
     public void restoreFromMemento(Memento memento) {
         this.resources.clear();
-        this.resources.addAll(memento.getSavedState().resources);
+        this.resources.addAll(memento.resources);
         
         this.projects.clear();
-        this.projects.addAll(memento.getSavedState().projects);
+        this.projects.addAll(memento.projects);
+        
+        this.delegationProject = memento.delegationProject;
     }
 
-    public static class Memento {
+    public static class Memento implements Serializable {
+    	
+        private final Set<Resource> resources;
+        private final Set<Project> projects;
+        private final Project delegationProject;
 
-        private BranchOffice state;
-
-        public Memento(BranchOffice state) {
-            this.state = state.getDeepCopy();
-        }
-
-        BranchOffice getSavedState() {
-            return state;
+        @SuppressWarnings("unchecked")
+		public Memento(BranchOffice state) {
+            this.resources = (Set<Resource>)getDeepCopyOf(state.resources);
+            this.projects = (Set<Project>)getDeepCopyOf(state.projects);
+            this.delegationProject = (Project)getDeepCopyOf(state.delegationProject);
         }
     }
 
-    /**
-     * Creates a deep copy of this class. This is done by writing it to a bytestream, using the build-in java serializer and then reading it out again. This gives a very clean way to prevent
-     * duplication by multiple references, or problems with looping references. It does however take a bit more memory because value classes and final variables will also be copied where they aren't
-     * strictly needed.
-     *
-     * @return A deep copy of this class.
-     */
-    private BranchOffice getDeepCopy() {
-        BranchOffice orig = this;
-        BranchOffice obj = null;
+    private static Object getDeepCopyOf(Object orig) {
+        Object obj = null;
         try {
             // Write the object out to a byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -324,7 +319,7 @@ public class BranchOffice implements Serializable {
             // Make an input stream from the byte array and read
             // a copy of the object back in.
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            obj = (BranchOffice) in.readObject();
+            obj = in.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException cnfe) {

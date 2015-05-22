@@ -90,6 +90,9 @@ public class DelegatedStatus extends TaskStatus {
     @Override
     boolean isFinishedOrHasFinishedAlternative() {
         // we consider the delegation task to be the alternative here.
+    	if (getDelegation() == null || getDelegation().getDelegationTask() == null) {
+    		return false;
+    	}
         return getDelegation().getDelegationTask().isFinishedOrHasFinishedAlternative();
     }
 

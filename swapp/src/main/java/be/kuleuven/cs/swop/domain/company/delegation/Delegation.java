@@ -1,10 +1,13 @@
 package be.kuleuven.cs.swop.domain.company.delegation;
 
+import java.io.Serializable;
+
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
 
-public class Delegation {
+@SuppressWarnings("serial")
+public class Delegation implements Serializable {
 	private final Task delegatedTask;
     private Task delegationTask = null;
     private final BranchOffice oldOffice;
