@@ -64,6 +64,7 @@ public class DateTimePeriod implements Serializable {
      * @return Yes or no
      */
     public boolean isDuring(LocalDateTime time) {
+        if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
 
@@ -75,6 +76,7 @@ public class DateTimePeriod implements Serializable {
      * @return Yes or no
      */
     public boolean isDuringExcludeExtremes(LocalDateTime time) {
+        if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
     }
 
@@ -86,6 +88,7 @@ public class DateTimePeriod implements Serializable {
      * @return Whether it falls entirely inside this period
      */
     public boolean isDuring(DateTimePeriod period) {
+        if (period == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD); }
         return !period.getStartTime().isBefore(this.getStartTime()) && !period.getStopTime().isAfter(this.getStopTime());
     }
 
@@ -97,7 +100,7 @@ public class DateTimePeriod implements Serializable {
      * @return Whether the two periods overlap
      */
     public boolean overlaps(DateTimePeriod period) {
-        if (this.isDuringExcludeExtremes(period.startTime)) { return true; }
+        if (period == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD); }        if (this.isDuringExcludeExtremes(period.startTime)) { return true; }
         if (this.isDuringExcludeExtremes(period.stopTime)) { return true; }
         if (period.isDuringExcludeExtremes(startTime)) { return true; }
         if (period.isDuringExcludeExtremes(stopTime)) { return true; }
@@ -131,4 +134,6 @@ public class DateTimePeriod implements Serializable {
     }
 
     private static final String ERROR_ILLEGAL_TIMES = "Illegal start or stop time for time span.";
+    private static final String ERROR_NULL_DURING_TIME   = "The time to check may not be null.";
+    private static final String ERROR_NULL_DURING_PERIOD = "The period to check may not be null.";
 }

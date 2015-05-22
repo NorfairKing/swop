@@ -33,7 +33,7 @@ public class TimePeriod implements Serializable {
      */
     public TimePeriod(LocalTime startTime, LocalTime stopTime) {
         if (startTime == null) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
-        if (stopTime == null) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
+        if (stopTime == null || stopTime.isBefore(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
 
         this.startTime = startTime;
         this.stopTime = stopTime;
@@ -80,7 +80,8 @@ public class TimePeriod implements Serializable {
      */
     public boolean isDuring(TimePeriod period) {
         if (period == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD); }
-        return period.getStartTime().isAfter(this.getStartTime()) && period.getStopTime().isBefore(this.getStopTime());
+        return !period.getStartTime().isBefore(this.getStartTime()) && !period.getStopTime().isAfter(this.getStopTime());
+
     }
 
     /**
