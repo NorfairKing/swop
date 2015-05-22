@@ -1,11 +1,5 @@
 package be.kuleuven.cs.swop.domain.company;
 
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -14,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.CopyHelper;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
@@ -301,32 +296,10 @@ public class BranchOffice implements Serializable {
 
         @SuppressWarnings("unchecked")
 		public Memento(BranchOffice state) {
-            this.resources = (Set<Resource>)getDeepCopyOf(state.resources);
-            this.projects = (Set<Project>)getDeepCopyOf(state.projects);
-            this.delegationProject = (Project)getDeepCopyOf(state.delegationProject);
+            this.resources = (Set<Resource>)CopyHelper.getDeepCopyOf(state.resources);
+            this.projects = (Set<Project>)CopyHelper.getDeepCopyOf(state.projects);
+            this.delegationProject = (Project)CopyHelper.getDeepCopyOf(state.delegationProject);
         }
-    }
-
-    private static Object getDeepCopyOf(Object orig) {
-        Object obj = null;
-        try {
-            // Write the object out to a byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(orig);
-            out.flush();
-            out.close();
-
-            // Make an input stream from the byte array and read
-            // a copy of the object back in.
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-            obj = in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        }
-        return obj;
     }
 
     /*private static final String ERROR_ILLEGAL_TASK_PLANNING   = "Illegal TaskPlanning in Planning manager.";
