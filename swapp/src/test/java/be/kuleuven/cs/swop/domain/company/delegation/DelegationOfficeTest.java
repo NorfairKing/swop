@@ -20,9 +20,6 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.domain.company.user.Manager;
-import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.TaskMan;
 

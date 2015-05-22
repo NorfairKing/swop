@@ -255,7 +255,7 @@ public class ProjectTest {
         Set<Task> deps = new HashSet<Task>();
         Task task1 = timeProject.createTask("task1", 2 * minutesPerHour, 0); // 2 hours and
         deps.add(task1);
-        Task task2 = timeProject.createTask("task2", 5 * minutesPerHour, 0.5, deps, reqs); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        timeProject.createTask("task2", 5 * minutesPerHour, 0.5, deps, reqs); // 5 hours BUT we need to add these up because 2 has to happen before 1
 
         assertTrue(timeProject.isOnTime(epoch));
         assertFalse(timeProject.isOverTime(epoch));
@@ -268,7 +268,7 @@ public class ProjectTest {
         Set<Task> deps = new HashSet<Task>();
         Task task1 = timeProject.createTask("task1", 5 * minutesPerHour, 0); // 5 hours and
         deps.add(task1);
-        Task task2 = timeProject.createTask("task2", 6 * minutesPerHour, 0.5, deps, reqs); // 6 hours BUT we need to add these up because 2 has to happen before 1
+         timeProject.createTask("task2", 6 * minutesPerHour, 0.5, deps, reqs); // 6 hours BUT we need to add these up because 2 has to happen before 1
 
         assertFalse(timeProject.isOnTime(epoch));
         assertTrue(timeProject.isOverTime(epoch));
@@ -354,7 +354,7 @@ public class ProjectTest {
 
         deps.clear();
         deps.add(task3);
-        Task task4 = timeProject.createTask("task4", 5 * minutesPerHour, 0.5, deps, reqs);
+        timeProject.createTask("task4", 5 * minutesPerHour, 0.5, deps, reqs);
 
         assertFalse(timeProject.isOnTime(epoch));
         assertTrue(timeProject.isOverTime(epoch));
@@ -373,7 +373,7 @@ public class ProjectTest {
         deps.clear();
         deps.add(task2);
         deps.add(task3);
-        Task task4 = timeProject.createTask("task4", 2 * minutesPerHour, 0.5, deps, reqs); // 5 hours BUT we need to add these up because 2 has to happen before 1
+        timeProject.createTask("task4", 2 * minutesPerHour, 0.5, deps, reqs); // 5 hours BUT we need to add these up because 2 has to happen before 1
         assertFalse(timeProject.isOnTime(epoch));
         assertTrue(timeProject.isOverTime(epoch));
     }
@@ -407,7 +407,7 @@ public class ProjectTest {
         deps.add(task2);
         deps.add(task3);
         deps.add(task4);
-        Task task1 = p.createTask("task1", 1 * minutesPerHour, 0, deps, reqs);
+        p.createTask("task1", 1 * minutesPerHour, 0, deps, reqs);
 
         assertTrue(p.isOnTime(epoch));
         assertFalse(p.isOverTime(epoch));

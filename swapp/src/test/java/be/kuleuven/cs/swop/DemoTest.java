@@ -30,6 +30,8 @@ public class DemoTest {
         t.saveEverythingToFile("demo.json");
     }
     
+    
+    @SuppressWarnings("unused")
     private TaskMan buildData(){
         Company c = new Company();
         // Set Time

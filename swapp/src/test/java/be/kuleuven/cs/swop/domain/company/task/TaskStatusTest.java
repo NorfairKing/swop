@@ -3,7 +3,6 @@ package be.kuleuven.cs.swop.domain.company.task;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
