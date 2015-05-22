@@ -127,7 +127,7 @@ public class ButtonMashingUI implements UserInterface {
         if (p == null) {
             return null;
         } else {
-            return selectFromCollection(p.getTasks());
+            return selectFromCollection(projectMap.get(p));
         }
     }
 
@@ -166,7 +166,9 @@ public class ButtonMashingUI implements UserInterface {
         Set<Resource> result = new HashSet<>();
         for (int i = 0; i < n; i++) {
             ResourceType t = selectFromCollection(options.keySet());
-            result.add(selectFromCollection(options.get(t)));
+            Resource res = selectFromCollection(options.get(t));
+            result.add(res);
+            
         }
         return result;
     }
@@ -236,7 +238,6 @@ public class ButtonMashingUI implements UserInterface {
                 result = o;
             }
         }
-        if (ch > 0.9) { return null; }// Arbitrary constant
         return result;
     }
 
@@ -298,7 +299,7 @@ public class ButtonMashingUI implements UserInterface {
     public Set<Resource> askSelectnewResources(Set<Resource> resources,
             Map<ResourceType, List<Resource>> resourceOptions,
             Set<Requirement> reqs) throws ExitEvent {
-        return null;
+        return resources;
     }
 
 }

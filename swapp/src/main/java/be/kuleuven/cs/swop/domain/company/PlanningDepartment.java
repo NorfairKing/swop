@@ -89,7 +89,7 @@ public class PlanningDepartment implements Serializable {
     public Set<Task> getUnplannedTasksFrom(Set<Task> tasks) {
         Set<Task> unplannedTasks = new HashSet<Task>();
         for (Task t : tasks) {
-            if (!t.isPlanned()) {
+            if (t.canPlan()) {
                 unplannedTasks.add(t);
             }
         }
@@ -441,6 +441,9 @@ public class PlanningDepartment implements Serializable {
      * @throws ConflictingPlannedTaskException When it conflicts with another task.
      */
     public void failTask(Task t, LocalDateTime endTime) throws ConflictingPlannedTaskException {
+        if(t == null){
+            System.out.println("test");
+        }
         if(t.isExecuting()){
             DateTimePeriod period = new DateTimePeriod(t.getPlanning().getPlannedStartTime(), endTime);
             updatePlanningForState(t,period, t.getPlanning().getReservations());
