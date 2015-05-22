@@ -59,6 +59,10 @@ abstract class TaskStatus implements Serializable {
      * @return Returns a true if this status is final.
      */
     abstract boolean isFinal();
+    
+    public boolean isDelegated(){
+        return false;
+    }
 
     protected Task getTask() {
         return task;
