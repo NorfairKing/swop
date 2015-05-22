@@ -29,7 +29,7 @@ all: package doc diagrams
 
 
 package:
-	mvn package --file $(POM_FILE) 
+	mvn package --file $(POM_FILE) --define skipTests
 
 
 doc:

@@ -321,6 +321,7 @@ public class SessionController {
                     startResolveConflictSession(e.getTask());
                 } catch (Exception e) {
                     getUi().showError("Failed to plan task: " + e.getClass().toString() + " " + e.getMessage());
+                    System.exit(1);
                 }
 
                 // End session
