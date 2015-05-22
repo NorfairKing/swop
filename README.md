@@ -22,7 +22,7 @@
 To start the system, run the following command:
 
 ```
-java -jar system.jar
+ -jar system.jar
 ```
 
 You will be asked to specify an initialisation file.
@@ -30,7 +30,7 @@ You can use any initialisation file in the `save_files` directory.
 Not that you can also import a save file like this:
 
 ```
-java -jar system.jar save_files/import_me.json
+ -jar system.jar save_files/import_me.json
 ```
 
 Don't forget to enter the `help` command if you're unsure about what you can do.
@@ -40,12 +40,12 @@ If you want to play around with the program, `save_files/import_me.json` is prob
 ## Running the demo
 ### DEMO1: Delegation
 ```
-java -jar system.jar save_files/delegation_demo.json
+ -jar system.jar save_files/delegation_demo.json
 ```
 
 We log in into the first branch office.
 
-``` java
+``` 
 Welcome to TaskMan.
 Enter "h" for help.
 
@@ -70,7 +70,7 @@ Please pick a number [0-4] (0 to quit): 4
 
 We're now going to create a new task to delegate.
 
-``` java
+``` 
 > task
 SELECT PROJECTS
 ########
@@ -101,13 +101,13 @@ No resource type to select.
 (One requirement of each resource type.)
 Now we're going to start a simulation:
 
-``` java
+``` 
 > simulation
 ```
 
 We're going to delegate the task.
 
-``` java
+``` 
 > delegate
 SELECT TASK
 ########
@@ -128,7 +128,7 @@ continue
 
 Continue the simulation because I want to show that the delegated task has not arrived at the other office yet.
 
-``` java
+``` 
 > list
 PROJECTS
 ########
@@ -185,7 +185,7 @@ continue
 As you can see: `No tasks to select.`
 The task has been delegated though.
 
-``` java
+``` 
 > list
 PROJECTS
 ########
@@ -257,7 +257,7 @@ realize
 Now we're going to finish up the simulation: `realize`.
 At this point, the delegated task has arrived at the other office.
 
-``` java
+``` 
 > list
 PROJECTS
 ########
@@ -325,7 +325,7 @@ TASK
 
 There is already a task planned in the second office:
 
-``` java
+``` 
 > list
 PROJECTS
 ########
@@ -399,7 +399,7 @@ PLANNING:
 
 Let's log into the second office as the manager (Maria).
 
-``` java
+``` 
 > user
 SELECT BRANCH OFFICES
 ########
@@ -417,7 +417,7 @@ Please pick a number [0-2] (0 to quit): 2
 
 We're going to plan the new task.
 
-``` java
+``` 
 > plan
 SELECT TASK
 ########
@@ -471,7 +471,7 @@ Would you like for the planning to add a break? (y/n/exit): n
 No break, because Maria is a horrible manager.
 Now let's log in as David.
 
-``` java
+``` 
 > user
 SELECT BRANCH OFFICES
 ########
@@ -489,7 +489,7 @@ Please pick a number [0-2] (0 to quit): 1
 
 Fast-forward to 10 am.
 
-``` java
+``` 
 > clock
 TIME STAMP
 ########
@@ -498,7 +498,7 @@ TIME STAMP
 
 David starts executing the task: `Prove P==NP`.
 
-``` java
+``` 
 > update
 SELECT TASK
 ########
@@ -515,7 +515,7 @@ Please pick a number [0-2] (0 to quit): 2
 
 Fast forward to 11:30.
 
-``` java
+``` 
 > clock
 TIME STAMP
 ########
@@ -524,7 +524,7 @@ TIME STAMP
 
 Now the task is late, so we'll have a conflict.
 
-``` java
+``` 
 > update
 SELECT TASK
 ########
@@ -551,7 +551,7 @@ Please pick a number [0-3] (0 to quit): 1
 As you can see, there is a conflict, so we have to re-plan giving the demo.
 Fast-forward to 12:00am.
 
-``` java
+``` 
 > clock
 TIME STAMP
 ########
@@ -560,7 +560,7 @@ TIME STAMP
 
 David starts giving the demo:
 
-``` java
+``` 
 > update
 SELECT TASK
 ########
@@ -577,7 +577,7 @@ Please pick a number [0-2] (0 to quit): 1
 
 Fast-forward to 12:30.
 
-``` java
+``` 
 > clock
 TIME STAMP
 ########
@@ -586,7 +586,7 @@ TIME STAMP
 
 Dave finished giving the demo.
 
-``` java
+``` 
 update
 SELECT TASK
 ########
@@ -599,7 +599,7 @@ Please pick a number [0-2] (0 to quit): 1
 
 Let's see about the status of the demo task now:
 
-``` java
+``` 
 > list
 PROJECTS
 ########
