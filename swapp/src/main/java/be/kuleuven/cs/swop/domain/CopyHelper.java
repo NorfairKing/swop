@@ -9,6 +9,12 @@ import java.io.ObjectOutputStream;
 public final class CopyHelper {
 	private CopyHelper() {}
 	
+    /**
+     * Creates a deep copy of the given object by doing serialization.
+     *
+     * @param object The to be copied Object.
+     * @return The copy of the given Object.
+     */
     public static Object getDeepCopyOf(Object orig) {
         Object obj = null;
         try {
