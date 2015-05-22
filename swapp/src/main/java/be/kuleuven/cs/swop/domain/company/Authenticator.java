@@ -16,7 +16,7 @@ public class Authenticator {
      * @return The AuthenticationToken.
      */
     public AuthenticationToken createFor(BranchOffice office, User user) {
-        if (user instanceof Developer && office.getDevelopers().contains((Developer) user)) throw new IllegalArgumentException(ERROR_ILLEGAL_USER);
+        if (user instanceof Developer && !office.getDevelopers().contains((Developer) user)) throw new IllegalArgumentException(ERROR_ILLEGAL_USER);
         return new AuthenticationToken(office, user);
     }
 
