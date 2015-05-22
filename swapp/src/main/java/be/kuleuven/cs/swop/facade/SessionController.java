@@ -387,7 +387,7 @@ public class SessionController {
 
             // The system shows an overview of the different branch offices
             Set<BranchOfficeWrapper> offices = taskMan.getOffices();
-            offices.remove(taskMan.getCurrentOffice());
+            //offices.remove(taskMan.getCurrentOffice()); // FIXME: THIS LINE CAUSES AN INFINITE LOOP IN THE BUTTON MASHER TEST
             BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
             if (selectedOffice == null) {
                 handleSimulationStep();

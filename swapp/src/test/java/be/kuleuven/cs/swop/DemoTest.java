@@ -28,10 +28,13 @@ public class DemoTest {
     @Test
     public void test() throws FileNotFoundException {
         TaskMan t = buildDemoData();
-        t.saveEverythingToFile("demo.json");
+        t.saveEverythingToFile("import_me.json");
         
         TaskMan del = buildDelegationDemoData();
         del.saveEverythingToFile("delegation_demo.json");
+        
+        TaskMan casc = buildCascadingConflictDemoData();
+        casc.saveEverythingToFile("cascading_demo.json");
     }
     
     
@@ -219,6 +222,69 @@ public class DemoTest {
         Task task5 = proj2.createTask("Prove P==NP", 60, 0, deps, reqs5);
         try {
             office2.createPlanning(task5, LocalDateTime.of(2015, 6, 1 , 10 , 0), ress);
+        } catch (ConflictingPlannedTaskException e) {
+            System.out.println("ERROR WHILE GENERATING DEMO");
+            e.printStackTrace();
+            return null;
+        }
+        
+        
+        return new TaskMan(c);
+    }
+
+    
+    @SuppressWarnings("unused")
+    private TaskMan buildCascadingConflictDemoData(){
+        Company c = new Company();
+        // Set Time
+        LocalDateTime startTime1 = LocalDateTime.of(2015, 6, 1 , 9 , 0);
+        c.updateSystemTime(startTime1);
+        
+        // Offices
+        BranchOffice office1 = c.createBranchOffice("Location1");
+        
+        // Resource Types
+        Set<ResourceType> requireSet = new HashSet<ResourceType>();
+        Set<ResourceType> conflictSet = new HashSet<ResourceType>();
+        TimePeriod dailyAvailability0 = new TimePeriod(LocalTime.of(12,00), LocalTime.of(17,00)); 
+        
+        ResourceType carType = c.createResourceType("Car", requireSet,conflictSet, false, null);
+        
+        // Projects
+        LocalDateTime endTime1 = LocalDateTime.of(2015, 6,  5, 18 , 0);
+        LocalDateTime endTime2 = LocalDateTime.of(2015, 6,  22, 18 , 0);
+        Project proj1 = office1.createProject("Project 1", "This is Project 1", startTime1, endTime1);
+        
+        // Resources
+        
+        // Office 1
+        Resource car1 = office1.createResource("Car 1", carType);
+        Developer dev1 = office1.createDeveloper("Ann");
+        Manager man1 = office1.createManager("Johan");
+        
+        // Tasks
+        // Project 1
+        Set<Task> deps = new HashSet<Task>();
+        Set<Requirement> reqSet = new HashSet<Requirement>();
+        
+        
+        // Project 2
+        deps.clear();
+        reqSet.clear();
+        reqSet.add(new Requirement(1, Developer.DEVELOPER_TYPE));
+        reqSet.add(new Requirement(1, carType));
+        Requirements reqs5 = new Requirements(reqSet);
+        Set<Resource> ress = new HashSet<Resource>();
+        ress.add(dev1);
+        ress.add(car1);
+        Task task1 = proj1.createTask("Prove P==NP", 60, 0, deps, reqs5);
+        Task task2 = proj1.createTask("Eat Pizza", 60, 0, deps, reqs5);
+        Task task3 = proj1.createTask("Ask the Ultimate Question", 60, 0, deps, reqs5);
+        Task task4 = proj1.createTask("Count to infinity", 60, 0, deps, reqs5);
+        try {
+            office1.createPlanning(task1, LocalDateTime.of(2015, 6, 1 , 10 , 0), ress);
+            office1.createPlanning(task2, LocalDateTime.of(2015, 6, 1 , 11 , 0), ress);
+            office1.createPlanning(task3, LocalDateTime.of(2015, 6, 1 , 12 , 0), ress);
         } catch (ConflictingPlannedTaskException e) {
             System.out.println("ERROR WHILE GENERATING DEMO");
             e.printStackTrace();
