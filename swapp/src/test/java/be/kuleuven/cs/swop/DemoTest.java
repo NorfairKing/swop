@@ -18,6 +18,7 @@ import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.Manager;
 import be.kuleuven.cs.swop.facade.TaskMan;
 
 
@@ -78,6 +79,7 @@ public class DemoTest {
         Developer dev1 = office1.createDeveloper("Ann");
         Developer dev2 = office1.createDeveloper("Bob");
         Developer dev3 = office1.createDeveloper("Charlie");
+        Manager man1 = office1.createManager("Johan");
 
         
         // Office 2
@@ -94,6 +96,7 @@ public class DemoTest {
         Developer dev4 = office2.createDeveloper("David");
         Developer dev5 = office2.createDeveloper("Evelyn");
         Developer dev6 = office2.createDeveloper("Fiona");
+        Manager man2 = office2.createManager("Maria");
         
         // Tasks
         // Project 1

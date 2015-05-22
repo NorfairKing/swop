@@ -487,7 +487,7 @@ public class Company implements Serializable {
      * @return True if it is in a simulation.
      */
     public boolean isInASimulationFor(AuthenticationToken at) {
-        return officeMementos.containsKey(at.getOffice());
+        return isInASimulationFor(at.getOffice());
     }
 
     /**
@@ -496,7 +496,7 @@ public class Company implements Serializable {
      * @param office The BranchOffice that will be checked.
      * @return True if it is in a simulation.
      */
-    public boolean isInASimulation(BranchOffice office){
+    public boolean isInASimulationFor(BranchOffice office){
         return officeMementos.containsKey(office);
     }
 
