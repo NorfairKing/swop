@@ -25,13 +25,18 @@ public class Requirements implements Serializable {
         }
     }
 
+    /**
+     * Retrieves the Set of Requirements
+     *
+     * @return An ImmutableSet containing the Requirements.
+     */
     public ImmutableSet<Requirement> getRequirementSet() {
         return ImmutableSet.copyOf(this.reqs);
     }
 
     /**
      * Gets a set of all requirements recursively. So including the requirements of requirements.
-     * 
+     *
      * @return The expanded set of requirements including those found recursivly
      */
     public Requirements getRecursiveRequirements() {
@@ -53,6 +58,12 @@ public class Requirements implements Serializable {
         return new Requirements(response);
     }
 
+    /**
+     * Gets als of the resourcesTypes of the requirements including their dependencies.
+     *
+     * @param reqs The Set of Requirements.
+     * @return A Set containing all of the ResourceTypes.
+     */
     public static Set<ResourceType> getRecursiveResourceTypes(Set<Requirement> reqs) {
         Set<ResourceType> types = new HashSet<ResourceType>();
         reqs.stream().map(req -> req.getType()).forEach(type -> type.addThisAndDependenciesRecursiveTo(types));
@@ -80,6 +91,11 @@ public class Requirements implements Serializable {
         return false;
     }
 
+    /**
+     * Checks the given resources for conflicts and satisfied dependencies.
+     *
+     * @return True if the dependencies are satisfied and there are no conflicts.
+     */
     public static boolean isPossibleResourceSet(Set<Resource> resources) {
 
         Set<ResourceType> stillRequired = new HashSet<ResourceType>();
@@ -122,7 +138,13 @@ public class Requirements implements Serializable {
         // Are all the requirements met?
         return stillRequired.isEmpty();
     }
-    
+
+    /**
+     * Checks whether or not this is satisfied with the given resources.
+     *
+     * @param resource A Set of Resources that will be checked.
+     * @return True if the resources will satisfy this.
+     */
     public boolean isSatisfiedWith(Set<Resource> resources) {
     	for (Requirement req: reqs) {
     		if (!req.isSatisfiedWith(resources)) {
