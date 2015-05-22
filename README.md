@@ -22,7 +22,7 @@
 To start the system, run the following command:
 
 ```
- -jar system.jar
+java -jar system.jar
 ```
 
 You will be asked to specify an initialisation file.
@@ -30,7 +30,7 @@ You can use any initialisation file in the `save_files` directory.
 Not that you can also import a save file like this:
 
 ```
- -jar system.jar save_files/import_me.json
+java -jar system.jar save_files/import_me.json
 ```
 
 Don't forget to enter the `help` command if you're unsure about what you can do.
@@ -40,7 +40,7 @@ If you want to play around with the program, `save_files/import_me.json` is prob
 ## Running the demo
 ### DEMO1: Delegation
 ```
- -jar system.jar save_files/delegation_demo.json
+java -jar system.jar save_files/delegation_demo.json
 ```
 
 We log in into the first branch office.
