@@ -309,7 +309,12 @@ public class SessionController {
                         return;
                     }
 
-                    if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(d -> d.canTakeBreakDuring(new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))))) {
+                    if (!chosenResources.isEmpty() && chosenResources.stream().anyMatch(
+                            d -> d.canTakeBreakDuring(
+                                    new DateTimePeriod(chosenTime, selectedTask.getEstimatedOrRealFinishDate(chosenTime))
+                                                    )
+                                        )
+                        ) {
                         if (getUi().askToAddBreak()) {
                             taskMan.createPlanningWithBreak(selectedTask, chosenTime, chosenResources);
                             break;
@@ -506,8 +511,10 @@ public class SessionController {
                     break;
                 } catch (IllegalArgumentException e) {
                     getUi().showError("Failed to update task: " + e.getMessage());
+                    break;
                 } catch (IllegalStateException e) {
                     getUi().showError("The task can't be updated in it's current state: " + e.getMessage());
+                    break;
                 } catch (ConflictingPlannedTaskWrapperException e) {
                     startResolveConflictSession(e.getTask());
                 }

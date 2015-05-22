@@ -69,7 +69,7 @@ public class ExecutingStatus extends IncompleteStatus {
 	
     @Override
     boolean canPlan() {
-        return true;
+        return !getTask().isPlanned();
     }
 
     private static final String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";

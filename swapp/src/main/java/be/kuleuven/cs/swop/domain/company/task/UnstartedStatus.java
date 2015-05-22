@@ -87,7 +87,7 @@ public class UnstartedStatus extends IncompleteStatus {
 	}
 	
 	boolean canPlan(){
-	    return true;
+	    return !getTask().isPlanned();
 	}
 
     private static final String ERROR_FINISH = "Can't finish a task that has not been started.";

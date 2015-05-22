@@ -394,7 +394,7 @@ public class TaskMan {
     
     public void executeTask(TaskWrapper task, Set<Resource> resources) throws IllegalArgumentException, ConflictingPlannedTaskWrapperException {
         if (task == null) { throw new IllegalArgumentException("Null task for status update"); }
-        if (resources == null) { throw new IllegalArgumentException("Null setof Resources for status update"); }
+        if (resources == null) { throw new IllegalArgumentException("Null set of Resources for status update"); }
 
         try {
             company.startExecutingTask(task.getTask(), resources, authenticationToken);

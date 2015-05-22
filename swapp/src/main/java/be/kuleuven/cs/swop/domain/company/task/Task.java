@@ -245,6 +245,9 @@ public class Task implements Serializable {
     public boolean isPlanned() {
         return this.planning != null;
     }
+    public boolean canPlan(){
+        return this.status.canPlan();
+    }
 
     public void plan(TaskPlanning plan) {
         if (!this.status.canPlan()){

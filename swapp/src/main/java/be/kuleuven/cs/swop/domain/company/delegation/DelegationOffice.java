@@ -70,11 +70,13 @@ public class DelegationOffice implements Serializable {
     }
     
     public void rollbackSimulation(BranchOffice office){
+        Set<Delegation> toRemove = new HashSet<Delegation>();
         for(Delegation del : delegationBuffer ){
             if(office == del.getOldOffice()){
-                delegationBuffer.remove(del);
+                toRemove.add(del);
             }
         }
+        delegationBuffer.removeAll(toRemove);
         processBuffer();
         
     }
