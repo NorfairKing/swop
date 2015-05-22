@@ -19,16 +19,7 @@ CLASS_DIAGRAMS = \
 	office_login_uml.eps \
 	reservables_uml.eps
 
-CLASS_DIAGRAM_PNGS = \
-	entire_domain_uml.png \
-	task_planning_uml.png \
-	delegate_task_uml.png \
-	task_status_uml.png \
-	simulation_uml.png \
-	top_level_uml.png \
-	office_login_uml.png \
-	reservables_uml.png
-
+all: classes associations class_diagrams
 
 class_diagrams: $(CLASS_DIAGRAMS)
 
@@ -38,15 +29,10 @@ classes:
 associations:
 	./compileraw.sh asso *.ass
 
-extra: $(CLASS_DIAGRAM_PNGS)
-
-all: classes associations class_diagrams extra
 
 %_$(UML_SUFFIX).$(OUT_EXT): %_$(UML_SUFFIX).$(DOT_EXT)
-	$(PLANTCC) -t$(OUT_FORMAT) $< $@
+	./makeplant.sh $<
 
-%_$(UML_SUFFIX).png: %_$(UML_SUFFIX).$(DOT_EXT)
-	$(PLANTCC) -tpng $< $@
 
 entire_domain_uml.dot:
 	./build_entire_uml.sh > entire_domain_uml.dot
