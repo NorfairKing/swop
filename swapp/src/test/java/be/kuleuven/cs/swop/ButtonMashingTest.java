@@ -2,7 +2,6 @@ package be.kuleuven.cs.swop;
 
 
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,8 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.kuleuven.cs.swop.domain.company.AuthenticationToken;
-import be.kuleuven.cs.swop.domain.company.BranchOffice;
+
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
@@ -48,7 +46,7 @@ public class ButtonMashingTest {
 
     @Test
     public void test() {
-        int amount = 10000; // arbitrary number
+        int amount = 2000; // arbitrary number
         ui.performActions(amount);
 
         for (Entry<String, Integer> kvp : ui.getErrorCount().entrySet()) {
