@@ -25,6 +25,13 @@ public class TaskPlanning implements Serializable {
     private final DateTimePeriod period;
 
     protected TaskPlanning() {reservations = null;period = null;} //for automatic (de)-serialization
+
+    /**
+     * Constructor
+     *
+     * @param period The DateTimePeriod for when the planning is planned.
+     * @param reservations A Set of Resources this planning reserves.
+     */
     public TaskPlanning(DateTimePeriod period, Set<Resource> reservations) {
         if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
         this.reservations = reservations;
@@ -39,6 +46,11 @@ public class TaskPlanning implements Serializable {
         return true;
     }
 
+    /**
+     * Retrieves the reserved resources.
+     *
+     * @return A Set containing the reserved Resources.
+     */
     public Set<Resource> getReservations() {
         Set<Resource> ress = new HashSet<Resource>();
         for(Resource res : reservations){
@@ -46,8 +58,12 @@ public class TaskPlanning implements Serializable {
         }
         return ress;
     }
-    
 
+    /**
+     * Retrieves the developers assigned to this planning.
+     *
+     * @return A Set containing all of those Developers
+     */
     public Set<Developer> getDevelopers() {
         Set<Developer> devs = new HashSet<Developer>();
         for(Resource res : reservations){
@@ -58,10 +74,20 @@ public class TaskPlanning implements Serializable {
         return devs;
     }
 
+    /**
+     * Retrieve the starttime of this planning.
+     *
+     * @return A LocalDateTime of the starttime.
+     */
     public LocalDateTime getPlannedStartTime() {
         return period.getStartTime();
     }
-    
+
+    /**
+     * Retrieve the endtime of this planning.
+     *
+     * @return A LocalDateTime of the endtime.
+     */
     public LocalDateTime getPlannedEndTime() {
         return period.getStopTime();
     }
@@ -69,12 +95,20 @@ public class TaskPlanning implements Serializable {
     protected boolean canHaveAsPeriod(DateTimePeriod period) {
         return period != null;
     }
-    
-    
+
+    /**
+     * Calculate how long this planning will take.
+     *
+     * @return A long that specifies the time in minutes.
+     */
     public long getTaskDuration(){
         return getPlannedStartTime().until(getPlannedEndTime(), ChronoUnit.MINUTES);
     }
 
+    /**
+     * Retrieves the DateTimePeriod for when this planning is planned.
+     *
+     * @return The DateTimePeriod
     public DateTimePeriod getEstimatedPeriod(){
         return period;
     }
