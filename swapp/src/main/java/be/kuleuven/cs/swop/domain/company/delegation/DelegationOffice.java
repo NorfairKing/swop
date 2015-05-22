@@ -85,7 +85,9 @@ public class DelegationOffice implements Serializable {
     }
 
     /**
-     * Undo all delegation that were the result of a simulation.
+     * Undo all delegations that were the result of a simulation.
+     *
+     * @param office The office for which the simulation will be ended.
      */
     public void rollbackSimulation(BranchOffice office){
         Set<Delegation> toRemove = new HashSet<Delegation>();

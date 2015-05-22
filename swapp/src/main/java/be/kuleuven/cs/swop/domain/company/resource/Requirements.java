@@ -94,6 +94,7 @@ public class Requirements implements Serializable {
     /**
      * Checks the given resources for conflicts and satisfied dependencies.
      *
+     * @param resources The Set of Resources that will be checked.
      * @return True if the dependencies are satisfied and there are no conflicts.
      */
     public static boolean isPossibleResourceSet(Set<Resource> resources) {

@@ -552,7 +552,7 @@ public class Company implements Serializable {
     /**
      * Retrieve the BranchOffice where the user is current logged in
      *
-     * @param task The AuthenticationToken of the currently logged in user.
+     * @param at The AuthenticationToken of the currently logged in user.
      * @return The BranchOffice the user is logged into.
      */
     public BranchOffice getCurrentOffice(AuthenticationToken at){
