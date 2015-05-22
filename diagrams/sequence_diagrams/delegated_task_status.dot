@@ -10,10 +10,8 @@ participant DelegationTask as dt
 participant DelegationStatus as ds
 
 p -> ot: isFinished()
+ot -> os: isFinished()
 alt delegatedTask
-    ot -> os: isFinished()
-    os -> p: bool
-else
     os -> d: isFinished()
     note left
         The task status
@@ -23,6 +21,8 @@ else
     d -> dt: isFinished()
     dt -> ds: isFinished()
     ds -> p: bool
+else
+    os -> p: bool
 end
 
 
