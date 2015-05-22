@@ -109,6 +109,7 @@ public class TaskPlanning implements Serializable {
      * Retrieves the DateTimePeriod for when this planning is planned.
      *
      * @return The DateTimePeriod
+     */
     public DateTimePeriod getEstimatedPeriod(){
         return period;
     }
