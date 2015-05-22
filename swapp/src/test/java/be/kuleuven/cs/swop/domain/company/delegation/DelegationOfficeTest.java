@@ -22,6 +22,7 @@ import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
+import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.TaskMan;
 
@@ -49,9 +50,13 @@ public class DelegationOfficeTest {
     @Before
     public void setUp() throws Exception {
         office1 = company.createBranchOffice("Office 1");
+        office1.createManager("manager1");
         office2 = company.createBranchOffice("Office 2");
+        office2.createManager("manager2");
         office3 = company.createBranchOffice("Office 3");
-               
+        office3.createManager("manager3");
+        
+        
         project = office1.createProject("Test Project", "To test with", LocalDateTime.now(), LocalDateTime.now().plusDays(5));
         
         ResourceType type1 = company.createResourceType("TestType", new HashSet<>(),  new HashSet<>(), false, null);
@@ -81,7 +86,7 @@ public class DelegationOfficeTest {
     }
     
     private AuthenticationToken auth(BranchOffice office){
-        taskMan.requestAuthenticationFor(new BranchOfficeWrapper(office), new Manager("Manager"));
+        taskMan.requestAuthenticationFor(new BranchOfficeWrapper(office), office.getUsers().stream().findFirst().get());
         return taskMan.getCurrentAuthenticationToken();
     }
     

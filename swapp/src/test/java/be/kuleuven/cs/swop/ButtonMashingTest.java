@@ -48,7 +48,7 @@ public class ButtonMashingTest {
 
     @Test
     public void test() {
-        int amount = 10000; // arbitrary number
+        int amount = 2000; // arbitrary number
         ui.performActions(amount);
 
         for (Entry<String, Integer> kvp : ui.getErrorCount().entrySet()) {
