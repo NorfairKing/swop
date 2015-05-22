@@ -1,7 +1,5 @@
 package be.kuleuven.cs.swop.domain.company.task;
 
-import java.time.LocalDateTime;
-
 
 @SuppressWarnings("serial")
 public class UnstartedStatus extends IncompleteStatus {

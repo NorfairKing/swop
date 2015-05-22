@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import be.kuleuven.cs.swop.domain.company.user.Developer;
-import be.kuleuven.cs.swop.facade.DeveloperData;
 
 
 /**
