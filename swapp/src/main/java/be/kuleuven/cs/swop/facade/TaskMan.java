@@ -59,6 +59,10 @@ public class TaskMan {
     public AuthenticationToken getCurrentAuthenticationToken() {
         return authenticationToken;
     }
+    
+    public BranchOfficeWrapper getCurrentOffice(){
+        return new BranchOfficeWrapper(company.getCurrentOffice(authenticationToken));
+    }
 
     public boolean isAuthenticated() {
         return authenticationToken != null;

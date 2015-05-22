@@ -178,7 +178,11 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     public DateTimePeriod getEstimatedOrPlanningPeriod() {
-        return null;
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().getEstimatedOrPlanningPeriod();
+        }else{
+            return null;
+        }
     }
     
     @Override

@@ -34,7 +34,6 @@ public class DelegationOffice implements Serializable {
         if(from == null) return false;
         if(to == null) return false;
         if(!from.hasTask(task)) return false;
-        //TODO: More checks?
         return true;
     }
 

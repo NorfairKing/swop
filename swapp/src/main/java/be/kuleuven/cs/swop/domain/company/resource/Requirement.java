@@ -49,7 +49,7 @@ public class Requirement implements Serializable {
     public boolean isSatisfiedWith(Set<Resource> resources) {
         int counter = 0;
         for (Resource resource : resources) {
-            if (resource.getType() == this.getType()) {
+            if (resource.getType().equals(this.getType())) {
                 counter++;
             }
             if (counter >= this.getAmount()) {

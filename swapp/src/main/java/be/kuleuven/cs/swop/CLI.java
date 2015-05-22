@@ -331,7 +331,6 @@ public class CLI implements UserInterface {
     public TaskWrapper selectTask(Set<TaskWrapper> taskSet) throws ExitEvent {
         return selectFromCollection(taskSet, "tasks", p -> {
             String total = p.getDescription();
-            // FIXME check if available for current user
                 total += ", it is "
                         + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : sessionController.getTaskMan().isTaskAvailableFor(null, p) ? "availble"
                                 : "unavailable");
@@ -450,7 +449,7 @@ public class CLI implements UserInterface {
     }
 
     public Set<Resource> askSelectnewResources(Set<Resource> resources, Map<ResourceType, List<Resource>> resourceOptions, Set<Requirement> reqs) throws ExitEvent {
-        System.out.print("# Use the resources from the planning or allocate new resources?: ");
+        System.out.print("# Use the resources from the planning or allocate new resources? (plan/new/exit): ");
         boolean plan = promptBoolean("plan", "new");
         if (plan) {
             return resources;
@@ -465,7 +464,7 @@ public class CLI implements UserInterface {
         try {
             time = selectFromCollection(options, "time", o -> formatDate(o));
         } catch (ExitEvent e) {
-            System.out.println("Enter a custom timestamp or \"exit\" to quit.");
+            System.out.print("Enter a custom timestamp or \"exit\" to quit: ");
             time = promptDate();
         }
         ;
@@ -476,7 +475,7 @@ public class CLI implements UserInterface {
     @Override
     public boolean askToAddBreak() throws ExitEvent {
         System.out.println("The developer(s) could take a break during this Task.");
-        System.out.println("Would you like for the planning to add a break? (y/n)");
+        System.out.println("Would you like for the planning to add a break? (y/n/exit): ");
         boolean wantsToAddBreak = promptBoolean("y", "n");
         if (wantsToAddBreak) { return true; }
         return false;

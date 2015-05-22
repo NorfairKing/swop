@@ -387,6 +387,7 @@ public class SessionController {
 
             // The system shows an overview of the different branch offices
             Set<BranchOfficeWrapper> offices = taskMan.getOffices();
+            offices.remove(taskMan.getCurrentOffice());
             BranchOfficeWrapper selectedOffice = getUi().selectOffice(offices);
             if (selectedOffice == null) {
                 handleSimulationStep();
