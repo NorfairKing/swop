@@ -142,7 +142,7 @@ public class Requirements implements Serializable {
     /**
      * Checks whether or not this is satisfied with the given resources.
      *
-     * @param resource A Set of Resources that will be checked.
+     * @param resources A Set of Resources that will be checked.
      * @return True if the resources will satisfy this.
      */
     public boolean isSatisfiedWith(Set<Resource> resources) {

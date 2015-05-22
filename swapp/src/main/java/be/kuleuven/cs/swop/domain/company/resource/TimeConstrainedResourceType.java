@@ -15,7 +15,7 @@ public class TimeConstrainedResourceType extends ResourceType {
 
     @SuppressWarnings("unused")
     private TimeConstrainedResourceType() { dailyAvailability = null; } //for automatic (de)-serialization
-    
+
     public TimeConstrainedResourceType(String name, Set<ResourceType> requirements, Set<ResourceType> conflicts, boolean selfConflicting, TimePeriod dailyAvailability) {
         super(name, requirements, conflicts, selfConflicting);
         if (!canHaveAsAvailability(dailyAvailability)) { throw new IllegalArgumentException(ERROR_ILLEGAL_AVAILABILITY); }
@@ -41,10 +41,10 @@ public class TimeConstrainedResourceType extends ResourceType {
     }
 
     /**
-     * Checks whether or not this resource is available during the given time.
+     * Checks whether or not this resource is available during the given period.
      *
-     * @param time The to be checked LocalDateTime.
-     * @return True if this is available during the give LocalDateTime.
+     * @param period The to be checked DateTimePeriod.
+     * @return True if this is available during the give DateTimePeriod.
      */
     public boolean isAvailableDuring(DateTimePeriod period) {
         return this.getDailyAvailability().isDuring(period);

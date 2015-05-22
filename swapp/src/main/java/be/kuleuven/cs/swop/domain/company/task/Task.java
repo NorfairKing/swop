@@ -36,11 +36,16 @@ public class Task implements Serializable {
         setStatus(new UnstartedStatus(this));
     }
 
+    /**
+     * Retrieve this tasks info.
+     *
+     * @return The TaskInfo.
+     */
     public TaskInfo getTaskInfo() {
         return this.info;
     }
 
-    public void setTaskInfo(TaskInfo info) {
+    private void setTaskInfo(TaskInfo info) {
         if (!canHaveAsTaskInfo(info)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK_INFO);
         this.info = info;
     }
@@ -115,10 +120,20 @@ public class Task implements Serializable {
         return status.isFailed();
     }
 
+    /**
+     * Checks whether or not this Task is executing.
+     *
+     * @return Returns true if this Task's status is executing.
+     */
     public boolean isExecuting() {
         return status.isExecuting();
     }
 
+    /**
+     * Checks whether or not this Task is final.
+     *
+     * @return Returns true if this Task's status is final.
+     */
     public boolean isFinal() {
         return status.isFinal();
     }
@@ -170,66 +185,147 @@ public class Task implements Serializable {
         return !getTaskInfo().hasUnfinishedDependencies() && status.canExecute();
     }
 
+    /**
+     * Check whether or not this task was finished on time.
+     *
+     * @return True if it was finished on time.
+     */
     public boolean wasFinishedOnTime() {
         return status.wasFinishedOnTime();
     }
 
+    /**
+     * Check whether or not this task was finished early.
+     *
+     * @return True if it was finished early.
+     */
     public boolean wasFinishedEarly() {
         return status.wasFinishedEarly();
     }
 
+    /**
+     * Check whether or not this task was finished late.
+     *
+     * @return True if it was finished late.
+     */
     public boolean wasFinishedLate() {
         return status.wasFinishedLate();
     }
 
+    /**
+     * Check whether or not this task was finished or it's alternative has finished.
+     *
+     * @return True if it was finished.
+     */
     public boolean isFinishedOrHasFinishedAlternative() {
         return status.isFinishedOrHasFinishedAlternative();
     }
 
+    /**
+     * Retrieve the tasks alternative task.
+     *
+     * @return The alternative Task.
+     */
     public Task getAlternative() {
         return status.getAlternative();
     }
 
+    /**
+     * Delegate this task.
+     *
+     * @param del The Delegation object.
+     */
     public void delegate(Delegation del) {
         status.delegate(del);
     }
 
+    /**
+     * Retrieve this tasks delegation.
+     *
+     * @return The Delegation object.
+     */
     public Delegation getDelegation() {
         return status.getDelegation();
     }
 
+    /**
+     * Get this tasks planning.
+     *
+     * @return The TaskPlanning.
+     */
     public TaskPlanning getPlanning() {
         return this.planning;
     }
 
+    /**
+     * Get this tasks description.
+     *
+     * @return The String with the description.
+     */
     public String getDescription() {
         return info.getDescription();
     }
 
+    /**
+     * Get this task estimated duration in minutes.
+     *
+     * @return A long with the estimated duration in minutes.
+     */
     public long getEstimatedDuration() {
         return info.getEstimatedDuration();
     }
 
+    /**
+     * Check if this task has the given task as dependency.
+     *
+     * @param dependency The to be checked Task.
+     * @return True if this task has it as a dependency.
+     */
     boolean containsDependency(Task dependency) {
         return info.containsDependency(dependency);
     }
 
+    /**
+     * Retrieve the acceptable deviation.
+     *
+     * @return A double with the acceptable deviantion percentage.
+     */
     public double getAcceptableDeviation() {
         return info.getAcceptableDeviation();
     }
 
+    /**
+     * Retrieve the dependencies of this task (dependant tasks)
+     *
+     * @return An Immutable Set containing the Tasks.
+     */
     public ImmutableSet<Task> getDependencySet() {
         return info.getDependencySet();
     }
 
+    /**
+     * Check whether or not this task has unfinished dependencies.
+     *
+     * @return True if this has unfinished dependencies
+     */
     boolean hasUnfinishedDependencies() {
         return info.hasUnfinishedDependencies();
     }
 
+    /**
+     * Retrieve the set of requirements.
+     *
+     * @return A Set containing the requirements of this Task.
+     */
     public Set<Requirement> getRequirements() {
         return info.getRequirements().getRequirementSet();
     }
 
+    /**
+     * Retrieve the set of requirements including their dependencies.
+     *
+     * @return A Set containing the requirements of this Task.
+     */
     public Set<Requirement> getRecursiveRequirements() {
         return info.getRecursiveRequirements().getRequirementSet();
     }
@@ -242,13 +338,29 @@ public class Task implements Serializable {
         return info.getWorstDuration();
     }
 
+    /**
+     * Check whether of not this task is already planned
+     *
+     * @return True if it's planned.
+     */
     public boolean isPlanned() {
         return this.planning != null;
     }
+
+    /**
+     * Check whether or not this task can be planned.
+     *
+     * @return True if this Task can be planned.
+     */
     public boolean canPlan(){
         return this.status.canPlan();
     }
 
+    /**
+     * Plan this task.
+     *
+     * @param plan The TaskPlanning for this Task.
+     */
     public void plan(TaskPlanning plan) {
         if (!this.status.canPlan()){
             throw new IllegalStateException(ERROR_PLAN +" " + this.status.getClass().toString());
@@ -256,6 +368,9 @@ public class Task implements Serializable {
         this.planning = plan;
     }
 
+    /**
+     * Undo this task's planning
+     */
     public void removePlanning() {
         this.planning = null;
     }

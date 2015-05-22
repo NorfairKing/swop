@@ -185,6 +185,11 @@ public class TaskInfo implements Serializable {
         return false;
     }
 
+    /**
+     * Gets the requirements of the task.
+     *
+     * @return Requirements object containing the Requirements.
+     */
     public Requirements getRequirements() {
         return this.requirements;
     }

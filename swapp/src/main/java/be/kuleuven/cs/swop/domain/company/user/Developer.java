@@ -16,32 +16,61 @@ import java.util.HashSet;
 public class Developer extends Resource implements User {
 
     private Developer() { super(DEVELOPER_TYPE, "name"); }; //for automatic (de)-serialization
-    
+
     public Developer(String name) {
         super(DEVELOPER_TYPE, name);
     }
 
+    /**
+     * Checks whether or not this resouce type is available during the given period.
+     *
+     * @param period The to be checked DateTimePeriod.
+     * @return True if this is available then.
+     */
     public boolean isAvailableDuring(DateTimePeriod period) {
         return WORKDAY.isDuring(period);
     }
 
+    /**
+     * Checks whether or not this resouce type is available during the given time.
+     *
+     * @param time The to be checked LocalTime.
+     * @return True if this is available then.
+     */
     public boolean isAvailableDuring(LocalTime time) {
         return WORKDAY.isDuring(time);
     }
 
+    /**
+     * Checks whether or not this resouce type is available during the given time.
+     *
+     * @param time The to be checked LocalDateTime.
+     * @return True if this is available then.
+     */
     public boolean isAvailableDuring(LocalDateTime time) {
         if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return WORKDAY.isDuring(LocalTime.from(time));
     }
 
+    /**
+     * Checks whether or not this developer can take a break during the given perdiod.
+     *
+     * @param period The to be checked DateTimePerdiod
+     * @return True if the developer can take a break.
+     */
     public boolean canTakeBreakDuring(DateTimePeriod period) {
         return BREAK_PERIOD.isDuring(period);
     }
-    
+
+    /**
+     * A developer is also a resource, this method retrieves it's type.
+     *
+     * @return The developer ResourceType.
+     */
     public ResourceType getType() {
         return DEVELOPER_TYPE;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

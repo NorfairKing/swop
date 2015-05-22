@@ -11,6 +11,11 @@ public class Manager implements User {
         this.name = name;
     }
 
+    /**
+     * Retrieves the name of this manager.
+     *
+     * @return A String with it's name.
+     */
     public String getName() {
         return name;
     }
