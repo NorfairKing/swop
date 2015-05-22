@@ -30,10 +30,12 @@ You can use any initialisation file in the `save_files` directory.
 Not that you can also import a save file like this:
 
 ```
-java -jar system.jar save_files/demo.json
+java -jar system.jar save_files/import_me.json
 ```
 
 Don't forget to enter the `help` command if you're unsure about what you can do.
+
+If you want to play around with the program, `save_files/import_me.json` is probably the most rich system.
 
 ## Running the demo
 ### DEMO1: Delegation

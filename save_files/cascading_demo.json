@@ -54,14 +54,14 @@
                       "task":{"@ref":18}
                     },
                     "info":{
-                      "description":"Eat Pizza",
+                      "description":"Count to infinity",
                       "estimatedDuration":60,
                       "acceptableDeviation":0.0,
                       "dependencies":{
                         "@type":"java.util.HashSet"
                       },
                       "requirements":{
-                        "@id":10,
+                        "@id":13,
                         "reqs":{
                           "@type":"java.util.HashSet",
                           "@items":[
@@ -112,9 +112,27 @@
                         }
                       }
                     },
+                    "planning":null
+                  },
+                  {
+                    "@id":17,
+                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
+                    "status":{
+                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
+                      "task":{"@ref":17}
+                    },
+                    "info":{
+                      "description":"Ask the Ultimate Question",
+                      "estimatedDuration":60,
+                      "acceptableDeviation":0.0,
+                      "dependencies":{
+                        "@type":"java.util.HashSet"
+                      },
+                      "requirements":{"@ref":13}
+                    },
                     "planning":{
                       "reservations":{
-                        "@id":13,
+                        "@id":12,
                         "@type":"java.util.HashSet",
                         "@items":[
                           {
@@ -134,24 +152,23 @@
                       "period":{
                         "startTime":{
                           "date":{
-                            "@id":17,
+                            "@id":16,
                             "year":2015,
                             "month":6,
                             "day":1
                           },
                           "time":{
-                            "@id":16,
-                            "hour":11,
+                            "@id":15,
+                            "hour":12,
                             "minute":0,
                             "second":0,
                             "nano":0
                           }
                         },
                         "stopTime":{
-                          "date":{"@ref":17},
+                          "date":{"@ref":16},
                           "time":{
-                            "@id":15,
-                            "hour":12,
+                            "hour":13,
                             "minute":0,
                             "second":0,
                             "nano":0
@@ -174,14 +191,14 @@
                       "dependencies":{
                         "@type":"java.util.HashSet"
                       },
-                      "requirements":{"@ref":10}
+                      "requirements":{"@ref":13}
                     },
                     "planning":{
-                      "reservations":{"@ref":13},
+                      "reservations":{"@ref":12},
                       "period":{
                         "startTime":{
                           "date":{
-                            "@id":12,
+                            "@id":11,
                             "year":2015,
                             "month":6,
                             "day":1
@@ -194,29 +211,17 @@
                           }
                         },
                         "stopTime":{
-                          "date":{"@ref":12},
-                          "time":{"@ref":16}
+                          "date":{"@ref":11},
+                          "time":{
+                            "@id":10,
+                            "hour":11,
+                            "minute":0,
+                            "second":0,
+                            "nano":0
+                          }
                         }
                       }
                     }
-                  },
-                  {
-                    "@id":11,
-                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
-                    "status":{
-                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                      "task":{"@ref":11}
-                    },
-                    "info":{
-                      "description":"Count to infinity",
-                      "estimatedDuration":60,
-                      "acceptableDeviation":0.0,
-                      "dependencies":{
-                        "@type":"java.util.HashSet"
-                      },
-                      "requirements":{"@ref":10}
-                    },
-                    "planning":null
                   },
                   {
                     "@id":9,
@@ -226,16 +231,16 @@
                       "task":{"@ref":9}
                     },
                     "info":{
-                      "description":"Ask the Ultimate Question",
+                      "description":"Eat Pizza",
                       "estimatedDuration":60,
                       "acceptableDeviation":0.0,
                       "dependencies":{
                         "@type":"java.util.HashSet"
                       },
-                      "requirements":{"@ref":10}
+                      "requirements":{"@ref":13}
                     },
                     "planning":{
-                      "reservations":{"@ref":13},
+                      "reservations":{"@ref":12},
                       "period":{
                         "startTime":{
                           "date":{
@@ -244,16 +249,11 @@
                             "month":6,
                             "day":1
                           },
-                          "time":{"@ref":15}
+                          "time":{"@ref":10}
                         },
                         "stopTime":{
                           "date":{"@ref":7},
-                          "time":{
-                            "hour":13,
-                            "minute":0,
-                            "second":0,
-                            "nano":0
-                          }
+                          "time":{"@ref":15}
                         }
                       }
                     }
@@ -274,9 +274,9 @@
                 },
                 "time":{
                   "hour":17,
-                  "minute":6,
-                  "second":44,
-                  "nano":923000000
+                  "minute":37,
+                  "second":13,
+                  "nano":791000000
                 }
               },
               "dueTime":{

@@ -2,7 +2,7 @@
   "@id":1,
   "@type":"be.kuleuven.cs.swop.domain.company.Company",
   "time":{
-    "@id":16,
+    "@id":17,
     "date":{
       "year":2015,
       "month":6,
@@ -19,14 +19,37 @@
     "@type":"java.util.HashSet",
     "@items":[
       {
-        "@id":11,
+        "@id":14,
         "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
-        "location":"Location2",
+        "location":"Location1",
         "projects":{
           "@type":"java.util.HashSet",
           "@items":[
             {
-              "@id":17,
+              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
+              "title":"Project 1",
+              "description":"This is Project 1",
+              "creationTime":{"@ref":17},
+              "dueTime":{
+                "date":{
+                  "year":2015,
+                  "month":6,
+                  "day":5
+                },
+                "time":{
+                  "@id":16,
+                  "hour":18,
+                  "minute":0,
+                  "second":0,
+                  "nano":0
+                }
+              },
+              "tasks":{
+                "@type":"java.util.HashSet"
+              }
+            },
+            {
+              "@id":15,
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
               "title":"Delegated tasks",
               "description":"Tasks that have been delegated to this office.",
@@ -38,13 +61,13 @@
                 },
                 "time":{
                   "hour":17,
-                  "minute":6,
-                  "second":44,
-                  "nano":922000000
+                  "minute":37,
+                  "second":13,
+                  "nano":785000000
                 }
               },
               "dueTime":{
-                "@id":10,
+                "@id":13,
                 "date":{
                   "year":999999999,
                   "month":12,
@@ -60,35 +83,140 @@
               "tasks":{
                 "@type":"java.util.HashSet"
               }
+            }
+          ]
+        },
+        "company":{"@ref":1},
+        "planningDepartment":{
+          "office":{"@ref":14}
+        },
+        "delegationProject":{"@ref":15},
+        "resources":{
+          "@type":"java.util.HashSet",
+          "@items":[
+            {
+              "@id":12,
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{
+                "@id":2,
+                "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
+                "dailyAvailability":{
+                  "startTime":{
+                    "hour":7,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  },
+                  "stopTime":{
+                    "hour":17,
+                    "minute":0,
+                    "second":0,
+                    "nano":0
+                  }
+                },
+                "name":"Developer",
+                "dependencies":{
+                  "@type":"java.util.HashSet"
+                },
+                "conflictsWith":{
+                  "@type":"java.util.HashSet"
+                }
+              },
+              "name":"Ann"
+            },
+            {
+              "@id":11,
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{"@ref":2},
+              "name":"Charlie"
+            },
+            {
+              "@id":10,
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
+              "type":{"@ref":2},
+              "name":"Bob"
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
+              "type":{
+                "@id":4,
+                "name":"Car",
+                "dependencies":{
+                  "@type":"java.util.HashSet"
+                },
+                "conflictsWith":{
+                  "@type":"java.util.HashSet"
+                }
+              },
+              "name":"Car 1"
+            }
+          ]
+        },
+        "employees":{
+          "@type":"java.util.HashSet",
+          "@items":[
+            {"@ref":12},
+            {"@ref":11},
+            {"@ref":10},
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.user.Manager",
+              "name":"Johan"
+            }
+          ]
+        }
+      },
+      {
+        "@id":5,
+        "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
+        "location":"Location2",
+        "projects":{
+          "@type":"java.util.HashSet",
+          "@items":[
+            {
+              "@id":9,
+              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
+              "title":"Delegated tasks",
+              "description":"Tasks that have been delegated to this office.",
+              "creationTime":{
+                "date":{
+                  "year":2015,
+                  "month":5,
+                  "day":22
+                },
+                "time":{
+                  "hour":17,
+                  "minute":37,
+                  "second":13,
+                  "nano":785000000
+                }
+              },
+              "dueTime":{"@ref":13},
+              "tasks":{
+                "@type":"java.util.HashSet"
+              }
             },
             {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
               "title":"Project 2",
               "description":"This is Project 2",
-              "creationTime":{"@ref":16},
+              "creationTime":{"@ref":17},
               "dueTime":{
                 "date":{
                   "year":2015,
                   "month":6,
                   "day":22
                 },
-                "time":{
-                  "@id":15,
-                  "hour":18,
-                  "minute":0,
-                  "second":0,
-                  "nano":0
-                }
+                "time":{"@ref":16}
               },
               "tasks":{
                 "@type":"java.util.HashSet",
                 "@items":[
                   {
-                    "@id":14,
+                    "@id":8,
                     "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
                     "status":{
                       "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                      "task":{"@ref":14}
+                      "task":{"@ref":8}
                     },
                     "info":{
                       "description":"Prove P==NP",
@@ -104,45 +232,12 @@
                             {
                               "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
                               "amount":1,
-                              "type":{
-                                "@id":3,
-                                "name":"Car",
-                                "dependencies":{
-                                  "@type":"java.util.HashSet"
-                                },
-                                "conflictsWith":{
-                                  "@type":"java.util.HashSet"
-                                }
-                              }
+                              "type":{"@ref":4}
                             },
                             {
                               "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
                               "amount":1,
-                              "type":{
-                                "@id":2,
-                                "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
-                                "dailyAvailability":{
-                                  "startTime":{
-                                    "hour":7,
-                                    "minute":0,
-                                    "second":0,
-                                    "nano":0
-                                  },
-                                  "stopTime":{
-                                    "hour":17,
-                                    "minute":0,
-                                    "second":0,
-                                    "nano":0
-                                  }
-                                },
-                                "name":"Developer",
-                                "dependencies":{
-                                  "@type":"java.util.HashSet"
-                                },
-                                "conflictsWith":{
-                                  "@type":"java.util.HashSet"
-                                }
-                              }
+                              "type":{"@ref":2}
                             }
                           ]
                         }
@@ -153,13 +248,13 @@
                         "@type":"java.util.HashSet",
                         "@items":[
                           {
-                            "@id":13,
+                            "@id":7,
                             "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-                            "type":{"@ref":3},
+                            "type":{"@ref":4},
                             "name":"Car 3"
                           },
                           {
-                            "@id":9,
+                            "@id":3,
                             "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
                             "type":{"@ref":2},
                             "name":"David"
@@ -169,7 +264,7 @@
                       "period":{
                         "startTime":{
                           "date":{
-                            "@id":12,
+                            "@id":6,
                             "year":2015,
                             "month":6,
                             "day":1
@@ -182,7 +277,7 @@
                           }
                         },
                         "stopTime":{
-                          "date":{"@ref":12},
+                          "date":{"@ref":6},
                           "time":{
                             "hour":11,
                             "minute":0,
@@ -200,118 +295,23 @@
         },
         "company":{"@ref":1},
         "planningDepartment":{
-          "office":{"@ref":11}
+          "office":{"@ref":5}
         },
-        "delegationProject":{"@ref":17},
+        "delegationProject":{"@ref":9},
         "resources":{
           "@type":"java.util.HashSet",
           "@items":[
-            {"@ref":13},
-            {"@ref":9}
+            {"@ref":7},
+            {"@ref":3}
           ]
         },
         "employees":{
           "@type":"java.util.HashSet",
           "@items":[
-            {"@ref":9},
+            {"@ref":3},
             {
               "@type":"be.kuleuven.cs.swop.domain.company.user.Manager",
               "name":"Maria"
-            }
-          ]
-        }
-      },
-      {
-        "@id":7,
-        "@type":"be.kuleuven.cs.swop.domain.company.BranchOffice",
-        "location":"Location1",
-        "projects":{
-          "@type":"java.util.HashSet",
-          "@items":[
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 1",
-              "description":"This is Project 1",
-              "creationTime":{"@ref":16},
-              "dueTime":{
-                "date":{
-                  "year":2015,
-                  "month":6,
-                  "day":5
-                },
-                "time":{"@ref":15}
-              },
-              "tasks":{
-                "@type":"java.util.HashSet"
-              }
-            },
-            {
-              "@id":8,
-              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Delegated tasks",
-              "description":"Tasks that have been delegated to this office.",
-              "creationTime":{
-                "date":{
-                  "year":2015,
-                  "month":5,
-                  "day":22
-                },
-                "time":{
-                  "hour":17,
-                  "minute":6,
-                  "second":44,
-                  "nano":922000000
-                }
-              },
-              "dueTime":{"@ref":10},
-              "tasks":{
-                "@type":"java.util.HashSet"
-              }
-            }
-          ]
-        },
-        "company":{"@ref":1},
-        "planningDepartment":{
-          "office":{"@ref":7}
-        },
-        "delegationProject":{"@ref":8},
-        "resources":{
-          "@type":"java.util.HashSet",
-          "@items":[
-            {
-              "@id":6,
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":2},
-              "name":"Ann"
-            },
-            {
-              "@id":5,
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":2},
-              "name":"Charlie"
-            },
-            {
-              "@id":4,
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Developer",
-              "type":{"@ref":2},
-              "name":"Bob"
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.resource.Resource",
-              "type":{"@ref":3},
-              "name":"Car 1"
-            }
-          ]
-        },
-        "employees":{
-          "@type":"java.util.HashSet",
-          "@items":[
-            {"@ref":6},
-            {"@ref":5},
-            {"@ref":4},
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.user.Manager",
-              "name":"Johan"
             }
           ]
         }
@@ -330,7 +330,7 @@
   "resourceTypes":{
     "@type":"java.util.HashSet",
     "@items":[
-      {"@ref":3},
+      {"@ref":4},
       {"@ref":2}
     ]
   },
