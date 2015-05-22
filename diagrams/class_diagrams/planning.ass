@@ -1,0 +1,11 @@
+
+!ifndef PLANNING_ASS
+!define PLANNING_ASS
+
+!include planning.cl
+!include resource.cl
+
+Planning --> "*" Resource
+
+!endif
+

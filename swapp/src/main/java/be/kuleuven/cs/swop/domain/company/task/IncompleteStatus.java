@@ -4,18 +4,19 @@ package be.kuleuven.cs.swop.domain.company.task;
 import java.time.LocalDateTime;
 
 import be.kuleuven.cs.swop.domain.TimeCalculator;
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
 
 
 @SuppressWarnings("serial")
 public abstract class IncompleteStatus extends TaskStatus {
 
+    protected IncompleteStatus() {super();} //for automatic (de)-serialization
     IncompleteStatus(Task task) {
         super(task);
     }
 
     @Override
-    LocalDateTime getEstimatedOrRealFinishDate(java.time.LocalDateTime currentDate) {
+    LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
         LocalDateTime lastOfDependencies = getTask().getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
         LocalDateTime now = currentDate;
         if (lastOfDependencies.isBefore(now)) {
@@ -41,8 +42,8 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    void fail(DateTimePeriod period) {
-        goToStatus(new FailedStatus(getTask(), period));
+    void fail() {
+        goToStatus(new FailedStatus(getTask()));
     }
 
     @Override
@@ -51,15 +52,15 @@ public abstract class IncompleteStatus extends TaskStatus {
     }
 
     @Override
-    DateTimePeriod getPerformedDuring() {
-        return null;
-    }
-
-    @Override
     void setAlternative(Task alternative) {
         throw new IllegalStateException(ERROR_SET_ALTERNATIVE_ERROR);
     }
+    
+    @Override
+    void delegate(Delegation del){
+    	goToStatus(new DelegatedStatus(getTask(), del));
+    }
 
-    private static String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";
+    private static final String ERROR_SET_ALTERNATIVE_ERROR = "Can't set an alternative for an ongoing task.";
 
 }

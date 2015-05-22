@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 
@@ -99,15 +100,6 @@ public class TaskWrapper {
     }
 
     /**
-     * Retrieves the time period when the containing Task gets performed during.
-     *
-     * @return Returns the TimePeriod containing for when this Task is performed during.
-     */
-    public DateTimePeriod getPerformedDuring() {
-        return getTask().getPerformedDuring();
-    }
-
-    /**
      * Retrieves the containing Task's dependencies.
      *
      * @return Returns a Set containing the TaskWrappers which contain the  dependencies of this Task.
@@ -121,20 +113,12 @@ public class TaskWrapper {
         return result;
     }
     
-    public Set<RequirementWrapper> getRequirements(){
-        Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
-        for (Requirement realReq : getTask().getRequirements()) {
-            result.add(new RequirementWrapper(realReq));
-        }
-        return result;
+    public Set<Requirement> getRequirements(){
+        return getTask().getRequirements();
     }
     
-    public Set<RequirementWrapper> getRecursiveRequirements(){
-    	Set<RequirementWrapper> result = new HashSet<RequirementWrapper>();
-    	for (Requirement realReq : getTask().getRecursiveRequirements()) {
-    		result.add(new RequirementWrapper(realReq));
-    	}
-    	return result;
+    public Set<Requirement> getRecursiveRequirements(){
+    	return getTask().getRecursiveRequirements();
     }
 
     /**
@@ -218,6 +202,17 @@ public class TaskWrapper {
     	return this.task.hashCode() + "wrapper".hashCode();
     	
     }
+    
+    public TaskPlanning getPlanning(){
+    	return getTask().getPlanning();
+    }
+    public DateTimePeriod getEstimatedOrPlanningPeriod(){
+        return task.getEstimatedOrPlanningPeriod();
+    }
+    
+    public boolean isPlanned() {
+        return task.isPlanned();
+    }
 
     
     
@@ -225,5 +220,6 @@ public class TaskWrapper {
         return getTask().getEstimatedOrRealFinishDate(currentTime);
     }
     private final String ERROR_ILLEGAL_TASK = "Illegal task for task wrapper";
+
 
 }

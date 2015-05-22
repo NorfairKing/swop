@@ -1,0 +1,29 @@
+@startuml
+
+title "Delegated Task Status"
+
+participant Project as p
+participant OriginalTask as ot
+participant OriginalStatus as os
+participant Delegation as d
+participant DelegationTask as dt
+participant DelegationStatus as ds
+
+p -> ot: isFinished()
+ot -> os: isFinished()
+alt delegatedTask
+    os -> d: isFinished()
+    note left
+        The task status
+        will be a
+        DelegatedStatus here.
+    end note
+    d -> dt: isFinished()
+    dt -> ds: isFinished()
+    ds -> p: bool
+else
+    os -> p: bool
+end
+
+
+@enduml

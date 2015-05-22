@@ -1,0 +1,11 @@
+
+!ifndef TASKSTATUS_ASS
+!define TASKSTATUS_ASS
+
+!include taskstatus.cl
+!include task.cl
+
+TaskStatus --> "1" Task
+
+!endif
+

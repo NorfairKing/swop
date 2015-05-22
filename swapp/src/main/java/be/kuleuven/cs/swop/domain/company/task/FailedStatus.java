@@ -3,16 +3,16 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 import java.time.LocalDateTime;
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
-
 
 @SuppressWarnings("serial")
-public class FailedStatus extends PerformedStatus {
+public class FailedStatus extends CompletedStatus {
 
     private Task alternative;
 
-    FailedStatus(Task task, DateTimePeriod performedDuring) {
-        super(task, performedDuring);
+    @SuppressWarnings("unused")
+    private FailedStatus() {super();} //for automatic (de)-serialization
+    FailedStatus(Task task) {
+        super(task);
     }
 
     /**
@@ -77,7 +77,7 @@ public class FailedStatus extends PerformedStatus {
     LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
         if (getAlternative() == null) {
             // Makes no sense but the assignment said so...
-            return getPerformedDuring().getStopTime();
+            return getTask().getPlanning().getPlannedEndTime();
         }
         else {
             return getAlternative().getEstimatedOrRealFinishDate(currentDate);
@@ -98,7 +98,9 @@ public class FailedStatus extends PerformedStatus {
     boolean wasFinishedLate() {
         return false;
     }
+    
 
     private static final String ERROR_ILLEGAL_ALTERNATIVE = "Illegal alternative for failed status.";
+
 
 }

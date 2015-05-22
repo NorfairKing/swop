@@ -1,0 +1,14 @@
+
+!ifndef DELEGATION_ASS
+!define DELEGATION_ASS
+
+!include delegation.cl
+!include branchoffice.cl
+!include task.cl
+
+Delegation --> "1" BranchOffice: "from"
+Delegation --> "1" BranchOffice: "to"
+Delegation --> "1" Task: "delegationTask"
+
+!endif
+

@@ -1,11 +1,11 @@
 package be.kuleuven.cs.swop.domain.company.task;
 
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
-
-
 @SuppressWarnings("serial")
 public class ExecutingStatus extends IncompleteStatus {
+    
+    @SuppressWarnings("unused")
+    private ExecutingStatus() {super();} //for automatic (de)-serialization
 
     ExecutingStatus(Task task) {
         super(task);
@@ -43,12 +43,12 @@ public class ExecutingStatus extends IncompleteStatus {
     }
 
     @Override
-    void finish(DateTimePeriod period) {
+    void finish() {
         if (getTask().hasUnfinishedDependencies()) {
             throw new IllegalStateException(ERROR_FINISH);
         }
         else {
-            goToStatus(new FinishedStatus(getTask(), period));
+            goToStatus(new FinishedStatus(getTask()));
         }
     }
     
@@ -66,7 +66,13 @@ public class ExecutingStatus extends IncompleteStatus {
 	boolean canExecute() {
 		return false;
 	}
+	
+    @Override
+    boolean canPlan() {
+        return !getTask().isPlanned();
+    }
 
-    private static String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
-    private static String ERROR_EXECUTE = "Can't execute a task that's already being executed.";
+    private static final String ERROR_FINISH = "Can't finish a task with unfinished dependencies.";
+    private static final String ERROR_EXECUTE = "Can't execute a task that's already being executed.";
+
 }

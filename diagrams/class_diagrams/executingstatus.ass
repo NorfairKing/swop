@@ -1,0 +1,8 @@
+
+!ifndef EXECUTINGSTATUS_ASS
+!define EXECUTINGSTATUS_ASS
+
+!include executingstatus.cl
+
+!endif
+

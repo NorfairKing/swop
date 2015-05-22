@@ -1,0 +1,6 @@
+@startuml
+
+!include resource.ass
+!include developer.ass
+
+@enduml

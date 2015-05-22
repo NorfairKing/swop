@@ -73,7 +73,7 @@ public class RequirementTest {
         assertTrue(smallReq.isSatisfiedWith(semiUsefulSet));
         assertFalse(bigReq.isSatisfiedWith(semiUsefulSet));
 
-        Resource secondGoodRes = new Resource(goodType, "grommel");
+        Resource secondGoodRes = new Resource(goodType, "grommel2");
         Set<Resource> bigSet = new HashSet<>(Arrays.asList(goodRes, secondGoodRes));
 
         assertTrue(smallReq.isSatisfiedWith(bigSet));

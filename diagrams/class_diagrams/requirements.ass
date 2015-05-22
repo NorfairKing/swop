@@ -1,0 +1,11 @@
+
+!ifndef REQUIREMENTS_ASS
+!define REQUIREMENTS_ASS
+
+!include requirements.cl
+!include requirement.cl
+
+Requirements --> "*" Requirement
+
+!endif
+

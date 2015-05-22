@@ -3,14 +3,14 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 import java.time.LocalDateTime;
 
-import be.kuleuven.cs.swop.domain.DateTimePeriod;
-
 
 @SuppressWarnings("serial")
-public class FinishedStatus extends PerformedStatus {
+public class FinishedStatus extends CompletedStatus {
 
-    FinishedStatus(Task task, DateTimePeriod performedDuring) {
-        super(task, performedDuring);
+    @SuppressWarnings("unused")
+    private FinishedStatus() {super();} //for automatic (de)-serialization
+    FinishedStatus(Task task) {
+        super(task);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class FinishedStatus extends PerformedStatus {
      * @return Returns true if this Task has finished within the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
      */
     boolean wasFinishedOnTime() {
-        double realDuration = getRealDuration();
+        double realDuration = getTask().getPlanning().getTaskDuration();
         return realDuration >= getTask().getBestDuration() && realDuration <= getTask().getWorstDuration();
     }
 
@@ -49,12 +49,12 @@ public class FinishedStatus extends PerformedStatus {
      * @return Returns true if the Task has finished before after the estimated duration plus the acceptable deviation. Otherwise it returns false, also when it hasn't finished yet.
      */
     boolean wasFinishedLate() {
-        return getRealDuration() > getTask().getWorstDuration();
+        return getTask().getPlanning().getTaskDuration() > getTask().getWorstDuration();
     }
 
     @Override
     LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
-        return getPerformedDuring().getStopTime();
+        return getTask().getPlanning().getPlannedEndTime();
     }
 
     @Override
@@ -64,8 +64,9 @@ public class FinishedStatus extends PerformedStatus {
 
     @Override
     boolean wasFinishedEarly() {
-        return getRealDuration() < getTask().getBestDuration();
+        return getTask().getPlanning().getTaskDuration() < getTask().getBestDuration();
     }
 
     private static String ERROR_SET_ALTERNATIVE = "Can't set an alternative for a finished task.";
+
 }

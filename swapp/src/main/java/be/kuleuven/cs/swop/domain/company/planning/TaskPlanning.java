@@ -2,21 +2,18 @@ package be.kuleuven.cs.swop.domain.company.planning;
 
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
-import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
-import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
 
+
 /**
- * A class that represents the reservation of a task.
+ * Set Reservable: reservations A class that represents the reservation of a task.
  * It also includes the reservation of all needed resources and the developers assigned to do it.
  * It ofcourse also includes a planned starting time.
  *
@@ -24,133 +21,123 @@ import be.kuleuven.cs.swop.domain.company.user.Developer;
 @SuppressWarnings("serial")
 public class TaskPlanning implements Serializable {
 
-    private Set<Developer> developers   = new HashSet<Developer>();
-    private Task           task;
-    private LocalDateTime  plannedStartTime;
-    private Set<Resource>  resources = new HashSet<Resource>();
+    private final Set<Resource> reservations;
+    private final DateTimePeriod period;
 
-    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime){
-        this(developers,task,plannedStartTime,null);
+    protected TaskPlanning() {reservations = null;period = null;} //for automatic (de)-serialization
+
+    /**
+     * Constructor
+     *
+     * @param period The DateTimePeriod for when the planning is planned.
+     * @param reservations A Set of Resources this planning reserves.
+     */
+    public TaskPlanning(DateTimePeriod period, Set<Resource> reservations) {
+        if (!canHaveAsReservations(reservations)) { throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS); }
+        this.reservations = reservations;
+        if (!canHaveAsPeriod(period)) { throw new IllegalArgumentException(ERROR_INVALID_STARTIME); }
+        this.period = period;
     }
 
-    public TaskPlanning(Set<Developer> developers, Task task, LocalDateTime plannedStartTime, Set<Resource> resources) {
-        addDevelopers(developers);
-        setTask(task); //task has to be set before the reservations
-        setPlannedStartTime(plannedStartTime);
-        setResources(resources);
-    }
-
-    public ImmutableSet<Developer> getDevelopers() {
-        return ImmutableSet.copyOf(developers);
-    }
-
-    private void addDevelopers(Set<Developer> developers) {
-        if(developers == null){
-            developers = new HashSet<Developer>();
-        }
-        developers.forEach(d -> this.addDeveloper(d));
-    }
-
-    protected boolean canHaveAsDeveloper(Developer developer) {
-        return developer != null;
-    }
-
-    private void addDeveloper(Developer developer){
-        if (!canHaveAsDeveloper(developer)) {
-            throw new InvalidParameterException(ERROR_INVALID_DEVELOPER);
-        }
-        this.developers.add(developer);
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        if (!canHaveAsTask(task)) {
-            throw new IllegalArgumentException(ERROR_INVALID_TASK);
-        }
-        this.task = task;
-    }
-
-    protected boolean canHaveAsTask(Task task) {
-        return task != null;
-    }
-
-    public LocalDateTime getPlannedStartTime() {
-        return plannedStartTime;
-    }
-
-    public void setPlannedStartTime(LocalDateTime plannedStartTime) {
-        if (!canHaveAsPlannedStartTime(plannedStartTime)) {
-            throw new IllegalArgumentException(ERROR_INVALID_STARTIME);
-        }
-        this.plannedStartTime = plannedStartTime;
-    }
-
-    protected boolean canHaveAsPlannedStartTime(LocalDateTime plannedStartTime) {
-        return plannedStartTime != null;
-    }
-
-    public ImmutableSet<Resource> getReservations() {
-        return ImmutableSet.copyOf(resources);
-    }
-
-    private boolean satisfiedRequirements(Set<Resource> resources){
-        for(Requirement req : task.getRecursiveRequirements()){
-            if(!req.isSatisfiedWith(resources)){
-                return false;
-            }
+    protected boolean canHaveAsReservations(Set<Resource> reservations) {
+        for (Resource r : reservations) {
+            if (r == null) { return false; }
         }
         return true;
     }
 
-    private void setResources(Set<Resource> resources) {
-        if (resources == null){
-            resources = new HashSet<Resource>();
+    /**
+     * Retrieves the reserved resources.
+     *
+     * @return A Set containing the reserved Resources.
+     */
+    public Set<Resource> getReservations() {
+        Set<Resource> ress = new HashSet<Resource>();
+        for(Resource res : reservations){
+            ress.add(res);
         }
-        if (!satisfiedRequirements(resources)){
-            throw new IllegalArgumentException(ERROR_INVALID_RESERVATIONS);
-        }
-        this.resources.clear();
-        resources.forEach(r -> addResource(r));
-    }
-
-    protected boolean canHaveAsResource(Resource resource){
-        return resource != null;
-    }
-
-    private void addResource(Resource resource){
-        if(!canHaveAsResource(resource)){
-            throw new IllegalArgumentException(ERROR_INVALID_RESOURCE);
-        }
-        this.resources.add(resource);
+        return ress;
     }
 
     /**
-     * Gives an indication of when this planning has taken, or should take place.
-     * If the task is already finished, the planning knows when it was, and returns that as the period it was done.
-     * If the task isn't finished the planning will estimate a period based on the planned starting time and how long the task needs.
+     * Retrieves the developers assigned to this planning.
      *
-     * @return An estimated period in which the task should be done, or the real period in which it was done.
+     * @return A Set containing all of those Developers
      */
-    public DateTimePeriod getEstimatedOrRealPeriod() {
-        if (getTask().isFailed() || getTask().isFinished()) {
-            return getTask().getPerformedDuring();
-        } else {
-            long taskDur = getTask().getEstimatedDuration();
-            LocalDateTime estimatedEndTime = getPlannedStartTime().plusMinutes(taskDur);
-            return new DateTimePeriod(getPlannedStartTime(), estimatedEndTime);
+    public Set<Developer> getDevelopers() {
+        Set<Developer> devs = new HashSet<Developer>();
+        for(Resource res : reservations){
+        	if(res.getType().equals(Developer.DEVELOPER_TYPE)){
+        		devs.add((Developer) res);
+        	}
         }
+        return devs;
     }
 
-    public boolean includesBreak() {
-        return false;
+    /**
+     * Retrieve the starttime of this planning.
+     *
+     * @return A LocalDateTime of the starttime.
+     */
+    public LocalDateTime getPlannedStartTime() {
+        return period.getStartTime();
     }
 
-    private static final String ERROR_INVALID_DEVELOPER = "Invalid developer for planning.";
-    private static final String ERROR_INVALID_RESERVATIONS = "Invalid resource set for planning.";
-    private static final String ERROR_INVALID_RESOURCE = "Invalid resource  for planning.";
-    private static final String ERROR_INVALID_STARTIME = "Invalid startime for this planning.";
-    private static final String ERROR_INVALID_TASK = "Invalid task for this planning.";
+    /**
+     * Retrieve the endtime of this planning.
+     *
+     * @return A LocalDateTime of the endtime.
+     */
+    public LocalDateTime getPlannedEndTime() {
+        return period.getStopTime();
+    }
+
+    protected boolean canHaveAsPeriod(DateTimePeriod period) {
+        return period != null;
+    }
+
+    /**
+     * Calculate how long this planning will take.
+     *
+     * @return A long that specifies the time in minutes.
+     */
+    public long getTaskDuration(){
+        return getPlannedStartTime().until(getPlannedEndTime(), ChronoUnit.MINUTES);
+    }
+
+    /**
+     * Retrieves the DateTimePeriod for when this planning is planned.
+     *
+     * @return The DateTimePeriod
+     */
+    public DateTimePeriod getEstimatedPeriod(){
+        return period;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((period == null) ? 0 : period.hashCode());
+        result = prime * result + ((reservations == null) ? 0 : reservations.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TaskPlanning other = (TaskPlanning) obj;
+        if (period == null) {
+            if (other.period != null) return false;
+        } else if (!period.equals(other.period)) return false;
+        if (reservations == null) {
+            if (other.reservations != null) return false;
+        } else if (!reservations.equals(other.reservations)) return false;
+        return true;
+    }
+
+    private static final String ERROR_INVALID_RESERVATIONS = "Invalid reservations for planning.";
+    private static final String ERROR_INVALID_STARTIME     = "Invalid start time for this planning.";
 }

@@ -1,0 +1,8 @@
+
+!ifndef USER_ASS
+!define USER_ASS
+
+!include user.cl
+
+!endif
+

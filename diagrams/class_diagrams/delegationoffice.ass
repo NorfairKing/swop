@@ -1,0 +1,11 @@
+
+!ifndef DELEGATIONOFFICE_ASS
+!define DELEGATIONOFFICE_ASS
+
+!include delegationoffice.cl
+!include delegation.cl
+
+DelegationOffice --> "*" Delegation
+
+!endif
+

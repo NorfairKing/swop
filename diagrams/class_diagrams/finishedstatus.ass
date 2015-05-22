@@ -1,0 +1,8 @@
+
+!ifndef FINISHEDSTATUS_ASS
+!define FINISHEDSTATUS_ASS
+
+!include finishedstatus.cl
+
+!endif
+

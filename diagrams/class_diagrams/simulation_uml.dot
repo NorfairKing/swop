@@ -1,0 +1,12 @@
+@startuml
+
+title "Simulation"
+
+!include taskman.ass
+!include company.ass
+!include delegationoffice.ass
+!include branchoffice.ass
+!include developer.ass
+!include manager.ass
+
+@enduml

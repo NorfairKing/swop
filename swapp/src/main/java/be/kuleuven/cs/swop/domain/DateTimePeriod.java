@@ -4,14 +4,15 @@ package be.kuleuven.cs.swop.domain;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
 /**
  * A period between two dates
  */
 @SuppressWarnings("serial")
 public class DateTimePeriod implements Serializable {
 
-    private LocalDateTime startTime;
-    private LocalDateTime stopTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime stopTime;
 
     /**
      * Full Constructor
@@ -23,9 +24,16 @@ public class DateTimePeriod implements Serializable {
      *            The Date containing the end of this peroid.
      *
      */
+    @SuppressWarnings("unused") // used by automatic (de)serialization
+	private DateTimePeriod(){startTime = null;stopTime = null;}
+    
     public DateTimePeriod(LocalDateTime start, LocalDateTime stop) {
-        setStartTime(start);
-        setStopTime(stop);
+        if (start == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+        if (stop == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+        if (start.isAfter(stop)) throw new IllegalArgumentException(ERROR_ILLEGAL_TIMES);
+
+        this.startTime = start;
+        this.stopTime = stop;
     }
 
     /**
@@ -39,24 +47,6 @@ public class DateTimePeriod implements Serializable {
     }
 
     /**
-     * Checks whether or not the given time is a valid beginning for this period, it's valid when the Date isn't null.
-     *
-     * @param startTime
-     *            The Date containing the time to be checked if it is a valid beginning for this perdiod.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStartTime(LocalDateTime startTime) {
-        return startTime != null;
-    }
-
-    private void setStartTime(LocalDateTime startTime) {
-        if (!canHaveAsStartTime(startTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_START_TIME);
-        this.startTime = startTime;
-    }
-
-    /**
      * Retries the time on which this period ends.
      *
      * @return The Date containing the end of this period.
@@ -67,96 +57,83 @@ public class DateTimePeriod implements Serializable {
     }
 
     /**
-     * Checks whether or not the given time is a valid ending for this period, it's valid when the Date isn't null.
-     *
-     * @param stopTime
-     *            The Date containing the time to be checked if it is a valid ending for this perdiod.
-     *
-     * @return Returns true if the given time is a valid beginning for the period.
-     *
-     */
-    protected boolean canHaveAsStopTime(LocalDateTime stopTime) {
-        return stopTime != null && startTime != null && startTime.isBefore(stopTime);
-    }
-
-    /**
-     * Has to be used AFTER setStartTime().
-     */
-    private void setStopTime(LocalDateTime stopTime) {
-        if (!canHaveAsStopTime(stopTime)) throw new IllegalArgumentException(ERROR_ILLEGAL_STOP_TIME);
-        this.stopTime = stopTime;
-    }
-
-    /**
      * Checks if the given date time falls in this period
      * 
-     * @param time The time to check
+     * @param time
+     *            The time to check
      * @return Yes or no
      */
     public boolean isDuring(LocalDateTime time) {
+        if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return !time.isBefore(this.getStartTime()) && !time.isAfter(this.getStopTime());
     }
-    
+
     /**
-     * Checks if the given date time falls in this period
-     * This however ignores the extremes, ie the exact start and end time.
+     * Checks if the given date time falls in this period This however ignores the extremes, ie the exact start and end time.
      * 
-     * @param time The time to check
+     * @param time
+     *            The time to check
      * @return Yes or no
      */
     public boolean isDuringExcludeExtremes(LocalDateTime time) {
+        if (time == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_TIME); }
         return time.isAfter(this.getStartTime()) && time.isBefore(this.getStopTime());
     }
 
     /**
-     * Check if the given period fall entirely inside this one
-     * This is not the same as overlapping, the given one has to fall entirely in this one.
+     * Check if the given period fall entirely inside this one This is not the same as overlapping, the given one has to fall entirely in this one.
      * 
-     * @param period The period to check
+     * @param period
+     *            The period to check
      * @return Whether it falls entirely inside this period
      */
     public boolean isDuring(DateTimePeriod period) {
+        if (period == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD); }
         return !period.getStartTime().isBefore(this.getStartTime()) && !period.getStopTime().isAfter(this.getStopTime());
     }
-    
+
     /**
      * Checks to see if the given period overlaps with this one.
      * 
-     * @param period The period to check
+     * @param period
+     *            The period to check
      * @return Whether the two periods overlap
      */
     public boolean overlaps(DateTimePeriod period) {
-        if (this.isDuringExcludeExtremes(period.startTime)) {
-            return true;
-        }
-        if (this.isDuringExcludeExtremes(period.stopTime)) {
-            return true;
-        }
-        if (period.isDuringExcludeExtremes(startTime)) {
-            return true;
-        }
-        if (period.isDuringExcludeExtremes(stopTime)) {
-            return true;
-        }
-        if(period.startTime.equals(startTime) && period.stopTime.equals(stopTime)){
-        	return true;
-        }
+        if (period == null) { throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD); }        if (this.isDuringExcludeExtremes(period.startTime)) { return true; }
+        if (this.isDuringExcludeExtremes(period.stopTime)) { return true; }
+        if (period.isDuringExcludeExtremes(startTime)) { return true; }
+        if (period.isDuringExcludeExtremes(stopTime)) { return true; }
+        if (period.startTime.equals(startTime) && period.stopTime.equals(stopTime)) { return true; }
         return false;
     }
-    
+
     @Override
     public String toString() {
         return "DateTimePeriod [startTime=" + startTime + ", stopTime=" + stopTime + "]";
     }
-    
+
     @Override
-    public boolean equals(Object o){
-    	if(!(o instanceof DateTimePeriod)){
-    		return false;
-    	}
-    	return this.startTime.equals(((DateTimePeriod) o).getStartTime()) && this.stopTime.equals(((DateTimePeriod) o).getStopTime());
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        result = prime * result + ((stopTime == null) ? 0 : stopTime.hashCode());
+        return result;
     }
 
-    private static final String ERROR_ILLEGAL_START_TIME = "Illegal start time for time span.";
-    private static final String ERROR_ILLEGAL_STOP_TIME  = "Illegal stop time for time span.";
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        DateTimePeriod other = (DateTimePeriod) obj;
+        if (!startTime.equals(other.startTime)) return false;
+        if (!stopTime.equals(other.stopTime)) return false;
+        return true;
+    }
+
+    private static final String ERROR_ILLEGAL_TIMES = "Illegal start or stop time for time span.";
+    private static final String ERROR_NULL_DURING_TIME   = "The time to check may not be null.";
+    private static final String ERROR_NULL_DURING_PERIOD = "The period to check may not be null.";
 }

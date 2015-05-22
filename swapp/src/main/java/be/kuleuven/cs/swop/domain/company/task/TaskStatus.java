@@ -2,6 +2,8 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,10 +12,13 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 abstract class TaskStatus implements Serializable {
 
-    private Task task;
-
+    private final Task task;
+    
+    protected TaskStatus() {task = null;} //for automatic (de)-serialization
+    
     TaskStatus(Task task) {
-        setTask(task);
+        if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
+        this.task = task;    
     }
 
     /**
@@ -54,6 +59,10 @@ abstract class TaskStatus implements Serializable {
      * @return Returns a true if this status is final.
      */
     abstract boolean isFinal();
+    
+    public boolean isDelegated(){
+        return false;
+    }
 
     protected Task getTask() {
         return task;
@@ -63,16 +72,13 @@ abstract class TaskStatus implements Serializable {
         return task != null;
     }
 
-    void setTask(Task task) {
-        if (!canHaveAsTask(task)) { throw new IllegalArgumentException(ERROR_ILLEGAL_TASK); }
-        this.task = task;
-    }
+    abstract void finish();
 
-    abstract void finish(DateTimePeriod period);
-
-    abstract void fail(DateTimePeriod period);
+    abstract void fail();
     
     abstract void execute();
+    
+    abstract void delegate(Delegation del);
 
     void goToStatus(TaskStatus status) {
         this.task.setStatus(status);
@@ -91,8 +97,6 @@ abstract class TaskStatus implements Serializable {
 
     abstract void setAlternative(Task alternative);
 
-    abstract DateTimePeriod getPerformedDuring();
-
     /**
      * Checks whether or not this Task was finished within the acceptable deviation.
      *
@@ -103,6 +107,53 @@ abstract class TaskStatus implements Serializable {
     abstract boolean wasFinishedEarly();
 
     abstract boolean wasFinishedLate();
+    
+    Delegation getDelegation(){
+    	return null;
+    }
+    
+    abstract boolean canPlan();
+    
+
+    /**
+     * Gives an indication of when this planning has taken, or should take place. If the task is already finished, the planning knows when it was, and returns that as the period it was done. If the
+     * task isn't finished the planning will estimate a period based on the planned starting time and how long the task needs.
+     *
+     * @return An estimated period in which the task should be done, or the real period in which it was done.
+     */
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+        if(getTask().isPlanned()){
+            TaskPlanning p = getTask().getPlanning();
+            return p.getEstimatedPeriod();
+
+        }else{
+            return null;
+        }
+    }
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((task == null) ? 0 : task.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        TaskStatus other = (TaskStatus) obj;
+        if (task == null) {
+            if (other.task != null) return false;
+        } else if (!task.equals(other.task)) return false;
+        return true;
+    }
 
     private static final String ERROR_ILLEGAL_TASK = "Illegal task for status";
+    protected static final String ERROR_ALREADY_PLANNED  = "This task is already planned.";
+
+
 }

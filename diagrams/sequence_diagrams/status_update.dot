@@ -1,0 +1,8 @@
+@startuml
+
+participant TaskMan as tm
+participant Company as c
+
+tm -> c: executeTask(task, resources)
+
+@enduml

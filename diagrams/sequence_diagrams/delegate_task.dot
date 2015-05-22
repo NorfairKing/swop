@@ -1,0 +1,22 @@
+@startuml
+
+title "Delegate Task"
+
+participant Company as c
+participant DelegationOffice as po
+participant Delegation as d
+participant TaskToDelegate as t
+participant BranchOfficeTo as bot
+
+c -> po: delegateTask(task,from,to)
+
+po -> d: new(task,from,to)
+d --> po: delegation
+po -> t: setDelegated(delegation)
+alt inSimulation
+    po -> po: addToDelegationBuffer(delegation)
+else
+    po -> po: commitDelegation(delegation)
+end
+
+@enduml

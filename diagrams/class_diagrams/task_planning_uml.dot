@@ -1,0 +1,9 @@
+@startuml
+
+title "Task planning"
+
+!include task.ass
+!include planning.ass
+!include taskstatus.ass
+
+@enduml

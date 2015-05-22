@@ -3,12 +3,12 @@ package be.kuleuven.cs.swop.domain.company.task;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import be.kuleuven.cs.swop.domain.DateTimePeriod;
+import be.kuleuven.cs.swop.domain.company.delegation.Delegation;
+import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
-import be.kuleuven.cs.swop.domain.company.resource.RequirementsCalculator;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -20,92 +20,45 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("serial")
 public class Task implements Serializable {
 
-    private String           description;
-    private long             estimatedDuration;
-    private double           acceptableDeviation;
-    private Set<Task>        dependencies = new HashSet<Task>();
-    private TaskStatus       status;
-    private Set<Requirement> requirements = new HashSet<Requirement>();
+    private TaskStatus   status;
+    private TaskInfo     info;
+    private TaskPlanning planning;
+
+    Task() {}
 
     /**
      * Full constructor
      *
-     * @param description
-     *            The description of the new task.
-     * @param estimatedDuration
-     *            The estimated duration of the task in minutes.
-     * @param acceptableDeviation
-     *            The acceptable deviation of time in which the task can be completed.
+     * @param info All info for this task.
      */
-    public Task(String description, long estimatedDuration, double acceptableDeviation) {
-        this(description, estimatedDuration, acceptableDeviation, null);
-    }
-
-    public Task(String description, long estimatedDuration, double acceptableDeviation, Set<Requirement> requirements) {
-        setDescription(description);
-        setEstimatedDuration(estimatedDuration);
-        setAcceptableDeviation(acceptableDeviation);
-        setStatus(new OngoingStatus(this));
-        setRequirements(requirements);
+    public Task(TaskInfo info) {
+        setTaskInfo(info);
+        setStatus(new UnstartedStatus(this));
     }
 
     /**
-     * Retrieves this task's description.
+     * Retrieve this tasks info.
      *
-     * @return Returns a String containing the task's description.
+     * @return The TaskInfo.
      */
-    public String getDescription() {
-        return description;
+    public TaskInfo getTaskInfo() {
+        return this.info;
     }
 
-    /**
-     * Checks whether or not the given description is valid.
-     *
-     * @param description
-     *            A String containing a possible description for this Task.
-     * @return Returns true if the given description is valid.
-     */
-    public boolean canHaveAsDescription(String description) {
-        return description != null;
+    private void setTaskInfo(TaskInfo info) {
+        if (!canHaveAsTaskInfo(info)) throw new IllegalArgumentException(ERROR_ILLEGAL_TASK_INFO);
+        this.info = info;
     }
 
-    /**
-     * Changes the Task's description to the given String
-     *
-     * @param description
-     *            The String containing the Task's new description.
-     * @throws IllegalArgumentException
-     *             If the given description is invalid.
-     */
-    public void setDescription(String description) {
-        if (!canHaveAsDescription(description)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DESCRIPTION); }
-        this.description = description;
-    }
-
-    /**
-     * Checks whether or not the given duration is a valid new estimated duration.
-     *
-     * @param estimatedDuration
-     *            The double containing the possible new estimated duration for the Task in minutes.
-     * @return Returns true if the given duration is a valid duration for this task. Which means that it's greater than zero.
-     */
-    public boolean canHaveAsEstimatedDuration(double estimatedDuration) {
-        return Double.isFinite(estimatedDuration) && estimatedDuration > 0;
-    }
-
-    /**
-     * Retrieves the Task's estimated duration.
-     *
-     * @return Returns a double containing the estimated duration in minutes.
-     */
-    public long getEstimatedDuration() {
-        return estimatedDuration;
+    public boolean canHaveAsTaskInfo(TaskInfo info) {
+        return info != null;
     }
 
     /**
      * Retrieves the best estimated finish time or, if this Task has finished, the real time when the Task finished.
      *
-     * @param currentDate The current system time
+     * @param currentDate
+     *            The current system time
      * @return Returns a Date containing the estimated or real time when the Task should be finished.
      */
     public LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
@@ -113,106 +66,13 @@ public class Task implements Serializable {
     }
 
     LocalDateTime getLatestEstimatedOrRealFinishDateOfDependencies(LocalDateTime currentDate) {
-        LocalDateTime lastTime = LocalDateTime.MIN;
-        for (Task dependency : getDependencySet()) {
-            LocalDateTime lastTimeOfThis = dependency.getEstimatedOrRealFinishDate(currentDate);
-            if (lastTimeOfThis.isAfter(lastTime)) {
-                lastTime = lastTimeOfThis;
-            }
-        }
-
-        return lastTime;
+        return info.getLatestEstimatedOrRealFinishDateOfDependencies(currentDate);
     }
 
-    /**
-     * Changes the Task's estimated duration to the given duration.
-     *
-     * @param estimatedDuration
-     *            The double containing the new estimated duration in minutes.
-     * @throws IllegalArgumentException
-     *             If the given duration is not valid.
-     */
-    public void setEstimatedDuration(long estimatedDuration) {
-        if (!canHaveAsEstimatedDuration(estimatedDuration)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DURATION); }
-        this.estimatedDuration = estimatedDuration;
+    public DateTimePeriod getEstimatedOrPlanningPeriod() {
+        return status.getEstimatedOrPlanningPeriod();
     }
 
-    /**
-     * Checks if this task depends on the given task
-     *
-     * @param dependency The possible dependency
-     * @return Whether or not it actually is
-     */
-    boolean containsDependency(Task dependency) {
-        if (dependency == null) { return false; }
-        for (Task subDep : this.getDependencySet()) {
-            if (subDep == dependency) { return true; }
-            if (subDep.containsDependency(dependency)) { return true; }
-        }
-        return false;
-    }
-
-    /**
-     * Check whether this Task can have the given task as a dependency, the given Task can't be null and cannnot create a dependency loop when it's added as dependency to tis Task.
-     *
-     * @param dependency
-     *            The given possible dependency.
-     * @return Returns true is the given Task isn't null or when it doesn't create a dependency loop when added as dependency.
-     */
-    public boolean canHaveAsDependency(Task dependency) {
-        if (dependency == null) { return false; }
-        return (dependency != this) && !dependency.containsDependency(this);
-    }
-
-    /**
-     * Adds the given Task as dependency of this Task, this throws an exception when the new Task creates a dependency loop.
-     *
-     * @param dependency
-     *            The Task to be added as dependency of this Task.
-     * @throws IllegalArgumentException
-     *             If the new dependency is invalid, this means that it can't be null or create a dependency loop.
-     */
-    public void addDependency(Task dependency) {
-        if (!canHaveAsDependency(dependency)) { throw new IllegalArgumentException(ERROR_ILLEGAL_DEPENDENCY); }
-        if (this.dependencies.contains(dependency)) { return; }
-        this.dependencies.add(dependency);
-    }
-
-    /**
-     * Retrieves the acceptable deviation for competing this Task.
-     *
-     * @return Returns a double containing the acceptable deviation for completing this task.
-     */
-    public double getAcceptableDeviation() {
-        return acceptableDeviation;
-    }
-
-    /**
-     * Checks whether or not the Task can have the given deviation as acceptable deviation.
-     *
-     * @param deviation
-     *            The double containing the deviation to be checked.
-     * @return Returns true if the given double is a valid deviation.
-     */
-    public boolean canHaveAsDeviation(double deviation) {
-        if (Double.isNaN(deviation)) { return false; }
-        if (Double.isInfinite(deviation)) { return false; }
-        if (deviation < 0) { return false; }
-        return true;
-    }
-
-    /**
-     * Changes the Task's acceptable deviation for the time completing the Task to the given deviation.
-     *
-     * @param acceptableDeviation
-     *            The double containing the new deviation.
-     * @throws IllegalArgumentException
-     *             If the given deviation is not valid.
-     */
-    public void setAcceptableDeviation(double acceptableDeviation) {
-        if (!canHaveAsDeviation(acceptableDeviation)) throw new IllegalArgumentException(ERROR_ILLEGAL_DEVIATION);
-        this.acceptableDeviation = acceptableDeviation;
-    }
 
     /**
      * Sets an alternative Task for this Task for when this Task failed, the alternative can't be null, can't create a dependency loop and this Task has to be failed.
@@ -224,15 +84,6 @@ public class Task implements Serializable {
      */
     public void setAlternative(Task alternative) {
         status.setAlternative(alternative);
-    }
-
-    /**
-     * Retrieves the dependencies of this Task.
-     *
-     * @return Returns a Set containing the Tasks which are dependencies of this Task.
-     */
-    public ImmutableSet<Task> getDependencySet() {
-        return ImmutableSet.copyOf(this.dependencies);
     }
 
     /**
@@ -269,10 +120,20 @@ public class Task implements Serializable {
         return status.isFailed();
     }
 
+    /**
+     * Checks whether or not this Task is executing.
+     *
+     * @return Returns true if this Task's status is executing.
+     */
     public boolean isExecuting() {
         return status.isExecuting();
     }
 
+    /**
+     * Checks whether or not this Task is final.
+     *
+     * @return Returns true if this Task's status is final.
+     */
     public boolean isFinal() {
         return status.isFinal();
     }
@@ -289,122 +150,237 @@ public class Task implements Serializable {
     /**
      * Changes this Task's status to finished if possible, otherwise it throws an exception.
      *
-     * @param period
-     *            The TimePeriod for when there has been worked on this project.
-     *
      * @throws IllegalStateException
      *             If this Task can't finish with the current status.
      */
-    public void finish(DateTimePeriod period) {
-        status.finish(period);
+    public void finish() {
+        status.finish();
     }
 
     /**
      * Changes this Task's status to failed if possible, otherwise it throws an exception.
      *
-     * @param period
-     *            The TimePeriod for when there has been worked on this project.
-     *
      * @throws IllegalStateException
      *             If this Task can't fail with the current status.
      */
-    public void fail(DateTimePeriod period) {
-        status.fail(period);
+    public void fail() {
+        status.fail();
     }
 
     /**
-     * Set this task to executing.
-     * Only basic tests if it can are done here, the main testing is done by the planningManager.
-     * Because of this, this method should only be called by the planningManager.
-     * We can't enforce this in java, but that's a limitation we'll have to live with.
-     * Note: for convenience it is used in some tests directly, however there are also tests
-     * to see if the checking is done properly in the planningManager.
+     * Set this task to executing. Only basic tests if it can are done here, the main testing is done by the planningManager. Because of this, this method should only be called by the planningManager.
+     * We can't enforce this in java, but that's a limitation we'll have to live with. Note: for convenience it is used in some tests directly, however there are also tests to see if the checking is
+     * done properly in the planningManager.
      */
-    public void execute(){
-    	status.execute();
-    }
-
-    protected long getBestDuration() {
-        return getEstimatedDuration() - (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
-    }
-
-    protected long getWorstDuration() {
-        return getEstimatedDuration() + (long) ((double) getEstimatedDuration() * getAcceptableDeviation());
+    public void execute() {
+        status.execute();
     }
 
     /**
-     * The 'available' from the first iteration. This is just a basic check on the task level
-     * No deeper checks are done here.
+     * The 'available' from the first iteration. This is just a basic check on the task level No deeper checks are done here.
+     * 
      * @return Whether it is Tier1Available.
      */
-    public boolean isTier1Available(){
-        return !hasUnfinishedDependencies() && status.canExecute();
+    public boolean isTier1Available() {
+        return !getTaskInfo().hasUnfinishedDependencies() && status.canExecute();
     }
 
-    boolean hasUnfinishedDependencies() {
-        if (dependencies.isEmpty()) { return false; }
-        for (Task t : dependencies) {
-            if (!t.isFinishedOrHasFinishedAlternative()) { return true; }
-        }
-        return false;
-    }
-
-    public ImmutableSet<Requirement> getRequirements() {
-        return ImmutableSet.copyOf(this.requirements);
-    }
-
-    private void setRequirements(Set<Requirement> requirements) {
-        if (requirements == null) {
-            requirements = new HashSet<>();
-        }
-        if (!canHaveAsRequirements(requirements)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
-        this.requirements.addAll(requirements);
-    }
-
-    protected boolean canHaveAsRequirements(Set<Requirement> requirements) {
-        return requirements != null
-                && !RequirementsCalculator.hasDoubleTypesRequirements(requirements)
-                && !RequirementsCalculator.hasConflictingRequirements(requirements);
-    }
-
-    public DateTimePeriod getPerformedDuring() {
-        return status.getPerformedDuring();
-    }
-
+    /**
+     * Check whether or not this task was finished on time.
+     *
+     * @return True if it was finished on time.
+     */
     public boolean wasFinishedOnTime() {
         return status.wasFinishedOnTime();
     }
 
+    /**
+     * Check whether or not this task was finished early.
+     *
+     * @return True if it was finished early.
+     */
     public boolean wasFinishedEarly() {
         return status.wasFinishedEarly();
     }
 
+    /**
+     * Check whether or not this task was finished late.
+     *
+     * @return True if it was finished late.
+     */
     public boolean wasFinishedLate() {
         return status.wasFinishedLate();
     }
 
+    /**
+     * Check whether or not this task was finished or it's alternative has finished.
+     *
+     * @return True if it was finished.
+     */
     public boolean isFinishedOrHasFinishedAlternative() {
         return status.isFinishedOrHasFinishedAlternative();
     }
 
+    /**
+     * Retrieve the tasks alternative task.
+     *
+     * @return The alternative Task.
+     */
     public Task getAlternative() {
         return status.getAlternative();
     }
 
     /**
-     * Gets all requirements of this task recursively.
-     * So doesn't just return the direct requirements of the task, but also the requirements of requirements
-     * @return All requirements
+     * Delegate this task.
+     *
+     * @param del The Delegation object.
      */
-    public ImmutableSet<Requirement> getRecursiveRequirements() {
-        return RequirementsCalculator.getRecursiveRequirements(this.getRequirements());
+    public void delegate(Delegation del) {
+        status.delegate(del);
     }
 
-    private static final String ERROR_ILLEGAL_DESCRIPTION  = "Illegal project for task.";
-    private static final String ERROR_ILLEGAL_DEVIATION    = "Illegal acceptable deviation for task.";
-    private static final String ERROR_ILLEGAL_DURATION     = "Illegal estimated duration for task.";
-    private static final String ERROR_ILLEGAL_STATUS       = "Illegal status for task.";
-    private static final String ERROR_ILLEGAL_DEPENDENCY   = "Illegal dependency set for task.";
-    private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for task.";
+    /**
+     * Retrieve this tasks delegation.
+     *
+     * @return The Delegation object.
+     */
+    public Delegation getDelegation() {
+        return status.getDelegation();
+    }
+
+    /**
+     * Get this tasks planning.
+     *
+     * @return The TaskPlanning.
+     */
+    public TaskPlanning getPlanning() {
+        return this.planning;
+    }
+
+    /**
+     * Get this tasks description.
+     *
+     * @return The String with the description.
+     */
+    public String getDescription() {
+        return info.getDescription();
+    }
+
+    /**
+     * Get this task estimated duration in minutes.
+     *
+     * @return A long with the estimated duration in minutes.
+     */
+    public long getEstimatedDuration() {
+        return info.getEstimatedDuration();
+    }
+
+    /**
+     * Check if this task has the given task as dependency.
+     *
+     * @param dependency The to be checked Task.
+     * @return True if this task has it as a dependency.
+     */
+    boolean containsDependency(Task dependency) {
+        return info.containsDependency(dependency);
+    }
+
+    /**
+     * Retrieve the acceptable deviation.
+     *
+     * @return A double with the acceptable deviantion percentage.
+     */
+    public double getAcceptableDeviation() {
+        return info.getAcceptableDeviation();
+    }
+
+    /**
+     * Retrieve the dependencies of this task (dependant tasks)
+     *
+     * @return An Immutable Set containing the Tasks.
+     */
+    public ImmutableSet<Task> getDependencySet() {
+        return info.getDependencySet();
+    }
+
+    /**
+     * Check whether or not this task has unfinished dependencies.
+     *
+     * @return True if this has unfinished dependencies
+     */
+    boolean hasUnfinishedDependencies() {
+        return info.hasUnfinishedDependencies();
+    }
+
+    /**
+     * Retrieve the set of requirements.
+     *
+     * @return A Set containing the requirements of this Task.
+     */
+    public Set<Requirement> getRequirements() {
+        return info.getRequirements().getRequirementSet();
+    }
+
+    /**
+     * Retrieve the set of requirements including their dependencies.
+     *
+     * @return A Set containing the requirements of this Task.
+     */
+    public Set<Requirement> getRecursiveRequirements() {
+        return info.getRecursiveRequirements().getRequirementSet();
+    }
+
+    protected long getBestDuration() {
+        return info.getBestDuration();
+    }
+
+    protected long getWorstDuration() {
+        return info.getWorstDuration();
+    }
+
+    /**
+     * Check whether of not this task is already planned
+     *
+     * @return True if it's planned.
+     */
+    public boolean isPlanned() {
+        return this.planning != null;
+    }
+
+    /**
+     * Check whether or not this task can be planned.
+     *
+     * @return True if this Task can be planned.
+     */
+    public boolean canPlan(){
+        return this.status.canPlan();
+    }
+
+    /**
+     * Plan this task.
+     *
+     * @param plan The TaskPlanning for this Task.
+     */
+    public void plan(TaskPlanning plan) {
+        if (!this.status.canPlan()){
+            throw new IllegalStateException(ERROR_PLAN +" " + this.status.getClass().toString());
+        }
+        this.planning = plan;
+    }
+
+    /**
+     * Undo this task's planning
+     */
+    public void removePlanning() {
+        this.planning = null;
+    }
+
+    private static final String ERROR_ILLEGAL_TASK_INFO = "Illegal info for task.";
+    private static final String ERROR_ILLEGAL_STATUS    = "Illegal status for task.";
+    private static final String ERROR_PLAN  = "Task is in the wrong state to plan.";
+
+    public boolean isDelegated() {
+        return status.isDelegated();
+    }
 
 }

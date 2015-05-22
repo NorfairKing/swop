@@ -6,29 +6,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import be.kuleuven.cs.swop.facade.DeveloperWrapper;
+import be.kuleuven.cs.swop.domain.company.resource.Requirement;
+import be.kuleuven.cs.swop.domain.company.resource.Resource;
+import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.user.User;
+import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
-import be.kuleuven.cs.swop.facade.RequirementWrapper;
-import be.kuleuven.cs.swop.facade.ResourceTypeWrapper;
-import be.kuleuven.cs.swop.facade.ResourceWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
-import be.kuleuven.cs.swop.facade.TaskStatusData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
-import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public interface UserInterface {
-    
+
+    public BranchOfficeWrapper selectOffice(Set<BranchOfficeWrapper> offices) throws ExitEvent;
+
     /**
      * Shows a list of all users and makes the user select one.
      * 
-     * @param users A list of all known users.
+     * @param users
+     *            A list of all known users.
      * @return The selected user from the users list.
+     * @throws ExitEvent To exit this event.
      */
-    public UserWrapper selectUser(Set<UserWrapper> users);
+    public User selectUser(Set<User> users) throws ExitEvent;
 
     /**
      * Shows a list of Projects this program manages to the user.
@@ -61,7 +64,7 @@ public interface UserInterface {
      *            The TaskWrapper that contains the Task that will be shown.
      */
     public void showTask(TaskWrapper task);
-    
+
     public void showTaskPlanningContext(TaskWrapper task);
 
     /**
@@ -71,8 +74,9 @@ public interface UserInterface {
      *            The Set of ProjectWrappers specifying the Projects from which the user needs to select from.
      *
      * @return Returns a ProjectWrapper containing the Project selected by the user.
+     * @throws ExitEvent To exit this event.
      */
-    public ProjectWrapper selectProject(Set<ProjectWrapper> projects);
+    public ProjectWrapper selectProject(Set<ProjectWrapper> projects) throws ExitEvent;
 
     /**
      * Shows a list of Tasks and makes the user select one.
@@ -81,8 +85,9 @@ public interface UserInterface {
      *            The Set of TaskWrappers specifying the Tasks from which the user needs to select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
+     * @throws ExitEvent To exit this event.
      */
-    public TaskWrapper selectTask(Set<TaskWrapper> tasks);
+    public TaskWrapper selectTask(Set<TaskWrapper> tasks) throws ExitEvent;
 
     /**
      * Shows a list of Projects and makes the user select one.
@@ -91,8 +96,9 @@ public interface UserInterface {
      *            The Set of ProjectWrappers specifying the Projects from which the user needs to select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
+     * @throws ExitEvent To exit this event.
      */
-    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects);
+    public TaskWrapper selectTaskFromProjects(Set<ProjectWrapper> projects) throws ExitEvent;
 
     /**
      * 
@@ -102,72 +108,65 @@ public interface UserInterface {
      *            A map of projects to tasks that belong to them that the user should select from.
      *
      * @return Returns a TaskWrapper containing the Task selected by the user.
+     * @throws ExitEvent To exit this event.
      */
-    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap);
-    
+    public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) throws ExitEvent;
+
     /**
-     * Shows a list of suggested times and returns a time
-     * The returned time can be one of the suggestions, but doesn't have to be
+     * Shows a list of suggested times and returns a time The returned time can be one of the suggestions, but doesn't have to be
      * 
-     * @param options A list of selected times
+     * @param options
+     *            A list of selected times
      * @return Any time
+     * @throws ExitEvent To exit this event.
      */
-    public LocalDateTime selectTime(List<LocalDateTime> options);
-    
-     /**
+    public LocalDateTime selectTime(List<LocalDateTime> options)  throws ExitEvent;
+
+    /**
      * Shows a form in which, for each of the resource types, the user can select specific resources
      * 
-     * @param options A map of each resource type to several options for the actual resources
-     * @param requirements The Set of requirements that need to be satisfied.
+     * @param options
+     *            A map of each resource type to several options for the actual resources
+     * @param requirements
+     *            The Set of requirements that need to be satisfied.
      * @return A set of all selected resources, at least one for each type.
+     * @throws ExitEvent To exit this event.
      */
-    public Set<ResourceWrapper> selectResourcesFor(Map<ResourceTypeWrapper,List<ResourceWrapper>> options, Set<RequirementWrapper> requirements);
+    public Set<Resource> selectResourcesFor(Map<ResourceType, List<Resource>> options, Set<Requirement> requirements) throws ExitEvent;
 
     /**
-     * Shows a list of developers for the user to select one or more from.
-     * 
-     * @param developerOptions The developers to select from
-     * @return A subset of the given developers
-     */
-    public Set<DeveloperWrapper> selectDevelopers(Set<DeveloperWrapper> developerOptions);
-
-    /**
-     * Asks the user when planning a task if the user wants to include a break in the
-     * planning.
+     * Asks the user when planning a task if the user wants to include a break in the planning.
      *
      * @return True if the user chose "yes".
+     * @throws ExitEvent To exit this event.
      */
-    public boolean askToAddBreak();
+    public boolean askToAddBreak() throws ExitEvent;
 
     /**
      * Requests data from the user for creating a task.
      *
-     * @param types The types of resources to choose from to add as resource
+     * @param types
+     *            The types of resources to choose from to add as resource
      * @return Returns a TaskData object containing the data for creating a Task
+     * @throws ExitEvent To exit this event.
      */
-    public TaskData getTaskData(Set<ResourceTypeWrapper> types);
-
-    /**
-     * Request data from the user for finishing or failing a Task,
-     *
-     * @param task The task for which the status will be updated
-     * @return Returns A TaskStatusData object containing the information necessary for changing the Task's status.
-     */
-    public TaskStatusData getUpdateStatusData(TaskWrapper task);
+    public TaskData getTaskData(Set<ResourceType> types) throws ExitEvent;
 
     /**
      * Request data from the user necessary for creating a new Project.
      *
      * @return Returns a ProjectData object containing the data necessary for creating a new project.
+     * @throws ExitEvent To exit this event.
      */
-    public ProjectData getProjectData();
+    public ProjectData getProjectData() throws ExitEvent;
 
     /**
      * Requests a timestamp from the user.
      *
      * @return Returns a Date containing the requested timestamp.
+     * @throws ExitEvent To exit this event.
      */
-    public LocalDateTime getTimeStamp();
+    public LocalDateTime getTimeStamp() throws ExitEvent;
 
     /**
      * Show an error to the user.
@@ -194,14 +193,26 @@ public interface UserInterface {
 
     /**
      * Asks the user if he wants to continue the simulation
+     * 
      * @return True if the user wants to continue, false if not.
      */
     public SimulationStepData getSimulationStepData();
     
+    public String getFileName();
+
     /**
      * Starts the user interface
      * 
      * @return returns whether the usage of the interface was successful.
      */
     public boolean start();
+    
+    @SuppressWarnings("serial")
+    public class ExitEvent extends Throwable{
+    }
+
+    boolean askExecute() throws ExitEvent;
+
+    boolean askFinish() throws ExitEvent;
+    public Set<Resource> askSelectnewResources(Set<Resource> resources, Map<ResourceType, List<Resource>> resourceOptions, Set<Requirement> reqs) throws ExitEvent;
 }

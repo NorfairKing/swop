@@ -15,6 +15,7 @@ public class ResourceTest {
     @Before
     public void setUp() throws Exception {
         type1 = new ResourceType("valid1", null, null,false);
+        type2 = new ResourceType("valid2", null, null,false);
         resource1 = new Resource(type1, "valid");
     }
 
@@ -45,6 +46,7 @@ public class ResourceTest {
     public void isOfTypeTest(){
         assertTrue(resource1.isOfType(type1));
         assertFalse(resource1.isOfType(type2));
+        assertFalse(resource1.isOfType(null));
     }
 
 }

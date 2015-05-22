@@ -1,0 +1,13 @@
+
+!ifndef TASKINFO_ASS
+!define TASKINFO_ASS
+
+!include taskinfo.cl
+!include task.cl
+!include requirements.cl
+
+TaskInfo --> "1" Requirements
+TaskInfo --> "*" Task: "dependsOn"
+
+!endif
+

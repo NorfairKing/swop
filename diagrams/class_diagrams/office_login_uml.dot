@@ -1,0 +1,10 @@
+@startuml
+
+title "Office Login"
+
+!include taskman.ass
+!include company.ass
+!include authenticator.ass
+!include authenticationtoken.ass
+
+@enduml

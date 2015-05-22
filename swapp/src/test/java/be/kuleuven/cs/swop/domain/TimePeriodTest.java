@@ -1,10 +1,11 @@
 package be.kuleuven.cs.swop.domain;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,63 +13,75 @@ import org.junit.Test;
 
 public class TimePeriodTest {
 
-    private static DateTimePeriod validTimePeriod1;
-    private static LocalDateTime now = LocalDateTime.now();
+    private static TimePeriod validTimePeriod1;
+    private static LocalTime now = LocalTime.now();
+    private static LocalTime noon          = LocalTime.NOON;
+    private static LocalDateTime noonDate          = LocalDateTime.of(LocalDate.now(), noon);
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        validTimePeriod1 = new DateTimePeriod(now.plusHours(1), now.plusHours(2));
+        validTimePeriod1 = new TimePeriod(noon.plusHours(1), noon.plusHours(2));
     }
 
     @Test
     public void constructorValidTest1() {
-        new DateTimePeriod(now.plusHours(1), now.plusHours(2));
+        new TimePeriod(now.plusHours(1), now.plusHours(2));
     }
     @Test
     public void constructorValidTest2() {
-        new DateTimePeriod(now.minusHours(1), now.plusHours(1));
+        new TimePeriod(now.minusHours(1), now.plusHours(1));
     }
     @Test
     public void constructorValidTest3() {
-        new DateTimePeriod(now, now.plusHours(1));
+        new TimePeriod(now, now.plusHours(1));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorCreationBeforeEndTimeTest() {
-        new DateTimePeriod(now.plusHours(2), now.plusHours(1));
+        new TimePeriod(now.plusHours(2), now.plusHours(1));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidStartTimeTest() {
-        new DateTimePeriod(null, now);
+        new TimePeriod(null, now);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorInvalidEndTimeTest() {
-        new DateTimePeriod(now, null);
+        new TimePeriod(now, null);
     }
-
+    
     @Test
-    public void canHaveAsStartTimeValidTest() {
-        assertTrue(validTimePeriod1.canHaveAsStartTime(now));
-        assertTrue(validTimePeriod1.canHaveAsStartTime(now.plusHours(5)));
+    public void isDuringPeriodTest(){
+        assertTrue(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(65), noon.plusMinutes(110))));
+        assertTrue(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(60), noon.plusMinutes(120))));
+        assertTrue(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(65), noon.plusMinutes(120))));
+        assertTrue(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(60), noon.plusMinutes(110))));
+        assertFalse(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(55), noon.plusMinutes(120))));
+        assertFalse(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(55), noon.plusMinutes(100))));
+        assertFalse(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(70), noon.plusMinutes(125))));
+        assertFalse(validTimePeriod1.isDuring(new TimePeriod(noon.plusMinutes(60), noon.plusMinutes(125))));
     }
-
+    
     @Test
-    public void canHaveAsStartTimeInvalidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStartTime(null));
+    public void isDuringDateTimePeriodTest(){
+        assertTrue(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(65), noonDate.plusMinutes(110))));
+        assertTrue(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(60), noonDate.plusMinutes(120))));
+        assertTrue(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(65), noonDate.plusMinutes(120))));
+        assertTrue(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(60), noonDate.plusMinutes(110))));
+        assertFalse(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(55), noonDate.plusMinutes(120))));
+        assertFalse(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(55), noonDate.plusMinutes(100))));
+        assertFalse(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(70), noonDate.plusMinutes(125))));
+        assertFalse(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusMinutes(60), noonDate.plusMinutes(125))));
+        assertTrue(validTimePeriod1.isDuring(new DateTimePeriod(noonDate.plusDays(1).plusMinutes(65), noonDate.plusDays(1).plusMinutes(110))));
     }
-
     @Test
-    public void canHaveAsStopTimeValidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStopTime(now.plusHours(1)));
-        assertTrue(validTimePeriod1.canHaveAsStopTime(now.plusHours(3)));
-    }
-
-    @Test
-    public void canHaveAsStopTimeInvalidTest() {
-        assertFalse(validTimePeriod1.canHaveAsStopTime(null));
-        assertFalse(validTimePeriod1.canHaveAsStopTime(now));
+    public void isDuringLocalTimeTest(){
+        assertTrue(validTimePeriod1.isDuring(noon.plusMinutes(65)));
+        assertTrue(validTimePeriod1.isDuring(noon.plusMinutes(60)));
+        assertTrue(validTimePeriod1.isDuring(noon.plusMinutes(120)));
+        assertFalse(validTimePeriod1.isDuring(noon.plusMinutes(55)));
+        assertFalse(validTimePeriod1.isDuring(noon.plusMinutes(125)));
     }
 
 }

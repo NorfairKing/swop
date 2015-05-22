@@ -1,0 +1,14 @@
+@startuml
+
+title "Commit Delegation"
+
+participant DelegationOffice as po
+participant Delegation as d
+participant BranchOfficeTo as bot
+
+po -> bot: createDelegationTask(task.getInfo())
+bot --> po: delegationTask
+po -> d: setTask(delegationTask)
+po -> po: addToDelegations(delegation)
+
+@enduml

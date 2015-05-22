@@ -1,0 +1,15 @@
+
+!ifndef TASK_ASS
+!define TASK_ASS
+
+!include task.cl
+!include taskstatus.cl
+!include planning.cl
+!include taskinfo.cl
+
+Task --> "1" TaskStatus
+Task --> "1" TaskInfo
+Task --> "1" Planning
+
+!endif
+

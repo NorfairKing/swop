@@ -1,5 +1,7 @@
 /pkg
 *.pdf
+*.eps
+*.png
 group02/
 
 ## Java

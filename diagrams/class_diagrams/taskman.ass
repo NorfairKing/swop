@@ -1,0 +1,13 @@
+
+!ifndef TASKMAN_ASS
+!define TASKMAN_ASS
+
+!include taskman.cl
+!include authenticator.cl
+!include company.cl
+
+TaskMan --> "1" Authenticator
+TaskMan --> "1" Company
+
+!endif
+

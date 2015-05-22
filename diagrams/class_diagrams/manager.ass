@@ -1,0 +1,8 @@
+
+!ifndef MANAGER_ASS
+!define MANAGER_ASS
+
+!include manager.cl
+
+!endif
+

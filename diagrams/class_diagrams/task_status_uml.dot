@@ -1,0 +1,10 @@
+@startuml
+
+title "Task Status"
+
+!include delegation.ass
+!include delegatedstatus.ass
+!include taskstati.ass
+!include task.ass
+
+@enduml
