@@ -18,7 +18,7 @@ DOC_DIR 	= $(RESULT_DIR)/doc
 DIAGRAM_DIR	= $(RESULT_DIR)
 
 
-all: package doc diagrams
+all: clean package doc diagrams
 	mkdir -p $(RESULT_DIR) $(DOC_DIR) $(DIAGRAM_DIR)
 	cp swapp/target/*jar-with-dependencies.jar $(RESULT_DIR)/$(FINAL_JAR)
 	cp -r swapp/src $(RESULT_DIR)
