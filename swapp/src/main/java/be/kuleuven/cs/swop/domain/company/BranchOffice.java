@@ -322,6 +322,7 @@ public class BranchOffice implements Serializable {
     /**
      * Set the given task to finished.
      * @param t The Task that is now finished.
+     * @param time The LocalDateTime when the Task has finished.
      * @throws ConflictingPlannedTaskException If this causes a conflict with another
      * planning.
      */
@@ -332,6 +333,7 @@ public class BranchOffice implements Serializable {
     /**
      * Set the given task to failed.
      * @param t The Task that is now failed.
+     * @param time The LocalDateTime when the Task has failed.
      * @throws ConflictingPlannedTaskException If this causes a conflict with another
      * planning.
      */
@@ -343,6 +345,7 @@ public class BranchOffice implements Serializable {
      * Set the given taks to an executing status.
      *
      * @param t The Task that will now start executing.
+     * @param time The LocalDateTime when the Task has started executing.
      * @param resources A Set containing the Resources that the Tasks reserves.
      * @throws ConflictingPlannedTaskException If this creates a conflict with another
      * planning.
@@ -388,6 +391,7 @@ public class BranchOffice implements Serializable {
     /**
      * Creates a new manager with the given name.
      *
+     * @param name A String with the name of the new Manager.
      * @return The newly created Manager.
      */
     public Manager createManager(String name) {
@@ -419,6 +423,8 @@ public class BranchOffice implements Serializable {
      * @param acceptableDeviation
      *            The acceptable deviation of time for completing the Task.
      *
+     * @param requirements A Requirements object that contains all of the resourceTypes
+     * the task requires.
      * @return The newly created Task.
      *
      */
