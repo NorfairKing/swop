@@ -25,6 +25,7 @@ all: package doc diagrams
 	cp -r swapp/target/site/apidocs/* $(DOC_DIR)
 	find diagrams -type f -name '*.eps' | cpio --pass-through --preserve-modification-time --make-directories --dot $(DIAGRAM_DIR)
 	cp $(README) $(RESULT_DIR)/$(FINAL_README)
+	cp -r save_files $(RESULT_DIR)/save_files
 	zip -r $(FINAL_ZIP) $(RESULT_DIR)
 
 
