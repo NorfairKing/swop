@@ -33,5 +33,7 @@ Not that you can also import a save file like this:
 java -jar system.jar save_files/demo.json
 ```
 
+Don't forget to enter the `help` command if you're unsure about what you can do.
+
 ## Running the demo
 TODO
