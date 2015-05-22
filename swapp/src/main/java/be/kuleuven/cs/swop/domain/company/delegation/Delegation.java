@@ -57,6 +57,10 @@ public class Delegation implements Serializable {
         return newOffice;
     }
     
+    public boolean hasDelegation(){
+        return delegationTask != null;
+    }
+    
     private static final String ERROR_TASK_ALREADY_SET = "A task has already been set for this Delegation";
     private static final String ERROR_TASK_NULL = "The Task for this Delegation may not be set to null";
 

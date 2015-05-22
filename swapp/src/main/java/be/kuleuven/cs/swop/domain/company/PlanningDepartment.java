@@ -4,6 +4,7 @@ package be.kuleuven.cs.swop.domain.company;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
@@ -216,8 +217,10 @@ public class PlanningDepartment implements Serializable {
      * @return Whether the developer is available to do this task at the given time
      */
     public boolean isAvailableFor(Developer dev, Task task, LocalDateTime time) {
+        DateTimePeriod period = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
         if (!dev.isAvailableDuring(time)) { return false; }
-        return isTier2Available(time, task);
+        if(getConflictIfExists(task, period, new HashSet<Resource>(Arrays.asList((Resource) dev))) != null) { return false; }
+        return isTier2Available(period, task);
     }
 
     /**
@@ -264,7 +267,7 @@ public class PlanningDepartment implements Serializable {
      *            The task to check
      * @return Whether or not it is available
      */
-    public boolean isTier2Available(LocalDateTime time, Task task) {
+    public boolean isTier2Available(DateTimePeriod period, Task task) {
         if (!task.isTier1Available()) {
             /*
              * System.out.println("1: " + task.getDescription() + "; " + task.getDependencySet().size()); for (Task dep: task.getDependencySet()) { System.out.println(dep.getDescription() + "; " +
@@ -273,8 +276,7 @@ public class PlanningDepartment implements Serializable {
             return false;
         }
         for (Requirement req : task.getRecursiveRequirements()) {
-            DateTimePeriod startingNow = new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration()));
-            if (!canRequirementOfBeSatisfiedDuring(req, task, startingNow)) {
+            if (!canRequirementOfBeSatisfiedDuring(req, task, period)) {
                 // System.out.println("5: " + req.getType().getName());
                 return false;
             }
@@ -329,6 +331,9 @@ public class PlanningDepartment implements Serializable {
 
         if (period == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_DATETIME); }
 
+        if (resources == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE_SET_NULL); }
+
+        
         for (Resource res : resources) {
             if (res == null) { throw new IllegalArgumentException(ERROR_ILLEGAL_RESOURCE); }
         }
@@ -410,11 +415,6 @@ public class PlanningDepartment implements Serializable {
         TaskPlanning newplanning = new TaskPlanning(period, resources);
         task.plan(newplanning);
     }
-    
-    public void createPlanning(Task task, LocalDateTime startTime, Set<Resource> resources, boolean withBreak) throws ConflictingPlannedTaskException {
-        createPlanning(task, new DateTimePeriod(startTime, startTime.plusMinutes(task.getEstimatedDuration())), resources, withBreak);
-
-    }
 
     /**
      * Set that the task was finished during the given period
@@ -490,6 +490,7 @@ public class PlanningDepartment implements Serializable {
     private static final String ERROR_ILLEGAL_TASK            = "Illegal task provided.";
     private static final String ERROR_ILLEGAL_DATETIME        = "Illegal date provided.";
     private static final String ERROR_ILLEGAL_RESOURCE        = "Illegal resource provided.";
+    private static final String ERROR_ILLEGAL_RESOURCE_SET_NULL    = "The given set of resources is null.";
     private static final String ERROR_ILLEGAL_RESOURCE_SET    = "The given set of resources is not possible.";
     private static final String ERROR_RESOURCE_NOT_AVAILABLE  = "A resource is not available at that time.";
     private static final String ERROR_TASK_ALREADY_PLANNED    = "The given Task already has a planning.";

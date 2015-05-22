@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.project.Project;
 import be.kuleuven.cs.swop.domain.company.resource.Requirements;
@@ -149,7 +150,7 @@ public class BranchOffice implements Serializable {
     }
 
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss, boolean withBreak) throws ConflictingPlannedTaskException {
-        this.planningDepartment.createPlanning(task, time, rss, withBreak);
+        this.planningDepartment.createPlanning(task, new DateTimePeriod(time, time.plusMinutes(task.getEstimatedDuration())), rss, withBreak);
     }
 
     public void createPlanning(Task task, LocalDateTime time, Set<Resource> rss) throws ConflictingPlannedTaskException {

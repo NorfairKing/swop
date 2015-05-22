@@ -28,17 +28,29 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     boolean isFinished() {
-        return getDelegation().getDelegationTask().isFinished();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().isFinished();
+        }else{
+            return false;
+        }
     }
 
     @Override
     boolean isFailed() {
-        return getDelegation().getDelegationTask().isFailed();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().isFailed();
+        }else{
+            return false;
+        }
     }
 
     @Override
     boolean isExecuting() {
-        return getDelegation().getDelegationTask().isExecuting();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().isExecuting();
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -61,7 +73,11 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     boolean isFinal() {
-        return getDelegation().getDelegationTask().isFinal();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().isFinal();
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -84,16 +100,21 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     LocalDateTime getEstimatedOrRealFinishDate(LocalDateTime currentDate) {
-        return getDelegation().getDelegationTask().getEstimatedOrRealFinishDate(currentDate);
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().getEstimatedOrRealFinishDate(currentDate);
+        }else{
+            return currentDate.plusMinutes(del.getDelegatedTask().getEstimatedDuration());
+        }
     }
 
     @Override
     boolean isFinishedOrHasFinishedAlternative() {
         // we consider the delegation task to be the alternative here.
-    	if (getDelegation() == null || getDelegation().getDelegationTask() == null) {
-    		return false;
-    	}
-        return getDelegation().getDelegationTask().isFinishedOrHasFinishedAlternative();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().isFinishedOrHasFinishedAlternative();
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -108,17 +129,29 @@ public class DelegatedStatus extends TaskStatus {
 
     @Override
     boolean wasFinishedOnTime() {
-        return getDelegation().getDelegationTask().wasFinishedOnTime();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().wasFinishedOnTime();
+        }else{
+            return false;
+        }
     }
 
     @Override
     boolean wasFinishedEarly() {
-        return getDelegation().getDelegationTask().wasFinishedEarly();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().wasFinishedEarly();
+        }else{
+            return false;
+        }
     }
 
     @Override
     boolean wasFinishedLate() {
-        return getDelegation().getDelegationTask().wasFinishedLate();
+        if(del.hasDelegation()){
+            return getDelegation().getDelegationTask().wasFinishedLate();
+        }else{
+            return false;
+        }
     }
 
     @Override
