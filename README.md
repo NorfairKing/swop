@@ -25,7 +25,7 @@ To start the system, run the following command:
 java -jar system.jar
 ```
 
-You will be asked to specifiy an initialisation file.
+You will be asked to specify an initialisation file.
 You can use any initialisation file in the `save_files` directory.
 Not that you can also import a save file like this:
 
