@@ -1,7 +1,6 @@
 package be.kuleuven.cs.swop.domain.company;
 
 import be.kuleuven.cs.swop.domain.company.user.User;
-import be.kuleuven.cs.swop.domain.company.user.Developer;
 
 
 public class Authenticator {
@@ -16,7 +15,7 @@ public class Authenticator {
      * @return The AuthenticationToken.
      */
     public AuthenticationToken createFor(BranchOffice office, User user) {
-        if (user instanceof Developer && !office.getDevelopers().contains((Developer) user)) throw new IllegalArgumentException(ERROR_ILLEGAL_USER);
+        if (!office.getUsers().contains(user)) throw new IllegalArgumentException(ERROR_ILLEGAL_USER);
         return new AuthenticationToken(office, user);
     }
 
