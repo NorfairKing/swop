@@ -37,7 +37,7 @@ public class DelegationOffice implements Serializable {
     	if(canDelegate(task,from, to)){ 
             Delegation del = new Delegation(task, from, to);
             task.delegate(del);
-            if(company.isInASimulation(from) || company.isInASimulation(to)){
+            if(company.isInASimulationFor(from) || company.isInASimulationFor(to)){
             	delegationBuffer.add(del);
             }else{
             	commitDelegation(del);
@@ -61,7 +61,7 @@ public class DelegationOffice implements Serializable {
     public void processBuffer(){
         Set<Delegation> toRemove = new HashSet<Delegation>();
     	for(Delegation del : delegationBuffer ){
-    	    if(!company.isInASimulation(del.getOldOffice()) && !company.isInASimulation(del.getNewOffice())){
+    	    if(!company.isInASimulationFor(del.getOldOffice()) && !company.isInASimulationFor(del.getNewOffice())){
     	           commitDelegation(del);
     	           toRemove.add(del);
     	    }

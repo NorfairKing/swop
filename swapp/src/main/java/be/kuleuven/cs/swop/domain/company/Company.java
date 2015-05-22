@@ -487,6 +487,7 @@ public class Company implements Serializable {
      * @return True if it is in a simulation.
      */
     public boolean isInASimulationFor(AuthenticationToken at) {
+    	if (at == null) return false;
         return isInASimulationFor(at.getOffice());
     }
 
