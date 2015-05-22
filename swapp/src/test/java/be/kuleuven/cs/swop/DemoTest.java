@@ -28,13 +28,13 @@ public class DemoTest {
     @Test
     public void test() throws FileNotFoundException {
         TaskMan t = buildDemoData();
-        t.saveEverythingToFile("import_me.json");
+        t.saveEverythingToFile("../save_files/import_me.json");
         
         TaskMan del = buildDelegationDemoData();
-        del.saveEverythingToFile("delegation_demo.json");
+        del.saveEverythingToFile("../save_files/delegation_demo.json");
         
         TaskMan casc = buildCascadingConflictDemoData();
-        casc.saveEverythingToFile("cascading_demo.json");
+        casc.saveEverythingToFile("../save_files/cascading_demo.json");
     }
     
     
