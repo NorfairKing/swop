@@ -12,18 +12,23 @@ import be.kuleuven.cs.swop.domain.company.task.Task;
 
 @SuppressWarnings("serial")
 public class DelegationOffice implements Serializable {
-	
+
     private final Set<Delegation> delegations;
     private final Company company;
     private final Set<Delegation> delegationBuffer;
 
+    /**
+     * Constructor for the delegation office.
+     *
+     * @param company The Company of this DelegationOffice.
+     */
     public DelegationOffice(Company company) {
         this.company = company;
         this.delegationBuffer = new HashSet<Delegation>();
         this.delegations = new HashSet<Delegation>();
     }
-    
-    
+
+
     protected boolean canDelegate(Task task, BranchOffice from, BranchOffice to){
         if(task == null) return false;
         if(from == null) return false;
@@ -32,9 +37,17 @@ public class DelegationOffice implements Serializable {
         //TODO: More checks?
         return true;
     }
-    
-    public Delegation createDelegation(Task task, BranchOffice from, BranchOffice to){        
-    	if(canDelegate(task,from, to)){ 
+
+    /**
+     * Creates a new delegation of a Task.
+     *
+     * @param task The Task that will be delegated.
+     * @param from The BranchOffice from where the Task will be delegated.
+     * @param to The BranchOffice to where the Task will be delegated.
+     * @return The resulting Delegation.
+     */
+    public Delegation createDelegation(Task task, BranchOffice from, BranchOffice to){
+    	if(canDelegate(task,from, to)){
             Delegation del = new Delegation(task, from, to);
             task.delegate(del);
             if(company.isInASimulationFor(from) || company.isInASimulationFor(to)){
@@ -46,7 +59,7 @@ public class DelegationOffice implements Serializable {
         }
         return null;
     }
-    
+
     private void commitDelegation(Delegation del){
         Task task = del.getDelegatedTask();
         Task newTask = del.getNewOffice().createDelegationTask(task.getDescription(),
@@ -57,7 +70,10 @@ public class DelegationOffice implements Serializable {
         delegations.add(del);
 
     }
-    
+
+    /**
+     * Does all delegations that are currently still in the buffer.
+     */
     public void processBuffer(){
         Set<Delegation> toRemove = new HashSet<Delegation>();
     	for(Delegation del : delegationBuffer ){
@@ -68,7 +84,10 @@ public class DelegationOffice implements Serializable {
     	}
     	delegationBuffer.removeAll(toRemove);
     }
-    
+
+    /**
+     * Undo all delegation that were the result of a simulation.
+     */
     public void rollbackSimulation(BranchOffice office){
         for(Delegation del : delegationBuffer ){
             if(office == del.getOldOffice()){
@@ -76,9 +95,9 @@ public class DelegationOffice implements Serializable {
             }
         }
         processBuffer();
-        
+
     }
-    
-    
+
+
 
 }
