@@ -261,7 +261,7 @@ public class PlanningDepartment implements Serializable {
     /**
      * Check if the task is available. This is the 'available' described in the second iteration. Alternatively could be called 'canMoveToExecuting'
      *
-     * @param time
+     * @param period
      *            The time to check for
      * @param task
      *            The task to check

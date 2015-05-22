@@ -160,6 +160,7 @@ public class Company implements Serializable {
      * @param task The Task for which the time options will be retrieved.
      * @param amount How many options will be retrieved.
      * @param time The retrieved times will be after this LocalDateTime.
+     * @param at The AuthenticationToken of the currently logged in user.
      * @return A List containing the LocalDateTimes.
      */
     public List<LocalDateTime> getPlanningTimeOptions(Task task, int amount, LocalDateTime time, AuthenticationToken at) {
@@ -187,6 +188,7 @@ public class Company implements Serializable {
      * @param task The to be planned Task.
      * @param time The LocalDateTime when the Task would be planned.
      * @param at The AuthenticationToken of the currently logged in user.
+     * @return A Set containing the Developers.
      */
     public Set<Developer> getPlanningDeveloperOptions(Task task, LocalDateTime time, AuthenticationToken at) {
         return at.getOffice().getPlanningDeveloperOptions(task, time);
@@ -481,6 +483,7 @@ public class Company implements Serializable {
     /**
      * Checks if the BranchOffice of the current user is in a simulation.
      *
+     * @param at The AuthenticationToken of the currently logged in user.
      * @return True if it is in a simulation.
      */
     public boolean isInASimulationFor(AuthenticationToken at) {
@@ -490,6 +493,7 @@ public class Company implements Serializable {
     /**
      * Checks if the given BranchOffice is in a simulation.
      *
+     * @param office The BranchOffice that will be checked.
      * @return True if it is in a simulation.
      */
     public boolean isInASimulation(BranchOffice office){

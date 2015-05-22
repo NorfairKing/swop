@@ -12,7 +12,7 @@ public final class CopyHelper {
     /**
      * Creates a deep copy of the given object by doing serialization.
      *
-     * @param object The to be copied Object.
+     * @param orig The to be copied Object.
      * @return The copy of the given Object.
      */
     public static Object getDeepCopyOf(Object orig) {

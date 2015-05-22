@@ -22,9 +22,6 @@ import be.kuleuven.cs.swop.domain.company.user.User;
 import com.google.common.collect.ImmutableSet;
 
 
-/**
- * A company. This is the main class that gives access to the rest of the domain.
- */
 @SuppressWarnings("serial")
 public class BranchOffice implements Serializable {
 
@@ -37,6 +34,13 @@ public class BranchOffice implements Serializable {
     private final Set<Resource>  resources  = new HashSet<Resource>();
     private final Set<User> employees = new HashSet<User>();
 
+    /**
+     * Constructor, creates a new BranchOffice with a given location and within the given
+     * company.
+     *
+     * @param location A String that specifies the location of the new BranchOffice
+     * @param company The Company for which this BranchOffice will be created.
+     */
     public BranchOffice(String location, Company company) {
         this.location = location;
         this.company = company;

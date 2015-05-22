@@ -476,9 +476,8 @@ public class TaskMan {
     /**
      * Create a new developer in the system
      *
-     * @param data
-     *            The data needed to create a developer
-     * @return The newly created developer
+     * @param name The name of the new Developer
+     * @return The newly created Developer
      */
     public Developer createDeveloper(String name) {
         return company.createDeveloper(name, authenticationToken);

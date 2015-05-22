@@ -12,6 +12,7 @@ public class Authenticator {
      * @param office The BranchOffice for which the user will be authenticated.
      * @param user The User that will be authenticated.
      *
+     * @throws IllegalArgumentException If the user doesn't belong to the BranchOffice.
      * @return The AuthenticationToken.
      */
     public AuthenticationToken createFor(BranchOffice office, User user) {
