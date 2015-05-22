@@ -16,6 +16,8 @@ import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.Manager;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -33,6 +35,7 @@ public class BranchOffice implements Serializable {
     private final PlanningDepartment      planningDepartment;
     private Project        		 delegationProject;
     private final Set<Resource>  resources  = new HashSet<Resource>();
+    private final Set<User> employees = new HashSet<User>();
 
     public BranchOffice(String location, Company company) {
         this.location = location;
@@ -238,6 +241,10 @@ public class BranchOffice implements Serializable {
         resources.add(resource);
         return resource;
     }
+    
+    public Set<User> getUsers() {
+        return ImmutableSet.copyOf(this.employees);
+    }
 
     /**
      * Creates a new developer and keeps track of it.
@@ -249,7 +256,14 @@ public class BranchOffice implements Serializable {
     public Developer createDeveloper(String name) {
         Developer dev = new Developer(name);
         resources.add(dev);
+        employees.add(dev);
         return dev;
+    }
+    
+    public Manager createManager(String name) {
+        Manager man = new Manager(name);
+        employees.add(man);
+        return man;
     }
 
     public boolean hasTask(Task task) {
@@ -303,5 +317,7 @@ public class BranchOffice implements Serializable {
     }
 
     private static final String ERROR_ILLEGAL_PROJECT         = "Invalid project for project manager";
+
+
 
 }

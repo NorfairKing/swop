@@ -20,6 +20,7 @@ import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
 import be.kuleuven.cs.swop.domain.company.user.Developer;
+import be.kuleuven.cs.swop.domain.company.user.Manager;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -395,7 +396,19 @@ public class Company implements Serializable {
      * @return The newly created Developer.
      */
     public Developer createDeveloper(String name, AuthenticationToken at) {
-        return at.getOffice().createDeveloper(name);
+        return createDeveloper(name, at.getOffice());
+    }
+    
+    public Developer createDeveloper(String name, BranchOffice bo){
+        return bo.createDeveloper(name);
+    }
+    
+    public Manager createManager(String name, AuthenticationToken at){
+        return createManager(name, at.getOffice());
+    }
+    
+    public Manager createManager(String name, BranchOffice bo){
+        return bo.createManager(name);
     }
 
     /**

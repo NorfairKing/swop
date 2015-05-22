@@ -2,7 +2,7 @@
   "@id":5,
   "@type":"be.kuleuven.cs.swop.domain.company.Company",
   "time":{
-    "@id":17,
+    "@id":21,
     "date":{
       "year":2015,
       "month":6,
@@ -27,18 +27,17 @@
           "@items":[
             {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 1",
-              "description":"This is Project 1",
-              "creationTime":{"@ref":17},
+              "title":"Project 2",
+              "description":"This is Project 2",
+              "creationTime":{"@ref":21},
               "dueTime":{
-                "@id":23,
                 "date":{
                   "year":2015,
                   "month":6,
-                  "day":5
+                  "day":22
                 },
                 "time":{
-                  "@id":16,
+                  "@id":23,
                   "hour":18,
                   "minute":0,
                   "second":0,
@@ -56,6 +55,161 @@
                       "task":{"@ref":22}
                     },
                     "info":{
+                      "description":"Brainstorm session",
+                      "estimatedDuration":60,
+                      "acceptableDeviation":0.0,
+                      "dependencies":{
+                        "@type":"java.util.HashSet"
+                      },
+                      "requirements":{
+                        "reqs":{
+                          "@type":"java.util.HashSet",
+                          "@items":[
+                            {
+                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
+                              "amount":2,
+                              "type":{
+                                "@id":4,
+                                "name":"White Board",
+                                "dependencies":{
+                                  "@type":"java.util.HashSet"
+                                },
+                                "conflictsWith":{
+                                  "@type":"java.util.HashSet"
+                                }
+                              }
+                            },
+                            {
+                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
+                              "amount":3,
+                              "type":{
+                                "@id":6,
+                                "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
+                                "dailyAvailability":{
+                                  "startTime":{
+                                    "hour":7,
+                                    "minute":0,
+                                    "second":0,
+                                    "nano":0
+                                  },
+                                  "stopTime":{
+                                    "@id":2,
+                                    "hour":17,
+                                    "minute":0,
+                                    "second":0,
+                                    "nano":0
+                                  }
+                                },
+                                "name":"Developer",
+                                "dependencies":{
+                                  "@type":"java.util.HashSet"
+                                },
+                                "conflictsWith":{
+                                  "@type":"java.util.HashSet"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "planning":null
+                  }
+                ]
+              }
+            },
+            {
+              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
+              "title":"Project 1",
+              "description":"This is Project 1",
+              "creationTime":{"@ref":21},
+              "dueTime":{
+                "@id":20,
+                "date":{
+                  "year":2015,
+                  "month":6,
+                  "day":5
+                },
+                "time":{"@ref":23}
+              },
+              "tasks":{
+                "@type":"java.util.HashSet",
+                "@items":[
+                  {
+                    "@id":17,
+                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
+                    "status":{
+                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
+                      "task":{"@ref":17}
+                    },
+                    "info":{
+                      "description":"Upgrade server infrastructure",
+                      "estimatedDuration":120,
+                      "acceptableDeviation":0.0,
+                      "dependencies":{
+                        "@type":"java.util.HashSet"
+                      },
+                      "requirements":{
+                        "reqs":{
+                          "@type":"java.util.HashSet",
+                          "@items":[
+                            {
+                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
+                              "amount":1,
+                              "type":{
+                                "@id":8,
+                                "name":"Car",
+                                "dependencies":{
+                                  "@type":"java.util.HashSet"
+                                },
+                                "conflictsWith":{
+                                  "@type":"java.util.HashSet"
+                                }
+                              }
+                            },
+                            {
+                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
+                              "amount":2,
+                              "type":{"@ref":6}
+                            },
+                            {
+                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
+                              "amount":1,
+                              "type":{
+                                "@id":9,
+                                "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
+                                "dailyAvailability":{
+                                  "startTime":{
+                                    "hour":12,
+                                    "minute":0,
+                                    "second":0,
+                                    "nano":0
+                                  },
+                                  "stopTime":{"@ref":2}
+                                },
+                                "name":"Data Center",
+                                "dependencies":{
+                                  "@type":"java.util.HashSet"
+                                },
+                                "conflictsWith":{
+                                  "@type":"java.util.HashSet"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "planning":null
+                  },
+                  {
+                    "@id":19,
+                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
+                    "status":{
+                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
+                      "task":{"@ref":19}
+                    },
+                    "info":{
                       "description":"Perform demo for clients",
                       "estimatedDuration":60,
                       "acceptableDeviation":0.0,
@@ -63,18 +217,21 @@
                         "@type":"java.util.HashSet",
                         "@items":[
                           {
-                            "@id":21,
+                            "@id":18,
                             "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
                             "status":{
                               "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                              "task":{"@ref":21}
+                              "task":{"@ref":18}
                             },
                             "info":{
-                              "description":"Install demo kit in conference room",
-                              "estimatedDuration":30,
+                              "description":"Prepare demo dataset",
+                              "estimatedDuration":90,
                               "acceptableDeviation":0.0,
                               "dependencies":{
-                                "@type":"java.util.HashSet"
+                                "@type":"java.util.HashSet",
+                                "@items":[
+                                  {"@ref":17}
+                                ]
                               },
                               "requirements":{
                                 "reqs":{
@@ -92,17 +249,7 @@
                                         "conflictsWith":{
                                           "@type":"java.util.HashSet",
                                           "@items":[
-                                            {
-                                              "@id":4,
-                                              "@type":"be.kuleuven.cs.swop.domain.company.resource.ResourceType",
-                                              "name":"White Board",
-                                              "dependencies":{
-                                                "@type":"java.util.HashSet"
-                                              },
-                                              "conflictsWith":{
-                                                "@type":"java.util.HashSet"
-                                              }
-                                            }
+                                            {"@ref":4}
                                           ]
                                         }
                                       }
@@ -110,32 +257,7 @@
                                     {
                                       "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
                                       "amount":1,
-                                      "type":{
-                                        "@id":6,
-                                        "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
-                                        "dailyAvailability":{
-                                          "startTime":{
-                                            "hour":7,
-                                            "minute":0,
-                                            "second":0,
-                                            "nano":0
-                                          },
-                                          "stopTime":{
-                                            "@id":2,
-                                            "hour":17,
-                                            "minute":0,
-                                            "second":0,
-                                            "nano":0
-                                          }
-                                        },
-                                        "name":"Developer",
-                                        "dependencies":{
-                                          "@type":"java.util.HashSet"
-                                        },
-                                        "conflictsWith":{
-                                          "@type":"java.util.HashSet"
-                                        }
-                                      }
+                                      "type":{"@ref":6}
                                     },
                                     {
                                       "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
@@ -164,87 +286,18 @@
                             "planning":null
                           },
                           {
-                            "@id":20,
+                            "@id":16,
                             "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
                             "status":{
                               "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                              "task":{"@ref":20}
+                              "task":{"@ref":16}
                             },
                             "info":{
-                              "description":"Prepare demo dataset",
-                              "estimatedDuration":90,
+                              "description":"Install demo kit in conference room",
+                              "estimatedDuration":30,
                               "acceptableDeviation":0.0,
                               "dependencies":{
-                                "@type":"java.util.HashSet",
-                                "@items":[
-                                  {
-                                    "@id":19,
-                                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
-                                    "status":{
-                                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                                      "task":{"@ref":19}
-                                    },
-                                    "info":{
-                                      "description":"Upgrade server infrastructure",
-                                      "estimatedDuration":120,
-                                      "acceptableDeviation":0.0,
-                                      "dependencies":{
-                                        "@type":"java.util.HashSet"
-                                      },
-                                      "requirements":{
-                                        "reqs":{
-                                          "@type":"java.util.HashSet",
-                                          "@items":[
-                                            {
-                                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
-                                              "amount":1,
-                                              "type":{
-                                                "@id":8,
-                                                "name":"Car",
-                                                "dependencies":{
-                                                  "@type":"java.util.HashSet"
-                                                },
-                                                "conflictsWith":{
-                                                  "@type":"java.util.HashSet"
-                                                }
-                                              }
-                                            },
-                                            {
-                                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
-                                              "amount":2,
-                                              "type":{"@ref":6}
-                                            },
-                                            {
-                                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
-                                              "amount":1,
-                                              "type":{
-                                                "@id":9,
-                                                "@type":"be.kuleuven.cs.swop.domain.company.resource.TimeConstrainedResourceType",
-                                                "dailyAvailability":{
-                                                  "startTime":{
-                                                    "hour":12,
-                                                    "minute":0,
-                                                    "second":0,
-                                                    "nano":0
-                                                  },
-                                                  "stopTime":{"@ref":2}
-                                                },
-                                                "name":"Data Center",
-                                                "dependencies":{
-                                                  "@type":"java.util.HashSet"
-                                                },
-                                                "conflictsWith":{
-                                                  "@type":"java.util.HashSet"
-                                                }
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    },
-                                    "planning":null
-                                  }
-                                ]
+                                "@type":"java.util.HashSet"
                               },
                               "requirements":{
                                 "reqs":{
@@ -298,14 +351,13 @@
                     },
                     "planning":null
                   },
-                  {"@ref":21},
-                  {"@ref":20},
-                  {"@ref":19}
+                  {"@ref":18},
+                  {"@ref":16}
                 ]
               }
             },
             {
-              "@id":18,
+              "@id":15,
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
               "title":"Delegated tasks",
               "description":"Tasks that have been delegated to this office.",
@@ -313,13 +365,13 @@
                 "date":{
                   "year":2015,
                   "month":5,
-                  "day":21
+                  "day":22
                 },
                 "time":{
-                  "hour":22,
-                  "minute":31,
-                  "second":52,
-                  "nano":725000000
+                  "hour":11,
+                  "minute":56,
+                  "second":45,
+                  "nano":795000000
                 }
               },
               "dueTime":{
@@ -339,59 +391,6 @@
               "tasks":{
                 "@type":"java.util.HashSet"
               }
-            },
-            {
-              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Project 2",
-              "description":"This is Project 2",
-              "creationTime":{"@ref":17},
-              "dueTime":{
-                "date":{
-                  "year":2015,
-                  "month":6,
-                  "day":22
-                },
-                "time":{"@ref":16}
-              },
-              "tasks":{
-                "@type":"java.util.HashSet",
-                "@items":[
-                  {
-                    "@id":15,
-                    "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
-                    "status":{
-                      "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                      "task":{"@ref":15}
-                    },
-                    "info":{
-                      "description":"Brainstorm session",
-                      "estimatedDuration":60,
-                      "acceptableDeviation":0.0,
-                      "dependencies":{
-                        "@type":"java.util.HashSet"
-                      },
-                      "requirements":{
-                        "reqs":{
-                          "@type":"java.util.HashSet",
-                          "@items":[
-                            {
-                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
-                              "amount":2,
-                              "type":{"@ref":4}
-                            },
-                            {
-                              "@type":"be.kuleuven.cs.swop.domain.company.resource.Requirement",
-                              "amount":3,
-                              "type":{"@ref":6}
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "planning":null
-                  }
-                ]
-              }
             }
           ]
         },
@@ -399,7 +398,7 @@
         "planningDepartment":{
           "office":{"@ref":14}
         },
-        "delegationProject":{"@ref":18},
+        "delegationProject":{"@ref":15},
         "resources":{
           "@type":"java.util.HashSet",
           "@items":[
@@ -488,43 +487,20 @@
           "@type":"java.util.HashSet",
           "@items":[
             {
-              "@id":12,
-              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
-              "title":"Delegated tasks",
-              "description":"Tasks that have been delegated to this office.",
-              "creationTime":{
-                "date":{
-                  "year":2015,
-                  "month":5,
-                  "day":21
-                },
-                "time":{
-                  "hour":22,
-                  "minute":31,
-                  "second":52,
-                  "nano":725000000
-                }
-              },
-              "dueTime":{"@ref":13},
-              "tasks":{
-                "@type":"java.util.HashSet"
-              }
-            },
-            {
               "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
               "title":"Project 3",
               "description":"This is Project 3",
-              "creationTime":{"@ref":17},
-              "dueTime":{"@ref":23},
+              "creationTime":{"@ref":21},
+              "dueTime":{"@ref":20},
               "tasks":{
                 "@type":"java.util.HashSet",
                 "@items":[
                   {
-                    "@id":11,
+                    "@id":12,
                     "@type":"be.kuleuven.cs.swop.domain.company.task.Task",
                     "status":{
                       "@type":"be.kuleuven.cs.swop.domain.company.task.UnstartedStatus",
-                      "task":{"@ref":11}
+                      "task":{"@ref":12}
                     },
                     "info":{
                       "description":"Test the prototype",
@@ -555,6 +531,29 @@
                   }
                 ]
               }
+            },
+            {
+              "@id":11,
+              "@type":"be.kuleuven.cs.swop.domain.company.project.Project",
+              "title":"Delegated tasks",
+              "description":"Tasks that have been delegated to this office.",
+              "creationTime":{
+                "date":{
+                  "year":2015,
+                  "month":5,
+                  "day":22
+                },
+                "time":{
+                  "hour":11,
+                  "minute":56,
+                  "second":45,
+                  "nano":795000000
+                }
+              },
+              "dueTime":{"@ref":13},
+              "tasks":{
+                "@type":"java.util.HashSet"
+              }
             }
           ]
         },
@@ -562,7 +561,7 @@
         "planningDepartment":{
           "office":{"@ref":10}
         },
-        "delegationProject":{"@ref":12},
+        "delegationProject":{"@ref":11},
         "resources":{
           "@type":"java.util.HashSet",
           "@items":[

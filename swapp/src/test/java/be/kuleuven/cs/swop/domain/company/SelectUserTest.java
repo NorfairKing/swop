@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import be.kuleuven.cs.swop.TestingUI;
+import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.TaskMan;
@@ -32,12 +33,12 @@ public class SelectUserTest {
         controller.loadFromFile();
         BranchOfficeWrapper office = taskMan.getOffices().stream().findFirst().get();
         ui.addOffice(office);
-        UserWrapper user = taskMan.getUsersFrom(office).stream().findFirst().get();
+        User user = taskMan.getUsersFrom(office).stream().findFirst().get();
         ui.addSelectUser(user);
         controller.startSelectUserSession();
 
         assertEquals(office, new BranchOfficeWrapper(taskMan.getCurrentAuthenticationToken().getOffice()));
-        assertEquals(user, new UserWrapper(taskMan.getCurrentAuthenticationToken().getUser()));
+        assertEquals(user,taskMan.getCurrentAuthenticationToken().getUser());
     }
     
 }

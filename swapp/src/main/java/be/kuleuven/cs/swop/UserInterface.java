@@ -9,6 +9,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -16,7 +17,6 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
-import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public interface UserInterface {
@@ -31,7 +31,7 @@ public interface UserInterface {
      * @return The selected user from the users list.
      * @throws ExitEvent To exit this event.
      */
-    public UserWrapper selectUser(Set<UserWrapper> users) throws ExitEvent;
+    public User selectUser(Set<User> users) throws ExitEvent;
 
     /**
      * Shows a list of Projects this program manages to the user.

@@ -20,6 +20,7 @@ import be.kuleuven.cs.swop.domain.company.planning.TaskPlanning;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -27,7 +28,6 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
-import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 /**
@@ -47,7 +47,7 @@ public class CLI implements UserInterface {
         System.out.println("Welcome to TaskMan.");
         System.out.println("Enter \"h\" for help.");
 
-        if(login()){
+        if (login()) {
             String command;
             boolean stop = false;
             while (!stop) {
@@ -62,9 +62,7 @@ public class CLI implements UserInterface {
     private boolean login() {
         System.out.println("\nLOGIN:");
         getSessionController().startSelectUserSession();
-        if(sessionController.getTaskMan().getCurrentAuthenticationToken() == null){
-            return false;
-        }
+        if (sessionController.getTaskMan().getCurrentAuthenticationToken() == null) { return false; }
         return true;
     }
 
@@ -189,7 +187,7 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public UserWrapper selectUser(Set<UserWrapper> usersSet) throws ExitEvent {
+    public User selectUser(Set<User> usersSet) throws ExitEvent {
         return selectFromCollection(usersSet, "users", u -> u.getName());
     }
 
@@ -232,9 +230,8 @@ public class CLI implements UserInterface {
     @Override
     public ProjectWrapper selectProject(Set<ProjectWrapper> projectSet) throws ExitEvent {
         return selectFromCollection(projectSet, "projects",
-                p -> p.getTitle() + " - " + 
-                        sessionController.getTaskMan().getOfficeOf(p).getLocation()
-        );
+                p -> p.getTitle() + " - " +
+                        sessionController.getTaskMan().getOfficeOf(p).getLocation());
     }
 
     @Override
@@ -314,7 +311,7 @@ public class CLI implements UserInterface {
         if (office != null) {
             System.out.println("#   Has been delegated to: " + office.getLocation());
         }
-        
+
         if (task.getPlanning() != null) {
             System.out.println("PLANNING: ");
             printPlanning(task.getPlanning());
@@ -325,7 +322,7 @@ public class CLI implements UserInterface {
         System.out.println("#   Planned start time: " + planning.getPlannedStartTime());
         System.out.println("#   Planned duration: " + planning.getTaskDuration());
         System.out.println("#   Reservations: ");
-        for (Resource res: planning.getReservations()) {
+        for (Resource res : planning.getReservations()) {
             System.out.println("      # " + res.getType().getName() + ": " + res.getName());
         }
     }
@@ -335,7 +332,9 @@ public class CLI implements UserInterface {
         return selectFromCollection(taskSet, "tasks", p -> {
             String total = p.getDescription();
             // FIXME check if available for current user
-                total += ", it is " + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : sessionController.getTaskMan().isTaskAvailableFor(null, p) ? "availble" : "unavailable");
+                total += ", it is "
+                        + (p.isExecuting() ? "executing" : p.isFinished() ? "finished" : p.isFailed() ? "failed" : sessionController.getTaskMan().isTaskAvailableFor(null, p) ? "availble"
+                                : "unavailable");
 
                 if (p.isFinished()) {
                     total += " and was finished " + (p.wasFinishedEarly() ? "early" : p.wasFinishedLate() ? "late" : "on time");
@@ -361,9 +360,9 @@ public class CLI implements UserInterface {
         Map<ResourceType, Integer> reqs = new HashMap<ResourceType, Integer>();
         while (true) {
             ResourceType selectedType = null;
-            try{
-            selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
-            }catch(ExitEvent e){
+            try {
+                selectedType = selectFromCollection(types, "Resource Type", t -> t.getName());
+            } catch (ExitEvent e) {
                 break;
             }
             int amount = promptPosInteger("Quantity required");
@@ -390,7 +389,8 @@ public class CLI implements UserInterface {
      * @param projectMap
      *            The selection of tasks for each project.
      * @return The selected task.
-     * @throws ExitEvent To exit the event
+     * @throws ExitEvent
+     *             To exit the event
      */
     @Override
     public TaskWrapper selectTaskFromProjects(Map<ProjectWrapper, Set<TaskWrapper>> projectMap) throws ExitEvent {
@@ -427,13 +427,12 @@ public class CLI implements UserInterface {
         }
     }
 
-    
     @Override
     public boolean askExecute() throws ExitEvent {
         System.out.print("# Execute or fail the task (execute/fail): ");
         return promptBoolean("execute", "fail");
     }
-    
+
     @Override
     public boolean askFinish() throws ExitEvent {
         System.out.print("# Was the task successful (finish/fail): ");
@@ -449,13 +448,13 @@ public class CLI implements UserInterface {
 
         return time;
     }
-    
-    public Set<Resource> askSelectnewResources(Set<Resource> resources, Map<ResourceType, List<Resource>> resourceOptions, Set<Requirement> reqs) throws ExitEvent{
+
+    public Set<Resource> askSelectnewResources(Set<Resource> resources, Map<ResourceType, List<Resource>> resourceOptions, Set<Requirement> reqs) throws ExitEvent {
         System.out.print("# Use the resources from the planning or allocate new resources?: ");
         boolean plan = promptBoolean("plan", "new");
-        if(plan){
+        if (plan) {
             return resources;
-        }else{
+        } else {
             return selectResourcesFor(resourceOptions, reqs);
         }
     }
@@ -463,12 +462,13 @@ public class CLI implements UserInterface {
     @Override
     public LocalDateTime selectTime(List<LocalDateTime> options) throws ExitEvent {
         LocalDateTime time;
-        try{
+        try {
             time = selectFromCollection(options, "time", o -> formatDate(o));
-        }catch(ExitEvent e){
+        } catch (ExitEvent e) {
             System.out.println("Enter a custom timestamp or \"exit\" to quit.");
-                time = promptDate();
-        };
+            time = promptDate();
+        }
+        ;
 
         return time;
     }
@@ -587,13 +587,12 @@ public class CLI implements UserInterface {
             }
         } while (true);
     }
-    
-    public String getFileName(){
-    	System.out.print("Please enter the file name: ");
+
+    public String getFileName() {
+        System.out.print("Please enter the file name: ");
         String reply = this.getScanner().nextLine();
         return reply;
     }
-
 
     // Format methods
 
@@ -692,13 +691,11 @@ public class CLI implements UserInterface {
 
     private String promptString() throws ExitEvent {
         String input = this.getScanner().nextLine();
-        if("".equals(input)){
+        if ("".equals(input)) {
             System.out.println("Press enter again to quit");
             input = this.getScanner().nextLine();
         }
-        if("".equals(input)){
-            throw new ExitEvent();
-        }
+        if ("".equals(input)) { throw new ExitEvent(); }
         return input;
     }
 
@@ -732,7 +729,7 @@ public class CLI implements UserInterface {
             } else if (success.equalsIgnoreCase(falseString)) {
                 successful = false;
                 break;
-            }else if(success.equalsIgnoreCase("exit")){
+            } else if (success.equalsIgnoreCase("exit")) {
                 throw new ExitEvent();
             } else {
                 System.out.print("# Please type \"" + trueString + "\" or \"" + falseString + "\" or \"exit\": ");

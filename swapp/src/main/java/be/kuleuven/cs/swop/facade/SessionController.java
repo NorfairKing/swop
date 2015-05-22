@@ -15,6 +15,7 @@ import be.kuleuven.cs.swop.domain.DateTimePeriod;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 public class SessionController {
@@ -120,9 +121,9 @@ public class SessionController {
 
             if (office == null) return;
 
-            Set<UserWrapper> users = getTaskMan().getUsersFrom(office);
+            Set<User> users = getTaskMan().getUsersFrom(office);
 
-            UserWrapper user = getUi().selectUser(users);
+            User user = getUi().selectUser(users);
 
             if (user == null) return;
 
@@ -319,7 +320,7 @@ public class SessionController {
                 } catch (ConflictingPlannedTaskWrapperException e) {
                     startResolveConflictSession(e.getTask());
                 } catch (Exception e) {
-                    getUi().showError("Failed to plan task: " + e.getMessage());
+                    getUi().showError("Failed to plan task: " + e.getClass().toString() + " " + e.getMessage());
                 }
 
                 // End session

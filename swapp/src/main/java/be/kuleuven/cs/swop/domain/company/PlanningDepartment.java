@@ -455,7 +455,7 @@ public class PlanningDepartment implements Serializable {
         t.removePlanning();
         try{
         createPlanning(t, period, reservations);
-        }catch(ConflictingPlannedTaskException e){
+        } catch (ConflictingPlannedTaskException e) {
             t.plan(plan);
             throw e;
         }

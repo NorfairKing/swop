@@ -14,6 +14,7 @@ import java.util.Set;
 import be.kuleuven.cs.swop.domain.company.resource.Requirement;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
+import be.kuleuven.cs.swop.domain.company.user.User;
 import be.kuleuven.cs.swop.facade.BranchOfficeWrapper;
 import be.kuleuven.cs.swop.facade.ProjectData;
 import be.kuleuven.cs.swop.facade.ProjectWrapper;
@@ -21,24 +22,23 @@ import be.kuleuven.cs.swop.facade.SessionController;
 import be.kuleuven.cs.swop.facade.SimulationStepData;
 import be.kuleuven.cs.swop.facade.TaskData;
 import be.kuleuven.cs.swop.facade.TaskWrapper;
-import be.kuleuven.cs.swop.facade.UserWrapper;
 
 
 public class ButtonMashingUI implements UserInterface {
 
-    private static String         VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789&é\"\'(§è!çà)$^*¨µ][´~·/:;.,?><\\²³";
-    private SessionController     sessionController;
-    private Random                random;
+    private static String        VALID_CHARACTERS                 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789";
+    private SessionController    sessionController;
+    private Random               random;
 
-    private static String         ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
+    private static String        ERROR_ILLEGAL_SESSION_CONTROLLER = "Illegal session controller for CLI.";
 
-    private Map<String, Integer> errorCount = new HashMap<>();
-    
+    private Map<String, Integer> errorCount                       = new HashMap<>();
+
     public ButtonMashingUI() {
         random = new Random(8008135);
     }
 
-	@Override
+    @Override
     public SessionController getSessionController() {
         return this.sessionController;
     }
@@ -54,11 +54,11 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     public Map<String, Integer> getErrorCount() {
-		return errorCount;
-	}
+        return errorCount;
+    }
 
     @Override
-    public UserWrapper selectUser(Set<UserWrapper> users) {
+    public User selectUser(Set<User> users) {
         return selectFromCollection(users);
     }
 
@@ -175,8 +175,8 @@ public class ButtonMashingUI implements UserInterface {
     public TaskData getTaskData(Set<ResourceType> types) {
         if (random.nextDouble() < 0.1) return null;
         String description = randomString();
-        long duration = (long)random.nextInt(480); // arbitrary
-                                                                                      // constant
+        long duration = (long) random.nextInt(480); // arbitrary
+                                                    // constant
         boolean negative2 = random.nextBoolean();
         double deviation = negative2 ? random.nextDouble() * 2.0 : random.nextDouble() * -2.0; // arbitrary
                                                                                                // constant
@@ -202,14 +202,14 @@ public class ButtonMashingUI implements UserInterface {
 
     @Override
     public void showError(String error) {
-    	System.out.println(error);
-    	if (errorCount.containsKey(error)) {
-    		int cur = errorCount.get(error);
-    		errorCount.put(error, cur+1);
-    	}
-    	else {
-    		errorCount.put(error, 1);
-    	}
+        System.out.println(error);
+        if (errorCount.containsKey(error)) {
+            int cur = errorCount.get(error);
+            errorCount.put(error, cur + 1);
+        }
+        else {
+            errorCount.put(error, 1);
+        }
     }
 
     private String randomString() {
@@ -236,7 +236,7 @@ public class ButtonMashingUI implements UserInterface {
                 result = o;
             }
         }
-        if (ch > 0.5) { return null; }// Arbitrary constant
+        if (ch > 0.9) { return null; }// Arbitrary constant
         return result;
     }
 
@@ -252,21 +252,21 @@ public class ButtonMashingUI implements UserInterface {
     }
 
     public void performAction() {
-    	
-    	List<Runnable> sessions = new ArrayList<>();
-    	sessions.add( () -> getSessionController().startAdvanceTimeSession() );
-    	sessions.add( () -> getSessionController().startCreateProjectSession());
-    	sessions.add( () -> getSessionController().startCreateTaskSession());
-    	sessions.add( () -> getSessionController().startShowProjectsSession());
-    	sessions.add( () -> getSessionController().startUpdateTaskStatusSession());
-    	sessions.add( () -> getSessionController().startPlanTaskSession());
-    	sessions.add( () -> getSessionController().startRunSimulationSession());
-    	sessions.add( () -> getSessionController().startSelectUserSession());
-    	sessions.add( () -> getSessionController().startUpdateTaskStatusSession());
-    	sessions.add( () -> getSessionController().startDelegateTaskSession());
-    	
-    	int toCall = random.nextInt(sessions.size());
-    	sessions.get(toCall).run();
+
+        List<Runnable> sessions = new ArrayList<>();
+        sessions.add(() -> getSessionController().startAdvanceTimeSession());
+        sessions.add(() -> getSessionController().startCreateProjectSession());
+        sessions.add(() -> getSessionController().startCreateTaskSession());
+        sessions.add(() -> getSessionController().startShowProjectsSession());
+        sessions.add(() -> getSessionController().startUpdateTaskStatusSession());
+        sessions.add(() -> getSessionController().startPlanTaskSession());
+        sessions.add(() -> getSessionController().startRunSimulationSession());
+        sessions.add(() -> getSessionController().startSelectUserSession());
+        sessions.add(() -> getSessionController().startUpdateTaskStatusSession());
+        sessions.add(() -> getSessionController().startDelegateTaskSession());
+
+        int toCall = random.nextInt(sessions.size());
+        sessions.get(toCall).run();
     }
 
     @Override
@@ -284,21 +284,21 @@ public class ButtonMashingUI implements UserInterface {
         return selectFromCollection(Arrays.asList("../save_files/test.json", "blablabla.doesnexist"));
     }
 
-	@Override
-	public boolean askExecute() throws ExitEvent {
-		return random.nextBoolean();
-	}
+    @Override
+    public boolean askExecute() throws ExitEvent {
+        return random.nextBoolean();
+    }
 
-	@Override
-	public boolean askFinish() throws ExitEvent {
-		return random.nextBoolean();
-	}
+    @Override
+    public boolean askFinish() throws ExitEvent {
+        return random.nextBoolean();
+    }
 
-	@Override
-	public Set<Resource> askSelectnewResources(Set<Resource> resources,
-			Map<ResourceType, List<Resource>> resourceOptions,
-			Set<Requirement> reqs) throws ExitEvent {
-		return null;
-	}
+    @Override
+    public Set<Resource> askSelectnewResources(Set<Resource> resources,
+            Map<ResourceType, List<Resource>> resourceOptions,
+            Set<Requirement> reqs) throws ExitEvent {
+        return null;
+    }
 
 }

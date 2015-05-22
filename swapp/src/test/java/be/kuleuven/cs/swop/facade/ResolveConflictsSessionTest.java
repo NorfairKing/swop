@@ -30,13 +30,13 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
     
     private Resource res;
     
-    private static DeveloperWrapper dev;
+    private static Developer dev;
     
     @Before
     public void setUp() throws Exception {
         simpleSetup();
     	
-    	dev = new DeveloperWrapper(new Developer("Dave"));
+    	dev =new Developer("Dave");
         project = taskMan.createProject(new ProjectData("Title", "Descr", taskMan.getSystemTime().plusHours(1)));
         type = taskMan.createResourceType(new ResourceTypeData("type0",
         		new HashSet<ResourceType>(),
@@ -59,7 +59,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task
@@ -95,7 +95,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task
@@ -129,7 +129,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task
@@ -174,7 +174,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         TaskWrapper task2 = taskMan.createTaskFor(project, new TaskData("task2",60,0, req1));
         
         Set<Resource> res1 = new HashSet<Resource>();
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         // plan first task
         ui.addRequestTask(task1);
@@ -220,7 +220,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task
@@ -293,7 +293,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task
@@ -361,7 +361,7 @@ public class ResolveConflictsSessionTest extends BaseFacadeTest{
         
         Set<Resource> res1 = new HashSet<Resource>();
         res1.add(res);
-        res1.add(dev.getDeveloper());
+        res1.add(dev);
         
         
         // plan first task

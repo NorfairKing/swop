@@ -1,6 +1,9 @@
 package be.kuleuven.cs.swop.facade;
 
+import java.util.Set;
+
 import be.kuleuven.cs.swop.domain.company.BranchOffice;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 public class BranchOfficeWrapper {
@@ -17,6 +20,10 @@ public class BranchOfficeWrapper {
     
     public String getLocation() {
         return office.getLocation();
+    }
+    
+    public Set<User> getUsers() {
+        return office.getUsers();
     }
     
     @Override
@@ -38,5 +45,6 @@ public class BranchOfficeWrapper {
         } else if (!office.equals(other.office)) return false;
         return true;
     }
+
     
 }

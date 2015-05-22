@@ -23,7 +23,9 @@ import be.kuleuven.cs.swop.domain.company.resource.Requirements;
 import be.kuleuven.cs.swop.domain.company.resource.Resource;
 import be.kuleuven.cs.swop.domain.company.resource.ResourceType;
 import be.kuleuven.cs.swop.domain.company.task.Task;
+import be.kuleuven.cs.swop.domain.company.user.Developer;
 import be.kuleuven.cs.swop.domain.company.user.Manager;
+import be.kuleuven.cs.swop.domain.company.user.User;
 
 
 public class TaskMan {
@@ -66,8 +68,13 @@ public class TaskMan {
         this.authenticationToken = token;
     }
 
-    public void requestAuthenticationFor(BranchOfficeWrapper office, UserWrapper user) {
-        authenticationToken = authenticator.createFor(office.getOffice(), user.getUser());
+    public void requestAuthenticationFor(BranchOfficeWrapper office, User user) {
+        authenticationToken = authenticator.createFor(office.getOffice(), user);
+    }
+    
+    public BranchOfficeWrapper createBranchOffice(String location){
+        BranchOffice bo = this.company.createBranchOffice(location);
+        return new BranchOfficeWrapper(bo);
     }
 
     // Wrapping functions
@@ -98,10 +105,8 @@ public class TaskMan {
      *            The branch office from which you want the users
      * @return A set of all known users, currently only developers
      */
-    public Set<UserWrapper> getUsersFrom(BranchOfficeWrapper office) {
-        Set<UserWrapper> users = map(office.getOffice().getDevelopers(), u -> new UserWrapper(u));
-        users.add(new UserWrapper(new Manager("Manager")));
-        return users;
+    public Set<User> getUsersFrom(BranchOfficeWrapper office) {
+        return office.getUsers();
     }
 
     /**
@@ -207,8 +212,8 @@ public class TaskMan {
      *            The time on which you need developers
      * @return The possible developers
      */
-    public Set<DeveloperWrapper> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
-        return map(company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken), d -> new DeveloperWrapper(d));
+    public Set<Developer> getPlanningDeveloperOptions(TaskWrapper task, LocalDateTime time) {
+        return company.getPlanningDeveloperOptions(task.getTask(), time, authenticationToken);
     }
 
     public ProjectWrapper getDelegationProject() {
@@ -475,9 +480,20 @@ public class TaskMan {
      *            The data needed to create a developer
      * @return The newly created developer
      */
-    public DeveloperWrapper createDeveloper(DeveloperData data) {
-        String name = data.getName();
-        return new DeveloperWrapper(company.createDeveloper(name, authenticationToken));
+    public Developer createDeveloper(String name) {
+        return company.createDeveloper(name, authenticationToken);
+    }
+    
+    public Developer createDeveloper(String name, BranchOfficeWrapper bow){
+        return company.createDeveloper(name, bow.getOffice());
+    }
+    
+    public Manager createManager(String name){
+        return company.createManager(name, authenticationToken);
+    }
+    
+    public Manager createManager(String name, BranchOfficeWrapper bow){
+        return company.createManager(name, bow.getOffice());
     }
 
     public void delegateTask(TaskWrapper wrappedTask, BranchOfficeWrapper wrappedOffice) {
