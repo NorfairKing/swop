@@ -30,20 +30,20 @@ public class ResourceType implements Serializable {
     /**
      * Simple constructor for a resource type that might conflict with itself, but nothing else.
      * It also doesn't have any dependencies.
-     * 
+     *
      * Selfconlfiction is used because, as we say in Belgium,
-     *     "als ge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types he"
-     * 
+     *     "als ge nog niet bestaat kuntge uzelf nie toevoegen aan de set van conflicterende types he -Jorik 2015"
+     *
      * @param name The name for the resource type
      * @param selfConflicting Whether it conflicts with itself
      */
     public ResourceType(String name, boolean selfConflicting){
         this(name,null,null,selfConflicting);
     }
-    
+
 	/**
 	 * Constructor with all possible info
-	 * 
+	 *
 	 * @param name The resource's name
 	 * @param dependencies Dependencies
 	 * @param conflicts Conflicts
@@ -51,12 +51,17 @@ public class ResourceType implements Serializable {
 	 */
 	public ResourceType(String name, Set<ResourceType> dependencies, Set<ResourceType> conflicts, boolean selfConflicting) {
 		if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
-        
+
 		this.name = name;
 		this.setDependencies(dependencies);
 		this.setConflictsWith(conflicts, selfConflicting);
 	}
 
+    /**
+     * Retrieve the dependencies of this type.
+     *
+     * @return An ImmutableSet containing the required ResourceTypes.
+     */
 	public ImmutableSet<ResourceType> getRequirements() {
 		return ImmutableSet.copyOf(this.dependencies);
 	}
@@ -70,18 +75,30 @@ public class ResourceType implements Serializable {
 	protected boolean canHaveAsDependency(ResourceType dependency) {
 		return dependency != null;
 	}
-	
+
 	private void addDependency(ResourceType dependency){
 	    if (!canHaveAsDependency(dependency)) throw new IllegalArgumentException(ERROR_ILLEGAL_REQUIREMENTS);
 	    this.dependencies.add(dependency);
 	}
 
+    /**
+     * Method used to add a type and all of it's dependencies to a set.
+     *
+     * @param resourceSet This type and it's dependencies will be added to this Set of
+     * ResourceTypes.
+     */
     public void addThisAndDependenciesRecursiveTo(Set<ResourceType> resourceSet) {
         resourceSet.add(this);
         this.getRequirements().stream().filter( req -> !resourceSet.contains(req))
                                        .forEach( req -> req.addThisAndDependenciesRecursiveTo(resourceSet));
     }
 
+    /**
+     * Retrieves the set of types that conflict with this type.
+     *
+     * @return An ImmutableSet that contains all of the ResourceTypes that conflict with
+     * this.
+     */
 	public ImmutableSet<ResourceType> getConflictsWith() {
 		return ImmutableSet.copyOf(this.conflictsWith);
 	}
@@ -105,23 +122,47 @@ public class ResourceType implements Serializable {
 		this.conflictsWith.add(conflict);
 	}
 
+    /**
+     * Get the name of this type.
+     *
+     * @return A String with the name of this ResourceType.
+     */
 	public String getName() {
 		return this.name;
 	}
 
-	
+    /**
+     * Checks whether or not this resouce type is available during the given time.
+     *
+     * @param time The to be checked LocalTime.
+     * @return True if this is available then.
+     */
 	public boolean isAvailableDuring(LocalTime time) {
     	if(time == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
     	}
         return true;
 	}
+
+    /**
+     * Checks whether or not this resouce type is available during the given time.
+     *
+     * @param date The to be checked LocalDateTime.
+     * @return True if this is available then.
+     */
     public boolean isAvailableDuring(LocalDateTime date){
     	if(date == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_TIME);
     	}
 		return isAvailableDuring(LocalTime.from(date));
     }
+
+    /**
+     * Checks whether or not this resouce type is available during the given period.
+     *
+     * @param period The to be checked TimePeriod.
+     * @return True if this is available then.
+     */
 	public boolean isAvailableDuring(TimePeriod period) {
     	if(period == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
@@ -129,6 +170,12 @@ public class ResourceType implements Serializable {
 	    return true;
 	}
 
+    /**
+     * Checks whether or not this resouce type is available during the given period.
+     *
+     * @param period The to be checked DateTimePeriod.
+     * @return True if this is available then.
+     */
 	public boolean isAvailableDuring(DateTimePeriod period){
     	if(period == null){
     		throw new IllegalArgumentException(ERROR_NULL_DURING_PERIOD);
@@ -139,7 +186,7 @@ public class ResourceType implements Serializable {
     @Override
     public int hashCode() {
         Set<ResourceType> conflictsWithWithoutThis = new HashSet<ResourceType>();
-        
+
         if (conflictsWith != null) {
             for(ResourceType type : conflictsWith){
                 if(type != this){
@@ -147,7 +194,7 @@ public class ResourceType implements Serializable {
                 }
             }
         }
-        
+
         final int prime = 31;
         int result = 1;
         result = prime * result + ((conflictsWithWithoutThis == null) ? 0 : conflictsWithWithoutThis.hashCode());
@@ -174,7 +221,7 @@ public class ResourceType implements Serializable {
 	private static final String ERROR_ILLEGAL_REQUIREMENTS = "Illegal requirement set for resource type.";
 	private static final String ERROR_ILLEGAL_CONFLICTS    = "Illegal conflict set for resource type.";
 	private static final String ERROR_ILLEGAL_NAME         = "Illegal name for resource type.";
-	
+
     private static final String ERROR_NULL_DURING_TIME  = "The time to check may not be null.";
     private static final String ERROR_NULL_DURING_PERIOD  = "The period to check may not be null.";
 

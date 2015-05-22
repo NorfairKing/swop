@@ -30,10 +30,22 @@ public class TimeConstrainedResourceType extends ResourceType {
         return this.dailyAvailability;
     }
 
+    /**
+     * Checks whether or not this resource is available during the given time.
+     *
+     * @param time The to be checked LocalTime.
+     * @return True if this is available during the give LocalTime.
+     */
     public boolean isAvailableDuring(LocalTime time) {
         return this.getDailyAvailability().isDuring(time);
     }
 
+    /**
+     * Checks whether or not this resource is available during the given time.
+     *
+     * @param time The to be checked LocalDateTime.
+     * @return True if this is available during the give LocalDateTime.
+     */
     public boolean isAvailableDuring(DateTimePeriod period) {
         return this.getDailyAvailability().isDuring(period);
     }

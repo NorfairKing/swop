@@ -14,7 +14,7 @@ public class Resource implements Serializable {
 
     @SuppressWarnings("unused")
     private Resource() { type = null; name = null; } //for automatic (de)-serialization
-    
+
     public Resource(ResourceType type, String name) {
         if (name == null || name.isEmpty()) throw new IllegalArgumentException(ERROR_ILLEGAL_NAME);
         if (type == null) throw new IllegalArgumentException(ERROR_ILLEGAL_TYPE);
@@ -23,18 +23,41 @@ public class Resource implements Serializable {
         this.name = name;
     }
 
+    /**
+     * Retrieve the type of this resource.
+     *
+     * @return The ResourceType of this Resource.
+     */
     public ResourceType getType() {
         return type;
     }
 
+    /**
+     * Retrieve the name of this resource.
+     *
+     * @return A String that is the name of this Resource.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Checks whether or not this resource is of the given type.
+     *
+     * @param type The to be checked ResouceType.
+     * @return True if this Resource is of the given ResourceType.
+     */
     public boolean isOfType(ResourceType type) {
         return this.getType().equals(type);
     }
-    
+
+    /**
+     * Checks if this resource can take a break during the given period.
+     * A normal non developer resource will never be able to take a break.
+     *
+     * @param period The DateTimePeriod that will be checked.
+     * @return True if the period satisfies.
+     */
     public boolean canTakeBreakDuring(DateTimePeriod period) {
         return false;
     }
