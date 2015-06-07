@@ -41,6 +41,10 @@ doc:
 diagrams:
 	$(MAKE) -C diagrams
 
+.PHONY: presentations
+presentations: diagrams
+	$(MAKE) -C presentations
+
 
 clean:
 	mvn clean -f $(POM_FILE)
